@@ -1,0 +1,30 @@
+/root/src/BEVFormer/projects/mmdet3d_plugin/bevformer/modules/custom_base_transformer_layer.py:94: UserWarning: The arguments `feedforward_channels` in BaseTransformerLayer has been deprecated, now you should set `feedforward_channels` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/src/BEVFormer/projects/mmdet3d_plugin/bevformer/modules/custom_base_transformer_layer.py:94: UserWarning: The arguments `ffn_dropout` in BaseTransformerLayer has been deprecated, now you should set `ffn_drop` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/src/BEVFormer/projects/mmdet3d_plugin/bevformer/modules/custom_base_transformer_layer.py:94: UserWarning: The arguments `ffn_num_fcs` in BaseTransformerLayer has been deprecated, now you should set `num_fcs` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/miniconda3/envs/bevformer/lib/python3.8/site-packages/mmcv/cnn/bricks/transformer.py:341: UserWarning: The arguments `feedforward_channels` in BaseTransformerLayer has been deprecated, now you should set `feedforward_channels` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/miniconda3/envs/bevformer/lib/python3.8/site-packages/mmcv/cnn/bricks/transformer.py:341: UserWarning: The arguments `ffn_dropout` in BaseTransformerLayer has been deprecated, now you should set `ffn_drop` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/miniconda3/envs/bevformer/lib/python3.8/site-packages/mmcv/cnn/bricks/transformer.py:341: UserWarning: The arguments `ffn_num_fcs` in BaseTransformerLayer has been deprecated, now you should set `num_fcs` and other FFN related arguments to a dict named `ffn_cfgs`. 
+  warnings.warn(
+/root/miniconda3/envs/bevformer/lib/python3.8/site-packages/mmcv/cnn/bricks/transformer.py:92: UserWarning: The arguments `dropout` in MultiheadAttention has been deprecated, now you can separately set `attn_drop`(float), proj_drop(float), and `dropout_layer`(dict) 
+  warnings.warn('The arguments `dropout` in MultiheadAttention '
+/root/src/mmdetection3d-0.17.1/mmdet3d/models/detectors/mvx_two_stage.py:87: UserWarning: DeprecationWarning: pretrained is a deprecated                     key, please consider using init_cfg
+  warnings.warn('DeprecationWarning: pretrained is a deprecated \
+{
+  "config": "projects/configs/bevformer/bevformer_tiny.py",
+  "checkpoint_bytes": 400785466,
+  "checkpoint_tensors": 643,
+  "model_tensors": 643,
+  "missing_keys": [],
+  "unexpected_keys": [],
+  "shape_mismatches": {},
+  "parameter_count": 33521157,
+  "gpu": "NVIDIA GeForce RTX 3080",
+  "torch_cuda": "11.1",
+  "cuda_memory_allocated": 137542656,
+  "cuda_memory_reserved": 155189248
+}

@@ -1,0 +1,30 @@
+test_sm86_backend_rejects_fp16_until_mixed_precision_landing (test_bevformer_msda.BEVFormerTinyProfileTests.test_sm86_backend_rejects_fp16_until_mixed_precision_landing) ... ok
+test_tiny_graph_lowers_to_one_sm86_kernel (test_bevformer_msda.BEVFormerTinyProfileTests.test_tiny_graph_lowers_to_one_sm86_kernel) ... ok
+test_tiny_spatial_attention_graph_and_inputs (test_bevformer_msda.BEVFormerTinyProfileTests.test_tiny_spatial_attention_graph_and_inputs) ... ok
+test_multilevel_matches_independent_definition (test_bevformer_msda.MSDeformableAttentionReferenceTests.test_multilevel_matches_independent_definition) ... ok
+test_one_by_one_center_is_exact (test_bevformer_msda.MSDeformableAttentionReferenceTests.test_one_by_one_center_is_exact) ... ok
+test_two_by_two_bilinear_and_zero_padding (test_bevformer_msda.MSDeformableAttentionReferenceTests.test_two_by_two_bilinear_and_zero_padding) ... ok
+test_shape_inference (test_bevformer_msda.MSDeformableAttentionShapeTests.test_shape_inference) ... ok
+test_shape_inference_preserves_value_dtype (test_bevformer_msda.MSDeformableAttentionShapeTests.test_shape_inference_preserves_value_dtype) ... ok
+test_shape_inference_rejects_malformed_contract (test_bevformer_msda.MSDeformableAttentionShapeTests.test_shape_inference_rejects_malformed_contract) ... ok
+test_cli_artifacts_and_cpu_reference (test_cuda_compiler.CompilerTests.test_cli_artifacts_and_cpu_reference) ... ok
+test_compile_mlp_preserves_original_and_provenance (test_cuda_compiler.CompilerTests.test_compile_mlp_preserves_original_and_provenance) ... ok
+test_input_contract (test_cuda_compiler.CompilerTests.test_input_contract) ... ok
+test_offline_compile_does_not_import_cupy (test_cuda_compiler.CompilerTests.test_offline_compile_does_not_import_cupy) ... ok
+test_rejects_unsupported_semantics (test_cuda_compiler.CompilerTests.test_rejects_unsupported_semantics) ... ok
+test_unsupported_fusion_keeps_unfused_graph (test_cuda_compiler.CompilerTests.test_unsupported_fusion_keeps_unfused_graph) ... ok
+test_bevformer_tiny_msda_slice (test_cuda_gpu.PhysicalCudaTests.test_bevformer_tiny_msda_slice) ... ok
+test_broadcast_add (test_cuda_gpu.PhysicalCudaTests.test_broadcast_add) ... ok
+test_constant_only_graph (test_cuda_gpu.PhysicalCudaTests.test_constant_only_graph) ... ok
+test_empty_dispatch_graph (test_cuda_gpu.PhysicalCudaTests.test_empty_dispatch_graph) ... ok
+test_fused_matmul_bias_gelu (test_cuda_gpu.PhysicalCudaTests.test_fused_matmul_bias_gelu) ... ok
+test_layernorm_reduction_boundaries (test_cuda_gpu.PhysicalCudaTests.test_layernorm_reduction_boundaries) ... ok
+test_mlp_repeated_runs_and_input_guards (test_cuda_gpu.PhysicalCudaTests.test_mlp_repeated_runs_and_input_guards) ... ok
+test_odd_matmul (test_cuda_gpu.PhysicalCudaTests.test_odd_matmul) ... ok
+test_softmax_stability (test_cuda_gpu.PhysicalCudaTests.test_softmax_stability) ... ok
+test_unary (test_cuda_gpu.PhysicalCudaTests.test_unary) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 2.004s
+
+OK

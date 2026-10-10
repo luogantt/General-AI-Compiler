@@ -1,0 +1,61 @@
+{
+  "name": "heterogeneous_mlp",
+  "inputs": {
+    "input": {
+      "shape": [64, 128],
+      "dtype": "float32"
+    }
+  },
+  "constants": {
+    "W": {
+      "initializer": "random_normal",
+      "shape": [128, 256],
+      "dtype": "float32",
+      "seed": 20261007,
+      "mean": 0.0,
+      "std": 0.02
+    },
+    "bias": {
+      "initializer": "zeros",
+      "shape": [256],
+      "dtype": "float32",
+      "seed": 0,
+      "mean": 0.0,
+      "std": 0.0
+    }
+  },
+  "nodes": [
+    {
+      "id": "matmul",
+      "op": "MatMul",
+      "inputs": ["input", "W"],
+      "outputs": ["projected"],
+      "attrs": {}
+    },
+    {
+      "id": "add_bias",
+      "op": "Add",
+      "inputs": ["projected", "bias"],
+      "outputs": ["biased"],
+      "attrs": {}
+    },
+    {
+      "id": "gelu",
+      "op": "GELU",
+      "inputs": ["biased"],
+      "outputs": ["activated"],
+      "attrs": {}
+    },
+    {
+      "id": "layer_norm",
+      "op": "LayerNorm",
+      "inputs": ["activated"],
+      "outputs": ["output"],
+      "attrs": {
+        "axis": -1,
+        "epsilon": 1e-5
+      }
+    }
+  ],
+  "outputs": ["output"]
+}

@@ -1,0 +1,20 @@
+test_cli_artifacts_and_cpu_reference (test_cuda_compiler.CompilerTests.test_cli_artifacts_and_cpu_reference) ... ok
+test_compile_mlp_preserves_original_and_provenance (test_cuda_compiler.CompilerTests.test_compile_mlp_preserves_original_and_provenance) ... ok
+test_input_contract (test_cuda_compiler.CompilerTests.test_input_contract) ... ok
+test_offline_compile_does_not_import_cupy (test_cuda_compiler.CompilerTests.test_offline_compile_does_not_import_cupy) ... ok
+test_rejects_unsupported_semantics (test_cuda_compiler.CompilerTests.test_rejects_unsupported_semantics) ... ok
+test_unsupported_fusion_keeps_unfused_graph (test_cuda_compiler.CompilerTests.test_unsupported_fusion_keeps_unfused_graph) ... ok
+test_broadcast_add (test_cuda_gpu.PhysicalCudaTests.test_broadcast_add) ... ok
+test_constant_only_graph (test_cuda_gpu.PhysicalCudaTests.test_constant_only_graph) ... ok
+test_empty_dispatch_graph (test_cuda_gpu.PhysicalCudaTests.test_empty_dispatch_graph) ... ok
+test_fused_matmul_bias_gelu (test_cuda_gpu.PhysicalCudaTests.test_fused_matmul_bias_gelu) ... ok
+test_layernorm_reduction_boundaries (test_cuda_gpu.PhysicalCudaTests.test_layernorm_reduction_boundaries) ... ok
+test_mlp_repeated_runs_and_input_guards (test_cuda_gpu.PhysicalCudaTests.test_mlp_repeated_runs_and_input_guards) ... ok
+test_odd_matmul (test_cuda_gpu.PhysicalCudaTests.test_odd_matmul) ... ok
+test_softmax_stability (test_cuda_gpu.PhysicalCudaTests.test_softmax_stability) ... ok
+test_unary (test_cuda_gpu.PhysicalCudaTests.test_unary) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 2.668s
+
+OK

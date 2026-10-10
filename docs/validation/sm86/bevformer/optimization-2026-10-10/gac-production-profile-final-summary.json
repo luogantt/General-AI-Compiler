@@ -1,0 +1,275 @@
+{
+  "execution": {
+    "gpu_stream_ms": 76.05084991455078,
+    "wall_ms": 95.8320964127779
+  },
+  "profile": {
+    "schema_version": 1,
+    "clock": "cuda-event",
+    "time_unit": "ms",
+    "launch_count": 703,
+    "timed_launch_count": 703,
+    "untimed_launch_count": 0,
+    "total_gpu_ms": 63.439136068569496,
+    "by_op": {
+      "Add": {
+        "launch_count": 166,
+        "total_gpu_ms": 2.2047040038742125,
+        "mean_gpu_ms": 0.013281349420928991,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.04403200000524521,
+        "share_percent": 3.4753058451035854
+      },
+      "AddReLU": {
+        "launch_count": 39,
+        "total_gpu_ms": 4.782335980795324,
+        "mean_gpu_ms": 0.12262399950757241,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.6420480012893677,
+        "share_percent": 7.538463284913334
+      },
+      "Cast": {
+        "launch_count": 3,
+        "total_gpu_ms": 0.13337599951773882,
+        "mean_gpu_ms": 0.04445866650591294,
+        "min_gpu_ms": 0.009216000325977802,
+        "max_gpu_ms": 0.10367999970912933,
+        "share_percent": 0.21024245880898604
+      },
+      "Clamp": {
+        "launch_count": 22,
+        "total_gpu_ms": 0.24902399955317378,
+        "mean_gpu_ms": 0.011319272706962445,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.027648000046610832,
+        "share_percent": 0.3925400233761239
+      },
+      "Concat": {
+        "launch_count": 22,
+        "total_gpu_ms": 0.2990080020390451,
+        "mean_gpu_ms": 0.013591272819956595,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.03167999908328056,
+        "share_percent": 0.4713305075842397
+      },
+      "Conv2D": {
+        "launch_count": 55,
+        "total_gpu_ms": 36.6408960968256,
+        "mean_gpu_ms": 0.6661981108513746,
+        "min_gpu_ms": 0.15462400019168854,
+        "max_gpu_ms": 1.4018559455871582,
+        "share_percent": 57.75755845291073
+      },
+      "Cos": {
+        "launch_count": 2,
+        "total_gpu_ms": 0.0071680000983178616,
+        "mean_gpu_ms": 0.0035840000491589308,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.004095999989658594,
+        "share_percent": 0.011299019095358078
+      },
+      "Div": {
+        "launch_count": 26,
+        "total_gpu_ms": 0.2917120009660721,
+        "mean_gpu_ms": 0.011219692344848927,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.027648000046610832,
+        "share_percent": 0.45982971875715517
+      },
+      "Expand": {
+        "launch_count": 6,
+        "total_gpu_ms": 0.18534399941563606,
+        "mean_gpu_ms": 0.030890666569272678,
+        "min_gpu_ms": 0.018432000651955605,
+        "max_gpu_ms": 0.043007999658584595,
+        "share_percent": 0.2921603459657824
+      },
+      "Greater": {
+        "launch_count": 4,
+        "total_gpu_ms": 0.01536000007763505,
+        "mean_gpu_ms": 0.0038400000194087625,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.004095999989658594,
+        "share_percent": 0.024212183566044907
+      },
+      "GridSample2D": {
+        "launch_count": 1,
+        "total_gpu_ms": 0.008191999979317188,
+        "mean_gpu_ms": 0.008191999979317188,
+        "min_gpu_ms": 0.008191999979317188,
+        "max_gpu_ms": 0.008191999979317188,
+        "share_percent": 0.012913164470686828
+      },
+      "LayerNorm": {
+        "launch_count": 29,
+        "total_gpu_ms": 0.6073279995471239,
+        "mean_gpu_ms": 0.02094234481196979,
+        "min_gpu_ms": 0.006144000217318535,
+        "max_gpu_ms": 0.028672000393271446,
+        "share_percent": 0.9573396442389772
+      },
+      "Less": {
+        "launch_count": 2,
+        "total_gpu_ms": 0.008191999979317188,
+        "mean_gpu_ms": 0.004095999989658594,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.004095999989658594,
+        "share_percent": 0.012913164470686828
+      },
+      "Log": {
+        "launch_count": 6,
+        "total_gpu_ms": 0.07276799902319908,
+        "mean_gpu_ms": 0.012127999837199846,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.021503999829292297,
+        "share_percent": 0.11470521752463068
+      },
+      "MSDeformableAttention": {
+        "launch_count": 12,
+        "total_gpu_ms": 0.7577599994838238,
+        "mean_gpu_ms": 0.06314666662365198,
+        "min_gpu_ms": 0.010239999741315842,
+        "max_gpu_ms": 0.1802240014076233,
+        "share_percent": 1.1944677157406167
+      },
+      "MatMul": {
+        "launch_count": 118,
+        "total_gpu_ms": 8.005984041839838,
+        "mean_gpu_ms": 0.0678473223884732,
+        "min_gpu_ms": 0.005119999870657921,
+        "max_gpu_ms": 0.20070399343967438,
+        "share_percent": 12.619944939329573
+      },
+      "MaxPool2D": {
+        "launch_count": 1,
+        "total_gpu_ms": 0.2662400007247925,
+        "mean_gpu_ms": 0.2662400007247925,
+        "min_gpu_ms": 0.2662400007247925,
+        "max_gpu_ms": 0.2662400007247925,
+        "share_percent": 0.4196778474994071
+      },
+      "Mul": {
+        "launch_count": 28,
+        "total_gpu_ms": 0.7024959926493466,
+        "mean_gpu_ms": 0.025089142594619522,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.09932799637317657,
+        "share_percent": 1.1073542866189718
+      },
+      "ReLU": {
+        "launch_count": 35,
+        "total_gpu_ms": 2.3431680044159293,
+        "mean_gpu_ms": 0.06694765726902656,
+        "min_gpu_ms": 0.013311999849975109,
+        "max_gpu_ms": 0.4301759898662567,
+        "share_percent": 3.6935685912923972
+      },
+      "ReduceMean": {
+        "launch_count": 3,
+        "total_gpu_ms": 0.03686400130391121,
+        "mean_gpu_ms": 0.01228800043463707,
+        "min_gpu_ms": 0.01228800043463707,
+        "max_gpu_ms": 0.01228800043463707,
+        "share_percent": 0.05810924232017598
+      },
+      "ReduceSum": {
+        "launch_count": 7,
+        "total_gpu_ms": 0.1105919973924756,
+        "mean_gpu_ms": 0.01579885677035366,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.030719999223947525,
+        "share_percent": 0.17432771668413008
+      },
+      "Reshape": {
+        "launch_count": 1,
+        "total_gpu_ms": 0.004095999989658594,
+        "mean_gpu_ms": 0.004095999989658594,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.004095999989658594,
+        "share_percent": 0.006456582235343414
+      },
+      "Sigmoid": {
+        "launch_count": 14,
+        "total_gpu_ms": 0.15353599935770035,
+        "mean_gpu_ms": 0.010966857096978597,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.021503999829292297,
+        "share_percent": 0.24202094932652898
+      },
+      "Sin": {
+        "launch_count": 2,
+        "total_gpu_ms": 0.007231999887153506,
+        "mean_gpu_ms": 0.003615999943576753,
+        "min_gpu_ms": 0.003135999897494912,
+        "max_gpu_ms": 0.004095999989658594,
+        "share_percent": 0.011399902860178692
+      },
+      "Slice": {
+        "launch_count": 41,
+        "total_gpu_ms": 0.4544959985651076,
+        "mean_gpu_ms": 0.01108526825768555,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.05632000043988228,
+        "share_percent": 0.7164284174265176
+      },
+      "Softmax": {
+        "launch_count": 16,
+        "total_gpu_ms": 4.621279954910278,
+        "mean_gpu_ms": 0.2888299971818924,
+        "min_gpu_ms": 0.060416001826524734,
+        "max_gpu_ms": 0.9512959718704224,
+        "share_percent": 7.28458841229375
+      },
+      "Sub": {
+        "launch_count": 7,
+        "total_gpu_ms": 0.09212800115346909,
+        "mean_gpu_ms": 0.013161143021924155,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.030688000842928886,
+        "share_percent": 0.14522266043139465
+      },
+      "Transpose": {
+        "launch_count": 30,
+        "total_gpu_ms": 0.30515199806541204,
+        "mean_gpu_ms": 0.010171733268847068,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.030719999223947525,
+        "share_percent": 0.48101537469801325
+      },
+      "Where": {
+        "launch_count": 5,
+        "total_gpu_ms": 0.07270399713888764,
+        "mean_gpu_ms": 0.014540799427777529,
+        "min_gpu_ms": 0.004095999989658594,
+        "max_gpu_ms": 0.01945599913597107,
+        "share_percent": 0.11460433045668218
+      }
+    },
+    "by_implementation": {
+      "cudnn": {
+        "launch_count": 55,
+        "total_gpu_ms": 36.6408960968256,
+        "mean_gpu_ms": 0.6661981108513746,
+        "min_gpu_ms": 0.15462400019168854,
+        "max_gpu_ms": 1.4018559455871582,
+        "share_percent": 57.75755845291073
+      },
+      "cupy-cublas": {
+        "launch_count": 118,
+        "total_gpu_ms": 8.005984041839838,
+        "mean_gpu_ms": 0.0678473223884732,
+        "min_gpu_ms": 0.005119999870657921,
+        "max_gpu_ms": 0.20070399343967438,
+        "share_percent": 12.619944939329573
+      },
+      "generated-cuda": {
+        "launch_count": 530,
+        "total_gpu_ms": 18.79225592990406,
+        "mean_gpu_ms": 0.035457086660196334,
+        "min_gpu_ms": 0.0030720001086592674,
+        "max_gpu_ms": 0.9512959718704224,
+        "share_percent": 29.6224966077597
+      }
+    }
+  }
+}

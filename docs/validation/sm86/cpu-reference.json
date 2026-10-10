@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "backend": "numpy-cpu",
+  "model": "heterogeneous_mlp",
+  "source_sha256": "f3a114feb7dd3d0dfaaa5920726dce494bc28977126b9066d3316f30ff65ae96",
+  "source_generation_ms": 8.33035699906759,
+  "warmup": 10,
+  "repeat": 100,
+  "seed": 7,
+  "input_source": "seeded normal",
+  "verification": "passed",
+  "rtol": 0.0001,
+  "atol": 1e-05,
+  "device": {
+    "name": "NumPy CPU reference",
+    "physical_cuda_execution": false
+  },
+  "wall_ms": {
+    "median": 0.4751914993903483,
+    "min": 0.45563300045614596,
+    "max": 0.6045849986549001
+  },
+  "wall_scope": "input validation, transfers, allocations, execution and host outputs; excludes setup and verification",
+  "max_abs_error": {
+    "output": 0.0
+  },
+  "outputs": {
+    "output": {
+      "shape": [
+        64,
+        256
+      ],
+      "dtype": "float32"
+    }
+  }
+}

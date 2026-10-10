@@ -1,0 +1,251 @@
+{
+  "all_generated": {
+    "session": {
+      "convolution": {
+        "requested": "generated",
+        "selected": "generated-cuda",
+        "cudnn_launch_count": 0,
+        "generated_launch_count": 55,
+        "tensor_core": "not-applicable",
+        "workspace_budget_bytes": 0
+      },
+      "matmul": {
+        "requested": "generated",
+        "selected": "generated-cuda",
+        "cublas_launch_count": 0,
+        "generated_launch_count": 118,
+        "precision": "float32"
+      }
+    },
+    "first_cold": {
+      "gpu_ms": 430.31756591796875,
+      "wall_ms": 445.19309140741825
+    },
+    "steady_cold": {
+      "runs": 3,
+      "gpu_ms": {
+        "median": 425.3250732421875,
+        "min": 424.97698974609375,
+        "max": 425.39013671875,
+        "mean": 425.23073323567706
+      },
+      "wall_ms": {
+        "median": 436.8815906345844,
+        "min": 436.85789592564106,
+        "max": 437.1350575238466,
+        "mean": 436.9581813613574
+      }
+    },
+    "steady_warm": {
+      "runs": 3,
+      "gpu_ms": {
+        "median": 426.03253173828125,
+        "min": 424.84344482421875,
+        "max": 426.2563171386719,
+        "mean": 425.7107645670573
+      },
+      "wall_ms": {
+        "median": 437.7184361219406,
+        "min": 436.8251543492079,
+        "max": 437.9004091024399,
+        "mean": 437.48133319119614
+      }
+    },
+    "cold_errors": {
+      "cls_logits": {
+        "max_abs": 0.004331350326538086,
+        "mean_abs": 0.0006031999323103163
+      },
+      "bbox_regression": {
+        "max_abs": 0.004837334156036377,
+        "mean_abs": 0.00030225466515574023
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 0.00028500352203845975
+      }
+    },
+    "warm_errors": {
+      "cls_logits": {
+        "max_abs": 0.0007486343383789062,
+        "mean_abs": 2.093749576144748e-05
+      },
+      "bbox_regression": {
+        "max_abs": 0.0006297975778579712,
+        "mean_abs": 9.331832031623182e-06
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 1.1481612920761109e-05
+      }
+    }
+  },
+  "cudnn_only": {
+    "session": {
+      "convolution": {
+        "requested": "auto",
+        "selected": "cudnn",
+        "cudnn_launch_count": 55,
+        "generated_launch_count": 0,
+        "tensor_core": "never",
+        "workspace_budget_bytes": 8388608
+      },
+      "matmul": {
+        "requested": "generated",
+        "selected": "generated-cuda",
+        "cublas_launch_count": 0,
+        "generated_launch_count": 118,
+        "precision": "float32"
+      }
+    },
+    "first_cold": {
+      "gpu_ms": 250.09971618652344,
+      "wall_ms": 265.05069993436337
+    },
+    "steady_cold": {
+      "runs": 5,
+      "gpu_ms": {
+        "median": 68.34502410888672,
+        "min": 68.02294158935547,
+        "max": 68.54851531982422,
+        "mean": 68.30086975097656
+      },
+      "wall_ms": {
+        "median": 80.29672503471375,
+        "min": 80.15421964228153,
+        "max": 81.30083605647087,
+        "mean": 80.45039102435112
+      }
+    },
+    "steady_warm": {
+      "runs": 5,
+      "gpu_ms": {
+        "median": 68.34320068359375,
+        "min": 68.2026596069336,
+        "max": 68.54316711425781,
+        "mean": 68.36433410644531
+      },
+      "wall_ms": {
+        "median": 79.7668918967247,
+        "min": 79.61380854249,
+        "max": 80.8334182947874,
+        "mean": 80.07162101566792
+      }
+    },
+    "cold_errors": {
+      "cls_logits": {
+        "max_abs": 0.0038940906524658203,
+        "mean_abs": 0.0005839556058247884
+      },
+      "bbox_regression": {
+        "max_abs": 0.004854142665863037,
+        "mean_abs": 0.00029938918249030797
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 0.0002866624700836837
+      }
+    },
+    "warm_errors": {
+      "cls_logits": {
+        "max_abs": 0.0009503364562988281,
+        "mean_abs": 2.340926064385308e-05
+      },
+      "bbox_regression": {
+        "max_abs": 0.0007233619689941406,
+        "mean_abs": 9.398079395699217e-06
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 1.204220186918974e-05
+      }
+    }
+  },
+  "cudnn_cublas": {
+    "session": {
+      "convolution": {
+        "requested": "auto",
+        "selected": "cudnn",
+        "cudnn_launch_count": 55,
+        "generated_launch_count": 0,
+        "tensor_core": "never",
+        "workspace_budget_bytes": 8388608
+      },
+      "matmul": {
+        "requested": "auto",
+        "selected": "cupy-cublas",
+        "cublas_launch_count": 118,
+        "generated_launch_count": 0,
+        "precision": "float32"
+      }
+    },
+    "first_cold": {
+      "gpu_ms": 116.63565063476562,
+      "wall_ms": 128.78947891294956
+    },
+    "steady_cold": {
+      "runs": 10,
+      "gpu_ms": {
+        "median": 57.62446403503418,
+        "min": 56.319297790527344,
+        "max": 58.725345611572266,
+        "mean": 57.3134880065918
+      },
+      "wall_ms": {
+        "median": 69.40309330821037,
+        "min": 68.15901212394238,
+        "max": 72.08523526787758,
+        "mean": 69.29577924311161
+      }
+    },
+    "steady_warm": {
+      "runs": 10,
+      "gpu_ms": {
+        "median": 56.82326316833496,
+        "min": 56.29830551147461,
+        "max": 58.16921615600586,
+        "mean": 57.04100151062012
+      },
+      "wall_ms": {
+        "median": 68.74744035303593,
+        "min": 67.66101345419884,
+        "max": 69.73405368626118,
+        "mean": 68.6601385474205
+      }
+    },
+    "cold_errors": {
+      "cls_logits": {
+        "max_abs": 0.0038919448852539062,
+        "mean_abs": 0.0005838339063856337
+      },
+      "bbox_regression": {
+        "max_abs": 0.004856288433074951,
+        "mean_abs": 0.0002993502826724479
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 0.00028667458845302464
+      }
+    },
+    "warm_errors": {
+      "cls_logits": {
+        "max_abs": 0.00095367431640625,
+        "mean_abs": 2.3420254389444988e-05
+      },
+      "bbox_regression": {
+        "max_abs": 0.0007253885269165039,
+        "mean_abs": 9.403418107770753e-06
+      },
+      "next_bev": {
+        "max_abs": 0.001953125,
+        "mean_abs": 1.1988704185932875e-05
+      }
+    }
+  },
+  "speedup": {
+    "cold_gpu": 7.380980983764133,
+    "cold_wall": 6.2948432095735045,
+    "warm_gpu": 7.497502043770164,
+    "warm_wall": 6.3670506694379165
+  }
+}

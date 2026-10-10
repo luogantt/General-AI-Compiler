@@ -1,0 +1,53 @@
+{
+  "validation_date": "2026-10-07",
+  "physical_device": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "desktop_rtx3070_tested": false,
+  "remote_environment": {
+    "os": "Ubuntu 24.04",
+    "python": "3.12.3",
+    "numpy": "2.5.3",
+    "cupy": "13.6.0",
+    "nvidia_driver": "580.178.04",
+    "cuda_runtime": "12.9",
+    "nvrtc": "12.9"
+  },
+  "remote_tests": {
+    "command": "GAC_REQUIRE_CUDA=1 .venv/bin/python -m unittest discover -s tests -v",
+    "passed": 15,
+    "skipped": 0,
+    "log": "tests.txt"
+  },
+  "local_tests": {
+    "passed": 6,
+    "gpu_test_class_skipped": true,
+    "reason": "No local NVIDIA device"
+  },
+  "benchmark": {
+    "seed": 7,
+    "warmup": 10,
+    "repeat": 100,
+    "reports": [
+      "gpu-fused.json",
+      "gpu-unfused.json",
+      "cpu-reference.json"
+    ],
+    "scope": "Small MLP only; CPU reference is not an optimized inference framework; BLAS threads not controlled"
+  },
+  "source_sha256": {
+    "src/gac/__init__.py": "99552f0078dd1647346876b05c7d77c9ebbafdc1b72fd3a0a23c6dc57cabdb34",
+    "src/gac/backends/__init__.py": "20b6ccb099b23fb0718793a7601f647c11f1e9d5b64586534d41833befc59f69",
+    "src/gac/backends/cuda.py": "cc24b6448423a80ff377cf696abf6932e33ba2e9b2fa953da490cd5d4535ebf1",
+    "src/gac/cli.py": "84dd6d130419e4b93cb7f310835853f770ecd458f3bad75c2b8d855d5da5c4d0",
+    "src/gac/errors.py": "7d16560334218bca7db5014c69159a382b745a33d3850e941dce49450fbb5a86",
+    "src/gac/frontends/__init__.py": "b6f0f9cc29df938e88eb75f1fc8eb2419ff35fa941811eb86b5a261d6ac6acf6",
+    "src/gac/frontends/json_frontend.py": "08fb409e008741001ae171549a23edb63ede2e1c12ca34bb35a4c04f245c5b33",
+    "src/gac/ir.py": "0c0619affe9083cfd1ae661e524cb8c0866fedc0fb6236183a3921ed97e1a6d1",
+    "src/gac/ops.py": "281df7c43bab4ec50d70c55af3d806424c6618c76eea0ee9b61567ea6f577f1a",
+    "src/gac/passes.py": "b8cdc778931ba2a71737ac01cb582f66c855ae399e80346b658bc5ee20ddff8b",
+    "src/gac/profiler.py": "72c6c79d5bfd6d6f1ae14ba79df27ad5895218f57ab09e6718529f086ecaeeb8",
+    "src/gac/runtime.py": "c1d2458d661be4399a1535472eeb7fe85da236bf8bd72ff43330ee6504aaf021",
+    "src/gac/version.py": "889b6515ef12de4018d101f0612d515dbac4bc1261278b35ceed2389cde69f50",
+    "tests/test_cuda_compiler.py": "cbf766f0d4e2fd7284c43fd1848a6cd72aec3f51b598aef91fd26ff464ed58e9",
+    "tests/test_cuda_gpu.py": "65067ab4e1e6b09c4e88e884856588b26b6b8ecc5bd2a034cfec4be74c4147ae"
+  }
+}

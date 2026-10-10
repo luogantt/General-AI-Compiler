@@ -1,0 +1,94 @@
+{
+  "displayTimeUnit": "ms",
+  "traceEvents": [
+    {
+      "args": {
+        "bytes": 32768,
+        "clock": "host submission",
+        "sequence": 0,
+        "source_nodes": []
+      },
+      "cat": "copy_h2d",
+      "dur": 56.598,
+      "name": "inputs",
+      "ph": "X",
+      "pid": 1,
+      "tid": "cuda-sm86",
+      "ts": 11670388368.392
+    },
+    {
+      "args": {
+        "block": [
+          16,
+          16,
+          1
+        ],
+        "clock": "host submission",
+        "entry_point": "gac_kernel_0",
+        "gpu_elapsed_ms": 0.03270399942994118,
+        "grid": [
+          16,
+          4,
+          1
+        ],
+        "node_id": "fused_matmul_add_bias_gelu",
+        "sequence": 1,
+        "source_nodes": [
+          "matmul",
+          "add_bias",
+          "gelu"
+        ]
+      },
+      "cat": "dispatch",
+      "dur": 16.521,
+      "name": "gac_kernel_0",
+      "ph": "X",
+      "pid": 1,
+      "tid": "cuda-sm86",
+      "ts": 11670388460.509
+    },
+    {
+      "args": {
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "clock": "host submission",
+        "entry_point": "gac_kernel_1",
+        "gpu_elapsed_ms": 0.01945599913597107,
+        "grid": [
+          64,
+          1,
+          1
+        ],
+        "node_id": "layer_norm",
+        "sequence": 2,
+        "source_nodes": [
+          "layer_norm"
+        ]
+      },
+      "cat": "dispatch",
+      "dur": 9.02,
+      "name": "gac_kernel_1",
+      "ph": "X",
+      "pid": 1,
+      "tid": "cuda-sm86",
+      "ts": 11670388510.284
+    },
+    {
+      "args": {
+        "clock": "host including completion wait",
+        "sequence": 3,
+        "source_nodes": []
+      },
+      "cat": "copy_d2h",
+      "dur": 37.615,
+      "name": "outputs",
+      "ph": "X",
+      "pid": 1,
+      "tid": "cuda-sm86",
+      "ts": 11670388534.33
+    }
+  ]
+}

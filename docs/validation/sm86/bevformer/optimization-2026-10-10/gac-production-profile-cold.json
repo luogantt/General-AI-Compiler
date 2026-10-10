@@ -1,0 +1,716 @@
+{
+  "gpu_stream_ms": 97.03056335449219,
+  "kernel_sum_ms": 76.16080005234107,
+  "wall_ms": 113.53715881705284,
+  "launch_count": 742,
+  "by_op": {
+    "Conv2D": {
+      "count": 55,
+      "gpu_ms": 36.65632010996342
+    },
+    "MatMul": {
+      "count": 118,
+      "gpu_ms": 15.780096045695245
+    },
+    "Add": {
+      "count": 205,
+      "gpu_ms": 7.815935970284045
+    },
+    "ReLU": {
+      "count": 74,
+      "gpu_ms": 5.704032015521079
+    },
+    "Softmax": {
+      "count": 16,
+      "gpu_ms": 4.684799950569868
+    },
+    "MSDeformableAttention": {
+      "count": 12,
+      "gpu_ms": 0.7659519799053669
+    },
+    "Mul": {
+      "count": 28,
+      "gpu_ms": 0.7394240098074079
+    },
+    "LayerNorm": {
+      "count": 29,
+      "gpu_ms": 0.6797439977526665
+    },
+    "Slice": {
+      "count": 41,
+      "gpu_ms": 0.5646399962715805
+    },
+    "Transpose": {
+      "count": 30,
+      "gpu_ms": 0.4486719989217818
+    },
+    "Div": {
+      "count": 26,
+      "gpu_ms": 0.3543999954126775
+    },
+    "Clamp": {
+      "count": 22,
+      "gpu_ms": 0.35225599398836493
+    },
+    "Concat": {
+      "count": 22,
+      "gpu_ms": 0.32160000037401915
+    },
+    "MaxPool2D": {
+      "count": 1,
+      "gpu_ms": 0.2662400007247925
+    },
+    "Sigmoid": {
+      "count": 14,
+      "gpu_ms": 0.21404799446463585
+    },
+    "Expand": {
+      "count": 6,
+      "gpu_ms": 0.1843200009316206
+    },
+    "Cast": {
+      "count": 3,
+      "gpu_ms": 0.14204799849539995
+    },
+    "Sub": {
+      "count": 7,
+      "gpu_ms": 0.11059199785813689
+    },
+    "ReduceSum": {
+      "count": 7,
+      "gpu_ms": 0.10956799751147628
+    },
+    "Log": {
+      "count": 6,
+      "gpu_ms": 0.10329599911347032
+    },
+    "Where": {
+      "count": 5,
+      "gpu_ms": 0.07372799748554826
+    },
+    "ReduceMean": {
+      "count": 3,
+      "gpu_ms": 0.035840000957250595
+    },
+    "Greater": {
+      "count": 4,
+      "gpu_ms": 0.01536000007763505
+    },
+    "GridSample2D": {
+      "count": 1,
+      "gpu_ms": 0.009216000325977802
+    },
+    "Cos": {
+      "count": 2,
+      "gpu_ms": 0.008191999979317188
+    },
+    "Less": {
+      "count": 2,
+      "gpu_ms": 0.008191999979317188
+    },
+    "Sin": {
+      "count": 2,
+      "gpu_ms": 0.008191999979317188
+    },
+    "Reshape": {
+      "count": 1,
+      "gpu_ms": 0.004095999989658594
+    }
+  },
+  "by_component": {
+    "fused_backbone": {
+      "count": 53,
+      "gpu_ms": 36.12588810920715
+    },
+    "decoder": {
+      "count": 388,
+      "gpu_ms": 20.98518401850015
+    },
+    "backbone": {
+      "count": 68,
+      "gpu_ms": 10.542303992435336
+    },
+    "encoder": {
+      "count": 174,
+      "gpu_ms": 8.066367933992296
+    },
+    "motion": {
+      "count": 42,
+      "gpu_ms": 0.19455999974161386
+    },
+    "step": {
+      "count": 6,
+      "gpu_ms": 0.17379199853166938
+    },
+    "encoder_inputs": {
+      "count": 8,
+      "gpu_ms": 0.04403199953958392
+    },
+    "feature_prep": {
+      "count": 3,
+      "gpu_ms": 0.028672000393271446
+    }
+  },
+  "top_launches": [
+    {
+      "node_id": "decoder.decoder.layer2.transformer.self_attention.attention.q_linear",
+      "op": "MatMul",
+      "component": "decoder",
+      "gpu_ms": 3.4744319915771484,
+      "output_bytes": 921600
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_conv1_backbone.img_backbone_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 1.439743995666504,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_0_conv2_backbone.img_backbone_layer4_0_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 1.1909120082855225,
+      "output_bytes": 4608000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_2_conv2_backbone.img_backbone_layer4_2_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 1.1898880004882812,
+      "output_bytes": 4608000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_1_conv2_backbone.img_backbone_layer4_1_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 1.1838079690933228,
+      "output_bytes": 4608000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_0_conv2_backbone.img_backbone_layer3_0_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 1.005568027496338,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_5_conv2_backbone.img_backbone_layer3_5_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9953280091285706,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_4_conv2_backbone.img_backbone_layer3_4_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9912319779396057,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_1_conv2_backbone.img_backbone_layer3_1_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9902399778366089,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_3_conv2_backbone.img_backbone_layer3_3_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9902080297470093,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_2_conv2_backbone.img_backbone_layer3_2_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9891840219497681,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "encoder.layer0.spatial.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.9512959718704224,
+      "output_bytes": 3840000
+    },
+    {
+      "node_id": "encoder.layer1.spatial.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.9512959718704224,
+      "output_bytes": 3840000
+    },
+    {
+      "node_id": "encoder.layer2.spatial.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.9502720236778259,
+      "output_bytes": 3840000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_0_conv2_backbone.img_backbone_layer2_0_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9482240080833435,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_0_conv1_backbone.img_backbone_layer3_0_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.9093120098114014,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_0_downsample_0_backbone.img_backbone_layer2_0_downsample_1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.8806399703025818,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_0_downsample_0_backbone.img_backbone_layer3_0_downsample_1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.8775680065155029,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_0_conv1_backbone.img_backbone_layer4_0_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.8714240193367004,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_0_downsample_0_backbone.img_backbone_layer4_0_downsample_1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.8069120049476624,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_2_conv3_backbone.img_backbone_layer1_2_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.7464960217475891,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_1_conv3_backbone.img_backbone_layer1_1_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.7454720139503479,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_0_downsample_0_backbone.img_backbone_layer1_0_downsample_1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.7444480061531067,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_0_conv3_backbone.img_backbone_layer1_0_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.7434239983558655,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_2_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.6430720090866089,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_0_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.6420480012893677,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_1_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.6410239934921265,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_0_conv1_backbone.img_backbone_layer2_0_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.6307839751243591,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_2_conv2_backbone.img_backbone_layer1_2_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.605184018611908,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_1_conv2_backbone.img_backbone_layer1_1_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.6041600108146667,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_0_conv2_backbone.img_backbone_layer1_0_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.6031360030174255,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_3_conv3_backbone.img_backbone_layer3_3_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5816320180892944,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_4_conv3_backbone.img_backbone_layer3_4_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5806080102920532,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_5_conv3_backbone.img_backbone_layer3_5_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.579584002494812,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_0_conv3_backbone.img_backbone_layer3_0_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5775359869003296,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_2_conv3_backbone.img_backbone_layer3_2_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5765119791030884,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_1_conv3_backbone.img_backbone_layer3_1_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5754879713058472,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_1_conv1_backbone.img_backbone_layer4_1_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5509120225906372,
+      "output_bytes": 4608000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_2_conv1_backbone.img_backbone_layer4_2_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5509120225906372,
+      "output_bytes": 4608000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_1_conv2_backbone.img_backbone_layer2_1_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5263360142707825,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_2_conv2_backbone.img_backbone_layer2_2_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5263360142707825,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_3_conv2_backbone.img_backbone_layer2_3_bn2",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.5254080295562744,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_2_conv3_backbone.img_backbone_layer4_2_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.49663999676704407,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_0_conv3_backbone.img_backbone_layer4_0_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.49459201097488403,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer4_1_conv3_backbone.img_backbone_layer4_1_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4915199875831604,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_5_conv1_backbone.img_backbone_layer3_5_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.48844799399375916,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_1_conv1_backbone.img_backbone_layer2_1_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.48742398619651794,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_3_conv1_backbone.img_backbone_layer3_3_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.48742398619651794,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_3_conv1_backbone.img_backbone_layer2_3_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4864000082015991,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_2_conv1_backbone.img_backbone_layer3_2_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4864000082015991,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_2_conv1_backbone.img_backbone_layer2_2_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4853760004043579,
+      "output_bytes": 18432000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_4_conv1_backbone.img_backbone_layer3_4_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4853760004043579,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer3_1_conv1_backbone.img_backbone_layer3_1_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4843519926071167,
+      "output_bytes": 9216000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_3_conv3_backbone.img_backbone_layer2_3_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.4761599898338318,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_0_conv3_backbone.img_backbone_layer2_0_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.47411200404167175,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_1_conv3_backbone.img_backbone_layer2_1_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.47411200404167175,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer2_2_conv3_backbone.img_backbone_layer2_2_bn3",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.47206398844718933,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_0_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.43110400438308716,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_stem_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.43110400438308716,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_1_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.43007999658584595,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer1_2_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.43007999658584595,
+      "output_bytes": 147456000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_1_conv1_backbone.img_backbone_layer1_1_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.39526399970054626,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_2_conv1_backbone.img_backbone_layer1_2_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.39423999190330505,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "backbone.img_neck_lateral_convs_0_conv",
+      "op": "Conv2D",
+      "component": "backbone",
+      "gpu_ms": 0.3758080005645752,
+      "output_bytes": 2304000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_1_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.3246079981327057,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_2_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.3235839903354645,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_3_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.3235839903354645,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_0_residual_add",
+      "op": "Add",
+      "component": "backbone",
+      "gpu_ms": 0.32153600454330444,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "encoder.layer0.temporal.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.319487988948822,
+      "output_bytes": 640000
+    },
+    {
+      "node_id": "encoder.layer1.temporal.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.319487988948822,
+      "output_bytes": 640000
+    },
+    {
+      "node_id": "encoder.layer2.temporal.attention_softmax",
+      "op": "Softmax",
+      "component": "encoder",
+      "gpu_ms": 0.319487988948822,
+      "output_bytes": 640000
+    },
+    {
+      "node_id": "decoder.decoder.layer2.transformer.self_attention.attention.context_matmul",
+      "op": "MatMul",
+      "component": "decoder",
+      "gpu_ms": 0.27750399708747864,
+      "output_bytes": 921600
+    },
+    {
+      "node_id": "backbone.img_backbone_maxpool",
+      "op": "MaxPool2D",
+      "component": "backbone",
+      "gpu_ms": 0.2662400007247925,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "decoder.decoder.layer2.transformer.self_attention.attention.score_matmul",
+      "op": "MatMul",
+      "component": "decoder",
+      "gpu_ms": 0.25600001215934753,
+      "output_bytes": 25920000
+    },
+    {
+      "node_id": "decoder.decoder.layer2.transformer.self_attention.attention.out_linear",
+      "op": "MatMul",
+      "component": "decoder",
+      "gpu_ms": 0.2457599937915802,
+      "output_bytes": 921600
+    },
+    {
+      "node_id": "fused_backbone.img_backbone_layer1_0_conv1_backbone.img_backbone_layer1_0_bn1",
+      "op": "Conv2D",
+      "component": "fused_backbone",
+      "gpu_ms": 0.2314240038394928,
+      "output_bytes": 36864000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_1_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.2181120067834854,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_0_conv1_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.21715199947357178,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_0_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.2170879989862442,
+      "output_bytes": 73728000
+    },
+    {
+      "node_id": "backbone.img_backbone_layer2_2_output_relu",
+      "op": "ReLU",
+      "component": "backbone",
+      "gpu_ms": 0.2170879989862442,
+      "output_bytes": 73728000
+    }
+  ]
+}

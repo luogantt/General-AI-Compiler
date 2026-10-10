@@ -1,0 +1,46 @@
+{
+  "package": "/root/autodl-tmp/gac-validation/artifacts/bevformer_tiny_step_sm86.hxp",
+  "inputs": "/root/autodl-tmp/gac-validation/golden/official-zero-cold-inputs.npz",
+  "golden": "/root/autodl-tmp/gac-validation/golden/official-zero-cold-outputs.npz",
+  "outputs": "/root/autodl-tmp/gac-validation/golden/gac-zero-cold-outputs.npz",
+  "device": {
+    "name": "NVIDIA GeForce RTX 3080",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "runtime_version": 12090
+  },
+  "kernel_count": 876,
+  "setup_ms": 10554.368771612644,
+  "invocation_wall_ms": 449.55242052674294,
+  "gpu_stream_ms": 434.89996337890625,
+  "total_process_section_ms": 11004.576491191983,
+  "planned_device_bytes": 705177100,
+  "comparisons": {
+    "cls_logits": {
+      "finite": true,
+      "max_abs_error": 0.004331350326538086,
+      "mean_abs_error": 0.0006031999323103163,
+      "max_rel_error_floor_1e_5": 0.0013060221084158663,
+      "actual_sum": -49696.71365118027,
+      "reference_sum": -49694.065552949905
+    },
+    "bbox_regression": {
+      "finite": true,
+      "max_abs_error": 0.004837334156036377,
+      "mean_abs_error": 0.00030225466515574023,
+      "max_rel_error_floor_1e_5": 3.5146791622326528,
+      "actual_sum": 1186.9829985694182,
+      "reference_sum": 1185.6345723770146
+    },
+    "next_bev": {
+      "finite": true,
+      "max_abs_error": 0.001953125,
+      "mean_abs_error": 0.00028500352203845975,
+      "max_rel_error_floor_1e_5": 60.576200485229485,
+      "actual_sum": 4488.8115956783295,
+      "reference_sum": 4488.262226700783
+    }
+  }
+}

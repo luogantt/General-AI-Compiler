@@ -1,0 +1,58 @@
+{
+  "name": "bevformer_tiny_msda",
+  "inputs": {
+    "value": {
+      "shape": [6, 375, 8, 32],
+      "dtype": "float32",
+      "layout": "contiguous"
+    },
+    "sampling_locations": {
+      "shape": [6, 2500, 8, 1, 8, 2],
+      "dtype": "float32",
+      "layout": "contiguous"
+    },
+    "attention_weights": {
+      "shape": [6, 2500, 8, 1, 8],
+      "dtype": "float32",
+      "layout": "contiguous"
+    }
+  },
+  "constants": {},
+  "nodes": [
+    {
+      "id": "msda",
+      "op": "MSDeformableAttention",
+      "inputs": ["value", "sampling_locations", "attention_weights"],
+      "outputs": ["output"],
+      "attrs": {
+        "spatial_shapes": [[15, 25]]
+      }
+    }
+  ],
+  "outputs": ["output"],
+  "metadata": {
+    "profile": {
+      "batch": 1,
+      "cameras": 6,
+      "image_h": 480,
+      "image_w": 800,
+      "bev_h": 50,
+      "bev_w": 50,
+      "embed_dim": 256,
+      "heads": 8,
+      "feature_shapes": [[15, 25]],
+      "points": 8,
+      "encoder_layers": 3,
+      "decoder_layers": 6,
+      "object_queries": 900,
+      "queue_length": 3
+    },
+    "reference_slice": {
+      "name": "bevformer_tiny_spatial_cross_attention_msda",
+      "component": "SpatialCrossAttention/MSDeformableAttention3D",
+      "kind": "fp32-reference-slice",
+      "dtype": "float32",
+      "effective_batch": "batch*cameras"
+    }
+  }
+}

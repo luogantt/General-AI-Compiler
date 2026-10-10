@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "backend": "cuda-sm86",
+  "model": "heterogeneous_mlp",
+  "source_sha256": "af842d122233475f37616eb3a4abd53fcd1a277b713aaf15dcc2392e55c30ea6",
+  "source_generation_ms": 8.150925001245923,
+  "warmup": 10,
+  "repeat": 100,
+  "seed": 7,
+  "input_source": "seeded normal",
+  "verification": "passed",
+  "rtol": 0.0001,
+  "atol": 1e-05,
+  "device": {
+    "device_id": 0,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "total_memory_bytes": 8220901376,
+    "multiprocessor_count": 46,
+    "driver_version": 13000,
+    "runtime_version": 12090,
+    "cupy_version": "13.6.0",
+    "supported_target": "cuda-sm86"
+  },
+  "session_setup_ms": 288.70756400101527,
+  "kernels": [
+    {
+      "entry_point": "gac_kernel_0",
+      "node_id": "matmul",
+      "attributes": {
+        "max_threads_per_block": 1024,
+        "shared_size_bytes": 2048,
+        "const_size_bytes": 0,
+        "local_size_bytes": 0,
+        "num_regs": 36,
+        "ptx_version": 86,
+        "binary_version": 86,
+        "cache_mode_ca": 0,
+        "max_dynamic_shared_size_bytes": 47104,
+        "preferred_shared_memory_carveout": -1
+      }
+    },
+    {
+      "entry_point": "gac_kernel_1",
+      "node_id": "add_bias",
+      "attributes": {
+        "max_threads_per_block": 1024,
+        "shared_size_bytes": 0,
+        "const_size_bytes": 0,
+        "local_size_bytes": 0,
+        "num_regs": 12,
+        "ptx_version": 86,
+        "binary_version": 86,
+        "cache_mode_ca": 0,
+        "max_dynamic_shared_size_bytes": 49152,
+        "preferred_shared_memory_carveout": -1
+      }
+    },
+    {
+      "entry_point": "gac_kernel_2",
+      "node_id": "gelu",
+      "attributes": {
+        "max_threads_per_block": 1024,
+        "shared_size_bytes": 0,
+        "const_size_bytes": 0,
+        "local_size_bytes": 0,
+        "num_regs": 13,
+        "ptx_version": 86,
+        "binary_version": 86,
+        "cache_mode_ca": 0,
+        "max_dynamic_shared_size_bytes": 49152,
+        "preferred_shared_memory_carveout": -1
+      }
+    },
+    {
+      "entry_point": "gac_kernel_3",
+      "node_id": "layer_norm",
+      "attributes": {
+        "max_threads_per_block": 1024,
+        "shared_size_bytes": 1024,
+        "const_size_bytes": 0,
+        "local_size_bytes": 0,
+        "num_regs": 40,
+        "ptx_version": 86,
+        "binary_version": 86,
+        "cache_mode_ca": 0,
+        "max_dynamic_shared_size_bytes": 48128,
+        "preferred_shared_memory_carveout": -1
+      }
+    }
+  ],
+  "first_invocation_ms": 0.4691760004789103,
+  "gpu_stream_ms": {
+    "median": 0.14126399904489517,
+    "min": 0.10950399935245514,
+    "max": 0.17936000227928162
+  },
+  "gpu_stream_scope": "H2D + allocations/submission gaps + kernels; excludes output D2H",
+  "wall_ms": {
+    "median": 0.2120335002473439,
+    "min": 0.1696519993856782,
+    "max": 0.25031699988176115
+  },
+  "wall_scope": "input validation, transfers, allocations, execution and host outputs; excludes setup and verification",
+  "max_abs_error": {
+    "output": 3.5762786865234375e-06
+  },
+  "outputs": {
+    "output": {
+      "shape": [
+        64,
+        256
+      ],
+      "dtype": "float32"
+    }
+  }
+}

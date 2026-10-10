@@ -1,0 +1,183 @@
+{
+  "assumptions": [
+    "camera order comes from tools/data_converter/nuscenes_converter.py",
+    "can_bus_dim=18 comes from the nuScenes converter output",
+    "bbox_code_size=10 comes from BEVFormerHead's default",
+    "input preprocessing is outside the compiled step",
+    "this artifact defines an offline ABI and does not export a framework model"
+  ],
+  "audit": {
+    "findings": [],
+    "parser": "python-ast-static-v1",
+    "safe_for_static_config": true,
+    "source": "projects/configs/bevformer/bevformer_tiny.py"
+  },
+  "camera_order": [
+    "CAM_FRONT",
+    "CAM_FRONT_RIGHT",
+    "CAM_FRONT_LEFT",
+    "CAM_BACK",
+    "CAM_BACK_LEFT",
+    "CAM_BACK_RIGHT"
+  ],
+  "config_sha256": "85da2b393cb0103645bdc034c87028b6fcf5d7bdd79530ed6b4f4b2d05777882",
+  "config_source": "projects/configs/bevformer/bevformer_tiny.py",
+  "configuration": {
+    "attention_heads": 8,
+    "backbone_depth": 50,
+    "batch": 1,
+    "bbox_code_size": 10,
+    "bev_hw": [
+      50,
+      50
+    ],
+    "cameras": 6,
+    "can_bus_dim": 18,
+    "class_names": [
+      "car",
+      "truck",
+      "construction_vehicle",
+      "bus",
+      "trailer",
+      "barrier",
+      "motorcycle",
+      "bicycle",
+      "pedestrian",
+      "traffic_cone"
+    ],
+    "decoder_layers": 6,
+    "embed_dim": 256,
+    "encoder_layers": 3,
+    "feature_shapes": [
+      [
+        15,
+        25
+      ]
+    ],
+    "image_channels": 3,
+    "image_content_hw": [
+      450,
+      800
+    ],
+    "image_input_hw": [
+      480,
+      800
+    ],
+    "image_mean": [
+      123.675,
+      116.28,
+      103.53
+    ],
+    "image_std": [
+      58.395,
+      57.12,
+      57.375
+    ],
+    "image_to_rgb": true,
+    "object_queries": 900,
+    "sampling_points": 8,
+    "training_queue_length": 3
+  },
+  "entrypoint": "bevformer_tiny_step",
+  "format": "gac.bevformer.step-manifest",
+  "inputs": [
+    {
+      "dtype": "float16",
+      "layout": "NCHW-per-camera",
+      "name": "images",
+      "semantic": "normalized-and-padded-multiview-images",
+      "shape": [
+        1,
+        6,
+        3,
+        480,
+        800
+      ]
+    },
+    {
+      "dtype": "float32",
+      "layout": "row-major",
+      "name": "lidar2img",
+      "semantic": "lidar-to-padded-image-projection",
+      "shape": [
+        1,
+        6,
+        4,
+        4
+      ]
+    },
+    {
+      "dtype": "float32",
+      "layout": "row-major",
+      "name": "can_bus_delta",
+      "semantic": "relative-ego-motion-with-zero-delta-on-reset",
+      "shape": [
+        1,
+        18
+      ]
+    },
+    {
+      "dtype": "float16",
+      "layout": "B-HW-C",
+      "name": "prev_bev",
+      "semantic": "previous-frame-bev-state",
+      "shape": [
+        1,
+        2500,
+        256
+      ]
+    },
+    {
+      "dtype": "int32",
+      "layout": "row-major",
+      "name": "has_prev_bev",
+      "semantic": "binary-state-validity-mask",
+      "shape": [
+        1
+      ]
+    }
+  ],
+  "model": "BEVFormer-tiny",
+  "outputs": [
+    {
+      "dtype": "float32",
+      "layout": "B-Q-C",
+      "name": "cls_logits",
+      "semantic": "raw-final-decoder-class-logits-before-topk",
+      "shape": [
+        1,
+        900,
+        10
+      ]
+    },
+    {
+      "dtype": "float32",
+      "layout": "B-Q-C",
+      "name": "bbox_regression",
+      "semantic": "raw-final-decoder-box-regression-before-decode",
+      "shape": [
+        1,
+        900,
+        10
+      ]
+    },
+    {
+      "dtype": "float16",
+      "layout": "B-HW-C",
+      "name": "next_bev",
+      "semantic": "next-frame-bev-state",
+      "shape": [
+        1,
+        2500,
+        256
+      ]
+    }
+  ],
+  "profile": "bevformer-tiny-nuscenes-b1-cam6-480x800-bev50-fp16-sm86-v1",
+  "schema_version": 1,
+  "status": "offline-contract-only",
+  "unavailable_exports": [
+    "torch.export",
+    "onnx"
+  ]
+}

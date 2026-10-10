@@ -1,0 +1,49 @@
+{
+  "first_cold": {
+    "gpu_ms": 277.4435729980469,
+    "wall_ms": 289.66847248375416
+  },
+  "second_warm": {
+    "gpu_ms": 59.100704193115234,
+    "wall_ms": 74.96439665555954
+  },
+  "session": {
+    "device_id": 0,
+    "name": "NVIDIA GeForce RTX 3080",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "total_memory_bytes": 10354753536,
+    "multiprocessor_count": 68,
+    "driver_version": 13000,
+    "runtime_version": 12090,
+    "cupy_version": "13.6.0",
+    "supported_target": "cuda-sm86",
+    "convolution_backend": {
+      "requested": "auto",
+      "selected": "cudnn",
+      "cudnn_launch_count": 55,
+      "generated_launch_count": 0,
+      "tensor_core": "never",
+      "workspace_budget_bytes": 8388608
+    },
+    "matmul_backend": {
+      "requested": "auto",
+      "selected": "cupy-cublas",
+      "cublas_launch_count": 118,
+      "generated_launch_count": 0,
+      "precision": "float32"
+    },
+    "memory_plan": {
+      "arena_size": 552960000,
+      "peak_live_bytes": 442368000,
+      "resident_bytes": 135760640,
+      "external_input_bytes": 15104460,
+      "external_output_bytes": 1352000,
+      "planned_device_bytes": 705177100,
+      "vendor_workspace_budget_bytes": 8388608,
+      "required_device_bytes_upper_bound": 713565708
+    }
+  }
+}

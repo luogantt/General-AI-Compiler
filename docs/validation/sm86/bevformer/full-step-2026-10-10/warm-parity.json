@@ -1,0 +1,35 @@
+{
+  "device": "NVIDIA GeForce RTX 3080",
+  "compute_capability": [
+    8,
+    6
+  ],
+  "kernel_count": 876,
+  "setup_ms": 740.4478583484888,
+  "invocation_wall_ms": 448.06308671832085,
+  "gpu_stream_ms": 436.26495361328125,
+  "total_process_section_ms": 1189.1353446990252,
+  "comparisons": {
+    "cls_logits": {
+      "finite": true,
+      "max_abs_error": 0.0007486343383789062,
+      "mean_abs_error": 2.093749576144748e-05,
+      "actual_sum": -55115.540241241455,
+      "reference_sum": -55115.55142784119
+    },
+    "bbox_regression": {
+      "finite": true,
+      "max_abs_error": 0.0006297975778579712,
+      "mean_abs_error": 9.331832031623182e-06,
+      "actual_sum": 524.8780162258872,
+      "reference_sum": 524.8883123575133
+    },
+    "next_bev": {
+      "finite": true,
+      "max_abs_error": 0.001953125,
+      "mean_abs_error": 1.1481612920761109e-05,
+      "actual_sum": 3535.360332429409,
+      "reference_sum": 3535.3066220879555
+    }
+  }
+}
