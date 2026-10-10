@@ -1,27 +1,65 @@
-"""Offline CUDA source generation and single-device validation commands."""
+"""Offline CUDA/MLIR compilation and single-device validation commands."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 import time
 
 import numpy as np
 
 from .backends.cuda import TARGET, compile_cuda
+from .backends.mlir import compile_mlir
 from .errors import GACError
 from .frontends.json_frontend import JsonFrontendError, load_graph
+from .mlir_toolchain import (
+    DEFAULT_TIMEOUT_SECONDS,
+    discover_mlir_opt,
+    probe_mlir_opt_source_revision,
+    probe_mlir_opt_version,
+    verify_mlir,
+)
 from .package import load_package, rebuild_cuda_program, write_package
 from .runtime import CudaSession, cuda_device_info, reference_run
 
 
-def _write_json(path: str | Path, value: dict) -> None:
+def _write_text_atomic(path: str | Path, value: str) -> None:
+    """Publish a complete text file with one same-directory replacement."""
+
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False), encoding="utf-8")
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            prefix=f".{destination.name}.",
+            suffix=".tmp",
+            dir=destination.parent,
+            delete=False,
+        ) as handle:
+            handle.write(value)
+            temporary_path = Path(handle.name)
+        os.replace(temporary_path, destination)
+    finally:
+        if temporary_path is not None and temporary_path.exists():
+            temporary_path.unlink()
+
+
+def _write_json(path: str | Path, value: dict) -> None:
+    serialized = json.dumps(
+        value,
+        indent=2,
+        ensure_ascii=False,
+        allow_nan=False,
+    )
+    _write_text_atomic(path, serialized)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -35,6 +73,40 @@ def _parser() -> argparse.ArgumentParser:
     compile_cmd.add_argument("-o", "--output", required=True, help="output .cu or .hxp file")
     compile_cmd.add_argument("--target", choices=[TARGET], default=TARGET)
     compile_cmd.add_argument("--no-fuse", action="store_true")
+    mlir_compile = sub.add_parser(
+        "mlir-compile",
+        help="lower a JSON model to standard MLIR and verify it with mlir-opt",
+    )
+    mlir_compile.add_argument("model")
+    mlir_compile.add_argument(
+        "-o", "--output", required=True, help="output .mlir module"
+    )
+    mlir_compile.add_argument("--no-fuse", action="store_true")
+    mlir_compile.add_argument(
+        "--mlir-opt",
+        help="mlir-opt executable, or its Linux path when --wsl is used",
+    )
+    mlir_compile.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help=f"mlir-opt timeout in seconds (default: {DEFAULT_TIMEOUT_SECONDS:g})",
+    )
+    mlir_compile.add_argument(
+        "--emit-only",
+        action="store_true",
+        help="export generated MLIR without invoking mlir-opt",
+    )
+    mlir_compile.add_argument(
+        "--wsl",
+        action="store_true",
+        help="run the Linux mlir-opt selected by --mlir-opt through WSL",
+    )
+    mlir_compile.add_argument(
+        "--wsl-distribution",
+        help="optional WSL distribution name, for example Ubuntu-24.04",
+    )
+    mlir_compile.add_argument("--report", help="save the compilation report as JSON")
     run = sub.add_parser("run", help="compile a JSON model in memory and execute it")
     run.add_argument("model")
     run.add_argument("--backend", choices=[TARGET, "numpy-cpu"], default=TARGET)
@@ -78,6 +150,148 @@ def _parser() -> argparse.ArgumentParser:
 
 def _stats(samples: list[float]) -> dict:
     return {"median": float(np.median(samples)), "min": min(samples), "max": max(samples)}
+
+
+def _paths_alias(first: str | Path, second: str | Path) -> bool:
+    """Return whether two user-supplied paths identify the same destination."""
+
+    first_path = Path(first).expanduser()
+    second_path = Path(second).expanduser()
+    try:
+        if first_path.exists() and second_path.exists():
+            return os.path.samefile(first_path, second_path)
+    except OSError:
+        # Resolving the normalized names below still handles non-existent output
+        # paths and existing parent-directory symlinks.
+        pass
+    first_name = os.path.normcase(str(first_path.resolve(strict=False)))
+    second_name = os.path.normcase(str(second_path.resolve(strict=False)))
+    return first_name == second_name
+
+
+def _compile_mlir_command(args) -> dict:
+    destination = Path(args.output)
+    report_destination = Path(args.report) if args.report else None
+    if report_destination is not None and _paths_alias(destination, report_destination):
+        raise ValueError("mlir-compile --output and --report must name different files")
+    if destination.suffix.lower() != ".mlir":
+        raise ValueError("mlir-compile output must end in .mlir")
+    if args.wsl_distribution and not args.wsl:
+        raise ValueError("--wsl-distribution requires --wsl")
+    if args.wsl and not args.emit_only and not args.mlir_opt:
+        raise ValueError("--wsl requires --mlir-opt with a Linux executable path")
+
+    program = compile_mlir(load_graph(args.model), fuse=not args.no_fuse)
+    description = program.describe()
+    compiler_backend = description["compiler_backend"]
+    target_intent = description["target_intent"]
+    planned_codegen_backend = description["planned_codegen_backend"]
+    lowering_stage = description["lowering_stage"]
+    executable = bool(description["executable"])
+    generated_source = program.source
+    generated_sha256 = hashlib.sha256(generated_source.encode("utf-8")).hexdigest()
+    mlir_opt_passes: list[str] = []
+    verification_tool = None
+    if args.emit_only:
+        artifact_source = generated_source
+        verified = False
+        verification = "skipped-by-emit-only"
+    else:
+        verification_arguments = {
+            "timeout": args.timeout,
+        }
+        if args.wsl:
+            selected_mlir_opt = args.mlir_opt
+            command_prefix = ["wsl.exe"]
+            if args.wsl_distribution:
+                command_prefix.extend(("-d", args.wsl_distribution))
+            command_prefix.extend(("--", selected_mlir_opt))
+            mlir_opt_version = probe_mlir_opt_version(
+                command=(selected_mlir_opt,),
+                use_wsl=True,
+                wsl_distribution=args.wsl_distribution,
+                **verification_arguments,
+            )
+            mlir_opt_source_revision = probe_mlir_opt_source_revision(
+                selected_mlir_opt,
+                use_wsl=True,
+                wsl_distribution=args.wsl_distribution,
+                **verification_arguments,
+            )
+            artifact_source = verify_mlir(
+                generated_source,
+                command=(selected_mlir_opt,),
+                use_wsl=True,
+                wsl_distribution=args.wsl_distribution,
+                **verification_arguments,
+            )
+            verification = "mlir-opt-via-wsl"
+        else:
+            selected_mlir_opt = os.fspath(discover_mlir_opt(args.mlir_opt))
+            command_prefix = [selected_mlir_opt]
+            mlir_opt_version = probe_mlir_opt_version(
+                command=(selected_mlir_opt,),
+                **verification_arguments,
+            )
+            mlir_opt_source_revision = probe_mlir_opt_source_revision(
+                selected_mlir_opt,
+                **verification_arguments,
+            )
+            artifact_source = verify_mlir(
+                generated_source,
+                command=(selected_mlir_opt,),
+                **verification_arguments,
+            )
+            verification = "mlir-opt"
+        verified = True
+        mlir_opt_passes = ["verify-each", "canonicalize", "cse"]
+        verification_tool = {
+            "name": "mlir-opt",
+            "executable": selected_mlir_opt,
+            "command_prefix": command_prefix,
+            "arguments": ["--verify-each", "--canonicalize", "--cse"],
+            "timeout_seconds": float(args.timeout),
+            "version": mlir_opt_version,
+            # This is populated only from the build marker adjacent to this
+            # exact executable.  It remains null for system/unmanaged tools.
+            "source_revision": mlir_opt_source_revision,
+        }
+
+    source_sha256 = hashlib.sha256(artifact_source.encode("utf-8")).hexdigest()
+    report = {
+        "schema_version": 1,
+        "artifact": "mlir-module",
+        "artifact_kind": description.get("artifact_kind", "textual-mlir-module"),
+        "output_file": str(destination.resolve(strict=False)),
+        "report_file": (
+            str(report_destination.resolve(strict=False))
+            if report_destination is not None
+            else None
+        ),
+        "target_intent": target_intent,
+        "compute_capability": [8, 6],
+        "compiler_backend": compiler_backend,
+        "planned_codegen_backend": planned_codegen_backend,
+        "lowering_stage": lowering_stage,
+        "device_code_compiled": executable,
+        "graph": description.get("name", program.graph.name),
+        "source_sha256": source_sha256,
+        "generated_source_sha256": generated_sha256,
+        "verified": verified,
+        "verification": verification,
+        "verification_tool": verification_tool,
+        "dialects": description.get("dialects", []),
+        "passes": {
+            "gac": description.get("pass_reports", list(program.pass_reports)),
+            "mlir_opt": mlir_opt_passes,
+        },
+    }
+    # Metadata construction and external verification both finish before the
+    # artifact is atomically published.  A requested report is then published
+    # atomically by ``main``; if that second publication fails, the complete
+    # artifact remains usable and any previous report remains intact.
+    _write_text_atomic(destination, artifact_source)
+    return report
 
 
 def _run(args) -> dict:
@@ -261,6 +475,8 @@ def main(argv: list[str] | None = None) -> int:
                 report["package_sha256"] = hashlib.sha256(destination.read_bytes()).hexdigest()
             else:
                 raise ValueError("compile output must end in .cu or .hxp")
+        elif args.command == "mlir-compile":
+            report = _compile_mlir_command(args)
         elif args.command == "inspect":
             report = _inspect_package(args.package)
         else:

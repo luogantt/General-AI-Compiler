@@ -1,0 +1,432 @@
+{
+  "constants": {
+    "fc1_bias": {
+      "data": [
+        -0.14000000059604645,
+        -0.09714286029338837,
+        -0.05428571254014969,
+        -0.011428571306169033,
+        0.03142857179045677,
+        0.07428571581840515,
+        0.11714285612106323,
+        0.1599999964237213
+      ],
+      "dtype": "float32",
+      "shape": [
+        8
+      ]
+    },
+    "fc1_weight": {
+      "data": [
+        [
+          -0.15000000596046448,
+          -0.14032258093357086,
+          -0.13064515590667725,
+          -0.12096773833036423,
+          -0.11129032075405121,
+          -0.10161290317773819,
+          -0.09193548560142517,
+          -0.08225806802511215
+        ],
+        [
+          -0.07258064299821854,
+          -0.06290322542190552,
+          -0.0532258078455925,
+          -0.04354838654398918,
+          -0.03387096896767616,
+          -0.024193547666072845,
+          -0.014516129158437252,
+          -0.004838709719479084
+        ],
+        [
+          0.004838709719479084,
+          0.014516129158437252,
+          0.024193547666072845,
+          0.03387096896767616,
+          0.04354838654398918,
+          0.0532258078455925,
+          0.06290322542190552,
+          0.07258064299821854
+        ],
+        [
+          0.08225806802511215,
+          0.09193548560142517,
+          0.10161290317773819,
+          0.11129032075405121,
+          0.12096773833036423,
+          0.13064515590667725,
+          0.14032258093357086,
+          0.15000000596046448
+        ]
+      ],
+      "dtype": "float32",
+      "shape": [
+        4,
+        8
+      ]
+    },
+    "fc2_bias": {
+      "data": [
+        -0.11999999731779099,
+        -0.019999999552965164,
+        0.07999999821186066,
+        0.18000000715255737
+      ],
+      "dtype": "float32",
+      "shape": [
+        4
+      ]
+    },
+    "fc2_weight": {
+      "data": [
+        [
+          -0.12999999523162842,
+          -0.1203225776553154,
+          -0.11064516007900238,
+          -0.10096774250268936
+        ],
+        [
+          -0.09129032492637634,
+          -0.08161289989948273,
+          -0.07193548232316971,
+          -0.06225806474685669
+        ],
+        [
+          -0.05258064344525337,
+          -0.04290322586894035,
+          -0.033225808292627335,
+          -0.023548386991024017
+        ],
+        [
+          -0.01387096755206585,
+          -0.004193548578768969,
+          0.0054838708601891994,
+          0.015161290764808655
+        ],
+        [
+          0.024838710203766823,
+          0.03451612964272499,
+          0.04419354721903801,
+          0.05387096852064133
+        ],
+        [
+          0.06354838609695435,
+          0.07322580367326736,
+          0.08290322870016098,
+          0.092580646276474
+        ],
+        [
+          0.10225806385278702,
+          0.11193548142910004,
+          0.12161290645599365,
+          0.13129031658172607
+        ],
+        [
+          0.1409677416086197,
+          0.1506451666355133,
+          0.16032257676124573,
+          0.17000000178813934
+        ]
+      ],
+      "dtype": "float32",
+      "shape": [
+        8,
+        4
+      ]
+    },
+    "norm_bias": {
+      "data": [
+        -0.10000000149011612,
+        0.0,
+        0.10000000149011612,
+        0.20000000298023224
+      ],
+      "dtype": "float32",
+      "shape": [
+        4
+      ]
+    },
+    "norm_weight": {
+      "data": [
+        0.8999999761581421,
+        0.9666666388511658,
+        1.0333333015441895,
+        1.100000023841858
+      ],
+      "dtype": "float32",
+      "shape": [
+        4
+      ]
+    }
+  },
+  "inputs": {
+    "query": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    }
+  },
+  "metadata": {
+    "checkpoint_key_suffixes": {
+      "fc1_bias": "ffns.0.layers.0.0.bias",
+      "fc1_weight": "ffns.0.layers.0.0.weight (transpose)",
+      "fc2_bias": "ffns.0.layers.1.bias",
+      "fc2_weight": "ffns.0.layers.1.weight (transpose)",
+      "norm_bias": "following operation_order norm bias",
+      "norm_weight": "following operation_order norm weight"
+    },
+    "checkpoint_mapping_boundary": "The enclosing encoder layer/checkpoint prefix is resolved by the checkpoint importer; transpose PyTorch Linear weights before build.",
+    "dropout": "inference-identity",
+    "ffn_dropout_probability": 0.1,
+    "kind": "bevformer-transformer-ffn",
+    "operation_order_fragment": [
+      "ffn",
+      "norm"
+    ],
+    "profile": {
+      "batch": 1,
+      "bev_h": 1,
+      "bev_w": 2,
+      "embed_dim": 4,
+      "feedforward_channels": 8
+    },
+    "weight_layout": "[input_channel, output_channel]"
+  },
+  "name": "bevformer_tiny_ffn_mlir_smoke",
+  "nodes": [
+    {
+      "attrs": {},
+      "id": "fc1_matmul",
+      "inputs": [
+        "query",
+        "fc1_weight"
+      ],
+      "op": "MatMul",
+      "outputs": [
+        "fc1_mm"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+      ]
+    },
+    {
+      "attrs": {},
+      "id": "fc1_bias_add",
+      "inputs": [
+        "fc1_mm",
+        "fc1_bias"
+      ],
+      "op": "Add",
+      "outputs": [
+        "fc1"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+      ]
+    },
+    {
+      "attrs": {},
+      "id": "relu",
+      "inputs": [
+        "fc1"
+      ],
+      "op": "ReLU",
+      "outputs": [
+        "activated"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+      ]
+    },
+    {
+      "attrs": {},
+      "id": "fc2_matmul",
+      "inputs": [
+        "activated",
+        "fc2_weight"
+      ],
+      "op": "MatMul",
+      "outputs": [
+        "fc2_mm"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+      ]
+    },
+    {
+      "attrs": {},
+      "id": "fc2_bias_add",
+      "inputs": [
+        "fc2_mm",
+        "fc2_bias"
+      ],
+      "op": "Add",
+      "outputs": [
+        "projected"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+      ]
+    },
+    {
+      "attrs": {},
+      "id": "residual_add",
+      "inputs": [
+        "query",
+        "projected"
+      ],
+      "op": "Add",
+      "outputs": [
+        "ffn_output"
+      ],
+      "source_nodes": [
+        "mmcv.cnn.bricks.transformer.FFN.forward.identity"
+      ]
+    },
+    {
+      "attrs": {
+        "axis": -1,
+        "epsilon": 1e-05
+      },
+      "id": "post_layer_norm",
+      "inputs": [
+        "ffn_output",
+        "norm_weight",
+        "norm_bias"
+      ],
+      "op": "LayerNorm",
+      "outputs": [
+        "output"
+      ],
+      "source_nodes": [
+        "BEVFormerLayer.operation_order.norm_after_ffn"
+      ]
+    }
+  ],
+  "outputs": [
+    "output"
+  ],
+  "schema_version": 1,
+  "value_specs": {
+    "activated": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        8
+      ]
+    },
+    "fc1": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        8
+      ]
+    },
+    "fc1_bias": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        8
+      ]
+    },
+    "fc1_mm": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        8
+      ]
+    },
+    "fc1_weight": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        4,
+        8
+      ]
+    },
+    "fc2_bias": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        4
+      ]
+    },
+    "fc2_mm": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    },
+    "fc2_weight": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        8,
+        4
+      ]
+    },
+    "ffn_output": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    },
+    "norm_bias": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        4
+      ]
+    },
+    "norm_weight": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        4
+      ]
+    },
+    "output": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    },
+    "projected": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    },
+    "query": {
+      "dtype": "float32",
+      "layout": "contiguous",
+      "shape": [
+        1,
+        2,
+        4
+      ]
+    }
+  }
+}

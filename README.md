@@ -1,8 +1,8 @@
 # General AI Compiler（GAC）
 
-> 面向边缘推理的 AI 编译器与 Runtime 原型；当前首条完整路径是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86。
+> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时新增了 tensor-level MLIR emitter 与外部 `mlir-opt` 验证入口。
 
-GAC 把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。
+GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。新增的 MLIR 路径把输入的 Canonical Graph 降为标准 `func`、`tensor`、`linalg`、`arith` 和 `math` 方言，目前产物停在 tensor 层。
 
 ```text
 JSON graph / BEVFormer config + checkpoint
@@ -28,11 +28,12 @@ JSON graph / BEVFormer config + checkpoint
 
 ## 当前已完成
 
-截至 2026-10-10，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。
+截至 2026-10-10，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成首个 tensor IR emitter 和外部 verifier 调用入口，但还没有进入这条 GPU 执行闭环。
 
 | 层次 | 已完成能力 |
 | --- | --- |
 | 编译器核心 | Canonical Graph、Shape/DType 推导、静态连续布局检查、常量折叠、死代码消除、MatMul/Add/GELU 融合、安全 Add+ReLU 融合 |
+| MLIR M0/M1 | 确定性 textual MLIR、标准注册方言、外部 `mlir-opt` verifier 接口；覆盖手工构造的 BEVFormer-like tiny FFN JSON smoke 所需的 MatMul、广播 Add、ReLU、LayerNorm，以及 GELU、Identity 和融合 AddReLU/MatMulBiasGELU |
 | CUDA SM86 后端 | 基础 Tensor/MLP、MHA、CNN、MSDeformableAttention、BEV geometry、Spatial/Temporal Attention、运动补偿及 step 边界所需 Cast/Where；不支持的类型、属性和布局会明确拒绝 |
 | HXP 与 Runtime | 确定性打包、摘要校验、安全加载、源码与 launch metadata 复核、静态 arena、驻留权重、单 stream 执行、状态提交/回滚、Trace 和可选逐 launch CUDA Event Profile |
 | BEVFormer-tiny | 官方 checkpoint 严格映射；ResNet-50 + 单层 FPN；feature/input preparation；三层 Encoder；六层 Decoder；六层 raw detection projection；cold/history image-to-BEV；统一 cold/warm 五输入三输出 step |
@@ -40,6 +41,63 @@ JSON graph / BEVFormer config + checkpoint
 | 主机后处理 | 显式 CPU `decode_nms_free`、Top-K 300、box denormalization 与范围过滤；该阶段位于 HXP/CUDA 图外 |
 
 冻结的 BEVFormer-tiny Profile 为 6 相机、`480×800` 图像、`50×50` BEV、256 embedding。统一 step 输入为 `images`、`lidar2img`、`can_bus_delta`、`prev_bev`、`has_prev_bev`，输出最后一层 `cls_logits`、raw `bbox_regression` 和 FP16 `next_bev`。公开图像与状态存储边界使用 FP16，Transformer/MSDA 等主要计算仍以 FP32 为基线。
+
+## MLIR 编译路径（M0/M1）
+
+MLIR 后端复用 Canonical Graph 数据结构和图 Pass；当前接入的是普通 JSON graph。`examples/bevformer_tiny_ffn.json` 是一个手工构造的小尺寸 BEVFormer-like FFN smoke，用于检查 FFN 结构、广播和 LayerNorm lowering。它不读取官方 BEVFormer 代码或 checkpoint，也不是完整 BEVFormer importer。当前链路如下：
+
+```text
+JSON graph / hand-written BEVFormer-like tiny FFN smoke
+                    │
+                    ▼
+             Canonical Graph
+                    │  shape / dtype / broadcast validation
+                    ▼
+ func + tensor + linalg + arith + math
+                    │
+                    ▼
+     mlir-opt --verify-each --canonicalize --cse
+                    │
+                    ▼
+ textual .mlir（外部 verifier 成功后才标记 verified）
+```
+
+当前产物把 `compiler_backend` 记录为已经实际使用的 `mlir-linalg`，把 RTX 3070 对应的 `cuda-sm86` 记录为 `target_intent`，并把 `mlir-nvvm` 记录为 `planned_codegen_backend`。当前 `lowering_stage` 是 `tensor`，`executable` 为 false：尚未完成 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin 生成，也没有接入 HXP Runtime。只有报告中记录 `verified: true` 的 `.mlir` 才经过外部 verifier 检查；即使验证通过，它也仍是不能直接在 GPU 上运行的编译中间产物，现有 CUDA/BEVFormer 性能数字不能归因于 MLIR。
+
+Windows + WSL 的可复现工具链构建脚本是 [`tools/build_mlir_wsl.sh`](tools/build_mlir_wsl.sh)。它从项目旁的本地 `llvm-project` checkout 创建 LF 源码快照，并构建 `mlir-opt`、`mlir-translate` 和 `llc`：
+
+```bash
+wsl -d Ubuntu-24.04 -- bash tools/build_mlir_wsl.sh
+```
+
+从 Windows 调用 WSL 内构建出的 `mlir-opt` 验证上述 tiny FFN smoke：
+
+```powershell
+$mlirOpt = (wsl -d Ubuntu-24.04 -- bash -lc 'realpath "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"').Trim()
+python -m gac.cli mlir-compile examples/bevformer_tiny_ffn.json `
+  -o build/bevformer_tiny_ffn.mlir `
+  --wsl `
+  --wsl-distribution Ubuntu-24.04 `
+  --mlir-opt $mlirOpt `
+  --report build/bevformer_tiny_ffn.mlir.json
+```
+
+CLI 默认必须调用 `mlir-opt`；只有显式指定 `--emit-only` 才会跳过外部验证，并在报告中记录 `verified: false`。验证失败时不会写出目标 `.mlir` 文件。若命令在 WSL 内执行，可省略 `--wsl` 和 `--wsl-distribution`，把 `--mlir-opt` 直接指向 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
+
+本次已用本地 LLVM revision `765392a6b4498f1dc57233f03a31b87462fdef01` 构建的 `mlir-opt 24.0.0git` 真实执行上述命令，完整 tiny FFN 返回 `verified: true`。报告记录实际 executable、版本 banner、命令参数、Pass、超时和源码/产物摘要；使用仓库构建脚本生成的工具时，还会从受管 build marker 记录 LLVM source revision。
+
+[`examples/mlir_sm86_add_relu.mlir`](examples/mlir_sm86_add_relu.mlir) 是独立的手写 GPU Dialect 工具链 smoke。以下命令已真实生成带 `#nvvm.target<chip = "sm_86">` 的 `gpu.binary`，其中内嵌 PTX 包含 `.target sm_86` 和 `add_relu_broadcast` entry：
+
+```bash
+"$HOME/.cache/gac-mlir/current-build/bin/mlir-opt" \
+  examples/mlir_sm86_add_relu.mlir \
+  "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-chip=sm_86 cubin-format=isa allow-pattern-rollback=0" \
+  -o build/mlir_sm86_add_relu.binary.mlir
+```
+
+这个 smoke 只验证本地 stock MLIR/LLVM NVPTX 工具链能从手写 `gpu.module` 生成 SM86 PTX。GAC 的 Canonical Graph 产物目前仍停在 tensor/linalg，尚未自动进入这条 GPU/NVVM 管线。
+
+分层设计、里程碑和验收门槛见 [MLIR 编译器架构](docs/MLIR_ARCHITECTURE.md)。
 
 ## RTX 3070 / SM86 适配边界
 
@@ -130,6 +188,8 @@ GAC_REQUIRE_CUDA=1 python -m unittest discover -s tests -v
 ```text
 src/gac/ir.py, ops.py, passes.py     Canonical Graph、算子语义与图优化
 src/gac/backends/cuda.py             SM86 支持检查、CUDA 生成与 launch metadata
+src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLIR
+src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
 src/gac/memory.py                    生命周期分析与静态 arena 规划
 src/gac/package.py                   HXP 写入、摘要校验、安全加载与 codegen 复核
 src/gac/runtime.py                   CudaSession、vendor 选择、传输、启动与计时
@@ -137,19 +197,24 @@ src/gac/profiler.py                  Trace 与 CUDA Event Profile 聚合
 src/gac/frontends/                   JSON、BEVFormer 合同与 Backbone 导入
 src/gac/bevformer*.py                BEVFormer 算子、Encoder/Decoder/raw head 与状态 Runtime
 src/gac/tools/build_bevformer.py     权重检查及 BEVFormer 子图/HXP 构建入口
-src/gac/cli.py                       doctor / compile / inspect / run
-examples/                            MLP、MSDA 示例与冻结合同
+src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
+examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
+tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
 tests/                               编译器、Runtime、HXP、BEVFormer 与物理 CUDA 测试
 docs/                                架构、设计、后端约定、路线图和验收证据
 ```
 
-更完整的实现映射见[架构说明](docs/architecture.md)，BEVFormer 图与状态语义见[编译器设计](docs/bevformer_compiler_design.md)，后端扩展约定见[后端编写指南](docs/backend_authoring.md)，后续计划见[路线图](docs/roadmap.md)。
+更完整的实现映射见[架构说明](docs/architecture.md)，MLIR 分层与里程碑见 [MLIR 编译器架构](docs/MLIR_ARCHITECTURE.md)，BEVFormer 图与状态语义见[编译器设计](docs/bevformer_compiler_design.md)，后端扩展约定见[后端编写指南](docs/backend_authoring.md)，后续计划见[路线图](docs/roadmap.md)。
 
 ## 已知边界
 
 - 当前支持声明限定为固定 Profile 的 BEVFormer-tiny **raw step**。CPU `decode_nms_free` 是公开的图外后处理边界，不包含在上述 GPU/wall 数字中。
 - 正确性输入是冻结的合成、已归一化并 padding 的六相机 tensor 与固定几何输入；尚未完成真实 nuScenes 数据集的 mAP/NDS 验收。
 - 完整 BEVFormer 只在 RTX 3080 SM86 上验收；桌面 RTX 3070 的延迟、峰值显存和稳定性仍待实测。
+- MLIR 路径当前只生成 tensor-level textual MLIR，并提供外部 verifier 接口；是否验证成功必须以对应 `mlir-opt` 命令和报告中的 `verified: true` 为准。还没有 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin、HXP Runtime 执行或 RTX 3070 性能数据。
+- MLIR 的 BEVFormer 相关样例只是手写的 tiny FFN JSON smoke；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
+- 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
+- M0/M1 把小型 smoke 权重写成内联 `dense` 常量；完整模型需要资源化常量或外部权重 ABI，不能直接沿用这种文本承载方式。
 - 只覆盖首条路径所需的静态 Shape 和连续布局；主要计算仍为 FP32，尚未启用 Tensor Core、TF32、FP16 主计算或离线算法调优。
 - 当前使用单 CUDA stream，调用同步返回；设备侧跨帧状态驻留、多 stream、I/O 预绑定、CUDA Graph、批量 dispatch 和 DLPack 仍待实现。
 - `713,565,708` bytes 只是已计划 Tensor 与 cuDNN workspace 的预算/准入值，不能当作 `nvidia-smi` 进程峰值。
