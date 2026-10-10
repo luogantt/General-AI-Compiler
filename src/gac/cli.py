@@ -15,6 +15,7 @@ import numpy as np
 
 from .backends.cuda import TARGET, compile_cuda
 from .backends.mlir import compile_mlir
+from .backends.mlir_cuda import TARGET as MLIR_CUDA_TARGET, compile_mlir_cuda
 from .errors import GACError
 from .frontends.json_frontend import JsonFrontendError, load_graph
 from .mlir_toolchain import (
@@ -26,6 +27,7 @@ from .mlir_toolchain import (
 )
 from .package import load_package, rebuild_cuda_program, write_package
 from .runtime import CudaSession, cuda_device_info, reference_run
+from .mlir_runtime import MlirCudaSession
 
 
 def _write_text_atomic(path: str | Path, value: str) -> None:
@@ -109,7 +111,11 @@ def _parser() -> argparse.ArgumentParser:
     mlir_compile.add_argument("--report", help="save the compilation report as JSON")
     run = sub.add_parser("run", help="compile a JSON model in memory and execute it")
     run.add_argument("model")
-    run.add_argument("--backend", choices=[TARGET, "numpy-cpu"], default=TARGET)
+    run.add_argument(
+        "--backend",
+        choices=[TARGET, MLIR_CUDA_TARGET, "numpy-cpu"],
+        default=TARGET,
+    )
     run.add_argument("--device", type=int, default=0)
     run.add_argument("--no-fuse", action="store_true")
     run.add_argument("--seed", type=int, default=7)
@@ -302,12 +308,37 @@ def _run(args) -> dict:
     started = time.perf_counter()
     model_path = Path(args.model)
     if model_path.suffix.lower() == ".hxp":
+        if args.backend == MLIR_CUDA_TARGET:
+            raise ValueError(
+                "HXP v1 packages do not carry the MLIR CUDA runtime-call plan; "
+                "run mlir-cuda-sm86 from a JSON graph"
+            )
         if args.no_fuse:
             raise ValueError("--no-fuse cannot change an already compiled .hxp package")
         program = rebuild_cuda_program(load_package(model_path))
         preparation = "verified-package-load-and-codegen-check"
     else:
-        program = compile_cuda(load_graph(model_path), fuse=not args.no_fuse)
+        source_graph = load_graph(model_path)
+        if args.backend == MLIR_CUDA_TARGET:
+            if args.no_fuse:
+                raise ValueError(
+                    "mlir-cuda-sm86 requires its explicit FFN fusion plan"
+                )
+            if args.conv_backend != "auto":
+                raise ValueError(
+                    "--conv-backend does not apply to the MLIR CUDA FFN plan"
+                )
+            if args.cudnn_tensor_core != "never":
+                raise ValueError(
+                    "--cudnn-tensor-core does not apply to the MLIR CUDA FFN plan"
+                )
+            if args.matmul_backend not in {"auto", "cupy"}:
+                raise ValueError(
+                    "mlir-cuda-sm86 has an explicit cuBLAS MatMul lowering"
+                )
+            program = compile_mlir_cuda(source_graph)
+        else:
+            program = compile_cuda(source_graph, fuse=not args.no_fuse)
         preparation = "json-source-generation"
     preparation_ms = (time.perf_counter() - started) * 1000
     input_source = args.inputs or "seeded normal"
@@ -388,6 +419,27 @@ def _run(args) -> dict:
                     report["profile"] = args.profile
         report["gpu_stream_ms"] = _stats(gpu)
         report["gpu_stream_scope"] = "H2D + allocations/submission gaps + kernels; excludes output D2H"
+    elif args.backend == MLIR_CUDA_TARGET:
+        with MlirCudaSession(program, device_id=args.device) as session:
+            report["device"] = session.info
+            report["session_setup_ms"] = session.setup_ms
+            report["runtime_calls"] = session.kernel_info
+            first = session.run(inputs)
+            report["first_invocation_ms"] = first.wall_ms
+            verify(first.outputs)
+            for _ in range(args.warmup):
+                session.run(inputs)
+            for _ in range(args.repeat):
+                result = session.run(inputs)
+                outputs = result.outputs
+                wall.append(result.wall_ms)
+                gpu.append(result.gpu_stream_ms)
+                verify(outputs)
+        report["gpu_stream_ms"] = _stats(gpu)
+        report["gpu_stream_scope"] = (
+            "H2D + explicit cuBLAS/fused-kernel call plan; excludes output D2H"
+        )
+        report["lowering"] = program.describe()
     else:
         report["device"] = {"name": "NumPy CPU reference", "physical_cuda_execution": False}
         for _ in range(args.warmup):

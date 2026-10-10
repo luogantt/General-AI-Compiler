@@ -1,8 +1,8 @@
 # General AI Compiler（GAC）
 
-> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时新增了 tensor-level MLIR emitter 与外部 `mlir-opt` 验证入口。
+> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、外部 `mlir-opt` 验证入口，以及一个严格限定 BEVFormer FFN pattern 的 `mlir-cuda-sm86` 可执行切片。
 
-GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。新增的 MLIR 路径把输入的 Canonical Graph 降为标准 `func`、`tensor`、`linalg`、`arith` 和 `math` 方言，目前产物停在 tensor 层。
+GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有两条边界不同的路径：`mlir-linalg` 把 Canonical Graph 降为标准 `func`、`tensor`、`linalg`、`arith` 和 `math` 方言，用于外部 verifier；`mlir-cuda-sm86` 只匹配当前固定的 FFN 子图，同时生成可审阅/可验证的标准 `func`/`memref` runtime-call ABI manifest 与 Python call records。实际 dispatch 由经一致性校验的 call records 驱动两次 CuPy/cuBLAS MatMul 和两个 NVRTC 融合 Kernel，Runtime 不解析或执行 MLIR source。
 
 ```text
 JSON graph / BEVFormer config + checkpoint
@@ -26,14 +26,17 @@ JSON graph / BEVFormer config + checkpoint
 
 当前 GPU 路径不会在 CUDA 缺失时静默改用 CPU。HXP 中的 `implementation_candidates` 供 Session 建立时选择；vendor 调用执行中失败不会逐节点自动切回 generated CUDA。NumPy 是显式选择的参考后端。
 
+`mlir-cuda-sm86` 也不会静默回退到 NumPy 或旧 CUDA 图后端。它当前直接从 JSON graph 建立内存中的 runtime-call plan；HXP v1 不保存这类计划，因此不能把 `.hxp` 作为该后端的输入。
+
 ## 当前已完成
 
-截至 2026-10-10，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成首个 tensor IR emitter 和外部 verifier 调用入口，但还没有进入这条 GPU 执行闭环。
+截至 2026-10-10，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成首个 tensor IR emitter 和外部 verifier 调用入口；另有一个已在 SM86 真机执行的 FFN runtime-call 切片，但它尚未扩展为通用 GPU/NVVM lowering 或完整 BEVFormer/HXP 执行路径。
 
 | 层次 | 已完成能力 |
 | --- | --- |
 | 编译器核心 | Canonical Graph、Shape/DType 推导、静态连续布局检查、常量折叠、死代码消除、MatMul/Add/GELU 融合、安全 Add+ReLU 融合 |
 | MLIR M0/M1 | 确定性 textual MLIR、标准注册方言、外部 `mlir-opt` verifier 接口；覆盖手工构造的 BEVFormer-like tiny FFN JSON smoke 所需的 MatMul、广播 Add、ReLU、LayerNorm，以及 GELU、Identity 和融合 AddReLU/MatMulBiasGELU |
+| MLIR CUDA FFN 切片 | `mlir-cuda-sm86` 严格匹配一个静态 FP32 BEVFormer FFN：两次 CuPy/cuBLAS MatMul、`Bias+ReLU` 融合 Kernel、`Bias+Residual+LayerNorm` 融合 Kernel；生成显式 runtime-call plan 并在 Compute Capability 8.6 上执行 |
 | CUDA SM86 后端 | 基础 Tensor/MLP、MHA、CNN、MSDeformableAttention、BEV geometry、Spatial/Temporal Attention、运动补偿及 step 边界所需 Cast/Where；不支持的类型、属性和布局会明确拒绝 |
 | HXP 与 Runtime | 确定性打包、摘要校验、安全加载、源码与 launch metadata 复核、静态 arena、驻留权重、单 stream 执行、状态提交/回滚、Trace 和可选逐 launch CUDA Event Profile |
 | BEVFormer-tiny | 官方 checkpoint 严格映射；ResNet-50 + 单层 FPN；feature/input preparation；三层 Encoder；六层 Decoder；六层 raw detection projection；cold/history image-to-BEV；统一 cold/warm 五输入三输出 step |
@@ -98,6 +101,59 @@ CLI 默认必须调用 `mlir-opt`；只有显式指定 `--emit-only` 才会跳�
 这个 smoke 只验证本地 stock MLIR/LLVM NVPTX 工具链能从手写 `gpu.module` 生成 SM86 PTX。GAC 的 Canonical Graph 产物目前仍停在 tensor/linalg，尚未自动进入这条 GPU/NVVM 管线。
 
 分层设计、里程碑和验收门槛见 [MLIR 编译器架构](docs/MLIR_ARCHITECTURE.md)。
+
+## `mlir-cuda-sm86` 可执行 FFN 切片
+
+`mlir-cuda-sm86` 是首个 MLIR-derived 可执行 runtime-call 切片，不是通用 MLIR GPU 后端。编译器先复用 tensor-level MLIR 的规范图和融合 Pass，然后只接受融合后的下列完整顺序：
+
+```text
+MatMul → AddReLU → MatMul → Add(bias) → Add(query residual) → LayerNorm
+   │         │          │                      │
+   ▼         ▼          ▼                      ▼
+CuPy/     NVRTC      CuPy/          NVRTC Bias+Residual+
+cuBLAS  Bias+ReLU    cuBLAS              LayerNorm
+```
+
+两次 MatMul 都是显式 `cupy.matmul(..., out=...)`，由 CuPy 调用 cuBLAS。第一个生成 Kernel 把 FC1 bias 与 ReLU 原地融合；第二个生成 Kernel 把 FC2 bias、原始 query residual 和末轴 LayerNorm 融合，并为每一行使用一个 CUDA block 做归约。MLIR source 记录相同的四调用 ABI，供审阅和 `mlir-opt` 验证；执行顺序来自编译器同步生成并由 Session 复核的四条 Python call record。Runtime 不解析 MLIR source，也不会按 op 名称猜测实现。
+
+当前匹配器要求一个输入、一个输出、静态连续 FP32 Tensor、常驻的两组权重/偏置和 LayerNorm scale/bias、query identity residual，以及通道数不超过 4096。任何额外、缺失、重排或不匹配的节点都会在编译阶段被拒绝；它没有覆盖 GELU FFN、任意 MLP、完整 Encoder/Decoder、MSDA、CNN 或状态执行。
+
+安装 CUDA 依赖后，可直接从 JSON graph 运行 tiny FFN smoke：
+
+```bash
+python -m pip install -e '.[cuda12]'
+python -m gac.cli run examples/bevformer_tiny_ffn.json \
+  --backend mlir-cuda-sm86 \
+  --verify \
+  --warmup 3 \
+  --repeat 10 \
+  --report build/bevformer_tiny_ffn.mlir-cuda.json
+```
+
+该路径要求 NVIDIA Compute Capability **恰好为 8.6**，并要求 CuPy、CUDA Runtime、NVRTC 和 cuBLAS 可用。两个融合 Kernel 在 Session 建立时通过 CuPy `RawModule`/NVRTC 编译；设备缺失、架构不匹配、cuBLAS/NVRTC 失败或 call plan 不匹配都会直接报错。`--trace` 和 `--profile` 仍只适用于 `cuda-sm86`；要测量这个 FFN 切片，请使用专用工具：
+
+```bash
+PYTHONPATH=src python tools/benchmark_mlir_cuda_ffn.py \
+  --warmup 50 \
+  --iterations 100 \
+  --repeats 20 \
+  --public-samples 50 \
+  --output build/mlir-cuda-cublas-ffn.json
+```
+
+基准工具只测一个生产尺寸 FFN 片段：`[1,2500,256] → 512 → 256 + ReLU + query residual + LayerNorm`，并把 device-resident 四调用 CUDA Event、公共 `run` 的 H2D+计算 GPU 时间、含 D2H/同步的 wall 时间、正确性、调用顺序和 artifact hash 分开记录。同进程共驻留的两条路径在每个 repeat 后交换先后位置，并分别用 MLIR-first 与 CUDA-first 作为首轮顺序重跑，以抵消初始化、热态和动态频率偏差。只有最终 JSON 中保存的真实设备样本可以作为数字来源，且不能外推为完整 BEVFormer、RTX 3070 或通用 MLIR/NVVM lowering；证据边界和两份原始报告见[真机验证说明](docs/validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)。
+
+RTX 3080 配对交替实测中，同一进程内的两条路径按 repeat 轮换先后位置。以 MLIR-first / CUDA-first 作为首轮顺序的两份独立报告中，这个四调用切片的 device-resident 中位数分别为 **202.906 μs** 和 **209.848 μs**；同轮 CUDA codegen + cuBLAS 对照为 **220.313 μs** 和 **226.811 μs**。按两个测量位置平衡后的加速比分别为 **1.0858×** 和 **1.0816×**，两轮最大绝对误差均为 `9.5367431640625e-7`。这些数字只代表一个 FFN 子图。
+
+仓库还提供一个独立的 [MLIR GPU LayerNorm 融合参考](examples/mlir_sm86_layernorm_fusion.mlir)，它真实经过 GPU Dialect → NVVM → SM86 PTX：block reduction LayerNorm 为 **10.271 μs**，相对 **174.121 μs** 的串行 MLIR 实现快 **16.95×**；Bias + Residual + LayerNorm 融合为 **13.604 μs**，相对 **28.344 μs** 的三个未融合 dispatch 快 **2.08×**。该 PTX 微基准尚未接入 `MlirCudaSession`，产品路径仍执行语义等价的 NVRTC Kernel；完整边界见[微基准说明](docs/validation/sm86/mlir-layernorm-fusion-2026-10-10/README.md)。
+
+HXP v1 只携带旧 CUDA 后端的源码、launch metadata 和静态内存计划，不包含上述 MLIR runtime-call plan。因此下面的命令会被明确拒绝：
+
+```bash
+python -m gac.cli run model.hxp --backend mlir-cuda-sm86
+```
+
+在通用 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin 和 HXP v2 完成前，这个可执行切片不能作为完整 MLIR GPU 编译链的完成声明。
 
 ## RTX 3070 / SM86 适配边界
 
@@ -189,7 +245,9 @@ GAC_REQUIRE_CUDA=1 python -m unittest discover -s tests -v
 src/gac/ir.py, ops.py, passes.py     Canonical Graph、算子语义与图优化
 src/gac/backends/cuda.py             SM86 支持检查、CUDA 生成与 launch metadata
 src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLIR
+src/gac/backends/mlir_cuda.py        严格 FFN pattern 到显式 cuBLAS/NVRTC call plan
 src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
+src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
 src/gac/memory.py                    生命周期分析与静态 arena 规划
 src/gac/package.py                   HXP 写入、摘要校验、安全加载与 codegen 复核
 src/gac/runtime.py                   CudaSession、vendor 选择、传输、启动与计时
@@ -200,6 +258,7 @@ src/gac/tools/build_bevformer.py     权重检查及 BEVFormer 子图/HXP 构建
 src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
 examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
 tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
+tools/benchmark_mlir_cuda_ffn.py     生产尺寸 FFN 切片的真机基准与正确性报告
 tests/                               编译器、Runtime、HXP、BEVFormer 与物理 CUDA 测试
 docs/                                架构、设计、后端约定、路线图和验收证据
 ```
@@ -211,9 +270,10 @@ docs/                                架构、设计、后端约定、路线图�
 - 当前支持声明限定为固定 Profile 的 BEVFormer-tiny **raw step**。CPU `decode_nms_free` 是公开的图外后处理边界，不包含在上述 GPU/wall 数字中。
 - 正确性输入是冻结的合成、已归一化并 padding 的六相机 tensor 与固定几何输入；尚未完成真实 nuScenes 数据集的 mAP/NDS 验收。
 - 完整 BEVFormer 只在 RTX 3080 SM86 上验收；桌面 RTX 3070 的延迟、峰值显存和稳定性仍待实测。
-- MLIR 路径当前只生成 tensor-level textual MLIR，并提供外部 verifier 接口；是否验证成功必须以对应 `mlir-opt` 命令和报告中的 `verified: true` 为准。还没有 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin、HXP Runtime 执行或 RTX 3070 性能数据。
-- MLIR 的 BEVFormer 相关样例只是手写的 tiny FFN JSON smoke；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
+- 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口；是否验证成功必须以对应 `mlir-opt` 命令和报告中的 `verified: true` 为准。`mlir-cuda-sm86` 只是严格匹配当前 FFN 的独立 runtime-call 切片，还没有通用 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin 或 RTX 3070 性能数据。
+- MLIR 的 BEVFormer 相关输入仍是手写的 tiny FFN JSON smoke，真机 benchmark 使用相同构图器生成生产尺寸 FFN；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
 - 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
+- HXP v1 不携带 MLIR runtime-call plan；`mlir-cuda-sm86` 目前只能直接运行 JSON graph，且严格要求 SM86、CuPy、cuBLAS 与 NVRTC。
 - M0/M1 把小型 smoke 权重写成内联 `dense` 常量；完整模型需要资源化常量或外部权重 ABI，不能直接沿用这种文本承载方式。
 - 只覆盖首条路径所需的静态 Shape 和连续布局；主要计算仍为 FP32，尚未启用 Tensor Core、TF32、FP16 主计算或离线算法调优。
 - 当前使用单 CUDA stream，调用同步返回；设备侧跨帧状态驻留、多 stream、I/O 预绑定、CUDA Graph、批量 dispatch 和 DLPack 仍待实现。
@@ -232,6 +292,7 @@ docs/                                架构、设计、后端约定、路线图�
 - [最终强制 CUDA 测试日志](docs/validation/sm86/bevformer/optimization-2026-10-10/unittest-full-final.txt)
 - [最终 HXP 构建日志](docs/validation/sm86/bevformer/optimization-2026-10-10/build-production-step-final.txt)、[大小](docs/validation/sm86/bevformer/optimization-2026-10-10/bevformer_tiny_step_sm86-final.size.txt)与[SHA-256](docs/validation/sm86/bevformer/optimization-2026-10-10/bevformer_tiny_step_sm86-final.sha256.txt)
 - [128 MiB cuDNN workspace 实验](docs/validation/sm86/bevformer/optimization-2026-10-10/cudnn-explicit-workspace-benchmark.json)
+- [`mlir-cuda-sm86` 生产尺寸 FFN 真机验证与配对交替原始报告](docs/validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)
 - [完整远程验收说明](docs/bevformer_sm86_validation_2026-10-10.md)
 
 ## 参考项目与许可证

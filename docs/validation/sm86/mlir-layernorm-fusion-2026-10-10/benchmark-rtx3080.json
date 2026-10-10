@@ -1,0 +1,199 @@
+{
+  "artifact_sha256": {
+    "binary_mlir": "e32714a537d114e44e60bc68f27227513d6a1a625cb8acf9a1cdbdc7140f738d",
+    "ptx": "ce30bdc481637eaca88c4905d5783cf9edd5e844864005d25e30ca7b91697749"
+  },
+  "boundary": "Standalone MLIR-to-NVVM/PTX microbenchmark; not MlirCudaSession. The device-resident fused timing includes bias add, residual add and gamma/beta LayerNorm; it excludes GEMM, host transfers and runtime setup.",
+  "compute_capability": "8.6",
+  "correctness": {
+    "block_reduce_mlir": {
+      "allclose": true,
+      "max_abs_error": 7.152557373046875e-07,
+      "max_rel_error_with_1e-3_floor": 3.4458935260772705e-05
+    },
+    "fused_residual_bias_layernorm_mlir": {
+      "allclose": true,
+      "max_abs_error": 7.152557373046875e-07,
+      "max_rel_error_with_1e-3_floor": 3.4458935260772705e-05
+    },
+    "serial_mlir": {
+      "allclose": true,
+      "max_abs_error": 1.9073486328125e-06,
+      "max_rel_error_with_1e-3_floor": 0.00013364478945732117
+    },
+    "unfused_bias_residual_block_layernorm": {
+      "allclose": true,
+      "max_abs_error": 7.152557373046875e-07,
+      "max_rel_error_with_1e-3_floor": 3.4458935260772705e-05
+    }
+  },
+  "cuda_driver": 13000,
+  "cuda_runtime": 12090,
+  "cupy": "13.6.0",
+  "device": "NVIDIA GeForce RTX 3080",
+  "dtype": "float32",
+  "epsilon": 9.999999747378752e-06,
+  "generated_at_utc": "2026-10-10T15:11:24.853932+00:00",
+  "implementation": "standalone MLIR GPU dialect lowered through NVVM to PTX",
+  "iterations_per_repeat": 100,
+  "kind": "mlir-layernorm-fusion-benchmark",
+  "ptx_source": "layernorm-fusion-sm86.binary.mlir",
+  "repeats": 20,
+  "rng": {
+    "api": "default_rng",
+    "bit_generator": "PCG64",
+    "library": "numpy"
+  },
+  "schema_version": 2,
+  "seed": 20261010,
+  "shape": [
+    2500,
+    256
+  ],
+  "software": {
+    "cupy": "13.6.0",
+    "numpy": "2.4.6",
+    "python": "3.11.17"
+  },
+  "source_sha256": {
+    "examples/mlir_sm86_layernorm_fusion.mlir": "140fac08e417580c114bd0ac9c013f5062e5848fc0526119fcf7ae96c5e51bb7",
+    "tools/benchmark_mlir_layernorm_fusion.py": "e365a6efc96732c663473272712a595a83bdd8f6240d4a271c0a089defac5df1"
+  },
+  "speedups": {
+    "block_reduce_over_serial_layernorm": 16.953188735360452,
+    "fused_over_serial_layernorm_only": 12.79943370539501,
+    "fused_over_unfused_epilogue": 2.083552815138952
+  },
+  "timing_protocol": {
+    "clock": "CUDA Events",
+    "device_resident": true,
+    "jit_primed": true
+  },
+  "timings": {
+    "block_reduce_mlir_layernorm": {
+      "median_us": 10.270719528198242,
+      "min_us": 10.250240564346313,
+      "p10_us": 10.258015751838684,
+      "p90_us": 10.291199684143066,
+      "samples_us": [
+        10.332159996032715,
+        10.26047945022583,
+        10.291199684143066,
+        10.26047945022583,
+        10.250240564346313,
+        10.270719528198242,
+        10.280959606170654,
+        10.26047945022583,
+        10.26047945022583,
+        10.270719528198242,
+        10.26047945022583,
+        10.280959606170654,
+        10.258879661560059,
+        10.280959606170654,
+        10.291199684143066,
+        10.250240564346313,
+        10.25920033454895,
+        10.280959606170654,
+        10.270719528198242,
+        10.270719528198242
+      ]
+    },
+    "fused_residual_bias_layernorm_mlir": {
+      "median_us": 13.603839874267578,
+      "min_us": 13.567999601364136,
+      "p10_us": 13.576352000236511,
+      "p90_us": 13.619199991226196,
+      "samples_us": [
+        13.619199991226196,
+        13.629440069198608,
+        13.598719835281372,
+        13.608959913253784,
+        13.578239679336548,
+        13.58847975730896,
+        13.619199991226196,
+        13.619199991226196,
+        13.618559837341309,
+        13.58847975730896,
+        13.578239679336548,
+        13.58847975730896,
+        13.608959913253784,
+        13.577280044555664,
+        13.619199991226196,
+        13.567999601364136,
+        13.567999601364136,
+        13.58847975730896,
+        13.608959913253784,
+        13.608959913253784
+      ]
+    },
+    "serial_mlir_layernorm": {
+      "median_us": 174.12144660949707,
+      "min_us": 173.8751983642578,
+      "p10_us": 173.94364738464355,
+      "p90_us": 203.2762794494629,
+      "samples_us": [
+        203.20255279541016,
+        203.12063217163086,
+        203.42784881591797,
+        203.29471588134766,
+        203.20255279541016,
+        203.27423095703125,
+        199.71071243286133,
+        173.92608642578125,
+        174.58175659179688,
+        174.0185546875,
+        174.0083122253418,
+        173.94559860229492,
+        174.09120559692383,
+        173.98784637451172,
+        174.1516876220703,
+        173.97760391235352,
+        174.1926383972168,
+        173.8751983642578,
+        174.02847290039062,
+        174.08000946044922
+      ]
+    },
+    "unfused_bias_add_residual_add_block_layernorm": {
+      "median_us": 28.344318866729736,
+      "min_us": 28.293120861053467,
+      "p10_us": 28.30336093902588,
+      "p90_us": 28.39641499519348,
+      "samples_us": [
+        28.314239978790283,
+        28.344318866729736,
+        28.323841094970703,
+        28.60032081604004,
+        28.30336093902588,
+        28.334081172943115,
+        28.41599941253662,
+        28.3353590965271,
+        28.39423894882202,
+        28.375039100646973,
+        28.293120861053467,
+        28.30336093902588,
+        28.31360101699829,
+        28.385279178619385,
+        28.36479902267456,
+        28.344318866729736,
+        28.385279178619385,
+        28.35455894470215,
+        28.344318866729736,
+        28.335680961608887
+      ]
+    }
+  },
+  "tolerances": {
+    "atol": 0.0002,
+    "rtol": 0.0002
+  },
+  "toolchain": {
+    "executable_sha256": "08ff07313f22cb35f8c9ee559dd6489244200d8f1c540051a2ec592f16a8d55c",
+    "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+    "lowering_options": "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-chip=sm_86 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+    "lowering_options_sha256": "df6db84d445de74086d08b6e560e36d2b820b02e24b57b06f282d788fc19a628",
+    "name": "mlir-opt",
+    "version": "LLVM 24.0.0git (Optimized build)"
+  },
+  "warmup": 50
+}

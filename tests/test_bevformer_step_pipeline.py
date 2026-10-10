@@ -406,7 +406,11 @@ class BevFormerStepPipelineTests(unittest.TestCase):
             session.calls[0]["can_bus_delta"][0, :3], 0
         )
         self.assertEqual(session.calls[0]["can_bus_delta"][0, -1], 0)
-        self.assertEqual(session.calls[0]["can_bus_delta"][0, -2], 0.31)
+        self.assertAlmostEqual(
+            float(session.calls[0]["can_bus_delta"][0, -2]),
+            0.31,
+            places=6,
+        )
 
         second = runtime.step(
             sample["images"],
