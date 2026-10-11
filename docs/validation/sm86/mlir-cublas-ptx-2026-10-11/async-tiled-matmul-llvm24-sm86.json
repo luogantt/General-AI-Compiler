@@ -1,0 +1,63 @@
+{
+  "computes_real_matmul": true,
+  "evidence": {
+    "async_commit_groups": 4,
+    "async_copy_instructions": 8,
+    "async_wait_group_depths": [
+      1,
+      1,
+      1,
+      0
+    ],
+    "barriers": 7,
+    "fma_instructions": 0,
+    "fp32_adds": 32,
+    "fp32_multiplies": 32,
+    "global_stores": 4,
+    "shared_declarations": 2,
+    "shared_loads": 12,
+    "static_shared_bytes": 4096
+  },
+  "files": {
+    "binary_mlir": "async-tiled-matmul.binary.mlir",
+    "gpu_mlir": "async-tiled-matmul.gpu.mlir",
+    "ptx": "async-tiled-matmul.ptx"
+  },
+  "has_ping_pong_schedule": true,
+  "kernel": {
+    "abi": "three-bare-global-pointers-row-major-f32",
+    "block": [
+      64,
+      1,
+      1
+    ],
+    "grid": [
+      1,
+      1,
+      1
+    ],
+    "shape": {
+      "k": 64,
+      "m": 16,
+      "n": 16
+    },
+    "stages": 2,
+    "symbol": "gac_async_tiled_matmul_f32_16x16x64",
+    "tile_k": 16
+  },
+  "kind": "gac-functional-async-tiled-matmul-sm86-probe-v1",
+  "production_ffn_integration": false,
+  "scope": "real-input-fixed-shape-executable-candidate",
+  "sha256": {
+    "binary_mlir": "46272820b3c25ec184947cc4ca58b67afebfaa92d5c32635458a4af0f302a14f",
+    "gpu_mlir": "37795cd7b65897a62cbfa36256a1f96142038712b176639867927319daa32945",
+    "ptx": "69855b6d6053411d0996248f7f588c8f64fab0df8e0c2de4b59ae7697929c6ad"
+  },
+  "toolchain": {
+    "chip": "sm_86",
+    "features": "+ptx71",
+    "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+    "ptx_version": "7.1",
+    "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+  }
+}

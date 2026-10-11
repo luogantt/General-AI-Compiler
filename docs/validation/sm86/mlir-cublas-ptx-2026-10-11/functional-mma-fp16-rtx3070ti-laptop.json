@@ -1,0 +1,96 @@
+{
+  "correctness": {
+    "allclose": true,
+    "atol": 0.0001,
+    "checked_output_elements": 128,
+    "max_abs_error": 0.0,
+    "rtol": 0.0,
+    "seed": 20261011
+  },
+  "device": {
+    "compute_capability": [
+      8,
+      6
+    ],
+    "id": 0,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+  },
+  "kernel": {
+    "abi": "A_f16_row_major, B_f16_row_major, C_f32_row_major",
+    "accumulator_dtype": "float32",
+    "block": [
+      32,
+      1,
+      1
+    ],
+    "grid": [
+      1,
+      1,
+      1
+    ],
+    "k_slices": 2,
+    "k_step": 16,
+    "mode": "fp16",
+    "shape": {
+      "k": 32,
+      "m": 16,
+      "n": 8
+    },
+    "symbol": "gac_nvgpu_mma_fp16_matmul_16x8x32"
+  },
+  "kind": "gac-functional-fp16-mma-sm86-run-v1",
+  "production_ffn_integration": false,
+  "ptx": {
+    "evidence": {
+      "fp16_mma_instructions": 2,
+      "global_loads": 24,
+      "global_stores": 4,
+      "loads_precede_first_mma": true,
+      "mma_instructions": 2,
+      "stores_follow_last_mma": true,
+      "tf32_mma_instructions": 0
+    },
+    "path": "/home/robot/gac-functional-mma-20261011/artifact/nvgpu-fp16-functional-matmul.ptx",
+    "sha256": "c5dd93dd40bb4cfe12c6fd62e8f66b00cbbae208c099ba50ec267511c02b8ef5"
+  },
+  "timing": {
+    "latency_us": [
+      4.145855903625488,
+      4.096960067749023,
+      4.0569281578063965,
+      4.023327827453613,
+      4.101183891296387,
+      3.970047950744629,
+      3.9536640644073486,
+      4.051968097686768,
+      4.0109758377075195,
+      4.046847820281982,
+      3.994623899459839,
+      3.947200059890747,
+      4.0030717849731445,
+      4.013055801391602,
+      4.012320041656494,
+      3.9902079105377197,
+      4.0332159996032715,
+      3.9678399562835693,
+      3.965951919555664,
+      3.995903968811035,
+      4.049920082092285,
+      4.035583972930908,
+      4.037568092346191,
+      3.9707839488983154,
+      4.639743804931641,
+      5.2769598960876465,
+      4.039680004119873,
+      3.920703887939453,
+      3.9567360877990723,
+      3.975327968597412
+    ],
+    "launches_per_sample": 1000,
+    "maximum_us": 5.2769598960876465,
+    "median_us": 4.012687921524048,
+    "minimum_us": 3.920703887939453,
+    "samples": 30,
+    "warmup_launches": 50
+  }
+}

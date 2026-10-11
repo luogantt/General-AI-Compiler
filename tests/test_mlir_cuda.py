@@ -113,6 +113,7 @@ class MlirCudaCompilerTests(unittest.TestCase):
         self.assertIn("linalg.matmul", program.tensor_source)
 
         description = program.describe()
+        self.assertEqual(program.target, "mlir-cuda-sm86")
         self.assertEqual(description["compiler_backend"], "mlir-cuda-sm86")
         self.assertEqual(description["target"], "mlir-cuda-sm86")
         self.assertEqual(description["target_intent"], "cuda-sm86")

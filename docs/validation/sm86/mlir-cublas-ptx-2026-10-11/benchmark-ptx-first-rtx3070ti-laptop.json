@@ -1,0 +1,2182 @@
+{
+  "autotune": {
+    "cache_hit": false,
+    "executable_candidates": [
+      {
+        "backend_strategy": "mlir-cublas-ptx-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "backend_strategy": "mlir-cuda-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      }
+    ],
+    "executed": true,
+    "selection": {
+      "candidate_space_sha256": "1e2f7d2b6a8447c17624afc9a16cdccbe0cb01aed416ffdebabb367cd6a32bcb",
+      "config": {
+        "atol": 1e-05,
+        "iterations": 100,
+        "repeats": 40,
+        "rtol": 0.0001,
+        "warmup": 50
+      },
+      "device": {
+        "candidate_backends": [
+          "mlir-cublas-ptx-sm86",
+          "mlir-cuda-sm86"
+        ],
+        "compute_capability": [
+          8,
+          6
+        ],
+        "device_id": 0,
+        "driver_version": 13000,
+        "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "resident_timing": "cuda-events",
+        "runtime_version": 12090
+      },
+      "device_sha256": "1ff7dc05bfe65b69d94abdd335307eab339e2a5f8f4e62fceb65bd62ffc9df87",
+      "evaluations": [
+        {
+          "candidate": {
+            "backend_strategy": "mlir-cuda-sm86",
+            "fusion_strategy": "full-ffn",
+            "matmul_tile": [
+              1,
+              1,
+              1
+            ],
+            "precision": "fp32",
+            "thread_block": [
+              256,
+              1,
+              1
+            ]
+          },
+          "candidate_sha256": "950705490a6718c0981a4d5fce8aa6e9c284bdffb659dc56c008e6a900ff5edd",
+          "latency_samples_ms": [
+            0.20514816284179688,
+            0.216944637298584,
+            0.22670335769653321,
+            0.22795263290405274,
+            0.22791168212890625,
+            0.22665184020996093,
+            0.2267024040222168,
+            0.2281983947753906,
+            0.22802431106567383,
+            0.22797311782836915,
+            0.22788095474243164,
+            0.22801599502563477,
+            0.22801408767700196,
+            0.22800384521484374,
+            0.22768640518188477,
+            0.2267647933959961,
+            0.22789440155029297,
+            0.22847488403320312,
+            0.22803455352783203,
+            0.2289321517944336,
+            0.229355525970459,
+            0.22794240951538086,
+            0.2277459144592285,
+            0.22785024642944335,
+            0.2280847930908203,
+            0.2283184051513672,
+            0.22834272384643556,
+            0.2290483283996582,
+            0.22915071487426758,
+            0.22866079330444336,
+            0.22850559234619142,
+            0.22838623046875,
+            0.22837247848510742,
+            0.22841344833374022,
+            0.2285647964477539,
+            0.22941696166992187,
+            0.2350284767150879,
+            0.23716863632202148,
+            0.23575551986694335,
+            0.23628095626831055
+          ],
+          "max_abs_error": 9.5367431640625e-07,
+          "max_rel_error": 0.0032134445607520934,
+          "median_latency_ms": 0.22805967330932617,
+          "rejection_reason": null,
+          "status": "eligible"
+        },
+        {
+          "candidate": {
+            "backend_strategy": "mlir-cublas-ptx-sm86",
+            "fusion_strategy": "full-ffn",
+            "matmul_tile": [
+              1,
+              1,
+              1
+            ],
+            "precision": "fp32",
+            "thread_block": [
+              256,
+              1,
+              1
+            ]
+          },
+          "candidate_sha256": "df0e33feaba43759bb907f88cdc8524e11868db61df43835eea9bd7f4df35578",
+          "latency_samples_ms": [
+            0.20696256637573243,
+            0.2182655906677246,
+            0.22723520278930665,
+            0.22795263290405274,
+            0.2269388771057129,
+            0.22691583633422852,
+            0.2268671989440918,
+            0.22681600570678712,
+            0.22599679946899415,
+            0.22472383499145507,
+            0.2246553611755371,
+            0.22556896209716798,
+            0.2256483268737793,
+            0.22313983917236327,
+            0.22255712509155273,
+            0.2212224006652832,
+            0.2206537628173828,
+            0.22176767349243165,
+            0.22262815475463868,
+            0.22277471542358399,
+            0.2230508804321289,
+            0.22140928268432616,
+            0.2213465690612793,
+            0.22145023345947265,
+            0.22135839462280274,
+            0.22142976760864258,
+            0.2213478469848633,
+            0.22147071838378907,
+            0.22140064239501953,
+            0.22136831283569336,
+            0.22143999099731446,
+            0.22145023345947265,
+            0.22139904022216797,
+            0.22135808944702148,
+            0.22218751907348633,
+            0.22471391677856445,
+            0.22584320068359376,
+            0.22563552856445312,
+            0.22785024642944335,
+            0.2280828857421875
+          ],
+          "max_abs_error": 7.152557373046875e-07,
+          "max_rel_error": 0.003397061147100648,
+          "median_latency_ms": 0.2225926399230957,
+          "rejection_reason": null,
+          "status": "eligible"
+        }
+      ],
+      "graph_sha256": "e7aef8c490966a65a2292e16dd39a70b12a0641d2a6ff4e51227321007679d70",
+      "kind": "gac.mlir-ptx-ffn-autotune",
+      "schema_version": 1,
+      "selected_candidate": {
+        "backend_strategy": "mlir-cublas-ptx-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      },
+      "selected_candidate_sha256": "df0e33feaba43759bb907f88cdc8524e11868db61df43835eea9bd7f4df35578",
+      "source_sha256": "157d69bd3f4748ca3a5a00aea8f45ad4454a9f0fb24f3131b74e9cc727596d1d"
+    },
+    "skipped_candidates": [
+      {
+        "candidate": {
+          "backend_strategy": "mlir-ptx-tiled",
+          "fusion_strategy": "full-ffn",
+          "matmul_tile": [
+            64,
+            64,
+            32
+          ],
+          "precision": "fp32",
+          "thread_block": [
+            256,
+            1,
+            1
+          ]
+        },
+        "candidate_sha256": "a831a980ef1736065b82857d2c3deab59377731dd77ff2d20ee5f77efd80df2a",
+        "reason": "no full-FFN runtime session consumes this tile/precision policy; metadata-only candidates are not executed or timed",
+        "status": "skipped"
+      },
+      {
+        "candidate": {
+          "backend_strategy": "mlir-nvgpu-mma",
+          "fusion_strategy": "full-ffn",
+          "matmul_tile": [
+            128,
+            64,
+            32
+          ],
+          "precision": "fp16",
+          "thread_block": [
+            128,
+            1,
+            1
+          ]
+        },
+        "candidate_sha256": "38f00af4ca3ad92ed5ce5b02aa10030bb21878435a02731a3e2e10bfe3493dd2",
+        "reason": "no full-FFN runtime session consumes this tile/precision policy; metadata-only candidates are not executed or timed",
+        "status": "skipped"
+      }
+    ]
+  },
+  "boundary": "production-shape FFN fragment; not full BEVFormer inference",
+  "comparison": {
+    "method": "paired-interleaved-order-balanced",
+    "mlir_cublas_ptx_minus_mlir_cuda_nvrtc_us": {
+      "max": -3.0688095092773438,
+      "median": -5.317277908325195,
+      "min": -9.295673370361328,
+      "p10": -5.947839736938477,
+      "p90": -4.417499542236328,
+      "samples": [
+        -5.55999755859375,
+        -5.4892730712890625,
+        -5.253105163574219,
+        -7.329597473144531,
+        -5.294094085693359,
+        -5.572471618652344,
+        -5.558719635009766,
+        -5.408000946044922,
+        -5.372810363769531,
+        -5.488643646240234,
+        -5.375995635986328,
+        -5.242881774902344,
+        -5.397758483886719,
+        -4.80224609375,
+        -5.319995880126953,
+        -4.614715576171875,
+        -4.587535858154297,
+        -4.842872619628906,
+        -9.295673370361328,
+        -6.244487762451172,
+        -5.558719635009766,
+        -5.809288024902344,
+        -5.221443176269531,
+        -5.914878845214844,
+        -3.563518524169922,
+        -4.9257659912109375,
+        -4.423675537109375,
+        -5.601291656494141,
+        -3.379192352294922,
+        -5.457916259765625,
+        -4.7625732421875,
+        -4.494075775146484,
+        -5.181446075439453,
+        -4.432640075683594,
+        -4.361915588378906,
+        -5.232658386230469,
+        -6.584320068359375,
+        -5.715198516845703,
+        -3.0688095092773438,
+        -5.3145599365234375
+      ]
+    },
+    "mlir_cublas_ptx_speedup_over_mlir_cuda_nvrtc": 1.024142287634053,
+    "primary_estimator": "geometric mean of the PTX-first and NVRTC-first median per-repeat NVRTC/PTX CUDA Event latency ratios",
+    "ratio_of_backend_medians": 1.022774974138277,
+    "speedup_by_order": {
+      "nvrtc-first": {
+        "max": 1.0334258422132405,
+        "median": 1.0245290698803806,
+        "min": 1.0198274332987545,
+        "p10": 1.0207163918270077,
+        "p90": 1.0262310059155404,
+        "samples": [
+          1.0247638644934856,
+          1.0334258422132405,
+          1.0252405693439195,
+          1.0244936805034415,
+          1.0249825390575997,
+          1.0238627976382186,
+          1.0216194605370312,
+          1.020774250041279,
+          1.021773187403544,
+          1.027283260867645,
+          1.025514785471951,
+          1.02611408869864,
+          1.0218443565489044,
+          1.025088343871493,
+          1.0245644592573198,
+          1.020195667898566,
+          1.0198274332987545,
+          1.0235625866230518,
+          1.0255224465011223,
+          1.023700794775679
+        ]
+      },
+      "ptx-first": {
+        "max": 1.0420736274884153,
+        "median": 1.0237556514065258,
+        "min": 1.0137591679540534,
+        "p10": 1.0156644143002438,
+        "p90": 1.0256449151390667,
+        "samples": [
+          1.0250827072637836,
+          1.0236808628544478,
+          1.0238304399586038,
+          1.0251878085741413,
+          1.0243316883595213,
+          1.024472081248244,
+          1.0245688590549258,
+          1.0240917743711324,
+          1.020701518614015,
+          1.0420736274884153,
+          1.0242718495116514,
+          1.0229636567170126,
+          1.0157224111786982,
+          1.0197044134086661,
+          1.0151424423941549,
+          1.0215024077140542,
+          1.0233137027831372,
+          1.0196507039891127,
+          1.029758874223395,
+          1.0137591679540534
+        ]
+      }
+    },
+    "speedup_samples": {
+      "max": 1.0420736274884153,
+      "median": 1.0239772860046754,
+      "min": 1.0137591679540534,
+      "p10": 1.0196990424667107,
+      "p90": 1.0262310059155404,
+      "samples": [
+        1.0250827072637836,
+        1.0247638644934856,
+        1.0236808628544478,
+        1.0334258422132405,
+        1.0238304399586038,
+        1.0252405693439195,
+        1.0251878085741413,
+        1.0244936805034415,
+        1.0243316883595213,
+        1.0249825390575997,
+        1.024472081248244,
+        1.0238627976382186,
+        1.0245688590549258,
+        1.0216194605370312,
+        1.0240917743711324,
+        1.020774250041279,
+        1.020701518614015,
+        1.021773187403544,
+        1.0420736274884153,
+        1.027283260867645,
+        1.0242718495116514,
+        1.025514785471951,
+        1.0229636567170126,
+        1.02611408869864,
+        1.0157224111786982,
+        1.0218443565489044,
+        1.0197044134086661,
+        1.025088343871493,
+        1.0151424423941549,
+        1.0245644592573198,
+        1.0215024077140542,
+        1.020195667898566,
+        1.0233137027831372,
+        1.0198274332987545,
+        1.0196507039891127,
+        1.0235625866230518,
+        1.029758874223395,
+        1.0255224465011223,
+        1.0137591679540534,
+        1.023700794775679
+      ]
+    }
+  },
+  "device": {
+    "compiler_backend": "mlir-cublas-ptx-sm86",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cupy_version": "13.6.0",
+    "device_id": 0,
+    "driver_version": 13000,
+    "fusion_backend": {
+      "launch_count": 2,
+      "nvrtc_launch_count": 0,
+      "selected": "official-mlir-nvvm-ptx"
+    },
+    "matmul_backend": {
+      "call_count": 2,
+      "precision": "float32",
+      "selected": "cupy-cublas"
+    },
+    "multiprocessor_count": 46,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "runtime_version": 12090,
+    "supported_target": "cuda-sm86",
+    "total_memory_bytes": 8220901376
+  },
+  "git": {
+    "branch": null,
+    "commit": null,
+    "dirty": null
+  },
+  "kind": "bevformer-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc",
+  "mlir_cublas_ptx": {
+    "artifact_directory": "/home/robot/gac-mlir-cublas-ptx-20261011/build/cublas-ptx-artifact-agent",
+    "compile_or_load_ms": 843.7514959950931,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 7.152557373046875e-07,
+      "max_rel_error_with_1e-3_floor": 9.337870755211119e-05,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 229.01920318603516,
+      "median": 222.13120460510254,
+      "min": 219.27936553955078,
+      "p10": 219.70841026306152,
+      "p90": 226.72480392456055,
+      "samples": [
+        221.66656494140625,
+        221.6646385192871,
+        221.82912826538086,
+        219.27936553955078,
+        222.15679168701172,
+        220.7744026184082,
+        220.69087982177734,
+        220.79168319702148,
+        220.8153533935547,
+        219.69919204711914,
+        219.67872619628906,
+        219.70943450927734,
+        219.69919204711914,
+        222.12608337402344,
+        220.82208633422852,
+        222.13632583618164,
+        221.60383224487305,
+        222.42368698120117,
+        220.9382438659668,
+        228.87615203857422,
+        229.01920318603516,
+        227.68320083618164,
+        227.37855911254883,
+        226.50144577026367,
+        226.65216445922852,
+        225.49375534057617,
+        224.50176239013672,
+        223.26271057128906,
+        223.1603240966797,
+        222.18751907348633,
+        221.49023056030273,
+        222.5267219543457,
+        222.24895477294922,
+        223.56096267700195,
+        221.97248458862305,
+        222.07487106323242,
+        221.25568389892578,
+        223.92831802368164,
+        223.03743362426758,
+        224.23551559448242
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 229.12211,
+      "median": 222.227645,
+      "min": 219.37538,
+      "p10": 219.803057,
+      "p90": 226.843302,
+      "samples": [
+        221.81143,
+        221.77597000000003,
+        221.93184000000002,
+        219.37538,
+        222.25146,
+        220.87484,
+        220.78075,
+        220.88136999999998,
+        220.90526000000003,
+        219.79421,
+        219.77226,
+        219.80404,
+        219.79114,
+        222.2268,
+        220.91055,
+        222.22849,
+        221.69851,
+        222.51792,
+        221.02259999999998,
+        228.97142,
+        229.12211,
+        227.78653999999997,
+        227.46801,
+        226.59584999999998,
+        226.77389,
+        225.58648000000002,
+        224.60003,
+        223.36479,
+        223.25419000000002,
+        222.27797999999999,
+        221.577,
+        222.61629000000002,
+        222.33735000000001,
+        223.65847000000002,
+        222.06181,
+        222.19773,
+        221.34608,
+        224.02562,
+        223.12629,
+        224.32731
+      ]
+    },
+    "ffn_calls_per_second": 4501.843861954319,
+    "first_public_run": {
+      "gpu_stream_us": 123774.97863769531,
+      "wall_us": 125995.5310379155
+    },
+    "lowering": {
+      "artifact_kind": "mlir-cublas-calls-with-official-mlir-nvvm-ptx",
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 2500,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            5000,
+            1,
+            1
+          ],
+          "implementation": "mlir-ptx",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 1280000,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 2500,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            2500,
+            1,
+            1
+          ],
+          "implementation": "mlir-ptx",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 640000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-cublas-ptx-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "cublas_dispatch_count": 2,
+      "dispatch_count": 4,
+      "executable": true,
+      "executed_custom_artifact": "textual-ptx",
+      "fusion_lowering": "mlir-gpu-nvvm-ptx",
+      "integrity": {
+        "algorithm": "sha256",
+        "binary_mlir_sha256": "3474b958e372d31ad052b1895636182b5638b048e464afe4b07195760d05e6d8",
+        "call_plan_sha256": "92f7712351ac8bc3a8ff7b75612d55616bb3eeebd749505d6a72675a327513dc",
+        "gpu_mlir_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+        "integrity_sha256": "e4c8698e430007b3821e9136fc69a18494295e4a439b5c23aa46cfd31faf528d",
+        "ptx_sha256": "e61dd50a914e922fd428702e59358f7d2fb5b7c90d5582f0097051a20ccc4475",
+        "tensor_mlir_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+      },
+      "kernel_fusions": [
+        "bias+relu",
+        "bias+residual+layernorm"
+      ],
+      "lowering_stage": "cublas-runtime-calls-plus-ptx",
+      "matmul_lowering": "cupy-cublas",
+      "mlir_source_lowered": true,
+      "mlir_source_role": "lowering-input-for-executed-fusion-ptx",
+      "nvrtc_required": false,
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "cublas_compute_policy": "runtime-default",
+        "storage": "float32",
+        "tensor_core_policy": "not-forced-by-compiler"
+      },
+      "profile": {
+        "channels": 256,
+        "hidden_channels": 512,
+        "query_shape": [
+          1,
+          2500,
+          256
+        ],
+        "rows": 2500
+      },
+      "ptx_dispatch_count": 2,
+      "runtime_abi_version": 2,
+      "runtime_dispatch_source": "validated-hybrid-call-records",
+      "runtime_requirements": [
+        "CUDA Driver",
+        "cuBLAS",
+        "CuPy"
+      ],
+      "schema_version": 2,
+      "target": "mlir-cublas-ptx-sm86",
+      "target_intent": "cuda-sm86",
+      "toolchain": {
+        "chip": "sm_86",
+        "command": [
+          "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+          "/tmp/gac-mlir-ptx-ll1bm73t/gpu.mlir",
+          "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+          "--verify-each",
+          "-o",
+          "/tmp/gac-mlir-ptx-ll1bm73t/binary.mlir"
+        ],
+        "entries": [
+          "gac_bias_relu_inplace_f32",
+          "gac_bias_residual_layer_norm_f32"
+        ],
+        "features": "+ptx71",
+        "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+        "name": "mlir-opt",
+        "ptx_version": "7.1",
+        "source_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+      }
+    },
+    "preparation": "verified-precompiled-mlir-cublas-ptx-artifact",
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 2491.018967702985,
+      "median": 1240.8420152496547,
+      "min": 1196.3059660047293,
+      "p10": 1205.1120109390467,
+      "p90": 1490.4934389051052,
+      "samples": [
+        1238.559023477137,
+        2491.018967702985,
+        1262.7419782802463,
+        1205.33601148054,
+        1225.4160246811807,
+        1203.096006065607,
+        1224.4930258020759,
+        1206.644985359162,
+        1223.084982484579,
+        1196.3059660047293,
+        1209.7659637220204,
+        1212.5259963795543,
+        1212.7530062571168,
+        1199.045975226909,
+        1479.2780275456607,
+        1279.5099755749106,
+        1243.1250070221722,
+        1211.729017086327,
+        1247.1359805203974,
+        1232.0239911787212,
+        1256.963994819671,
+        1285.4969827458262,
+        1571.433967910707,
+        1572.5450357422233,
+        1481.5000467933714,
+        1363.9710377901793,
+        1359.7070355899632,
+        1340.4350029304624,
+        1296.166970860213,
+        1214.3689673393965
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 755.6160092353821,
+      "median": 565.0720000267029,
+      "min": 539.3279790878296,
+      "p10": 553.5167932510376,
+      "p90": 624.8287975788116,
+      "samples": [
+        578.5279870033264,
+        595.4239964485168,
+        539.3279790878296,
+        554.8480153083801,
+        565.0879740715027,
+        558.3360195159912,
+        548.8319993019104,
+        557.6959848403931,
+        565.0560259819031,
+        557.8240156173706,
+        551.3280034065247,
+        558.2720041275024,
+        553.7599921226501,
+        553.7919998168945,
+        755.6160092353821,
+        606.3680052757263,
+        570.1119899749756,
+        562.3679757118225,
+        565.3759837150574,
+        562.4960064888,
+        565.2160048484802,
+        555.9679865837097,
+        632.8639984130859,
+        658.7839722633362,
+        623.9359974861145,
+        584.6080183982849,
+        581.6959738731384,
+        590.6239748001099,
+        569.4720149040222,
+        556.384027004242
+      ]
+    },
+    "runtime": {
+      "compiler_backend": "mlir-cublas-ptx-sm86",
+      "fusion_backend": {
+        "launch_count": 2,
+        "nvrtc_launch_count": 0,
+        "selected": "official-mlir-nvvm-ptx"
+      },
+      "implementations": [
+        "cupy-cublas",
+        "mlir-ptx",
+        "cupy-cublas",
+        "mlir-ptx"
+      ],
+      "matmul_backend": {
+        "call_count": 2,
+        "precision": "float32",
+        "selected": "cupy-cublas"
+      }
+    },
+    "session_setup_ms": 2295.2085669967346
+  },
+  "mlir_cuda_nvrtc": {
+    "compile_ms": 447.781266993843,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_rel_error_with_1e-3_floor": 9.00216679239369e-05,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 235.1206398010254,
+      "median": 227.1902370452881,
+      "min": 224.9523162841797,
+      "p10": 226.01440238952637,
+      "p90": 232.4346923828125,
+      "samples": [
+        227.2265625,
+        227.15391159057617,
+        227.08223342895508,
+        226.6089630126953,
+        227.45088577270508,
+        226.34687423706055,
+        226.2495994567871,
+        226.1996841430664,
+        226.18816375732422,
+        225.18783569335938,
+        225.0547218322754,
+        224.9523162841797,
+        225.09695053100586,
+        226.92832946777344,
+        226.14208221435547,
+        226.75104141235352,
+        226.19136810302734,
+        227.26655960083008,
+        230.23391723632812,
+        235.1206398010254,
+        234.57792282104492,
+        233.49248886108398,
+        232.60000228881836,
+        232.41632461547852,
+        230.21568298339844,
+        230.4195213317871,
+        228.9254379272461,
+        228.8640022277832,
+        226.5395164489746,
+        227.64543533325195,
+        226.25280380249023,
+        227.0207977294922,
+        227.43040084838867,
+        227.99360275268555,
+        226.33440017700195,
+        227.3075294494629,
+        227.84000396728516,
+        229.64351654052734,
+        226.10624313354492,
+        229.55007553100586
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 235.21643,
+      "median": 227.29926999999998,
+      "min": 225.03366999999997,
+      "p10": 226.102547,
+      "p90": 232.525932,
+      "samples": [
+        227.34823,
+        227.25030999999998,
+        227.18794000000003,
+        226.7108,
+        227.55635999999998,
+        226.44440999999998,
+        226.34220000000002,
+        226.29911,
+        226.27509999999998,
+        225.27389,
+        225.1401,
+        225.03366999999997,
+        225.18995999999999,
+        227.03611,
+        226.24051,
+        226.84078000000002,
+        226.28242999999998,
+        227.35768,
+        230.32531,
+        235.21643,
+        234.67018,
+        233.58381,
+        232.68318,
+        232.50846,
+        230.32957,
+        230.51406,
+        229.02044999999998,
+        228.94922,
+        226.64054,
+        227.74308000000002,
+        226.34127,
+        227.10973,
+        227.52027999999999,
+        228.09434000000002,
+        226.41559,
+        227.40549,
+        227.92381,
+        229.72956,
+        226.19462,
+        229.65034
+      ]
+    },
+    "ffn_calls_per_second": 4401.597590659937,
+    "first_public_run": {
+      "gpu_stream_us": 752.6400089263916,
+      "wall_us": 2838.742977473885
+    },
+    "lowering": {
+      "artifact_kind": "mlir-abi-manifest-with-validated-runtime-call-plan",
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 2500,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            5000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 1280000,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 2500,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            2500,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 640000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-cuda-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "dialects": [
+        "builtin",
+        "func",
+        "memref"
+      ],
+      "executable": true,
+      "inputs": {
+        "query": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            2500,
+            256
+          ]
+        }
+      },
+      "integrity": {
+        "algorithm": "sha256",
+        "call_plan_sha256": "315fbb23f656f3476f6dba1643f320afb3811abe1c0ecefb924364c1b7f938b8",
+        "integrity_sha256": "42bd41083a0d37f36d74a665fe2a56ca51c1cdd1b37d60f1711fc894dfa2b00f",
+        "kernel_source_sha256": "aef915793c62de5616000c7aa361226ab3e65e4dd376671c03e6a0d14ee5c62b",
+        "mlir_source_sha256": "8aed1777c7401033c89e5e7fb840b6bdc45332c6e960a733e38741575df178af",
+        "tensor_source_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+      },
+      "integrity_sha256": "42bd41083a0d37f36d74a665fe2a56ca51c1cdd1b37d60f1711fc894dfa2b00f",
+      "integrity_validation": "deterministic recompilation and exact artifact comparison before CUDA access",
+      "kernel_fusions": [
+        "bias+relu",
+        "bias+residual+layernorm"
+      ],
+      "layer_norm_lowering": "one CUDA block per row with block reduction",
+      "lowering_stage": "runtime-call-plan",
+      "matmul_lowering": "cupy-cublas",
+      "mlir_source_executed": false,
+      "mlir_source_role": "verifiable-abi-manifest",
+      "name": "bevformer_tiny_ffn",
+      "outputs": {
+        "output": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            2500,
+            256
+          ]
+        }
+      },
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "cublas_compute_policy": "runtime-default",
+        "storage": "float32",
+        "tensor_core_policy": "not-forced-by-compiler"
+      },
+      "runtime_abi_version": 2,
+      "runtime_dispatch_source": "validated-call-records",
+      "runtime_requirements": [
+        "CUDA",
+        "cuBLAS",
+        "NVRTC",
+        "CuPy"
+      ],
+      "schema_version": 2,
+      "target": "mlir-cuda-sm86",
+      "target_intent": "cuda-sm86"
+    },
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 1225.5980400368571,
+      "median": 1209.127512993291,
+      "min": 1181.985018774867,
+      "p10": 1189.1544563695788,
+      "p90": 1220.2763929963112,
+      "samples": [
+        1220.0690107420087,
+        1209.4210251234472,
+        1213.95499445498,
+        1192.4589634872973,
+        1208.8340008631349,
+        1215.86601017043,
+        1214.3169878982008,
+        1187.207002658397,
+        1219.459983985871,
+        1225.5980400368571,
+        1211.234019137919,
+        1193.9489631913602,
+        1208.7119976058602,
+        1212.6279762014747,
+        1206.08601719141,
+        1200.6129836663604,
+        1222.62496734038,
+        1221.8279880471528,
+        1206.1310117132962,
+        1181.985018774867,
+        1201.0729988105595,
+        1195.8780232816935,
+        1220.1039935462177,
+        1189.2409529536963,
+        1210.340007673949,
+        1211.9290186092257,
+        1215.834985487163,
+        1188.3759871125221,
+        1207.5169943273067,
+        1203.20898713544
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 572.6400017738342,
+      "median": 550.927996635437,
+      "min": 541.0559773445129,
+      "p10": 544.0959990024567,
+      "p90": 562.3072028160095,
+      "samples": [
+        553.7599921226501,
+        561.6000294685364,
+        554.9439787864685,
+        552.191972732544,
+        541.4080023765564,
+        559.1359734535217,
+        556.0320019721985,
+        546.239972114563,
+        544.1280007362366,
+        567.7440166473389,
+        550.815999507904,
+        551.03999376297,
+        550.7199764251709,
+        554.4639825820923,
+        548.3520030975342,
+        561.9840025901794,
+        572.6400017738342,
+        552.0640015602112,
+        544.3840026855469,
+        541.0559773445129,
+        548.2879877090454,
+        549.5679974555969,
+        550.815999507904,
+        550.495982170105,
+        547.5519895553589,
+        565.2160048484802,
+        551.5519976615906,
+        543.8079833984375,
+        546.4000105857849,
+        560.0640177726746
+      ]
+    },
+    "runtime": {
+      "compiler_backend": "mlir-cuda-sm86",
+      "fusion_backend": null,
+      "implementations": [
+        "cupy-cublas",
+        "nvrtc-cuda",
+        "cupy-cublas",
+        "nvrtc-cuda"
+      ],
+      "matmul_backend": {
+        "call_count": 2,
+        "precision": "float32",
+        "selected": "cupy-cublas"
+      }
+    },
+    "session_setup_ms": 436.1174640362151
+  },
+  "protocol": {
+    "atol": 1e-05,
+    "each_repeat_serialized_by_end_event": true,
+    "initial_order": "ptx-first",
+    "iterations_per_repeat": 100,
+    "numpy_reference_ms": 18.359807028900832,
+    "order_reversed_after_each_repeat": true,
+    "public_run_boundary": "validation + H2D + compute + D2H + sync",
+    "public_samples": 30,
+    "repeats": 40,
+    "resident_inputs_and_weights": true,
+    "resident_query": {
+      "dtype": "float32",
+      "name": "query",
+      "nbytes": 2560000,
+      "sha256": "2a18848cb3781ef4f398fb32b88a6d6c04089a7295ee8af95ef4d863991fa257",
+      "shape": [
+        1,
+        2500,
+        256
+      ]
+    },
+    "rtol": 0.0001,
+    "sessions_co_resident": true,
+    "warmup": 50
+  },
+  "repeat_samples": [
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.66656494140625,
+        "synchronized_wall_us": 221.81143
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.2265625,
+        "synchronized_wall_us": 227.34823
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 1
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.6646385192871,
+        "synchronized_wall_us": 221.77597000000003
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.15391159057617,
+        "synchronized_wall_us": 227.25030999999998
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 2
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.82912826538086,
+        "synchronized_wall_us": 221.93184000000002
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.08223342895508,
+        "synchronized_wall_us": 227.18794000000003
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 3
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 219.27936553955078,
+        "synchronized_wall_us": 219.37538
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.6089630126953,
+        "synchronized_wall_us": 226.7108
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 4
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.15679168701172,
+        "synchronized_wall_us": 222.25146
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.45088577270508,
+        "synchronized_wall_us": 227.55635999999998
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 5
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.7744026184082,
+        "synchronized_wall_us": 220.87484
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.34687423706055,
+        "synchronized_wall_us": 226.44440999999998
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 6
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.69087982177734,
+        "synchronized_wall_us": 220.78075
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.2495994567871,
+        "synchronized_wall_us": 226.34220000000002
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 7
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.79168319702148,
+        "synchronized_wall_us": 220.88136999999998
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.1996841430664,
+        "synchronized_wall_us": 226.29911
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 8
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.8153533935547,
+        "synchronized_wall_us": 220.90526000000003
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.18816375732422,
+        "synchronized_wall_us": 226.27509999999998
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 9
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 219.69919204711914,
+        "synchronized_wall_us": 219.79421
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 225.18783569335938,
+        "synchronized_wall_us": 225.27389
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 10
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 219.67872619628906,
+        "synchronized_wall_us": 219.77226
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 225.0547218322754,
+        "synchronized_wall_us": 225.1401
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 11
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 219.70943450927734,
+        "synchronized_wall_us": 219.80404
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 224.9523162841797,
+        "synchronized_wall_us": 225.03366999999997
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 12
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 219.69919204711914,
+        "synchronized_wall_us": 219.79114
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 225.09695053100586,
+        "synchronized_wall_us": 225.18995999999999
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 13
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.12608337402344,
+        "synchronized_wall_us": 222.2268
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.92832946777344,
+        "synchronized_wall_us": 227.03611
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 14
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.82208633422852,
+        "synchronized_wall_us": 220.91055
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.14208221435547,
+        "synchronized_wall_us": 226.24051
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 15
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.13632583618164,
+        "synchronized_wall_us": 222.22849
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.75104141235352,
+        "synchronized_wall_us": 226.84078000000002
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 16
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.60383224487305,
+        "synchronized_wall_us": 221.69851
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.19136810302734,
+        "synchronized_wall_us": 226.28242999999998
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 17
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.42368698120117,
+        "synchronized_wall_us": 222.51792
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.26655960083008,
+        "synchronized_wall_us": 227.35768
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 18
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 220.9382438659668,
+        "synchronized_wall_us": 221.02259999999998
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 230.23391723632812,
+        "synchronized_wall_us": 230.32531
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 19
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 228.87615203857422,
+        "synchronized_wall_us": 228.97142
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 235.1206398010254,
+        "synchronized_wall_us": 235.21643
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 20
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 229.01920318603516,
+        "synchronized_wall_us": 229.12211
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 234.57792282104492,
+        "synchronized_wall_us": 234.67018
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 21
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 227.68320083618164,
+        "synchronized_wall_us": 227.78653999999997
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 233.49248886108398,
+        "synchronized_wall_us": 233.58381
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 22
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 227.37855911254883,
+        "synchronized_wall_us": 227.46801
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 232.60000228881836,
+        "synchronized_wall_us": 232.68318
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 23
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 226.50144577026367,
+        "synchronized_wall_us": 226.59584999999998
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 232.41632461547852,
+        "synchronized_wall_us": 232.50846
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 24
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 226.65216445922852,
+        "synchronized_wall_us": 226.77389
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 230.21568298339844,
+        "synchronized_wall_us": 230.32957
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 25
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 225.49375534057617,
+        "synchronized_wall_us": 225.58648000000002
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 230.4195213317871,
+        "synchronized_wall_us": 230.51406
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 26
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 224.50176239013672,
+        "synchronized_wall_us": 224.60003
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 228.9254379272461,
+        "synchronized_wall_us": 229.02044999999998
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 27
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 223.26271057128906,
+        "synchronized_wall_us": 223.36479
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 228.8640022277832,
+        "synchronized_wall_us": 228.94922
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 28
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 223.1603240966797,
+        "synchronized_wall_us": 223.25419000000002
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.5395164489746,
+        "synchronized_wall_us": 226.64054
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 29
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.18751907348633,
+        "synchronized_wall_us": 222.27797999999999
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.64543533325195,
+        "synchronized_wall_us": 227.74308000000002
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 30
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.49023056030273,
+        "synchronized_wall_us": 221.577
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.25280380249023,
+        "synchronized_wall_us": 226.34127
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 31
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.5267219543457,
+        "synchronized_wall_us": 222.61629000000002
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.0207977294922,
+        "synchronized_wall_us": 227.10973
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 32
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.24895477294922,
+        "synchronized_wall_us": 222.33735000000001
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.43040084838867,
+        "synchronized_wall_us": 227.52027999999999
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 33
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 223.56096267700195,
+        "synchronized_wall_us": 223.65847000000002
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.99360275268555,
+        "synchronized_wall_us": 228.09434000000002
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 34
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.97248458862305,
+        "synchronized_wall_us": 222.06181
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.33440017700195,
+        "synchronized_wall_us": 226.41559
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 35
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 222.07487106323242,
+        "synchronized_wall_us": 222.19773
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.3075294494629,
+        "synchronized_wall_us": 227.40549
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 36
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 221.25568389892578,
+        "synchronized_wall_us": 221.34608
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 227.84000396728516,
+        "synchronized_wall_us": 227.92381
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 37
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 223.92831802368164,
+        "synchronized_wall_us": 224.02562
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 229.64351654052734,
+        "synchronized_wall_us": 229.72956
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 38
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 223.03743362426758,
+        "synchronized_wall_us": 223.12629
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 226.10624313354492,
+        "synchronized_wall_us": 226.19462
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 39
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 224.23551559448242,
+        "synchronized_wall_us": 224.32731
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 229.55007553100586,
+        "synchronized_wall_us": 229.65034
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 40
+    }
+  ],
+  "schema_version": 1,
+  "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
+  "software": {
+    "executable": "/home/robot/gac-sm86-validation/.venv/bin/python",
+    "numpy": "2.5.3",
+    "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "source_sha256": {
+    "src/gac/__init__.py": "99552f0078dd1647346876b05c7d77c9ebbafdc1b72fd3a0a23c6dc57cabdb34",
+    "src/gac/backends/__init__.py": "20b6ccb099b23fb0718793a7601f647c11f1e9d5b64586534d41833befc59f69",
+    "src/gac/backends/cuda.py": "657fce71f51bffe64030fcc047f4a80c0728f0cdefdd6a2556a0f50e3fa604d4",
+    "src/gac/backends/mlir.py": "8c6c8f0b0d60b2e6f80e15c081874dfe3f064d0b99b380b61f9c33a749b3238a",
+    "src/gac/backends/mlir_cublas_ptx.py": "7b0e3c5bec0a1631a4025b494f299306c60604161143d4a1d64c9e7c95a13a7a",
+    "src/gac/backends/mlir_cuda.py": "80ce1fd65a0fdfcc22b78fb1fbfd409314a014e70e90b21b812894a88f417237",
+    "src/gac/backends/mlir_ptx.py": "4c6a26d80a644c05c82eb4018ac59bb541792c3773bd5e4cc420eb4a9dd71a92",
+    "src/gac/bevformer.py": "a4b0844beab47c702b8dbaac101f1af217e9ebf76ccb78277844841acb5a204a",
+    "src/gac/bevformer_cold_pipeline.py": "95e2cf7b9d6805e670e692a66935cdae93fe6d7aed03f6a234147294184154a8",
+    "src/gac/bevformer_decoder.py": "431f1635ae68f0f3eb774762ead1221908ffafe92e7825e7aae806d944f767a2",
+    "src/gac/bevformer_decoder_layer.py": "4e3d69d0a91b3b6056b5f5f9257ccd21f51d66225b035eb970428fd86766964c",
+    "src/gac/bevformer_decoder_pipeline.py": "286200059703ad31e59bf6bab243f1223bdae63b9c80c38a2e53ce2568d88766",
+    "src/gac/bevformer_decoder_self.py": "2156811507a65cecfe2d2b7b74cb0c4f7165bb607c6d420ff02fb73ce2812058",
+    "src/gac/bevformer_decoder_stack.py": "90e8c4be0fbdf0daa640c4c7f9b3efe25346bb2e4e09c4b0c678c2409fe977d6",
+    "src/gac/bevformer_detection_head.py": "ce3a24909f5049a7b32a5b4b94dc88026998ce1c31e942f4911d029e47a880f0",
+    "src/gac/bevformer_detection_stack.py": "e0c335408ece1ab1c1c173d4ffcc6800556db4c2975ae2172fd6c371eb765e93",
+    "src/gac/bevformer_encoder.py": "71a288ced15115b1e59f2ca7c9013456d100befda3b47726d1de20f9195818cc",
+    "src/gac/bevformer_encoder_inputs.py": "cd395ae0f69e37d8e58a0cdf41e27bad3a2111146009b5be4667cc385c1d86c0",
+    "src/gac/bevformer_encoder_layer.py": "36b0e4554bd3c5c1e9d8ae0686a2efcc4315b7722e8691c34a6910a3a82e8e81",
+    "src/gac/bevformer_encoder_pipeline.py": "4469274c64a5e51dcad7307f722745f97148b3fadfe804a2fb0bbc4a9050723e",
+    "src/gac/bevformer_encoder_stack.py": "4ce5eea763ca4ce1e83cc7a2ddc6015fe55bf7006787ebb75c03b7ecf2423f26",
+    "src/gac/bevformer_feature_prep.py": "e2d2df573ae0063348cb2648e849c0b20ca4a56ef8eb789660d63601dcb8b7d7",
+    "src/gac/bevformer_ffn.py": "3810a253ceb67882bac9fef12568fc7565a0ca5af512471fce8d6bfb41344c68",
+    "src/gac/bevformer_geometry.py": "a651dd3886b5b64baae413e3ca618ea59ed9707dd7715c1ca29a366472797934",
+    "src/gac/bevformer_history_pipeline.py": "ee4c3ae4e973ceb29dc277fe022878a2138efac707a1df93e6b8fd1dd5e60500",
+    "src/gac/bevformer_motion.py": "0cff740353b09fe4eae7cea593ebaf79d24f6c9740ba0fd1d8599d4d7d8ded8e",
+    "src/gac/bevformer_postprocess.py": "c34d6e8af5204bc8c7d78e38044c5f06f0016174681a46d8fd0ee6678ebf64e1",
+    "src/gac/bevformer_query_init.py": "7647dcafa1cfef3cf9c1c99d6a63c61ce4bf66801e2a3b5c0919e4e31d06885e",
+    "src/gac/bevformer_refinement.py": "31d2af5ab51067e35303a8377c65b31605e5d18fd09e537d69f58264352980e6",
+    "src/gac/bevformer_runtime.py": "8cc3d1abfee61df3081ecbb1ecf03105ff9e7aa9c9726e8b10e001e8f8ece954",
+    "src/gac/bevformer_spatial.py": "232ce01fc58f3d20ed8e6849c0b64ffff934741c0f1c51a7f9c21700bf853266",
+    "src/gac/bevformer_step_pipeline.py": "9b94058250ce7eef305cbd1a3d825c59ae41e53cd1649fb72d84419beb4a8edd",
+    "src/gac/bevformer_temporal.py": "66c38420eb672064a041d7c5f01f19b42bfadead9881df9f6cd01282e7f9515e",
+    "src/gac/capability.py": "b5ac312b27c8dd8f13bc49184238010dc7e0b514cfc9472304434056ab458aef",
+    "src/gac/cli.py": "89422c895fb81e81fde345b239be6a23fe7dec7702062dae9bf2751d8b2489c1",
+    "src/gac/compose.py": "bf2df0087d63b6a19e21c9f8f4673694f54baf53b65d8946f32a760ee274c823",
+    "src/gac/errors.py": "7d16560334218bca7db5014c69159a382b745a33d3850e941dce49450fbb5a86",
+    "src/gac/frontends/__init__.py": "b6f0f9cc29df938e88eb75f1fc8eb2419ff35fa941811eb86b5a261d6ac6acf6",
+    "src/gac/frontends/bevformer_backbone.py": "5ba9cb45e65d5c49cc4625fb5d780866cc1cccdc30d98eb41ec2b60b183a1a59",
+    "src/gac/frontends/bevformer_export.py": "7e9a47edcedb3d5f5cd8f883cb7140def41a7e40174933af40672008a402d881",
+    "src/gac/frontends/bevformer_weights.py": "0e108c7817b6150e2d66098ebc40ce1680c54f2b08d185a368d793c675dfee4a",
+    "src/gac/frontends/json_frontend.py": "08fb409e008741001ae171549a23edb63ede2e1c12ca34bb35a4c04f245c5b33",
+    "src/gac/golden.py": "e573d369237fb93f5b114a63ce4c951f72400bea8ee12378882d781e6e4f82d1",
+    "src/gac/ir.py": "0c0619affe9083cfd1ae661e524cb8c0866fedc0fb6236183a3921ed97e1a6d1",
+    "src/gac/memory.py": "1a0a972aa020a216a43e1d957b595a5a38d46ec6b20712cba868a5f9e70b6e9f",
+    "src/gac/mlir_cublas_ptx_artifact.py": "0174a282703ac0ff7581053943c2051c4f7359c436e6c39107d406cdab46e7f1",
+    "src/gac/mlir_cublas_ptx_benchmark.py": "b0eef1984027a89fc348ee40871e9759b197076f9ce7466c6e1a7b4277a8ee72",
+    "src/gac/mlir_cublas_ptx_runtime.py": "d3f1307703c7df90df6dc207fff74f24a8504e8b382fc579b1aa1473b7c45f35",
+    "src/gac/mlir_ptx_artifact.py": "91e547595b93a0b71898ac94a7c720d7103269bbee908546eea032d3cb67fcdf",
+    "src/gac/mlir_ptx_autotune.py": "4897e509fd22391cf7cf0d65e6ad0e78e994d112e59b526cdeb17e9340992135",
+    "src/gac/mlir_ptx_runtime.py": "d4fe35690ec9e9a115b8f7b6f41a11c5d425abf6016e7581370fc3c72c8418e2",
+    "src/gac/mlir_runtime.py": "8c3997dda743f55cfe4ea4d6ebd77fd7ca7d13e1c17a68fca27843dcf3f75a09",
+    "src/gac/mlir_tiled_matmul.py": "e9b91a66139339114ee980e131fe781198a5ca25df865621f2c23cf2b538f241",
+    "src/gac/mlir_toolchain.py": "0424a27c2e96c75c0e9323f3fdabf817579bea4600b9329d272432c63c7ebceb",
+    "src/gac/ops.py": "bdf4363a1f67ea61173069cf1419d1596921c49b0d594ffdfa499ed6168e7f41",
+    "src/gac/package.py": "5bac5402700ce03662fe4baff631d081dce8dd7de72e25950a4f4b208229ba2d",
+    "src/gac/passes.py": "b628baa94aed3cd67461351188984c58b77f4e5a4b71eaa055ffccd17b1b800d",
+    "src/gac/profiler.py": "fbb080cd680020d175f0032d96f638be2c30258c4b17ada860bc7510a4de6ff3",
+    "src/gac/runtime.py": "5e7b2c4a3988951a0fa4f922604ce2ab58e971992a703e4625cab277f1722a3b",
+    "src/gac/tools/__init__.py": "136510e0d2bab04afa1d1386b03cc88af81ef07cae3486a4bd7f5951c02c1264",
+    "src/gac/tools/build_bevformer.py": "2812d51a3417c4d29bf8d65a6fe6d8042ac2c6cd7843e997bfc7f6bf25146888",
+    "src/gac/tools/export_bevformer_checkpoint.py": "4b1e224fcd2eb01e4ae304f4bd2de614fa1a5771d33255211e682dbf753aff84",
+    "src/gac/tools/uniad_benchmark_e2e.py": "c5415815a6c5e22ed8e89513a967e0b9d263e2d333d644e985693b32f8982573",
+    "src/gac/tools/uniad_benchmark_ffn.py": "7d9b9758b36789c1c6d7a0b921729acaa966b788efd4e14d580042f18a2c3563",
+    "src/gac/tools/uniad_compile_ffn.py": "9ebf88d353654e8f5991f8d0584664aee0130bb76769baef3c6d94e5d1cea687",
+    "src/gac/tools/uniad_export_ffn.py": "67c33332ccedfd64b98bc04197dc1860dc875dc216e9f550806119e73cb75cec",
+    "src/gac/tools/uniad_make_synthetic_bundle.py": "5bf116bd39771d0288149dce98bfa9259a1c88effeeebeecfc865c716180660f",
+    "src/gac/transformer.py": "102226654a90aebe178e17e90e44bc7745ff5e25e0dd94c9a1c6628166b98d3e",
+    "src/gac/uniad/__init__.py": "eafca45c303c29d7f3a89935489373093ff55b3ae7a6d61af91e56d70f83e44b",
+    "src/gac/uniad/artifact.py": "fe991032e07308bf3ef12a3b15fb2af3ed424b1eba1db9e411e1132e11e6e826",
+    "src/gac/uniad/checkpoint.py": "eba4cfd03ebb8ccf91cfd890eaf8e8256dd2863b9759bd02b15d0d21665aeda0",
+    "src/gac/uniad/contract.py": "ad26122d11ad3b11dc30ac16b69f33db65af8f9186c9f3df474c537e46112cde",
+    "src/gac/version.py": "889b6515ef12de4018d101f0612d515dbac4bc1261278b35ceed2389cde69f50",
+    "src/gac/weights.py": "b3c5bf7f8991d338c24a5851f20fa9ed9a0e373fa625e46806c3c395a487dbd4",
+    "tools/benchmark_mlir_cublas_ptx_ffn.py": "4a1bb0d170d71d4cbc67cebc0bdc4d572a17d190bd0fea7930ee9e928eaf8970",
+    "tools/benchmark_mlir_cuda_ffn.py": "df516512f4d09419ac6f2eb6f3bbf83759447736029b6ea084bc26564464e606"
+  }
+}

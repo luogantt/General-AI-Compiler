@@ -1,0 +1,628 @@
+{
+  "artifact_directory": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/cublas-ptx-artifact-agent",
+  "artifact_manifest": {
+    "artifact": "gac.mlir-cublas-ptx-sm86.directory",
+    "artifact_kind": "mlir-cublas-calls-with-official-mlir-nvvm-ptx",
+    "artifact_schema_version": 1,
+    "calls": [
+      {
+        "abi_version": 2,
+        "dtype": "float32",
+        "implementation": "cupy-cublas",
+        "inputs": [
+          "query",
+          "fc1_weight"
+        ],
+        "kind": "matmul",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc1_matmul"
+        ],
+        "output": "fc1_mm",
+        "parameters": {
+          "alpha": 1.0,
+          "beta": 0.0,
+          "k": 256,
+          "m": 2500,
+          "n": 512,
+          "transpose_a": false,
+          "transpose_b": false
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+        ],
+        "symbol": "gac_cublas_fc1_matmul_f32"
+      },
+      {
+        "abi_version": 2,
+        "aliases_input": 0,
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "grid": [
+          5000,
+          1,
+          1
+        ],
+        "implementation": "mlir-ptx",
+        "inputs": [
+          "fc1_mm",
+          "fc1_bias"
+        ],
+        "kind": "fused-kernel",
+        "layout": "contiguous",
+        "node_ids": [
+          "fused_fc1_bias_add_relu"
+        ],
+        "output": "activated",
+        "parameters": {
+          "channels": 512,
+          "elements": 1280000,
+          "rows": 2500
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+        ],
+        "symbol": "gac_bias_relu_inplace_f32"
+      },
+      {
+        "abi_version": 2,
+        "dtype": "float32",
+        "implementation": "cupy-cublas",
+        "inputs": [
+          "activated",
+          "fc2_weight"
+        ],
+        "kind": "matmul",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc2_matmul"
+        ],
+        "output": "fc2_mm",
+        "parameters": {
+          "alpha": 1.0,
+          "beta": 0.0,
+          "k": 512,
+          "m": 2500,
+          "n": 256,
+          "transpose_a": false,
+          "transpose_b": false
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+        ],
+        "symbol": "gac_cublas_fc2_matmul_f32"
+      },
+      {
+        "abi_version": 2,
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "grid": [
+          2500,
+          1,
+          1
+        ],
+        "implementation": "mlir-ptx",
+        "inputs": [
+          "fc2_mm",
+          "fc2_bias",
+          "query",
+          "norm_weight",
+          "norm_bias"
+        ],
+        "kind": "fused-kernel",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc2_bias_add",
+          "residual_add",
+          "post_layer_norm"
+        ],
+        "output": "output",
+        "parameters": {
+          "channels": 256,
+          "elements": 640000,
+          "epsilon": 9.999999747378752e-06,
+          "rows": 2500
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+          "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+          "BEVFormerLayer.operation_order.norm_after_ffn"
+        ],
+        "symbol": "gac_bias_residual_layer_norm_f32"
+      }
+    ],
+    "compiler_backend": "mlir-cublas-ptx-sm86",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cublas_dispatch_count": 2,
+    "deployment_boundary": "fusion device code and validated four-call ABI only; model weights remain in the separately validated graph constants",
+    "dispatch_count": 4,
+    "executable": true,
+    "executed_custom_artifact": "textual-ptx",
+    "files": {
+      "binary_mlir": {
+        "file": "fusions.binary.mlir",
+        "sha256": "3474b958e372d31ad052b1895636182b5638b048e464afe4b07195760d05e6d8",
+        "size_bytes": 7465
+      },
+      "gpu_mlir": {
+        "file": "fusions.gpu.mlir",
+        "sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+        "size_bytes": 3450
+      },
+      "ptx": {
+        "file": "fusions.ptx",
+        "sha256": "e61dd50a914e922fd428702e59358f7d2fb5b7c90d5582f0097051a20ccc4475",
+        "size_bytes": 6237
+      }
+    },
+    "fusion_lowering": "mlir-gpu-nvvm-ptx",
+    "integrity": {
+      "algorithm": "sha256",
+      "binary_mlir_sha256": "3474b958e372d31ad052b1895636182b5638b048e464afe4b07195760d05e6d8",
+      "call_plan_sha256": "92f7712351ac8bc3a8ff7b75612d55616bb3eeebd749505d6a72675a327513dc",
+      "gpu_mlir_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+      "integrity_sha256": "e4c8698e430007b3821e9136fc69a18494295e4a439b5c23aa46cfd31faf528d",
+      "ptx_sha256": "e61dd50a914e922fd428702e59358f7d2fb5b7c90d5582f0097051a20ccc4475",
+      "tensor_mlir_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+    },
+    "kernel_fusions": [
+      "bias+relu",
+      "bias+residual+layernorm"
+    ],
+    "lowering_stage": "cublas-runtime-calls-plus-ptx",
+    "manifest_payload_sha256": "d70f4b0e4b8e86efe2cc551da1acb890f787ffd7ddcfd74d7e81de5494dabe0d",
+    "matmul_lowering": "cupy-cublas",
+    "mlir_source_lowered": true,
+    "mlir_source_role": "lowering-input-for-executed-fusion-ptx",
+    "nvrtc_required": false,
+    "pass_reports": [
+      {
+        "changed": false,
+        "details": {
+          "inferred_values": [
+            "fc1_mm",
+            "fc1",
+            "activated",
+            "fc2_mm",
+            "projected",
+            "ffn_output",
+            "output"
+          ],
+          "value_count": 14
+        },
+        "name": "shape-inference"
+      },
+      {
+        "changed": false,
+        "details": {
+          "created_constants": [],
+          "folded_nodes": []
+        },
+        "name": "constant-folding"
+      },
+      {
+        "changed": false,
+        "details": {
+          "removed_constants": [],
+          "removed_nodes": []
+        },
+        "name": "dead-code-elimination"
+      },
+      {
+        "changed": false,
+        "details": {
+          "fusions": []
+        },
+        "name": "conv-batchnorm-folding"
+      },
+      {
+        "changed": false,
+        "details": {
+          "fusions": []
+        },
+        "name": "matmul-bias-gelu-fusion"
+      },
+      {
+        "changed": true,
+        "details": {
+          "fusions": [
+            {
+              "fused_node": "fused_fc1_bias_add_relu",
+              "source_nodes": [
+                "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+              ]
+            }
+          ]
+        },
+        "name": "add-relu-fusion"
+      },
+      {
+        "changed": false,
+        "details": {
+          "removed_constants": [],
+          "removed_nodes": []
+        },
+        "name": "dead-code-elimination"
+      },
+      {
+        "changed": false,
+        "details": {
+          "inferred_values": [
+            "fc1_mm",
+            "activated",
+            "fc2_mm",
+            "projected",
+            "ffn_output",
+            "output"
+          ],
+          "value_count": 13
+        },
+        "name": "shape-inference"
+      }
+    ],
+    "precision": {
+      "cublas_compute_policy": "runtime-default",
+      "storage": "float32",
+      "tensor_core_policy": "not-forced-by-compiler"
+    },
+    "profile": {
+      "channels": 256,
+      "hidden_channels": 512,
+      "query_shape": [
+        1,
+        2500,
+        256
+      ],
+      "rows": 2500
+    },
+    "ptx_dispatch_count": 2,
+    "runtime_abi_version": 2,
+    "runtime_dispatch_source": "validated-hybrid-call-records",
+    "runtime_requirements": [
+      "CUDA Driver",
+      "cuBLAS",
+      "CuPy"
+    ],
+    "schema_version": 2,
+    "target": "mlir-cublas-ptx-sm86",
+    "target_intent": "cuda-sm86",
+    "toolchain": {
+      "chip": "sm_86",
+      "command": [
+        "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+        "/tmp/gac-mlir-ptx-ll1bm73t/gpu.mlir",
+        "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+        "--verify-each",
+        "-o",
+        "/tmp/gac-mlir-ptx-ll1bm73t/binary.mlir"
+      ],
+      "entries": [
+        "gac_bias_relu_inplace_f32",
+        "gac_bias_residual_layer_norm_f32"
+      ],
+      "features": "+ptx71",
+      "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+      "name": "mlir-opt",
+      "ptx_version": "7.1",
+      "source_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+    }
+  },
+  "compile_ms": 460.7162849999895,
+  "kind": "bevformer-ffn-mlir-cublas-ptx-offline-compilation",
+  "lowering": {
+    "artifact_kind": "mlir-cublas-calls-with-official-mlir-nvvm-ptx",
+    "calls": [
+      {
+        "abi_version": 2,
+        "dtype": "float32",
+        "implementation": "cupy-cublas",
+        "inputs": [
+          "query",
+          "fc1_weight"
+        ],
+        "kind": "matmul",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc1_matmul"
+        ],
+        "output": "fc1_mm",
+        "parameters": {
+          "alpha": 1.0,
+          "beta": 0.0,
+          "k": 256,
+          "m": 2500,
+          "n": 512,
+          "transpose_a": false,
+          "transpose_b": false
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+        ],
+        "symbol": "gac_cublas_fc1_matmul_f32"
+      },
+      {
+        "abi_version": 2,
+        "aliases_input": 0,
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "grid": [
+          5000,
+          1,
+          1
+        ],
+        "implementation": "mlir-ptx",
+        "inputs": [
+          "fc1_mm",
+          "fc1_bias"
+        ],
+        "kind": "fused-kernel",
+        "layout": "contiguous",
+        "node_ids": [
+          "fused_fc1_bias_add_relu"
+        ],
+        "output": "activated",
+        "parameters": {
+          "channels": 512,
+          "elements": 1280000,
+          "rows": 2500
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+          "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+        ],
+        "symbol": "gac_bias_relu_inplace_f32"
+      },
+      {
+        "abi_version": 2,
+        "dtype": "float32",
+        "implementation": "cupy-cublas",
+        "inputs": [
+          "activated",
+          "fc2_weight"
+        ],
+        "kind": "matmul",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc2_matmul"
+        ],
+        "output": "fc2_mm",
+        "parameters": {
+          "alpha": 1.0,
+          "beta": 0.0,
+          "k": 512,
+          "m": 2500,
+          "n": 256,
+          "transpose_a": false,
+          "transpose_b": false
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+        ],
+        "symbol": "gac_cublas_fc2_matmul_f32"
+      },
+      {
+        "abi_version": 2,
+        "block": [
+          256,
+          1,
+          1
+        ],
+        "dtype": "float32",
+        "grid": [
+          2500,
+          1,
+          1
+        ],
+        "implementation": "mlir-ptx",
+        "inputs": [
+          "fc2_mm",
+          "fc2_bias",
+          "query",
+          "norm_weight",
+          "norm_bias"
+        ],
+        "kind": "fused-kernel",
+        "layout": "contiguous",
+        "node_ids": [
+          "fc2_bias_add",
+          "residual_add",
+          "post_layer_norm"
+        ],
+        "output": "output",
+        "parameters": {
+          "channels": 256,
+          "elements": 640000,
+          "epsilon": 9.999999747378752e-06,
+          "rows": 2500
+        },
+        "source_nodes": [
+          "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+          "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+          "BEVFormerLayer.operation_order.norm_after_ffn"
+        ],
+        "symbol": "gac_bias_residual_layer_norm_f32"
+      }
+    ],
+    "compiler_backend": "mlir-cublas-ptx-sm86",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cublas_dispatch_count": 2,
+    "dispatch_count": 4,
+    "executable": true,
+    "executed_custom_artifact": "textual-ptx",
+    "fusion_lowering": "mlir-gpu-nvvm-ptx",
+    "integrity": {
+      "algorithm": "sha256",
+      "binary_mlir_sha256": "3474b958e372d31ad052b1895636182b5638b048e464afe4b07195760d05e6d8",
+      "call_plan_sha256": "92f7712351ac8bc3a8ff7b75612d55616bb3eeebd749505d6a72675a327513dc",
+      "gpu_mlir_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+      "integrity_sha256": "e4c8698e430007b3821e9136fc69a18494295e4a439b5c23aa46cfd31faf528d",
+      "ptx_sha256": "e61dd50a914e922fd428702e59358f7d2fb5b7c90d5582f0097051a20ccc4475",
+      "tensor_mlir_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+    },
+    "kernel_fusions": [
+      "bias+relu",
+      "bias+residual+layernorm"
+    ],
+    "lowering_stage": "cublas-runtime-calls-plus-ptx",
+    "matmul_lowering": "cupy-cublas",
+    "mlir_source_lowered": true,
+    "mlir_source_role": "lowering-input-for-executed-fusion-ptx",
+    "nvrtc_required": false,
+    "pass_reports": [
+      {
+        "changed": false,
+        "details": {
+          "inferred_values": [
+            "fc1_mm",
+            "fc1",
+            "activated",
+            "fc2_mm",
+            "projected",
+            "ffn_output",
+            "output"
+          ],
+          "value_count": 14
+        },
+        "name": "shape-inference"
+      },
+      {
+        "changed": false,
+        "details": {
+          "created_constants": [],
+          "folded_nodes": []
+        },
+        "name": "constant-folding"
+      },
+      {
+        "changed": false,
+        "details": {
+          "removed_constants": [],
+          "removed_nodes": []
+        },
+        "name": "dead-code-elimination"
+      },
+      {
+        "changed": false,
+        "details": {
+          "fusions": []
+        },
+        "name": "conv-batchnorm-folding"
+      },
+      {
+        "changed": false,
+        "details": {
+          "fusions": []
+        },
+        "name": "matmul-bias-gelu-fusion"
+      },
+      {
+        "changed": true,
+        "details": {
+          "fusions": [
+            {
+              "fused_node": "fused_fc1_bias_add_relu",
+              "source_nodes": [
+                "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+              ]
+            }
+          ]
+        },
+        "name": "add-relu-fusion"
+      },
+      {
+        "changed": false,
+        "details": {
+          "removed_constants": [],
+          "removed_nodes": []
+        },
+        "name": "dead-code-elimination"
+      },
+      {
+        "changed": false,
+        "details": {
+          "inferred_values": [
+            "fc1_mm",
+            "activated",
+            "fc2_mm",
+            "projected",
+            "ffn_output",
+            "output"
+          ],
+          "value_count": 13
+        },
+        "name": "shape-inference"
+      }
+    ],
+    "precision": {
+      "cublas_compute_policy": "runtime-default",
+      "storage": "float32",
+      "tensor_core_policy": "not-forced-by-compiler"
+    },
+    "profile": {
+      "channels": 256,
+      "hidden_channels": 512,
+      "query_shape": [
+        1,
+        2500,
+        256
+      ],
+      "rows": 2500
+    },
+    "ptx_dispatch_count": 2,
+    "runtime_abi_version": 2,
+    "runtime_dispatch_source": "validated-hybrid-call-records",
+    "runtime_requirements": [
+      "CUDA Driver",
+      "cuBLAS",
+      "CuPy"
+    ],
+    "schema_version": 2,
+    "target": "mlir-cublas-ptx-sm86",
+    "target_intent": "cuda-sm86",
+    "toolchain": {
+      "chip": "sm_86",
+      "command": [
+        "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+        "/tmp/gac-mlir-ptx-ll1bm73t/gpu.mlir",
+        "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+        "--verify-each",
+        "-o",
+        "/tmp/gac-mlir-ptx-ll1bm73t/binary.mlir"
+      ],
+      "entries": [
+        "gac_bias_relu_inplace_f32",
+        "gac_bias_residual_layer_norm_f32"
+      ],
+      "features": "+ptx71",
+      "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+      "name": "mlir-opt",
+      "ptx_version": "7.1",
+      "source_sha256": "9801ba657025f6304539dd50498f2c9b7367b44c14767f83ba612a152257d5f6",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+    }
+  },
+  "schema_version": 1,
+  "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256"
+}

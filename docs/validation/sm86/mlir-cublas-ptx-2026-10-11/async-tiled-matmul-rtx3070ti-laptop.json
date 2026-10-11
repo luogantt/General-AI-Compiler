@@ -1,0 +1,99 @@
+{
+  "correctness": {
+    "checked_output_elements": 256,
+    "exact": true,
+    "max_abs_error": 0.0,
+    "seed": 20261011
+  },
+  "device": {
+    "compute_capability": [
+      8,
+      6
+    ],
+    "id": 0,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
+  },
+  "kernel": {
+    "abi": "A_f32_row_major, B_f32_row_major, C_f32_row_major",
+    "block": [
+      64,
+      1,
+      1
+    ],
+    "grid": [
+      1,
+      1,
+      1
+    ],
+    "shape": {
+      "k": 64,
+      "m": 16,
+      "n": 16
+    },
+    "symbol": "gac_async_tiled_matmul_f32_16x16x64"
+  },
+  "kind": "gac-functional-async-tiled-matmul-sm86-run-v1",
+  "production_ffn_integration": false,
+  "ptx": {
+    "evidence": {
+      "async_commit_groups": 4,
+      "async_copy_instructions": 8,
+      "async_wait_group_depths": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "barriers": 7,
+      "fma_instructions": 0,
+      "fp32_adds": 32,
+      "fp32_multiplies": 32,
+      "global_stores": 4,
+      "shared_declarations": 2,
+      "shared_loads": 12,
+      "static_shared_bytes": 4096
+    },
+    "path": "/home/robot/gac-async-matmul-20261011/artifact/async-tiled-matmul.ptx",
+    "sha256": "69855b6d6053411d0996248f7f588c8f64fab0df8e0c2de4b59ae7697929c6ad"
+  },
+  "timing": {
+    "latency_us": [
+      2.8518399596214294,
+      2.8518399596214294,
+      2.8467199206352234,
+      2.8569599986076355,
+      2.8518399596214294,
+      2.8518399596214294,
+      2.8518399596214294,
+      2.8569599986076355,
+      2.682879865169525,
+      2.687999904155731,
+      2.677760124206543,
+      2.682879865169525,
+      2.682879865169525,
+      2.677760124206543,
+      2.682879865169525,
+      2.6214399933815002,
+      2.6256000995635986,
+      2.6214399933815002,
+      2.616319954395294,
+      2.6214399933815002,
+      2.6265600323677063,
+      2.6265600323677063,
+      2.6265600323677063,
+      2.595840096473694,
+      2.595840096473694,
+      2.590720057487488,
+      2.595840096473694,
+      2.590720057487488,
+      2.590720057487488,
+      2.595840096473694
+    ],
+    "launches_per_sample": 200,
+    "maximum_us": 2.8569599986076355,
+    "median_us": 2.6521600782871246,
+    "minimum_us": 2.590720057487488,
+    "samples": 30,
+    "warmup_launches": 20
+  }
+}

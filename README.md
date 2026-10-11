@@ -1,8 +1,8 @@
 # General AI Compiler（GAC）
 
-> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、外部 `mlir-opt` 验证入口、cuBLAS 混合 FFN 路径、真正执行官方 MLIR→NVVM→PTX 产物的 `mlir-ptx-sm86` FFN 路径，以及 UniAD 2.0 stage2 BEV encoder FFN adapter。
+> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、cuBLAS 混合 FFN、全 PTX FFN，以及两次 cuBLAS MatMul 配合两个 MLIR→PTX 融合 Kernel 的 `mlir-cublas-ptx-sm86` 生产候选。
 
-GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有三条边界不同的路径：`mlir-linalg` 生成标准 Tensor/Linalg MLIR；`mlir-cuda-sm86` 用两次 cuBLAS MatMul 和两个 NVRTC 融合 Kernel 执行固定 FFN；`mlir-ptx-sm86` 为同一生产形状 FFN 生成三个 `gpu.func`，由官方 LLVM 24 `mlir-opt` 经 NVVM 降到 SM86 PTX，Runtime 只加载和启动这份 PTX。
+GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有五条边界不同的路径：`mlir-linalg` 生成标准 Tensor/Linalg MLIR；`mlir-cuda-sm86` 用两次 cuBLAS MatMul 和两个 NVRTC 融合 Kernel 执行固定 FFN；`mlir-ptx-sm86` 把同一生产形状 FFN 的三个 `gpu.func` 经官方 LLVM 24 `mlir-opt` 降到 SM86 PTX；`mlir-cublas-ptx-sm86` 保留两次 CuPy/cuBLAS MatMul，并把两个融合阶段改为 MLIR PTX；`mlir-tiled-ffn-sm86` 用两个单缓冲 tiled MatMul Kernel 和一个最终融合 PTX Kernel 执行三个 dispatch。
 
 ```text
 JSON graph / BEVFormer config + checkpoint
@@ -26,11 +26,11 @@ JSON graph / BEVFormer config + checkpoint
 
 当前 GPU 路径不会在 CUDA 缺失时静默改用 CPU。HXP 中的 `implementation_candidates` 供 Session 建立时选择；vendor 调用执行中失败不会逐节点自动切回 generated CUDA。NumPy 是显式选择的参考后端。
 
-`mlir-cuda-sm86` 和 `mlir-ptx-sm86` 都不会静默回退到 NumPy 或旧 CUDA 图后端。它们当前直接从 JSON graph 建立内存中的计划；HXP v1 不保存这类产物，因此不能把 `.hxp` 作为输入。
+`mlir-cuda-sm86`、`mlir-ptx-sm86`、`mlir-cublas-ptx-sm86` 和 `mlir-tiled-ffn-sm86` 都不会静默回退到 NumPy 或旧 CUDA 图后端。它们当前直接从 JSON graph 建立计划；HXP v1 不保存这类产物，因此不能把 `.hxp` 作为输入。
 
 ## 当前已完成
 
-截至 2026-10-11，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成 tensor IR emitter 和外部 verifier；生产形状 BEVFormer FFN 已完成官方 GPU Dialect→NVVM→PTX 编译、PTX 加载、正确性检查和 SM86 真机测速。完整 BEVFormer 仍未全部进入 MLIR 路径。
+截至 2026-10-11，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成 tensor IR emitter 和外部 verifier；生产形状 BEVFormer FFN 已完成首版 GPU Dialect→NVVM→PTX 的真机正确性与性能基线。本轮又完成 `mlir-cublas-ptx-sm86`、单缓冲三 dispatch 的 `mlir-tiled-ffn-sm86`、真实输入 FP16/TF32 MMA、真实 `cp.async` 双缓冲 MatMul 功能候选，以及三候选 autotuning；四调用 cuBLAS+PTX 候选已有正式双顺序报告，tiled FFN 当前是等待固定 Git commit 重跑的预验收结果。完整 BEVFormer 仍未全部进入 MLIR 路径。
 
 | 层次 | 已完成能力 |
 | --- | --- |
@@ -38,6 +38,9 @@ JSON graph / BEVFormer config + checkpoint
 | MLIR M0/M1 | 确定性 textual MLIR、标准注册方言、外部 `mlir-opt` verifier 接口；覆盖手工构造的 BEVFormer-like tiny FFN JSON smoke 所需的 MatMul、广播 Add、ReLU、LayerNorm，以及 GELU、Identity 和融合 AddReLU/MatMulBiasGELU |
 | MLIR CUDA FFN 切片 | `mlir-cuda-sm86` 严格匹配一个静态 FP32 BEVFormer FFN：两次 CuPy/cuBLAS MatMul、`Bias+ReLU` 融合 Kernel、`Bias+Residual+LayerNorm` 融合 Kernel；生成显式 runtime-call plan 并在 Compute Capability 8.6 上执行 |
 | MLIR PTX FFN 切片 | `mlir-ptx-sm86` 严格匹配生产形状 `[1,2500,256]→512→256` FP32 FFN；生成三个 GPU Dialect kernel，调用官方 `mlir-opt` 降到 NVVM/PTX 7.1，校验产物后由 Runtime 直接加载 PTX；没有 cuBLAS/NVRTC fallback |
+| MLIR cuBLAS+PTX 生产候选 | `mlir-cublas-ptx-sm86` 使用固定四调用计划：cuBLAS FC1、MLIR PTX `Bias+ReLU`、cuBLAS FC2、MLIR PTX `Bias+Residual+LayerNorm`；不提交 CUDA C 给 NVRTC；RTX 3070 Ti Laptop 上 device-resident 中位数为 `222.131～222.694 μs/FFN` |
+| MLIR tiled FFN 功能候选 | `mlir-tiled-ffn-sm86` 用单缓冲 16×16×16 FP32 tiled FC1+Bias+ReLU、tiled FC2 和 MLIR PTX 最终融合组成三个 dispatch；已有完整 Session、无权重 artifact 和三候选 autotune 接线；RTX 3070 Ti Laptop 预验收为 `0.891556 ms/FFN`，固定 commit 正式报告待重跑 |
+| MLIR Kernel 优化基础设施 | FP16 `16×8×32` 与 TF32 `16×8×16` 真实输入 MMA 已在 RTX 3070 Ti Laptop 功能运行；独立 `16×16×64` FP32 `cp.async` 双缓冲 MatMul 候选也已 exact 运行；两者均未接入生产 FFN。autotuner 已实现正确性门、median 选择和绑定设备/图/源码/候选空间的原子缓存 |
 | CUDA SM86 后端 | 基础 Tensor/MLP、MHA、CNN、MSDeformableAttention、BEV geometry、Spatial/Temporal Attention、运动补偿及 step 边界所需 Cast/Where；不支持的类型、属性和布局会明确拒绝 |
 | HXP 与 Runtime | 确定性打包、摘要校验、安全加载、源码与 launch metadata 复核、静态 arena、驻留权重、单 stream 执行、状态提交/回滚、Trace 和可选逐 launch CUDA Event Profile |
 | BEVFormer-tiny | 官方 checkpoint 严格映射；ResNet-50 + 单层 FPN；feature/input preparation；三层 Encoder；六层 Decoder；六层 raw detection projection；cold/history image-to-BEV；统一 cold/warm 五输入三输出 step |
@@ -210,11 +213,95 @@ RTX 3080 配对交替实测中，全 PTX 路径为 **1.092～1.102 ms/FFN**，cu
 性能来自 scheduling、融合和目标专用 lowering。完整编译产物、原始报告和复现命令见
 [MLIR→PTX 真机验证](docs/validation/sm86/mlir-ptx-2026-10-11/README.md)。
 
+## `mlir-cublas-ptx-sm86` 四调用生产候选
+
+`mlir-cublas-ptx-sm86` 面向同一个固定 FP32 生产 FFN，并复用严格 pattern matcher。它把成熟矩阵乘和项目可控融合边界组合成以下执行计划：
+
+```text
+FC1 MatMul                 CuPy/cuBLAS
+Bias + ReLU               MLIR GPU Dialect → NVVM → PTX
+FC2 MatMul                 CuPy/cuBLAS
+Bias + residual + LayerNorm  MLIR GPU Dialect → NVVM → PTX
+```
+
+两个融合 entry 使用官方 LLVM 24 pipeline 生成 PTX 7.1；`MlirCublasPtxSession` 在 CUDA 初始化前重建并校验规范计划，再用 `RawModule(path=PTX)` 加载。`mlir_cublas_ptx_artifact.py` 可把 GPU MLIR、binary MLIR、PTX 和 manifest 原子发布为无权重目录；加载时用另行校验的 graph 常量重建完整四调用计划。这个 Runtime 不向 NVRTC 提交 CUDA C，也没有 NumPy、旧 CUDA 或全 PTX fallback。MatMul 当前是 `cupy.matmul(..., out=...)` 的 cuBLAS 路径，尚未接入 cuBLASLt epilogue。
+
+在已有生产尺寸 JSON graph 上可直接编译并运行：
+
+```bash
+PYTHONPATH=src python -m gac.cli run build/bevformer-production-ffn.json \
+  --backend mlir-cublas-ptx-sm86 \
+  --mlir-opt "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt" \
+  --verify --warmup 50 --repeat 100 \
+  --report build/mlir-cublas-ptx-sm86.json
+```
+
+输入 JSON 必须恰好满足 `[1,2500,256] → 512 → 256`、FP32、连续布局及 query residual 合同；小尺寸 `examples/bevformer_tiny_ffn.json` 会被明确拒绝。
+
+RTX 3070 Ti Laptop（SM86、8 GB、Driver 580.178.04、CUDA Runtime 12.9、CuPy 13.6.0）上，两轮各采用 warmup 50、40 个 repeat、每个 repeat 100 次完整 FFN，并在每轮内交换测量顺序。PTX-first 报告中，新路径与旧 `mlir-cuda-sm86` 的 device-resident 中位数分别为 **222.131 μs** 和 **227.190 μs**，位置平衡加速为 **1.02414×**；NVRTC-first 报告中分别为 **222.694 μs** 和 **228.204 μs**，加速为 **1.02677×**。两轮 `allclose=True`，新路径最大绝对误差为 `7.152557e-7`；autotuner 两轮都选择 `mlir-cublas-ptx-sm86`。
+
+新路径公共 `run` 的 H2D+计算 GPU 中位数为 **565.072 / 564.096 μs**，含 D2H 与同步的 wall 中位数为 **1240.842 / 1203.280 μs**（PTX-first / NVRTC-first）。这些数字只属于单个生产形状 FFN，不是完整 BEVFormer。上一版 RTX 3080 cuBLAS hybrid 的 `0.209～0.214 ms/FFN` 是另一台设备上的历史基线，不能与这台 Laptop GPU 的绝对延时直接横比。
+
+专用工具会构造确定性的生产图、支持无权重 artifact，并保存逐次原始样本。两次运行只改变首轮顺序：
+
+```bash
+PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
+  --mlir-opt /path/to/mlir-opt \
+  --emit-artifact-dir build/mlir-cublas-ptx-artifact \
+  --compile-only --output build/mlir-cublas-ptx-compile.json
+
+PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
+  --artifact-dir build/mlir-cublas-ptx-artifact \
+  --benchmark-order ptx-first --warmup 50 --iterations 100 --repeats 40 \
+  --public-samples 30 --autotune \
+  --autotune-cache build/mlir-cublas-ptx-autotune-ptx-first.json \
+  --output build/mlir-cublas-ptx-ptx-first.json
+
+PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
+  --artifact-dir build/mlir-cublas-ptx-artifact \
+  --benchmark-order nvrtc-first --warmup 50 --iterations 100 --repeats 40 \
+  --public-samples 30 --autotune \
+  --autotune-cache build/mlir-cublas-ptx-autotune-nvrtc-first.json \
+  --output build/mlir-cublas-ptx-nvrtc-first.json
+```
+
+## tiled、NVGPU/MMA、异步双 stage 与 autotuning
+
+[`src/gac/mlir_tiled_ffn.py`](src/gac/mlir_tiled_ffn.py) 已把单缓冲 16×16×16 FP32 shared-memory tile 接成完整生产形状 FFN：FC1+Bias+ReLU、FC2、Bias+Residual+LayerNorm 三次 PTX dispatch，执行不经过 NVRTC。[`MlirTiledFfnSession`](src/gac/mlir_tiled_ffn_runtime.py) 与无权重 artifact 已接到 benchmark/autotune。RTX 3070 Ti Laptop 上使用 warmup 50、每个 repeat 100 次、40 个 repeat、public samples 30 的预验收结果如下；该轮尚未绑定最终 Git commit，不能替代后续正式报告：
+
+| 完整 FFN 候选 | device-resident 中位数 | 正确性/选择状态 |
+| --- | ---: | --- |
+| `mlir-tiled-ffn-sm86` | 0.891556 ms | `allclose=True`，max abs `7.1526e-7`，eligible |
+| `mlir-cublas-ptx-sm86` | 0.221634 ms | eligible，autotuner 选择 |
+| `mlir-cuda-sm86` | 0.227610 ms | eligible |
+
+[`src/gac/mlir_tiled_matmul.py`](src/gac/mlir_tiled_matmul.py) 还提供真实输入 Tensor Core 功能候选。TF32 路径计算 `A[16,16] × B[16,8] → C[16,8]`，PTX 含 4 条 `mma.sync.m16n8k4`、12 次 global load 和 4 次 store；FP16 路径计算 `A[16,32] × B[32,8] → C_f32[16,8]`，PTX 含 2 条 `mma.sync.m16n8k16`、24 次 global load 和 4 次 store。两者在 RTX 3070 Ti Laptop 上均为 `max_abs_error=0`，每次 launch 的 CUDA Event 中位数分别为 **3.8796 μs** 和 **4.0127 μs**。它们仍是固定尺寸功能候选，没有接入生产 FC1/FC2 或完整 FFN。
+
+[`src/gac/mlir_async_tiled_matmul.py`](src/gac/mlir_async_tiled_matmul.py) 实现了真实输入 FP32 `16×16×64` 双缓冲 MatMul。LLVM 24→SM86 PTX 7.1 包含 8 条 `cp.async`、4 个 commit、`wait_group [1,1,1,0]` 和 4096 B shared memory；RTX 3070 Ti Laptop 上 256 个输出逐元素 exact，`max_abs_error=0`，每次 launch 中位数 **2.652160 μs**。这个固定尺寸候选尚未接入生产 FFN。
+
+功能候选可以独立复现：
+
+```bash
+PYTHONPATH=src python tools/probe_mlir_tiled_matmul.py \
+  --output-dir build/mlir-tiled-probe \
+  --mlir-opt "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt" \
+  --which fc1 --tile-m 16 --tile-n 16 --tile-k 16 \
+  --probe-functional-mma
+
+PYTHONPATH=src python tools/probe_mlir_async_tiled_matmul.py \
+  --output-dir build/mlir-async-tiled-matmul \
+  --mlir-opt "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"
+```
+
+[`src/gac/mlir_ptx_autotune.py`](src/gac/mlir_ptx_autotune.py) 定义候选的 backend、`(M,N,K)` tile、CUDA block、FP32/TF32/FP16 精度和融合策略。它先对每个候选做输出正确性检查，再计时并按重复样本的中位数选择赢家；缓存绑定 graph/source SHA-256、设备、候选空间和计时配置，并用原子替换发布。[`src/gac/mlir_cublas_ptx_benchmark.py`](src/gac/mlir_cublas_ptx_benchmark.py) 现在可以让 `mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和一个 `mlir-tiled-ffn-sm86` Session 同轮进入 CUDA Event 计时。真实输入 MMA 与 `cp.async` MatMul 仍未接到完整 FFN autotune。生产 Tensor Core FFN、双缓冲生产 FFN、cuBLASLt 和更多 tile 候选仍未完成。
+
+本轮优化边界、真机结果和未接线候选见 [cuBLAS+PTX 优化验证说明](docs/validation/sm86/mlir-cublas-ptx-2026-10-11/README.md)。
+
 ## RTX 3070 / SM86 适配边界
 
-首个目标是桌面 RTX 3070 对应的 `cuda-sm86`。最终全图验收实际使用 **RTX 3080 10 GB**；RTX 3080 与 RTX 3070 的 Compute Capability 都是 8.6，因此这次结果验证了相同 SM86 编译目标下的代码生成、NVRTC、Kernel 执行和 Runtime 契约。
+首个目标是桌面 RTX 3070 对应的 `cuda-sm86`。最终全图验收实际使用 **RTX 3080 10 GB**；本轮 cuBLAS+MLIR PTX 单 FFN 使用 **RTX 3070 Ti Laptop 8 GB**。这些 GPU 与桌面 RTX 3070 的 Compute Capability 都是 8.6，因此结果验证了相同 SM86 编译目标下对应切片的代码生成、加载和 Runtime 契约。
 
-这不等于 RTX 3070 性能验收。两张卡的计算资源、带宽、显存容量和功耗不同，本文所有 BEVFormer 全图耗时都属于 RTX 3080。桌面 RTX 3070 的全图延迟、实际峰值显存和稳定性尚未实测。较早的 RTX 3070 Ti Laptop 记录只覆盖 MLP 与独立 MSDA 切片，不代表完整 BEVFormer。
+这不等于桌面 RTX 3070 性能验收。不同卡的计算资源、带宽、显存容量和功耗不同，本文所有 BEVFormer 全图耗时仍属于 RTX 3080；RTX 3070 Ti Laptop 新数据只覆盖一个 FFN。桌面 RTX 3070 的全图延迟、实际峰值显存和稳定性尚未实测。
 
 ## RTX 3080 最终验收
 
@@ -329,10 +416,20 @@ src/gac/backends/cuda.py             SM86 支持检查、CUDA 生成与 launch m
 src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLIR
 src/gac/backends/mlir_cuda.py        严格 FFN pattern 到显式 cuBLAS/NVRTC call plan
 src/gac/backends/mlir_ptx.py         严格生产 FFN 到 GPU Dialect/NVVM/PTX artifact
+src/gac/backends/mlir_cublas_ptx.py  2×cuBLAS + 2×MLIR PTX 的严格四调用计划
 src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
 src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
 src/gac/mlir_ptx_runtime.py          校验并加载 MLIR 生成 PTX 的 SM86 Runtime
+src/gac/mlir_cublas_ptx_runtime.py   校验并执行 cuBLAS+MLIR PTX 四调用计划
+src/gac/mlir_cublas_ptx_artifact.py  无权重四调用 PTX 目录的原子写入与校验加载
 src/gac/mlir_ptx_artifact.py         无内联权重的离线 PTX 目录写入、校验与加载
+src/gac/mlir_tiled_matmul.py         shared-memory tiled PTX 与真实输入 FP16/TF32 MMA 功能候选
+src/gac/mlir_async_tiled_matmul.py   真实输入 cp.async 双缓冲 MatMul 功能候选
+src/gac/mlir_tiled_ffn.py            单缓冲 tiled FC1/FC2 的三 dispatch FFN 计划
+src/gac/mlir_tiled_ffn_runtime.py    校验并执行三 dispatch tiled FFN
+src/gac/mlir_tiled_ffn_artifact.py   tiled FFN 无权重目录的原子写入与校验加载
+src/gac/mlir_ptx_autotune.py         正确性门、median 选择与完整性缓存
+src/gac/mlir_cublas_ptx_benchmark.py 三个真实 FFN Session 的 CUDA Event adapter
 src/gac/memory.py                    生命周期分析与静态 arena 规划
 src/gac/package.py                   HXP 写入、摘要校验、安全加载与 codegen 复核
 src/gac/runtime.py                   CudaSession、vendor 选择、传输、启动与计时
@@ -346,6 +443,11 @@ src/gac/cli.py                       doctor / compile / mlir-compile / inspect /
 examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
 tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
 tools/benchmark_mlir_cuda_ffn.py     生产尺寸 FFN 切片的真机基准与正确性报告
+tools/benchmark_mlir_cublas_ptx_ffn.py cuBLAS+MLIR PTX 的配对基准、artifact 与 autotune 报告
+tools/probe_mlir_tiled_matmul.py     tiled MatMul 与 FP16/TF32 MMA lowering probe
+tools/run_mlir_functional_mma.py    真实输入 MMA 的正确性与 CUDA Event 测量
+tools/probe_mlir_async_tiled_matmul.py cp.async 双缓冲 MatMul lowering probe
+tools/run_mlir_async_tiled_matmul.py 双缓冲 MatMul 的正确性与 CUDA Event 测量
 tests/                               编译器、Runtime、HXP、BEVFormer 与物理 CUDA 测试
 docs/                                架构、设计、后端约定、路线图和验收证据
 ```
@@ -357,13 +459,13 @@ docs/                                架构、设计、后端约定、路线图�
 - 当前支持声明限定为固定 Profile 的 BEVFormer-tiny **raw step**。CPU `decode_nms_free` 是公开的图外后处理边界，不包含在上述 GPU/wall 数字中。
 - 正确性输入是冻结的合成、已归一化并 padding 的六相机 tensor 与固定几何输入；尚未完成真实 nuScenes 数据集的 mAP/NDS 验收。
 - 完整 BEVFormer 只在 RTX 3080 SM86 上验收；桌面 RTX 3070 的延迟、峰值显存和稳定性仍待实测。
-- 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口。`mlir-ptx-sm86` 已完成一个生产形状 FFN 的 GPU/NVVM/PTX 闭环，但不是通用 bufferization/GPU mapping，也没有完整 BEVFormer 或 RTX 3070 性能数据。
+- 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口。`mlir-ptx-sm86` 已完成一个生产形状 FFN 的 GPU/NVVM/PTX 闭环；`mlir-cublas-ptx-sm86` 只完成固定四调用生产候选。两者都不是通用 bufferization/GPU mapping，也没有完整 BEVFormer 或 RTX 3070 性能数据。
 - MLIR 的 BEVFormer 相关输入仍是手写的 tiny FFN JSON smoke，真机 benchmark 使用相同构图器生成生产尺寸 FFN；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
 - 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
 - UniAD 编译覆盖当前只包含一个 stage2 BEV encoder FFN；tracking、mapping、motion、occupancy、planning 和 attention 尚未接入 HXP/MLIR。完整 UniAD 报告是外部 checkout 的 native PyTorch 基线，不是编译后整网数据。
 - HXP v1 不携带 MLIR runtime-call plan 或 PTX artifact；`mlir-ptx-sm86` 可通过独立的已校验目录和 `--mlir-ptx-artifact` 加载，尚未并入 HXP。
 - M0/M1 把小型 smoke 权重写成内联 `dense` 常量；完整模型需要资源化常量或外部权重 ABI，不能直接沿用这种文本承载方式。
-- 只覆盖首条路径所需的静态 Shape 和连续布局；主要计算仍为 FP32，尚未启用 Tensor Core、TF32、FP16 主计算或离线算法调优。
+- 只覆盖首条路径所需的静态 Shape 和连续布局；主要计算仍为 FP32。FP16/TF32 `mma.sync` 与双缓冲 `cp.async` 已有真实输入固定尺寸功能候选，但尚未扩展为生产 FC1/FC2。单缓冲 tiled 完整 FFN 已接入三候选 autotune；生产 Tensor Core FFN、双缓冲生产 FFN、cuBLASLt 和固定 commit 正式 tiled 报告仍未完成。
 - 当前使用单 CUDA stream，调用同步返回；设备侧跨帧状态驻留、多 stream、I/O 预绑定、CUDA Graph、批量 dispatch 和 DLPack 仍待实现。
 - `713,565,708` bytes 只是已计划 Tensor 与 cuDNN workspace 的预算/准入值，不能当作 `nvidia-smi` 进程峰值。
 - 当前 HXP 与本版 codegen 绑定，尚无预编译 cubin、多 target variant、签名认证或通用异构 Host Execution Plan。
@@ -382,6 +484,7 @@ docs/                                架构、设计、后端约定、路线图�
 - [128 MiB cuDNN workspace 实验](docs/validation/sm86/bevformer/optimization-2026-10-10/cudnn-explicit-workspace-benchmark.json)
 - [`mlir-cuda-sm86` 生产尺寸 FFN 真机验证与配对交替原始报告](docs/validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)
 - [`mlir-ptx-sm86` 官方 MLIR→NVVM→PTX 产物与真机配对报告](docs/validation/sm86/mlir-ptx-2026-10-11/README.md)
+- [`mlir-cublas-ptx-sm86` 真机结果及 tiled/MMA/异步双 stage/autotune 的实现边界](docs/validation/sm86/mlir-cublas-ptx-2026-10-11/README.md)
 - [UniAD 单层 FFN 迁移前真机历史证据](docs/validation/sm86/uniad/ffn-2026-10-11/README.md)
 - [UniAD native PyTorch 端到端历史基线](docs/validation/sm86/uniad/e2e-native-nuscenes-mini-2026-10-11/README.md)
 - [完整远程验收说明](docs/bevformer_sm86_validation_2026-10-10.md)

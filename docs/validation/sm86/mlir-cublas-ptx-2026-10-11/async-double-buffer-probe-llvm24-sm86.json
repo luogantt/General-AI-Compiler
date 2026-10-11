@@ -1,0 +1,109 @@
+{
+  "async_double_buffer_capability_probe": {
+    "evidence": {
+      "async_commit_groups": 2,
+      "async_copy_instructions": 2,
+      "async_wait_group_depths": [
+        1,
+        0
+      ],
+      "async_wait_groups": 2,
+      "barriers": 2,
+      "fma_instructions": 0,
+      "fp32_adds": 0,
+      "fp32_multiplies": 0,
+      "mma_instructions": 0,
+      "shared_declarations": 1,
+      "shared_loads": 2,
+      "shared_stores": 0,
+      "static_shared_bytes": 128,
+      "vector_shared_loads": 0
+    },
+    "files": {
+      "binary_mlir": "nvgpu-async-double-buffer-smoke.binary.mlir",
+      "gpu_mlir": "nvgpu-async-double-buffer-smoke.gpu.mlir",
+      "ptx": "nvgpu-async-double-buffer-smoke.ptx"
+    },
+    "has_two_stage_async_pipeline": true,
+    "production_ffn_integration": false,
+    "scope": "compiler-capability-and-overlap-schedule-smoke-only",
+    "sha256": {
+      "binary_mlir": "4c8c3c1529e08d1412ad324de727e2725086d7ccd8b07ef9f5af8791c70dc61e",
+      "gpu_mlir": "725ad6e0b505cb18ea32c052bc273b4c41122cffe5660858a132ebd5398a9a88",
+      "ptx": "b80c2ee9a03e9f46e1862eeac98661e5427a241bb1ea0c808c4ea29c74e646fd"
+    },
+    "shared_memory_bytes": 128,
+    "stage_count": 2,
+    "stage_elements": 16,
+    "toolchain": {
+      "chip": "sm_86",
+      "features": "+ptx71",
+      "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+      "ptx_version": "7.1",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+    }
+  },
+  "kind": "gac-bevformer-tiled-matmul-sm86-probe-v1",
+  "mma_capability_probes": {},
+  "tiled_matmuls": {
+    "fc1": {
+      "block": [
+        16,
+        16,
+        1
+      ],
+      "config": {
+        "block_x": 16,
+        "block_y": 16,
+        "fuse_bias_relu": true,
+        "k": 256,
+        "m": 2500,
+        "n": 512,
+        "symbol": "gac_bevformer_ffn_fc1_tiled_f32",
+        "tile_k": 16,
+        "tile_m": 16,
+        "tile_n": 16
+      },
+      "evidence": {
+        "async_commit_groups": 0,
+        "async_copy_instructions": 0,
+        "async_wait_group_depths": [],
+        "async_wait_groups": 0,
+        "barriers": 2,
+        "fma_instructions": 0,
+        "fp32_adds": 17,
+        "fp32_multiplies": 16,
+        "mma_instructions": 0,
+        "shared_declarations": 2,
+        "shared_loads": 20,
+        "shared_stores": 2,
+        "static_shared_bytes": 2048,
+        "vector_shared_loads": 4
+      },
+      "files": {
+        "binary_mlir": "fc1.binary.mlir",
+        "gpu_mlir": "fc1.gpu.mlir",
+        "ptx": "fc1.ptx"
+      },
+      "grid": [
+        32,
+        157,
+        1
+      ],
+      "sha256": {
+        "binary_mlir": "ad7f161ed530b0947ad3692e4c274edf764cc6206db9a9229ca5467d5d8f1371",
+        "gpu_mlir": "25128f1816181ab2305a2b939c9ecc26a846db8dea5e478f7424abf3cd86d2ff",
+        "ptx": "b81cb1c6570778e1ca1380157c26d9b05f47a58ef4c5a5e111b51baa57f9e333"
+      },
+      "shared_memory_bytes": 2048,
+      "toolchain": {
+        "chip": "sm_86",
+        "features": "+ptx71",
+        "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+        "ptx_version": "7.1",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+      },
+      "uses_tensor_cores": false
+    }
+  }
+}

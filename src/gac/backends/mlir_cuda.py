@@ -164,6 +164,12 @@ class MlirCudaProgram:
     runtime_dispatch_source: str
 
     @property
+    def target(self) -> str:
+        """Return the executable backend name used by runtime selectors."""
+
+        return TARGET
+
+    @property
     def text(self) -> str:
         return self.source
 

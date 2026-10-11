@@ -15,6 +15,10 @@ import numpy as np
 
 from .backends.cuda import TARGET, compile_cuda
 from .backends.mlir import compile_mlir
+from .backends.mlir_cublas_ptx import (
+    TARGET as MLIR_CUBLAS_PTX_TARGET,
+    compile_mlir_cublas_ptx,
+)
 from .backends.mlir_cuda import TARGET as MLIR_CUDA_TARGET, compile_mlir_cuda
 from .backends.mlir_ptx import TARGET as MLIR_PTX_TARGET, compile_mlir_ptx
 from .errors import GACError
@@ -28,6 +32,7 @@ from .mlir_toolchain import (
 )
 from .package import load_package, rebuild_cuda_program, write_package
 from .runtime import CudaSession, cuda_device_info, reference_run
+from .mlir_cublas_ptx_runtime import MlirCublasPtxSession
 from .mlir_runtime import MlirCudaSession
 from .mlir_ptx_artifact import (
     ARTIFACT_FILES,
@@ -143,7 +148,13 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("model")
     run.add_argument(
         "--backend",
-        choices=[TARGET, MLIR_CUDA_TARGET, MLIR_PTX_TARGET, "numpy-cpu"],
+        choices=[
+            TARGET,
+            MLIR_CUDA_TARGET,
+            MLIR_CUBLAS_PTX_TARGET,
+            MLIR_PTX_TARGET,
+            "numpy-cpu",
+        ],
         default=TARGET,
     )
     run.add_argument("--device", type=int, default=0)
@@ -180,16 +191,16 @@ def _parser() -> argparse.ArgumentParser:
     run.add_argument("--report", help="save device, correctness and timing report")
     run.add_argument(
         "--mlir-opt",
-        help="mlir-opt used by the mlir-ptx-sm86 backend",
+        help="mlir-opt used by the MLIR-to-PTX backends",
     )
     run.add_argument(
         "--mlir-timeout",
         type=float,
         default=DEFAULT_TIMEOUT_SECONDS,
-        help="MLIR-to-PTX timeout used by the mlir-ptx-sm86 backend",
+        help="MLIR-to-PTX timeout used by the MLIR-to-PTX backends",
     )
     run.add_argument(
-        "--wsl", action="store_true", help="run mlir-opt through WSL for mlir-ptx-sm86"
+        "--wsl", action="store_true", help="run mlir-opt through WSL for MLIR-to-PTX backends"
     )
     run.add_argument("--wsl-distribution")
     run.add_argument(
@@ -457,13 +468,29 @@ def _run(args) -> dict:
         raise ValueError("repeat must be positive and warmup must be non-negative")
     if (args.trace or args.profile) and args.backend != TARGET:
         raise ValueError("--trace and --profile currently require the cuda-sm86 backend")
+    mlir_to_ptx_backends = {MLIR_CUBLAS_PTX_TARGET, MLIR_PTX_TARGET}
+    mlir_toolchain_requested = bool(
+        args.mlir_opt
+        or args.wsl
+        or args.wsl_distribution
+        or args.mlir_timeout != DEFAULT_TIMEOUT_SECONDS
+    )
+    if args.backend not in mlir_to_ptx_backends and mlir_toolchain_requested:
+        raise ValueError(
+            "MLIR toolchain options require --backend "
+            "mlir-cublas-ptx-sm86 or mlir-ptx-sm86"
+        )
     started = time.perf_counter()
     model_path = Path(args.model)
     output_archive = _validate_run_paths(args)
     if args.mlir_ptx_artifact and args.backend != MLIR_PTX_TARGET:
         raise ValueError("--mlir-ptx-artifact requires --backend mlir-ptx-sm86")
     if model_path.suffix.lower() == ".hxp":
-        if args.backend in {MLIR_CUDA_TARGET, MLIR_PTX_TARGET}:
+        if args.backend in {
+            MLIR_CUDA_TARGET,
+            MLIR_CUBLAS_PTX_TARGET,
+            MLIR_PTX_TARGET,
+        }:
             raise ValueError(
                 "HXP v1 packages do not carry an MLIR execution artifact; "
                 f"run {args.backend} from a JSON graph"
@@ -474,7 +501,11 @@ def _run(args) -> dict:
         preparation = "verified-package-load-and-codegen-check"
     else:
         source_graph = load_graph(model_path)
-        if args.backend in {MLIR_CUDA_TARGET, MLIR_PTX_TARGET}:
+        if args.backend in {
+            MLIR_CUDA_TARGET,
+            MLIR_CUBLAS_PTX_TARGET,
+            MLIR_PTX_TARGET,
+        }:
             if args.no_fuse:
                 raise ValueError(
                     f"{args.backend} requires its explicit FFN fusion plan"
@@ -489,22 +520,39 @@ def _run(args) -> dict:
                 )
             allowed_matmul = (
                 {"auto", "cupy"}
-                if args.backend == MLIR_CUDA_TARGET
+                if args.backend in {MLIR_CUDA_TARGET, MLIR_CUBLAS_PTX_TARGET}
                 else {"auto"}
             )
             if args.matmul_backend not in allowed_matmul:
-                if args.backend == MLIR_CUDA_TARGET:
+                if args.backend in {MLIR_CUDA_TARGET, MLIR_CUBLAS_PTX_TARGET}:
                     raise ValueError(
-                        "mlir-cuda-sm86 has an explicit cuBLAS MatMul lowering"
+                        f"{args.backend} has an explicit cuBLAS MatMul lowering"
                     )
                 raise ValueError("mlir-ptx-sm86 has an explicit PTX MatMul lowering")
             if args.backend == MLIR_CUDA_TARGET:
                 program = compile_mlir_cuda(source_graph)
+            elif args.backend == MLIR_CUBLAS_PTX_TARGET:
+                if args.wsl_distribution and not args.wsl:
+                    raise ValueError("--wsl-distribution requires --wsl")
+                if args.wsl and not args.mlir_opt:
+                    raise ValueError(
+                        "--wsl requires --mlir-opt with a Linux executable path"
+                    )
+                program = compile_mlir_cublas_ptx(
+                    source_graph,
+                    mlir_opt=args.mlir_opt,
+                    use_wsl=args.wsl,
+                    wsl_distribution=args.wsl_distribution,
+                    timeout=args.mlir_timeout,
+                )
             else:
                 if args.wsl_distribution and not args.wsl:
                     raise ValueError("--wsl-distribution requires --wsl")
                 if args.mlir_ptx_artifact and (
-                    args.mlir_opt or args.wsl or args.wsl_distribution
+                    args.mlir_opt
+                    or args.wsl
+                    or args.wsl_distribution
+                    or args.mlir_timeout != DEFAULT_TIMEOUT_SECONDS
                 ):
                     raise ValueError(
                         "--mlir-ptx-artifact cannot be combined with MLIR toolchain options"
@@ -527,11 +575,12 @@ def _run(args) -> dict:
                     )
         else:
             program = compile_cuda(source_graph, fuse=not args.no_fuse)
-        preparation = (
-            "verified-precompiled-mlir-ptx-artifact"
-            if args.backend == MLIR_PTX_TARGET and args.mlir_ptx_artifact
-            else "json-source-generation"
-        )
+        if args.backend == MLIR_PTX_TARGET and args.mlir_ptx_artifact:
+            preparation = "verified-precompiled-mlir-ptx-artifact"
+        elif args.backend in mlir_to_ptx_backends:
+            preparation = "official-mlir-offline-compilation"
+        else:
+            preparation = "json-source-generation"
     preparation_ms = (time.perf_counter() - started) * 1000
     input_source = args.inputs or "seeded normal"
     if args.inputs:
@@ -630,6 +679,28 @@ def _run(args) -> dict:
         report["gpu_stream_ms"] = _stats(gpu)
         report["gpu_stream_scope"] = (
             "H2D + explicit cuBLAS/fused-kernel call plan; excludes output D2H"
+        )
+        report["lowering"] = program.describe()
+    elif args.backend == MLIR_CUBLAS_PTX_TARGET:
+        with MlirCublasPtxSession(program, device_id=args.device) as session:
+            report["device"] = session.info
+            report["session_setup_ms"] = session.setup_ms
+            report["runtime_calls"] = session.kernel_info
+            first = session.run(inputs)
+            report["first_invocation_ms"] = first.wall_ms
+            verify(first.outputs)
+            for _ in range(args.warmup):
+                session.run(inputs)
+            for _ in range(args.repeat):
+                result = session.run(inputs)
+                outputs = result.outputs
+                wall.append(result.wall_ms)
+                gpu.append(result.gpu_stream_ms)
+                verify(outputs)
+        report["gpu_stream_ms"] = _stats(gpu)
+        report["gpu_stream_scope"] = (
+            "H2D + two cuBLAS MatMuls + two MLIR-generated PTX fusion kernels; "
+            "excludes output D2H"
         )
         report["lowering"] = program.describe()
     elif args.backend == MLIR_PTX_TARGET:
