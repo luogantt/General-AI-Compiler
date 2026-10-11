@@ -1,6 +1,6 @@
 # General AI Compiler（GAC）
 
-> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、外部 `mlir-opt` 验证入口，以及一个严格限定 BEVFormer FFN pattern 的 `mlir-cuda-sm86` 可执行切片。
+> 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、外部 `mlir-opt` 验证入口、一个严格限定 FFN pattern 的 `mlir-cuda-sm86` 可执行切片，以及 UniAD 2.0 stage2 BEV encoder FFN adapter。
 
 GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有两条边界不同的路径：`mlir-linalg` 把 Canonical Graph 降为标准 `func`、`tensor`、`linalg`、`arith` 和 `math` 方言，用于外部 verifier；`mlir-cuda-sm86` 只匹配当前固定的 FFN 子图，同时生成可审阅/可验证的标准 `func`/`memref` runtime-call ABI manifest 与 Python call records。实际 dispatch 由经一致性校验的 call records 驱动两次 CuPy/cuBLAS MatMul 和两个 NVRTC 融合 Kernel，Runtime 不解析或执行 MLIR source。
 
@@ -230,6 +230,33 @@ gac-bevformer step-pipeline --help
 
 完整的官方 checkpoint 环境、golden 生成和远程复现步骤见 [BEVFormer 参考环境](docs/bevformer_reference_environment.md)与[远程验收记录](docs/bevformer_sm86_validation_2026-10-10.md)。
 
+## UniAD 2.0 adapter
+
+GAC 现在包含一个自包含的 UniAD 2.0 `stage2_e2e` BEV encoder FFN adapter。它从可信 checkpoint 精确映射第 0～5 层的两组 Linear、bias 和 post-FFN LayerNorm 参数，通过带 SHA-256 的 data-only bundle 跨越官方 UniAD Python 3.9/CUDA 11.8 环境与 GAC Python 3.11/CUDA 12 环境。bundle 加载禁用 pickle，并严格检查成员、摘要、shape、dtype、连续布局和有限值。
+
+当前生产 Profile 为 FP32 `[1,40000,256] → 512 → 256`。CUDA/HXP 基线有 6 次 dispatch，两个 MatMul 必须实际选择 CuPy/cuBLAS；MLIR runtime-call 路径把它降为两个 cuBLAS MatMul、融合 Bias+ReLU 和融合 Bias+Residual+LayerNorm，共 4 次调用。MLIR 文件是 ABI manifest，执行由校验后的 call records 驱动，融合核目前由 NVRTC 编译。
+
+从 GAC checkout 生成确定性 bundle 并编译两种产物：
+
+```bash
+python tools/uniad_make_synthetic_bundle.py build/uniad/layer0.uniadffn
+python tools/uniad_compile_ffn.py \
+  build/uniad/layer0.uniadffn build/uniad/layer0-compiled --backend both
+```
+
+官方 UniAD 环境中的 checkpoint 导出使用同一 checkout wrapper，不需要把 Python 3.11 的完整 GAC 环境安装进去：
+
+```bash
+python tools/uniad_export_ffn.py \
+  /path/to/UniAD-2.0/ckpts/uniad_base_e2e.pth \
+  build/uniad/layer0.uniadffn --layer 0 --trusted-checkpoint \
+  --with-synthetic-golden
+```
+
+导出器优先使用 Torch 的 `weights_only=True` 数据加载路径。`--trusted-checkpoint` 只允许不支持该参数的旧版 Torch 回退到 pickle 反序列化，因此只应对来源可信的本地 checkpoint 使用。
+
+完整 native PyTorch 端到端基线通过必选的 `--uniad-root` 连接外部 UniAD checkout；工具不会假定 GAC 仓库中存在 UniAD 的 `projects/` 路径。详细环境、命令、计时边界、RTX 3080 历史结果和限制见 [UniAD 编译器说明](docs/uniad_compiler.md)。迁移前单层 FFN 历史证据为 `1.635～1.645 ms`，同轮 CUDA/HXP + cuBLAS 为 `2.074～2.075 ms`，加速 `1.261～1.264×`；完整 UniAD native PyTorch 模型调用基线为 `822.885 ms` 均值。这两组证据尚未在当前迁移 commit 上重新跑真机，且不能解释为 MLIR 整网加速。
+
 统一测试入口：
 
 ```bash
@@ -253,8 +280,10 @@ src/gac/package.py                   HXP 写入、摘要校验、安全加载与
 src/gac/runtime.py                   CudaSession、vendor 选择、传输、启动与计时
 src/gac/profiler.py                  Trace 与 CUDA Event Profile 聚合
 src/gac/frontends/                   JSON、BEVFormer 合同与 Backbone 导入
+src/gac/uniad/                       UniAD FFN 合同、bundle 与 checkpoint 映射
 src/gac/bevformer*.py                BEVFormer 算子、Encoder/Decoder/raw head 与状态 Runtime
 src/gac/tools/build_bevformer.py     权重检查及 BEVFormer 子图/HXP 构建入口
+src/gac/tools/uniad_*.py             UniAD 导出、编译、FFN 与端到端基准入口
 src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
 examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
 tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
@@ -273,6 +302,7 @@ docs/                                架构、设计、后端约定、路线图�
 - 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口；是否验证成功必须以对应 `mlir-opt` 命令和报告中的 `verified: true` 为准。`mlir-cuda-sm86` 只是严格匹配当前 FFN 的独立 runtime-call 切片，还没有通用 bufferization、GPU/NVGPU、NVVM/LLVM、PTX/cubin 或 RTX 3070 性能数据。
 - MLIR 的 BEVFormer 相关输入仍是手写的 tiny FFN JSON smoke，真机 benchmark 使用相同构图器生成生产尺寸 FFN；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
 - 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
+- UniAD 编译覆盖当前只包含一个 stage2 BEV encoder FFN；tracking、mapping、motion、occupancy、planning 和 attention 尚未接入 HXP/MLIR。完整 UniAD 报告是外部 checkout 的 native PyTorch 基线，不是编译后整网数据。
 - HXP v1 不携带 MLIR runtime-call plan；`mlir-cuda-sm86` 目前只能直接运行 JSON graph，且严格要求 SM86、CuPy、cuBLAS 与 NVRTC。
 - M0/M1 把小型 smoke 权重写成内联 `dense` 常量；完整模型需要资源化常量或外部权重 ABI，不能直接沿用这种文本承载方式。
 - 只覆盖首条路径所需的静态 Shape 和连续布局；主要计算仍为 FP32，尚未启用 Tensor Core、TF32、FP16 主计算或离线算法调优。
@@ -293,6 +323,8 @@ docs/                                架构、设计、后端约定、路线图�
 - [最终 HXP 构建日志](docs/validation/sm86/bevformer/optimization-2026-10-10/build-production-step-final.txt)、[大小](docs/validation/sm86/bevformer/optimization-2026-10-10/bevformer_tiny_step_sm86-final.size.txt)与[SHA-256](docs/validation/sm86/bevformer/optimization-2026-10-10/bevformer_tiny_step_sm86-final.sha256.txt)
 - [128 MiB cuDNN workspace 实验](docs/validation/sm86/bevformer/optimization-2026-10-10/cudnn-explicit-workspace-benchmark.json)
 - [`mlir-cuda-sm86` 生产尺寸 FFN 真机验证与配对交替原始报告](docs/validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)
+- [UniAD 单层 FFN 迁移前真机历史证据](docs/validation/sm86/uniad/ffn-2026-10-11/README.md)
+- [UniAD native PyTorch 端到端历史基线](docs/validation/sm86/uniad/e2e-native-nuscenes-mini-2026-10-11/README.md)
 - [完整远程验收说明](docs/bevformer_sm86_validation_2026-10-10.md)
 
 ## 参考项目与许可证

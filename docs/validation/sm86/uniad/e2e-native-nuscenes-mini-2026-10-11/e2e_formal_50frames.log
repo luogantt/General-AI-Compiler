@@ -1,0 +1,237 @@
+/root/autodl-tmp/envs/uniad20-e2e/lib/python3.9/site-packages/mmcv/__init__.py:20: UserWarning: On January 1, 2023, MMCV will release v2.0.0, in which it will remove components related to the training process and add a data transformation module. In addition, it will rename the package names mmcv to mmcv-lite and mmcv-full to mmcv. See https://github.com/open-mmlab/mmcv/blob/master/docs/en/compatibility.md for more details.
+  warnings.warn(
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/uniad/modules/custom_base_transformer_layer.py:77: UserWarning: The arguments `feedforward_channels` in BaseTransformerLayer has been deprecated, now you should set `feedforward_channels` and other FFN related arguments to a dict named `ffn_cfgs`.
+  warnings.warn(
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/uniad/modules/custom_base_transformer_layer.py:77: UserWarning: The arguments `ffn_dropout` in BaseTransformerLayer has been deprecated, now you should set `ffn_drop` and other FFN related arguments to a dict named `ffn_cfgs`.
+  warnings.warn(
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/uniad/modules/custom_base_transformer_layer.py:77: UserWarning: The arguments `ffn_num_fcs` in BaseTransformerLayer has been deprecated, now you should set `num_fcs` and other FFN related arguments to a dict named `ffn_cfgs`.
+  warnings.warn(
+/root/autodl-tmp/envs/uniad20-e2e/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3483.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+2026-10-11 11:49:44,837 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.0.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,842 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.1.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,845 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.2.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,850 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.3.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,853 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.4.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,937 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.5.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,944 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.6.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,951 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.7.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,955 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.8.conv2 is upgraded to version 2.
+2026-10-11 11:49:44,958 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.9.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,037 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.10.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,040 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.11.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,043 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.12.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,047 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.13.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,050 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.14.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,053 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.15.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,137 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.16.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,141 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.17.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,145 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.18.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,149 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.19.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,153 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.20.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,237 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.21.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,241 - root - INFO - ModulatedDeformConvPack img_backbone.layer3.22.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,245 - root - INFO - ModulatedDeformConvPack img_backbone.layer4.0.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,252 - root - INFO - ModulatedDeformConvPack img_backbone.layer4.1.conv2 is upgraded to version 2.
+2026-10-11 11:49:45,255 - root - INFO - ModulatedDeformConvPack img_backbone.layer4.2.conv2 is upgraded to version 2.
+2026-10-11 11:49:48,560 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:49:48,576 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:49:48,608 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:49:48,629 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/datasets/eval_utils/map_api.py:2097: ShapelyDeprecationWarning: Iteration over multi-part geometries is deprecated and will be removed in Shapely 2.0. Use the `geoms` property to access the constituent parts of a multi-part geometry.
+  exteriors = [int_coords(poly.exterior.coords) for poly in polygons]
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/datasets/eval_utils/map_api.py:2098: ShapelyDeprecationWarning: Iteration over multi-part geometries is deprecated and will be removed in Shapely 2.0. Use the `geoms` property to access the constituent parts of a multi-part geometry.
+  interiors = [int_coords(pi.coords) for poly in polygons for pi in poly.interiors]
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/uniad/modules/transformer.py:134: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:245.)
+  shift = bev_queries.new_tensor(
+/root/autodl-tmp/UniAD-2.0-codex/projects/mmdet3d_plugin/core/bbox/coders/detr3d_track_coder.py:94: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  self.post_center_range = torch.tensor(
+2026-10-11 11:49:51,051 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:49:51,067 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:49:51,098 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:49:51,118 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:49:53,469 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:49:53,484 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:49:53,516 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:49:53,536 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:49:55,636 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:49:55,653 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:49:55,688 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:49:55,711 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:49:58,025 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:49:58,043 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:49:58,080 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:49:58,103 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:00,469 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:00,484 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:00,516 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:00,538 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:03,064 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:03,080 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:03,115 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:03,137 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:05,557 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:05,573 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:05,606 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:05,627 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:08,033 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:08,049 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:08,082 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:08,103 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:10,601 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:10,616 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:10,648 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:10,668 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:13,194 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:13,210 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:13,243 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:13,265 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:15,828 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:15,843 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:15,874 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:15,896 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:18,173 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:18,188 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:18,219 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:18,239 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:20,953 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:20,969 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:21,002 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:21,025 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:23,583 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:23,598 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:23,630 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:23,652 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+======
+Loading NuScenes tables for version v1.0-mini...
+23 category,
+8 attribute,
+4 visibility,
+911 instance,
+12 sensor,
+120 calibrated_sensor,
+31206 ego_pose,
+8 log,
+10 scene,
+404 sample,
+31206 sample_data,
+18538 sample_annotation,
+4 map,
+Done loading in 0.609 seconds.
+======
+Reverse indexing ...
+Done reverse indexing in 0.1 seconds.
+======
+WARNING!!!!, Only can be used for obtain inference speed!!!!
+load checkpoint from local path: /root/autodl-tmp/uniad20-assets/ckpts/uniad_base_e2e.pth
+Measured 5/50 frames: median=784.963 ms, mean=790.630 ms, FPS=1.265
+2026-10-11 11:50:26,401 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:26,418 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:26,449 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:26,470 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:29,233 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:29,248 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:29,289 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:29,310 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:32,334 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:32,349 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:32,382 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:32,403 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:35,527 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:35,544 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:35,579 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:35,601 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:38,731 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:38,746 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:38,780 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:38,801 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+Measured 10/50 frames: median=785.486 ms, mean=803.375 ms, FPS=1.245
+2026-10-11 11:50:42,125 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:42,141 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:42,173 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:42,194 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:45,429 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:45,445 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:45,480 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:45,502 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:48,975 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:48,990 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:49,022 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:49,043 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:52,470 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:52,485 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:52,518 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:52,541 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:50:56,031 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:56,047 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:56,081 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:56,103 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+Measured 15/50 frames: median=821.834 ms, mean=817.961 ms, FPS=1.223
+2026-10-11 11:50:59,765 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:50:59,781 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:50:59,813 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:50:59,834 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:03,562 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:03,580 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:03,612 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:03,633 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:07,323 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:07,338 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:07,370 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:07,391 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:11,149 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:11,165 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:11,197 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:11,218 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:14,906 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:14,924 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:14,959 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:14,981 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+Measured 20/50 frames: median=812.927 ms, mean=819.429 ms, FPS=1.220
+2026-10-11 11:51:18,895 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:18,911 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:18,944 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:18,966 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:22,898 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:22,915 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:22,954 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:22,976 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:26,685 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:26,702 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:26,734 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:26,758 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:30,678 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:30,696 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:30,729 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:30,750 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:34,645 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:34,665 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:34,697 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:34,718 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+Measured 25/50 frames: median=818.156 ms, mean=824.510 ms, FPS=1.213
+2026-10-11 11:51:38,720 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:38,735 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:38,768 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:38,790 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:42,322 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:42,339 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:42,372 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:42,393 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:45,718 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:45,734 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:45,767 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:45,789 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:48,915 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:48,931 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:48,966 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:48,989 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+2026-10-11 11:51:51,341 - shapely.geos - INFO - Self-intersection at or near point 471.98647224679792 1711.8705119768197
+2026-10-11 11:51:51,356 - shapely.geos - INFO - Self-intersection at or near point 1070.4578478045039 1612.8333503895974
+2026-10-11 11:51:51,389 - shapely.geos - INFO - Self-intersection at or near point 1147.8004993016441 1404.4814343572746
+2026-10-11 11:51:51,410 - shapely.geos - INFO - Self-intersection at or near point 1942.7006727221749 863.01771240972209
+Measured 30/50 frames: median=829.243 ms, mean=833.564 ms, FPS=1.200
+Measured 35/50 frames: median=818.156 ms, mean=820.966 ms, FPS=1.218
+Measured 40/50 frames: median=804.763 ms, mean=814.588 ms, FPS=1.228
+Measured 45/50 frames: median=801.568 ms, mean=811.337 ms, FPS=1.233
+Measured 50/50 frames: median=806.619 ms, mean=822.885 ms, FPS=1.215
+Wrote /root/autodl-tmp/UniAD-2.0-codex/artifacts/uniad_compiler/uniad-e2e-rtx3080-50frames.json: median=806.619 ms, p90=902.287 ms, p99=982.392 ms, FPS=1.215

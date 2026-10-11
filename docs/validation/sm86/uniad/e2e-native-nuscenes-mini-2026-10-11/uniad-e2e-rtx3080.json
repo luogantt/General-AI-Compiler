@@ -1,0 +1,517 @@
+{
+  "boundary": "dataloader-produced CPU batch -> MMDataParallel scatter/H2D -> full model forward_test -> CUDA-synchronized return",
+  "compiled_subgraphs": [],
+  "device": {
+    "compute_capability": [
+      8,
+      6
+    ],
+    "name": "NVIDIA GeForce RTX 3080",
+    "total_memory_bytes": 10354753536
+  },
+  "excluded_from_model_latency": [
+    "dataloader wait and input pipeline",
+    "multi-sample metric aggregation",
+    "result serialization"
+  ],
+  "inputs": {
+    "checkpoint": {
+      "meta_keys": [
+        "CLASSES",
+        "PALETTE",
+        "config",
+        "env_info",
+        "epoch",
+        "exp_name",
+        "hook_msgs",
+        "iter",
+        "mmcv_version",
+        "mmdet3d_version",
+        "mmdet_version",
+        "mmseg_version",
+        "seed",
+        "time"
+      ],
+      "path": "/root/autodl-tmp/uniad20-assets/ckpts/uniad_base_e2e.pth",
+      "sha256": "4dcdc34c09f964e377f608dbb764f003844a9ccc62b4a0469f94375302ed76d0",
+      "size_bytes": 996773953
+    },
+    "config": {
+      "cfg_options": {
+        "data.test.ann_file": "/root/autodl-tmp/uniad20-data/infos/nuscenes_infos_temporal_val.pkl",
+        "data.test.data_root": "/root/autodl-tmp/uniad20-data/nuscenes",
+        "model.motion_head.anchor_info_path": "/root/autodl-tmp/uniad20-data/others/motion_anchor_infos_mode6.pkl"
+      },
+      "path": "/root/autodl-tmp/UniAD-2.0-codex/projects/configs/stage2_e2e/base_e2e.py",
+      "sha256": "2d45be9b330f8e82456203e2d6374053bd7b80171c5316412dfa88b32e187b8c"
+    },
+    "dataset": {
+      "annotation_files": [
+        {
+          "exists": true,
+          "path": "/root/autodl-tmp/uniad20-data/infos/nuscenes_infos_temporal_val.pkl",
+          "sha256": "eb61b2fe66d5401f794568bae27702c38aa8d844ca74271c9c4c4b53468adf52",
+          "size_bytes": 5311119
+        }
+      ],
+      "class": "NuScenesE2EDataset",
+      "data_root": "/root/autodl-tmp/uniad20-data/nuscenes",
+      "length": 81,
+      "source": "configured real dataset pipeline",
+      "test_mode": true
+    }
+  },
+  "kind": "uniad-native-pytorch-end-to-end-benchmark",
+  "memory": {
+    "after_measurement": {
+      "allocated_bytes": 591916544,
+      "reserved_bytes": 3586129920
+    },
+    "baseline_after_warmup": {
+      "allocated_bytes": 591580160,
+      "reserved_bytes": 3584032768
+    },
+    "definition": "PyTorch CUDA allocator totals; peaks are reset after warmup and query reductions run on CPU",
+    "measured_peak": {
+      "allocated_bytes": 2581901312,
+      "reserved_bytes": 3586129920
+    }
+  },
+  "model": {
+    "class": "UniAD",
+    "task_heads_executed": {
+      "mapping": true,
+      "motion": true,
+      "occupancy": true,
+      "planning": true,
+      "tracking": true
+    },
+    "track_query_metrics": {
+      "active_track_query_count": "obj_idxes >= 0 and scores >= filter_score_threshold",
+      "filter_score_threshold": 0.35,
+      "track_query_count": "size of next-frame test_track_instances after query interaction"
+    },
+    "type": "UniAD",
+    "video_test_mode": true
+  },
+  "notes": [
+    "model_call_wall_ms is synchronized wall time, not GPU-resident latency",
+    "the stock UniAD evaluation forward includes GT-dependent evaluation helpers",
+    "temporal state is preserved across chronological batch-1 samples",
+    "checkpoint loading rejects missing, unexpected, and incompatible state-dict keys",
+    "track query telemetry is copied to CPU after the timed model call"
+  ],
+  "protocol": {
+    "batch_size": 1,
+    "chronological": true,
+    "cuda_synchronize_before_and_after_model_call": true,
+    "dataloader_wait_definition": "blocking wall time spent in next(data_loader); with workers=0 this includes the configured dataset input pipeline",
+    "dataset_setup_ms": 2528.786957,
+    "deterministic": false,
+    "device_index": 0,
+    "distributed": false,
+    "includes_mmdata_parallel_scatter_and_h2d": true,
+    "iterator_creation_ms": 0.387577,
+    "measured_frames": 30,
+    "model_and_checkpoint_setup_ms": 7757.848827,
+    "query_telemetry_after_timed_boundary": true,
+    "seed": 0,
+    "shuffle": false,
+    "strict_checkpoint_load": true,
+    "temporal_state_preserved": true,
+    "warmup_frames": 10,
+    "workers": 0
+  },
+  "runtime": "native-pytorch",
+  "samples": [
+    {
+      "active_track_query_count": 74,
+      "dataloader_wait_ms": 1435.4166,
+      "dataset_index": 10,
+      "frame_kind": "steady-state",
+      "measurement_index": 0,
+      "model_call_wall_ms": 830.140109,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 1002
+    },
+    {
+      "active_track_query_count": 55,
+      "dataloader_wait_ms": 1670.608158,
+      "dataset_index": 11,
+      "frame_kind": "steady-state",
+      "measurement_index": 1,
+      "model_call_wall_ms": 781.482289,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 1004
+    },
+    {
+      "active_track_query_count": 59,
+      "dataloader_wait_ms": 1709.37105,
+      "dataset_index": 12,
+      "frame_kind": "steady-state",
+      "measurement_index": 2,
+      "model_call_wall_ms": 780.647687,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 1005
+    },
+    {
+      "active_track_query_count": 55,
+      "dataloader_wait_ms": 1680.269001,
+      "dataset_index": 13,
+      "frame_kind": "steady-state",
+      "measurement_index": 3,
+      "model_call_wall_ms": 770.88811,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 995
+    },
+    {
+      "active_track_query_count": 52,
+      "dataloader_wait_ms": 1660.712235,
+      "dataset_index": 14,
+      "frame_kind": "steady-state",
+      "measurement_index": 4,
+      "model_call_wall_ms": 759.076508,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 994
+    },
+    {
+      "active_track_query_count": 54,
+      "dataloader_wait_ms": 1694.041415,
+      "dataset_index": 15,
+      "frame_kind": "steady-state",
+      "measurement_index": 5,
+      "model_call_wall_ms": 748.668724,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 988
+    },
+    {
+      "active_track_query_count": 44,
+      "dataloader_wait_ms": 1879.838667,
+      "dataset_index": 16,
+      "frame_kind": "steady-state",
+      "measurement_index": 6,
+      "model_call_wall_ms": 759.227609,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 984
+    },
+    {
+      "active_track_query_count": 51,
+      "dataloader_wait_ms": 1906.711558,
+      "dataset_index": 17,
+      "frame_kind": "steady-state",
+      "measurement_index": 7,
+      "model_call_wall_ms": 783.202316,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 984
+    },
+    {
+      "active_track_query_count": 46,
+      "dataloader_wait_ms": 1992.087541,
+      "dataset_index": 18,
+      "frame_kind": "steady-state",
+      "measurement_index": 8,
+      "model_call_wall_ms": 807.628999,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 986
+    },
+    {
+      "active_track_query_count": 41,
+      "dataloader_wait_ms": 2095.226809,
+      "dataset_index": 19,
+      "frame_kind": "steady-state",
+      "measurement_index": 9,
+      "model_call_wall_ms": 868.430545,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 972
+    },
+    {
+      "active_track_query_count": 48,
+      "dataloader_wait_ms": 2063.279885,
+      "dataset_index": 20,
+      "frame_kind": "steady-state",
+      "measurement_index": 10,
+      "model_call_wall_ms": 851.169055,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 968
+    },
+    {
+      "active_track_query_count": 45,
+      "dataloader_wait_ms": 2109.267907,
+      "dataset_index": 21,
+      "frame_kind": "steady-state",
+      "measurement_index": 11,
+      "model_call_wall_ms": 844.239122,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 966
+    },
+    {
+      "active_track_query_count": 49,
+      "dataloader_wait_ms": 2185.927667,
+      "dataset_index": 22,
+      "frame_kind": "steady-state",
+      "measurement_index": 12,
+      "model_call_wall_ms": 836.853677,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 969
+    },
+    {
+      "active_track_query_count": 47,
+      "dataloader_wait_ms": 2265.53494,
+      "dataset_index": 23,
+      "frame_kind": "steady-state",
+      "measurement_index": 13,
+      "model_call_wall_ms": 804.995577,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 973
+    },
+    {
+      "active_track_query_count": 45,
+      "dataloader_wait_ms": 2250.320801,
+      "dataset_index": 24,
+      "frame_kind": "steady-state",
+      "measurement_index": 14,
+      "model_call_wall_ms": 798.260442,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 978
+    },
+    {
+      "active_track_query_count": 46,
+      "dataloader_wait_ms": 2584.670022,
+      "dataset_index": 25,
+      "frame_kind": "steady-state",
+      "measurement_index": 15,
+      "model_call_wall_ms": 795.530519,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 975
+    },
+    {
+      "active_track_query_count": 55,
+      "dataloader_wait_ms": 2509.833255,
+      "dataset_index": 26,
+      "frame_kind": "steady-state",
+      "measurement_index": 16,
+      "model_call_wall_ms": 779.710842,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 980
+    },
+    {
+      "active_track_query_count": 56,
+      "dataloader_wait_ms": 2559.592355,
+      "dataset_index": 27,
+      "frame_kind": "steady-state",
+      "measurement_index": 17,
+      "model_call_wall_ms": 775.995933,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 980
+    },
+    {
+      "active_track_query_count": 63,
+      "dataloader_wait_ms": 2415.265983,
+      "dataset_index": 28,
+      "frame_kind": "steady-state",
+      "measurement_index": 18,
+      "model_call_wall_ms": 779.071948,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 980
+    },
+    {
+      "active_track_query_count": 57,
+      "dataloader_wait_ms": 2496.986943,
+      "dataset_index": 29,
+      "frame_kind": "steady-state",
+      "measurement_index": 19,
+      "model_call_wall_ms": 789.424758,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 980
+    },
+    {
+      "active_track_query_count": 54,
+      "dataloader_wait_ms": 2610.738467,
+      "dataset_index": 30,
+      "frame_kind": "steady-state",
+      "measurement_index": 20,
+      "model_call_wall_ms": 802.719996,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 979
+    },
+    {
+      "active_track_query_count": 51,
+      "dataloader_wait_ms": 2442.412116,
+      "dataset_index": 31,
+      "frame_kind": "steady-state",
+      "measurement_index": 21,
+      "model_call_wall_ms": 809.67957,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 976
+    },
+    {
+      "active_track_query_count": 52,
+      "dataloader_wait_ms": 2536.009312,
+      "dataset_index": 32,
+      "frame_kind": "steady-state",
+      "measurement_index": 22,
+      "model_call_wall_ms": 816.861188,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 977
+    },
+    {
+      "active_track_query_count": 47,
+      "dataloader_wait_ms": 2424.970496,
+      "dataset_index": 33,
+      "frame_kind": "steady-state",
+      "measurement_index": 23,
+      "model_call_wall_ms": 830.837403,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 981
+    },
+    {
+      "active_track_query_count": 50,
+      "dataloader_wait_ms": 2214.697173,
+      "dataset_index": 34,
+      "frame_kind": "steady-state",
+      "measurement_index": 24,
+      "model_call_wall_ms": 934.433415,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 979
+    },
+    {
+      "active_track_query_count": 56,
+      "dataloader_wait_ms": 1983.843016,
+      "dataset_index": 35,
+      "frame_kind": "steady-state",
+      "measurement_index": 25,
+      "model_call_wall_ms": 885.744332,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 985
+    },
+    {
+      "active_track_query_count": 48,
+      "dataloader_wait_ms": 1670.715673,
+      "dataset_index": 36,
+      "frame_kind": "steady-state",
+      "measurement_index": 26,
+      "model_call_wall_ms": 842.258527,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 982
+    },
+    {
+      "active_track_query_count": 53,
+      "dataloader_wait_ms": 1512.266599,
+      "dataset_index": 37,
+      "frame_kind": "steady-state",
+      "measurement_index": 27,
+      "model_call_wall_ms": 838.307296,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 981
+    },
+    {
+      "active_track_query_count": 38,
+      "dataloader_wait_ms": 1305.735966,
+      "dataset_index": 38,
+      "frame_kind": "steady-state",
+      "measurement_index": 28,
+      "model_call_wall_ms": 823.408824,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 979
+    },
+    {
+      "active_track_query_count": 46,
+      "dataloader_wait_ms": 1063.961974,
+      "dataset_index": 39,
+      "frame_kind": "steady-state",
+      "measurement_index": 29,
+      "model_call_wall_ms": 793.793202,
+      "scene_token": "fcbccedd61424f1b85dcbf8f897f9754",
+      "track_query_count": 978
+    }
+  ],
+  "schema_version": 1,
+  "scope": "full UniAD stage2 evaluation forward on real dataset samples",
+  "software": {
+    "cudnn": 8700,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "fp16_configured": false,
+    "mmcv": "1.7.2",
+    "mmdet": "2.26.0",
+    "mmdet3d": "1.0.0rc6",
+    "numpy": "1.22.4",
+    "platform": "Linux-5.4.0-216-generic-x86_64-with-glibc2.35",
+    "python": "3.9.25",
+    "torch": "2.0.1+cu118",
+    "torch_cuda": "11.8",
+    "working_directory": "/root/autodl-tmp/UniAD-2.0-codex"
+  },
+  "timing_ms": {
+    "dataloader_wait": {
+      "all": {
+        "count": 30,
+        "max": 2610.738467,
+        "mean": 2031.0104528,
+        "median": 2079.253347,
+        "min": 1063.961974,
+        "p90": 2538.3676163,
+        "p99": 2603.17861795
+      },
+      "first_frame": {
+        "count": 0,
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "p90": null,
+        "p99": null
+      },
+      "steady_state": {
+        "count": 30,
+        "max": 2610.738467,
+        "mean": 2031.0104528,
+        "median": 2079.253347,
+        "min": 1063.961974,
+        "p90": 2538.3676163,
+        "p99": 2603.17861795
+      }
+    },
+    "model_call_wall": {
+      "all": {
+        "count": 30,
+        "fps_from_mean_latency": 1.233416280147848,
+        "max": 934.433415,
+        "mean": 810.7562840666667,
+        "median": 803.8577865,
+        "min": 748.668724,
+        "p90": 852.895204,
+        "p99": 920.31358093
+      },
+      "first_frame": {
+        "count": 0,
+        "fps_from_mean_latency": null,
+        "max": null,
+        "mean": null,
+        "median": null,
+        "min": null,
+        "p90": null,
+        "p99": null
+      },
+      "steady_state": {
+        "count": 30,
+        "fps_from_mean_latency": 1.233416280147848,
+        "max": 934.433415,
+        "mean": 810.7562840666667,
+        "median": 803.8577865,
+        "min": 748.668724,
+        "p90": 852.895204,
+        "p99": 920.31358093
+      }
+    },
+    "warmup_dataloader_wait": {
+      "count": 10,
+      "max": 1582.851258,
+      "mean": 1323.8982037,
+      "median": 1305.455109,
+      "min": 1144.049974,
+      "p90": 1433.6849223,
+      "p99": 1567.93462443
+    }
+  }
+}

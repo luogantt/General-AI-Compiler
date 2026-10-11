@@ -29,6 +29,11 @@ cuda12 = [
 gac = "gac.cli:main"
 gac-bevformer = "gac.tools.build_bevformer:main"
 gac-bevformer-export-checkpoint = "gac.tools.export_bevformer_checkpoint:main"
+gac-uniad-export-ffn = "gac.tools.uniad_export_ffn:main"
+gac-uniad-make-synthetic = "gac.tools.uniad_make_synthetic_bundle:main"
+gac-uniad-compile-ffn = "gac.tools.uniad_compile_ffn:main"
+gac-uniad-benchmark-ffn = "gac.tools.uniad_benchmark_ffn:main"
+gac-uniad-benchmark-e2e = "gac.tools.uniad_benchmark_e2e:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
