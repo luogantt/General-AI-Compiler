@@ -148,6 +148,40 @@ class MlirCublasPtxBackendTests(unittest.TestCase):
         self.assertFalse(description["nvrtc_required"])
         self.assertNotIn("NVRTC", description["runtime_requirements"])
 
+    def test_uniad_production_profile_uses_same_real_mlir_ptx_pipeline(self):
+        graph = _graph(
+            BEVFormerFFNConfig(bev_h=200, bev_w=200, embed_dim=256)
+        )
+        graph.name = "uniad_stage2_encoder_layer_0_ffn"
+        with patch(
+            "gac.mlir_toolchain.lower_gpu_mlir_to_ptx",
+            side_effect=_fake_lowering,
+        ):
+            program = compile_mlir_cublas_ptx(graph)
+
+        self.assertIn("memref<40000x512xf32", program.gpu_source)
+        self.assertIn("memref<40000x256xf32", program.gpu_source)
+        self.assertIn("production UniAD FFN", program.gpu_source)
+        self.assertIn("gpu.module @gac_uniad_ffn_fusions_sm86", program.gpu_source)
+        self.assertIsNone(program.calls[0].grid)
+        self.assertEqual(program.calls[1].grid, (80000, 1, 1))
+        self.assertIsNone(program.calls[2].grid)
+        self.assertEqual(program.calls[3].grid, (40000, 1, 1))
+        self.assertEqual(
+            [call.implementation for call in program.calls],
+            ["cupy-cublas", "mlir-ptx", "cupy-cublas", "mlir-ptx"],
+        )
+        self.assertEqual(
+            program.describe()["profile"],
+            {
+                "query_shape": [1, 40000, 256],
+                "rows": 40000,
+                "channels": 256,
+                "hidden_channels": 512,
+            },
+        )
+        validate_mlir_cublas_ptx_program(program)
+
     def test_validation_and_offline_assembly_do_not_reinvoke_mlir(self):
         artifact = _artifact(self.program.gpu_source)
         with patch(

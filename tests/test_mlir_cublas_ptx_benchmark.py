@@ -8,6 +8,7 @@ import tempfile
 from types import SimpleNamespace
 from threading import Lock
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
@@ -21,6 +22,10 @@ from gac.mlir_cublas_ptx_benchmark import (
     skipped_tiled_candidate_report,
     unwired_tiled_candidates,
 )
+
+TOOLS = Path(__file__).resolve().parents[1] / "tools"
+sys.path.insert(0, str(TOOLS))
+import benchmark_mlir_cublas_ptx_ffn as benchmark_driver  # noqa: E402
 
 
 class _Context:
@@ -76,8 +81,20 @@ class _Cupy:
 
 
 class _Session:
-    def __init__(self, target, output, *, device_id=0):
-        self.program = SimpleNamespace(target=target)
+    def __init__(self, target, output, *, device_id=0, query_shape=(1, 2500, 256)):
+        self.query_shape = tuple(query_shape)
+        self.program = SimpleNamespace(
+            target=target,
+            graph=SimpleNamespace(
+                inputs={
+                    "query": SimpleNamespace(
+                        shape=self.query_shape,
+                        dtype="float32",
+                        layout="contiguous",
+                    )
+                }
+            ),
+        )
         self._cp = _Cupy()
         self._device = _Context()
         self._stream = _Stream()
@@ -100,15 +117,19 @@ class _Session:
 
     def run(self, inputs):
         self.run_count += 1
-        assert inputs["query"].shape == (1, 2500, 256)
+        assert inputs["query"].shape == self.query_shape
         return SimpleNamespace(outputs={"output": self.output.copy()})
 
 
-def _sessions():
+def _sessions(query_shape=(1, 2500, 256)):
     output = np.arange(8, dtype=np.float32).reshape(2, 4)
     return {
-        CUBLAS_PTX_TARGET: _Session(CUBLAS_PTX_TARGET, output),
-        MLIR_CUDA_TARGET: _Session(MLIR_CUDA_TARGET, output),
+        CUBLAS_PTX_TARGET: _Session(
+            CUBLAS_PTX_TARGET, output, query_shape=query_shape
+        ),
+        MLIR_CUDA_TARGET: _Session(
+            MLIR_CUDA_TARGET, output, query_shape=query_shape
+        ),
     }
 
 
@@ -164,6 +185,26 @@ class FfnSessionAutotuneRunnerTests(unittest.TestCase):
             FfnSessionAutotuneRunner(
                 np.zeros((2, 256), dtype=np.float32), _sessions()
             )
+
+        sessions = _sessions()
+        sessions[MLIR_CUDA_TARGET] = _Session(
+            MLIR_CUDA_TARGET,
+            np.zeros((2, 4), dtype=np.float32),
+            query_shape=(1, 40000, 256),
+        )
+        with self.assertRaisesRegex(ValidationError, "same FFN query profile"):
+            FfnSessionAutotuneRunner(
+                np.zeros((1, 2500, 256), dtype=np.float32), sessions
+            )
+
+    def test_uniad_production_query_profile_is_supported(self):
+        shape = (1, 40000, 256)
+        sessions = _sessions(shape)
+        runner = FfnSessionAutotuneRunner(
+            np.zeros(shape, dtype=np.float32), sessions
+        )
+        for candidate in executable_ffn_candidates():
+            self.assertEqual(runner.run(candidate)["output"].shape, (2, 4))
 
     def test_initial_upload_obeys_session_lock_and_lifecycle(self):
         sessions = _sessions()
@@ -288,6 +329,195 @@ class MlirCublasPtxBenchmarkCliTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 2)
             self.assertIn("outside the artifact directory", completed.stderr)
             self.assertEqual(member.read_text(encoding="utf-8"), "device code\n")
+
+    def test_cli_exposes_uniad_bundle_and_seed(self):
+        completed = self._run("--help")
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("--uniad-bundle", completed.stdout)
+        self.assertIn("--seed", completed.stdout)
+
+    def test_missing_uniad_bundle_is_rejected_before_compilation(self):
+        completed = self._run("--uniad-bundle", "missing.uniadffn")
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("--uniad-bundle does not exist", completed.stderr)
+
+    def test_autotune_cache_cannot_alias_uniad_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "layer0.uniadffn"
+            bundle.write_bytes(b"bundle-placeholder")
+            completed = self._run(
+                "--uniad-bundle",
+                str(bundle),
+                "--autotune",
+                "--autotune-cache",
+                str(bundle),
+            )
+        self.assertEqual(completed.returncode, 2)
+        self.assertIn("must not replace --uniad-bundle", completed.stderr)
+
+    def test_default_workload_keeps_the_existing_bev_graph_and_query(self):
+        expected_graph, expected_query = benchmark_driver._make_graph()
+        workload = benchmark_driver._prepare_workload(None, seed=17)
+        self.assertEqual(workload.family, "bevformer")
+        self.assertEqual(
+            workload.graph.to_dict(include_constant_data=False),
+            expected_graph.to_dict(include_constant_data=False),
+        )
+        for name in expected_graph.constants:
+            np.testing.assert_array_equal(
+                workload.graph.constants[name], expected_graph.constants[name]
+            )
+        np.testing.assert_array_equal(workload.query, expected_query)
+        self.assertIsNone(workload.expected)
+        identity = benchmark_driver._report_identity(workload, compile_only=False)
+        self.assertEqual(
+            identity["kind"],
+            "bevformer-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc",
+        )
+        self.assertEqual(
+            identity["scope"],
+            "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
+        )
+
+    def test_uniad_workload_uses_bundle_expected_and_distinct_report_contract(self):
+        class _Profile:
+            batch = 1
+            bev_h = 200
+            bev_w = 200
+            embed_dim = 256
+            hidden_dim = 512
+            layer_norm_epsilon = 1.0e-5
+            layer = 3
+            dtype = "float32"
+            input_shape = (1, 40000, 256)
+            output_shape = input_shape
+
+            @staticmethod
+            def to_dict():
+                return {"layer": 3, "bev_h": 200, "bev_w": 200}
+
+        query = np.zeros((1, 2, 4), dtype=np.float32)
+        output = np.ones((1, 2, 4), dtype=np.float32)
+        loaded = SimpleNamespace(
+            contract=_Profile(),
+            weights={},
+            sample={"query": query, "output": output},
+            manifest={"format": "uniad-compiler-ffn-bundle", "schema_version": 1},
+        )
+        graph = SimpleNamespace(name="uniad_stage2_encoder_layer_3_ffn")
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "layer3.uniadffn"
+            bundle.write_bytes(b"verified-test-bundle")
+            with (
+                patch.object(benchmark_driver, "load_bundle", return_value=loaded),
+                patch.object(
+                    benchmark_driver,
+                    "build_bevformer_ffn_graph",
+                    return_value=graph,
+                ) as build_graph,
+            ):
+                workload = benchmark_driver._prepare_workload(bundle, seed=29)
+
+        self.assertEqual(workload.family, "uniad")
+        self.assertIs(workload.graph, graph)
+        np.testing.assert_array_equal(workload.query, query)
+        np.testing.assert_array_equal(workload.expected, output)
+        self.assertEqual(
+            workload.metadata["reference_source"],
+            "bundle-provided expected output",
+        )
+        self.assertIsNone(workload.metadata["seed"])
+        self.assertTrue(
+            workload.metadata["source_bundle"]["contains_expected_sample"]
+        )
+        config = build_graph.call_args.args[1]
+        self.assertEqual((config.bev_h, config.bev_w), (200, 200))
+        identity = benchmark_driver._report_identity(workload, compile_only=False)
+        self.assertTrue(identity["kind"].startswith("uniad-stage2-encoder-ffn"))
+        self.assertIn("layer 3", identity["scope"])
+        self.assertIn("not full UniAD inference", identity["boundary"])
+
+    def test_uniad_workload_without_golden_uses_seeded_numpy_reference(self):
+        profile = SimpleNamespace(
+            batch=1,
+            bev_h=200,
+            bev_w=200,
+            embed_dim=256,
+            hidden_dim=512,
+            layer_norm_epsilon=1.0e-5,
+            layer=1,
+            dtype="float32",
+            input_shape=(1, 40000, 256),
+            output_shape=(1, 40000, 256),
+            to_dict=lambda: {"layer": 1},
+        )
+        loaded = SimpleNamespace(
+            contract=profile,
+            weights={},
+            sample=None,
+            manifest={"format": "uniad-compiler-ffn-bundle", "schema_version": 1},
+        )
+        generated = np.full((1, 2, 4), 0.25, dtype=np.float32)
+        generator = SimpleNamespace(normal=lambda *_args, **_kwargs: generated)
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "layer1.uniadffn"
+            bundle.write_bytes(b"verified-test-bundle")
+            with (
+                patch.object(benchmark_driver, "load_bundle", return_value=loaded),
+                patch.object(
+                    benchmark_driver,
+                    "build_bevformer_ffn_graph",
+                    return_value=SimpleNamespace(name="layer1"),
+                ),
+                patch.object(
+                    benchmark_driver.np.random,
+                    "default_rng",
+                    return_value=generator,
+                ) as default_rng,
+            ):
+                workload = benchmark_driver._prepare_workload(bundle, seed=73)
+
+        default_rng.assert_called_once_with(73)
+        np.testing.assert_array_equal(workload.query, generated)
+        self.assertIsNone(workload.expected)
+        self.assertEqual(workload.metadata["seed"], 73)
+        self.assertEqual(
+            workload.metadata["reference_source"], "GAC NumPy reference"
+        )
+        self.assertFalse(
+            workload.metadata["source_bundle"]["contains_expected_sample"]
+        )
+
+    def test_uniad_workload_rejects_nonproduction_grid_or_epsilon(self):
+        bundle = Path("profile-check.uniadffn")
+        for profile in (
+            SimpleNamespace(
+                batch=1,
+                bev_h=100,
+                bev_w=400,
+                embed_dim=256,
+                hidden_dim=512,
+                layer_norm_epsilon=1.0e-5,
+                dtype="float32",
+            ),
+            SimpleNamespace(
+                batch=1,
+                bev_h=200,
+                bev_w=200,
+                embed_dim=256,
+                hidden_dim=512,
+                layer_norm_epsilon=1.0e-3,
+                dtype="float32",
+            ),
+        ):
+            loaded = SimpleNamespace(contract=profile)
+            with (
+                self.subTest(profile=vars(profile)),
+                patch.object(benchmark_driver, "load_bundle", return_value=loaded),
+                patch.object(Path, "resolve", return_value=bundle),
+                self.assertRaisesRegex(ValueError, "production UniAD FP32 profile"),
+            ):
+                benchmark_driver._prepare_workload(bundle, seed=1)
 
 
 if __name__ == "__main__":

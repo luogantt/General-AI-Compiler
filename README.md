@@ -49,6 +49,26 @@ JSON graph / BEVFormer config + checkpoint
 
 冻结的 BEVFormer-tiny Profile 为 6 相机、`480×800` 图像、`50×50` BEV、256 embedding。统一 step 输入为 `images`、`lidar2img`、`can_bus_delta`、`prev_bev`、`has_prev_bev`，输出最后一层 `cls_logits`、raw `bbox_regression` 和 FP16 `next_bev`。公开图像与状态存储边界使用 FP16，Transformer/MSDA 等主要计算仍以 FP32 为基线。
 
+## MLIR / `mlir-opt` 文件在哪里？
+
+**`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它，把 GPU Dialect MLIR 降到 NVVM 和 SM86 PTX；部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
+
+GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`codex/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/codex/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前没有下面这些工具链、lowering 和验证产物，因此直接浏览 `main` 会找不到。查看代码时请先切换到该分支。
+
+- [`tools/build_mlir_wsl.sh`](tools/build_mlir_wsl.sh) 从项目外部的 `llvm-project` checkout 构建 `mlir-opt`、`mlir-translate` 和 `llc`。默认稳定路径是 WSL 中的 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
+- 本次 BEVFormer/UniAD 验证实际使用的可执行文件是 WSL 中的 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`；它是本机编译产物，不在 Git 中。对应的外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`，同样位于 General-AI-Compiler 仓库之外。
+- [`src/gac/mlir_toolchain.py`](src/gac/mlir_toolchain.py) 负责查找 `mlir-opt`、构造无 shell 的命令参数、执行官方 GPU→NVVM pipeline、提取 PTX，并记录 LLVM revision、版本、命令和摘要。
+- [`src/gac/backends/mlir_ptx.py`](src/gac/backends/mlir_ptx.py) 是 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/backends/mlir_cublas_ptx.py`](src/gac/backends/mlir_cublas_ptx.py) 保留两个 cuBLAS MatMul，并把两个融合 Kernel 由 MLIR 降到 PTX。
+- Git 中可直接查看的 MLIR 示例是 [`examples/mlir_sm86_add_relu.mlir`](examples/mlir_sm86_add_relu.mlir) 和 [`examples/mlir_sm86_layernorm_fusion.mlir`](examples/mlir_sm86_layernorm_fusion.mlir)。保存的真实 lowering 样例位于 [`docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir)、[`production-ffn.binary.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.binary.mlir) 和 [`production-ffn.ptx`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.ptx)。
+- 普通编译生成的 `.mlir`、`.ptx`、manifest 和报告写入 `build/`；该目录不进入 Git。它们是编译产物，`src/gac/` 下的 Python 文件才是 emitter、lowering、artifact 校验和 Runtime 实现。
+
+在 Windows PowerShell 中构建并取得实际路径：
+
+```powershell
+wsl -d Ubuntu-24.04 -- bash tools/build_mlir_wsl.sh
+$mlirOpt = (wsl -d Ubuntu-24.04 -- bash -lc 'realpath "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"').Trim()
+```
+
 ## MLIR 编译路径（M0/M1）
 
 MLIR 后端复用 Canonical Graph 数据结构和图 Pass；当前接入的是普通 JSON graph。`examples/bevformer_tiny_ffn.json` 是一个手工构造的小尺寸 BEVFormer-like FFN smoke，用于检查 FFN 结构、广播和 LayerNorm lowering。它不读取官方 BEVFormer 代码或 checkpoint，也不是完整 BEVFormer importer。当前链路如下：
@@ -376,14 +396,51 @@ gac-bevformer step-pipeline --help
 
 GAC 现在包含一个自包含的 UniAD 2.0 `stage2_e2e` BEV encoder FFN adapter。它从可信 checkpoint 精确映射第 0～5 层的两组 Linear、bias 和 post-FFN LayerNorm 参数，通过带 SHA-256 的 data-only bundle 跨越官方 UniAD Python 3.9/CUDA 11.8 环境与 GAC Python 3.11/CUDA 12 环境。bundle 加载禁用 pickle，并严格检查成员、摘要、shape、dtype、连续布局和有限值。
 
-当前生产 Profile 为 FP32 `[1,40000,256] → 512 → 256`。CUDA/HXP 基线有 6 次 dispatch，两个 MatMul 必须实际选择 CuPy/cuBLAS；MLIR runtime-call 路径把它降为两个 cuBLAS MatMul、融合 Bias+ReLU 和融合 Bias+Residual+LayerNorm，共 4 次调用。MLIR 文件是 ABI manifest，执行由校验后的 call records 驱动，融合核目前由 NVRTC 编译。
+**这里编译的是一个 UniAD `stage2` BEV encoder layer 的 FFN，不是完整 UniAD。** 静态 FP32 Profile 是 `[1,40000,256] → 512 → 256`。attention、tracking、mapping、motion、occupancy、planning 和其余层仍在这个编译单元之外，因此单个 FFN 的延迟不能换算成完整 UniAD 帧率。
 
-从 GAC checkout 生成确定性 bundle 并编译两种产物：
+这个 FFN 目前有四条可核验路径：
+
+- `cuda-hxp`：六 dispatch 基线，两个 MatMul 在 Runtime 中选择 CuPy/cuBLAS；
+- `mlir-cuda-sm86`：旧四调用路径，两个 cuBLAS MatMul 加两个运行时 NVRTC 融合 Kernel；
+- `mlir-cublas-ptx-sm86`：两个 cuBLAS MatMul 加两个由 `mlir-opt` 离线生成的融合 PTX Kernel，部署执行不需要 `mlir-opt` 或 NVRTC；
+- `mlir-tiled-ffn-sm86`：FC1+Bias+ReLU、FC2、最终 Bias+Residual+LayerNorm 三个离线 PTX dispatch，部署执行同样不需要 `mlir-opt` 或 NVRTC。
+
+`--backend both` 为兼容旧流程，只生成 HXP 和 `mlir-cuda-sm86`；`--backend all` 才会额外生成两种离线 PTX artifact。没有 checkpoint 时可生成生产 shape 的确定性 synthetic bundle。它只用于编译、正确性和性能链路验证，不包含真实模型权重，也不能用于完整 UniAD 精度或端到端结论：
 
 ```bash
 python tools/uniad_make_synthetic_bundle.py build/uniad/layer0.uniadffn
-python tools/uniad_compile_ffn.py \
-  build/uniad/layer0.uniadffn build/uniad/layer0-compiled --backend both
+```
+
+在 Windows PowerShell 中调用 WSL 的 `mlir-opt`，一次生成全部四种产物：
+
+```powershell
+$mlirOpt = (wsl -d Ubuntu-24.04 -- bash -lc 'realpath "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"').Trim()
+python tools/uniad_compile_ffn.py `
+  build/uniad/layer0.uniadffn build/uniad/layer0-compiled `
+  --backend all --tile 16,16,16 `
+  --wsl --wsl-distribution Ubuntu-24.04 --mlir-opt $mlirOpt
+```
+
+若命令本身在 WSL/Linux 内运行，直接传 Linux 路径：
+
+```bash
+python3 tools/uniad_compile_ffn.py \
+  build/uniad/layer0.uniadffn build/uniad/layer0-compiled \
+  --backend all --tile 16,16,16 \
+  --mlir-opt "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"
+```
+
+`build/uniad/layer0-compiled/mlir-cublas-ptx-sm86/` 和 `mlir-tiled-ffn-sm86/` 是无内联权重、带完整性 manifest 的离线代码目录。部署机加载这些目录时不运行 `mlir-opt`，也不把 CUDA C 交给 NVRTC；CUDA Driver 仍会在加载 textual PTX 时完成 PTX→SASS JIT，cuBLAS+PTX 路径还需要 CuPy/cuBLAS。
+
+如果只需要两种新 PTX artifact，也可以让正式 benchmark 工具执行纯离线编译；`--compile-only` 不访问 CUDA：
+
+```powershell
+python tools/benchmark_mlir_cublas_ptx_ffn.py `
+  --uniad-bundle build/uniad/layer0.uniadffn --seed 20261011 `
+  --emit-artifact-dir build/uniad/layer0-compiled/mlir-cublas-ptx-sm86 `
+  --emit-tiled-artifact-dir build/uniad/layer0-compiled/mlir-tiled-ffn-sm86 `
+  --compile-only --wsl --wsl-distribution Ubuntu-24.04 --mlir-opt $mlirOpt `
+  --output build/uniad/layer0-compile.json
 ```
 
 官方 UniAD 环境中的 checkpoint 导出使用同一 checkout wrapper，不需要把 Python 3.11 的完整 GAC 环境安装进去：
@@ -397,7 +454,36 @@ python tools/uniad_export_ffn.py \
 
 导出器优先使用 Torch 的 `weights_only=True` 数据加载路径。`--trusted-checkpoint` 只允许不支持该参数的旧版 Torch 回退到 pickle 反序列化，因此只应对来源可信的本地 checkpoint 使用。
 
-完整 native PyTorch 端到端基线通过必选的 `--uniad-root` 连接外部 UniAD checkout；工具不会假定 GAC 仓库中存在 UniAD 的 `projects/` 路径。详细环境、命令、计时边界、RTX 3080 历史结果和限制见 [UniAD 编译器说明](docs/uniad_compiler.md)。迁移前单层 FFN 历史证据为 `1.635～1.645 ms`，同轮 CUDA/HXP + cuBLAS 为 `2.074～2.075 ms`，加速 `1.261～1.264×`；完整 UniAD native PyTorch 模型调用基线为 `822.885 ms` 均值。这两组证据尚未在当前迁移 commit 上重新跑真机，且不能解释为 MLIR 整网加速。
+在 SM86 GPU 上，使用同一个 UniAD bundle 和已编译 artifact 做三候选配对测量与 autotune。`--repeats` 必须为偶数；resident GPU 时间与包含 H2D、D2H 和同步的 public 时间会分开报告：
+
+```bash
+python tools/benchmark_mlir_cublas_ptx_ffn.py \
+  --uniad-bundle build/uniad/layer0.uniadffn \
+  --seed 20261011 \
+  --artifact-dir build/uniad/layer0-compiled/mlir-cublas-ptx-sm86 \
+  --tiled-artifact-dir build/uniad/layer0-compiled/mlir-tiled-ffn-sm86 \
+  --device 0 --warmup 10 --iterations 30 --repeats 6 \
+  --public-samples 3 --benchmark-order ptx-first \
+  --autotune --autotune-cache build/uniad/layer0-autotune.json \
+  --output build/uniad/layer0-benchmark.json
+```
+
+正式复现还要启动第二个独立进程，把 `--benchmark-order` 改为 `nvrtc-first`，并为该进程使用不同的 `--autotune-cache` 和 `--output` 文件。
+
+`tools/uniad_benchmark_ffn.py`（安装入口 `gac-uniad-benchmark-ffn`）保留为旧 `cuda-hxp` 与 `mlir-cuda-sm86`/NVRTC 的基线对比；上面的 `benchmark_mlir_cublas_ptx_ffn.py --uniad-bundle` 才测量新的离线 PTX 和 tiled 候选。
+
+最终 v3 在 RTX 3070 Ti Laptop（SM86）上使用真实 `uniad_base_e2e` checkpoint 的 layer-0 权重、seed `20261011` 的确定性 synthetic query 和 GAC NumPy reference。两个独立进程分别改变首次后端顺序，正式协议为 warmup 10、6 个 repeat、每个 repeat 30 次 FFN，以及 3 个 public `run()` 样本：
+
+| 初始顺序 | cuBLAS+MLIR PTX resident | cuBLAS+NVRTC resident | tiled PTX resident | cuBLAS+MLIR PTX public wall | cuBLAS+NVRTC public wall | resident 加速比 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| PTX-first | 3.050785 ms | 3.150221 ms | 13.932249 ms | 20.710336 ms | 20.564843 ms | 1.035303× |
+| NVRTC-first | 3.076282 ms | 3.182030 ms | 13.936361 ms | 21.537857 ms | 21.664099 ms | 1.032900× |
+
+两份报告的 resident primary estimator 几何平均为 **1.034101×，即约 3.41% 优势**。public wall 包含参数检查、H2D、计算、D2H 和同步，两种顺序下 PTX 与 NVRTC 相差都不到 `0.15 ms`，方向还会随初始顺序变化，因此只能表述为基本持平。三个候选均通过 `rtol=1e-4`、`atol=1e-5` 的 `allclose`；两次 autotune 都选择 `mlir-cublas-ptx-sm86`。完整原始样本、源码摘要和 artifact manifest 见 [UniAD 单层 FFN 最终 MLIR/PTX 真机证据](docs/validation/sm86/uniad/mlir-ptx-2026-10-11/README.md)。
+
+这只是一个 `[1,40000,256] → 512 → 256` FFN。bundle 不含 expected sample，真实的是 checkpoint 权重；输入仍是 synthetic query，正确性参考由 NumPy 计算。结果不代表完整 UniAD 的真实数据集精度、端到端延迟或 FPS。
+
+迁移前历史基线是在 RTX 3080 上用合成权重和合成输入测得：旧四调用 MLIR/NVRTC 为 `1.635～1.645 ms`，同轮 CUDA/HXP + cuBLAS 为 `2.074～2.075 ms`。完整 UniAD native PyTorch 模型调用的历史均值为 `822.885 ms`。设备、权重和实现边界均不同，不能把这些历史数字与 v3 直接比较，也不能解释为 MLIR 整网加速。完整 native PyTorch 基线通过必选的 `--uniad-root` 连接外部 UniAD checkout；详细环境与边界见 [UniAD 编译器说明](docs/uniad_compiler.md)。
 
 统一测试入口：
 
@@ -485,6 +571,7 @@ docs/                                架构、设计、后端约定、路线图�
 - [`mlir-cuda-sm86` 生产尺寸 FFN 真机验证与配对交替原始报告](docs/validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)
 - [`mlir-ptx-sm86` 官方 MLIR→NVVM→PTX 产物与真机配对报告](docs/validation/sm86/mlir-ptx-2026-10-11/README.md)
 - [`mlir-cublas-ptx-sm86` 真机结果及 tiled/MMA/异步双 stage/autotune 的实现边界](docs/validation/sm86/mlir-cublas-ptx-2026-10-11/README.md)
+- [UniAD 单层 FFN 最终 MLIR/PTX 真机证据](docs/validation/sm86/uniad/mlir-ptx-2026-10-11/README.md)
 - [UniAD 单层 FFN 迁移前真机历史证据](docs/validation/sm86/uniad/ffn-2026-10-11/README.md)
 - [UniAD native PyTorch 端到端历史基线](docs/validation/sm86/uniad/e2e-native-nuscenes-mini-2026-10-11/README.md)
 - [完整远程验收说明](docs/bevformer_sm86_validation_2026-10-10.md)

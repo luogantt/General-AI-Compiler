@@ -1,4 +1,4 @@
-"""cuBLAS MatMul plus official MLIR-to-PTX BEVFormer FFN lowering.
+"""cuBLAS MatMul plus official MLIR-to-PTX static FFN lowering.
 
 This backend is the production-oriented bridge between the existing fast
 ``mlir-cuda-sm86`` call plan and the fully generated ``mlir-ptx-sm86``
@@ -6,9 +6,10 @@ correctness path.  Both MatMul operations remain explicit CuPy/cuBLAS calls.
 The two pointwise/reduction stages are emitted as registered GPU dialect,
 lowered by upstream ``mlir-opt`` through NVVM, and executed from textual PTX.
 
-The compiler is deliberately strict: it accepts only the production FP32
-BEVFormer FFN ``[1, 2500, 256] -> 512 -> 256``.  Unsupported graphs fail
-instead of falling back to CUDA C, NVRTC, NumPy, or the legacy CUDA backend.
+The compiler is deliberately strict: it accepts the frozen production FP32
+BEVFormer ``[1, 2500, 256]`` and UniAD ``[1, 40000, 256]`` FFN profiles, both
+with ``256 -> 512 -> 256`` channels.  Unsupported graphs fail instead of
+falling back to CUDA C, NVRTC, NumPy, or the legacy CUDA backend.
 """
 
 from __future__ import annotations
@@ -42,6 +43,11 @@ PRODUCTION_QUERY_SHAPE = (1, 2500, 256)
 PRODUCTION_ROWS = 2500
 PRODUCTION_CHANNELS = 256
 PRODUCTION_HIDDEN_CHANNELS = 512
+UNIAD_QUERY_SHAPE = (1, 40000, 256)
+SUPPORTED_PRODUCTION_QUERY_SHAPES = (
+    PRODUCTION_QUERY_SHAPE,
+    UNIAD_QUERY_SHAPE,
+)
 THREADS_PER_BLOCK = 256
 
 FC1_SYMBOL = "gac_cublas_fc1_matmul_f32"
@@ -84,6 +90,8 @@ class MlirCublasPtxProgram:
         return self.gpu_source
 
     def describe(self) -> dict[str, Any]:
+        query_shape = tuple(next(iter(self.graph.inputs.values())).shape)
+        fc1 = self.calls[0]
         return {
             "schema_version": self.abi_version,
             "runtime_abi_version": self.abi_version,
@@ -108,10 +116,10 @@ class MlirCublasPtxProgram:
                 "tensor_core_policy": "not-forced-by-compiler",
             },
             "profile": {
-                "query_shape": list(PRODUCTION_QUERY_SHAPE),
-                "rows": PRODUCTION_ROWS,
-                "channels": PRODUCTION_CHANNELS,
-                "hidden_channels": PRODUCTION_HIDDEN_CHANNELS,
+                "query_shape": list(query_shape),
+                "rows": fc1.m,
+                "channels": fc1.k,
+                "hidden_channels": fc1.n,
             },
             "dispatch_count": len(self.calls),
             "cublas_dispatch_count": sum(
@@ -189,22 +197,23 @@ def _graph_sha256(graph: Graph) -> str:
 
 
 def _production_hybrid(graph: Graph):
-    """Reuse the existing strict FFN matcher and validate the production shape."""
+    """Reuse the strict FFN matcher and validate one frozen production profile."""
 
     hybrid = compile_mlir_cuda(graph)
     if len(hybrid.graph.inputs) != 1:
         _reject("the production FFN requires exactly one input")
     query_name = next(iter(hybrid.graph.inputs))
     query_spec = hybrid.graph.inputs[query_name]
-    if query_spec.shape != PRODUCTION_QUERY_SHAPE:
+    if query_spec.shape not in SUPPORTED_PRODUCTION_QUERY_SHAPES:
         _reject(
-            "the production hybrid slice requires query shape "
-            f"{PRODUCTION_QUERY_SHAPE}, got {query_spec.shape}"
+            "the production hybrid slice requires query shape in "
+            f"{SUPPORTED_PRODUCTION_QUERY_SHAPES}, got {query_spec.shape}"
         )
     if query_spec.dtype != "float32" or query_spec.layout != "contiguous":
         _reject("the production hybrid slice requires contiguous float32 query storage")
 
     fc1, bias_relu, fc2, final = hybrid.calls
+    rows = query_spec.shape[0] * query_spec.shape[1]
     if tuple(call.symbol for call in hybrid.calls) != (
         FC1_SYMBOL,
         BIAS_RELU_SYMBOL,
@@ -213,21 +222,21 @@ def _production_hybrid(graph: Graph):
     ):
         _reject("the canonical FFN runtime symbol contract changed")
     if (fc1.m, fc1.n, fc1.k) != (
-        PRODUCTION_ROWS,
+        rows,
         PRODUCTION_HIDDEN_CHANNELS,
         PRODUCTION_CHANNELS,
     ):
         _reject("the production FC1 MatMul contract is invalid")
     if (fc2.m, fc2.n, fc2.k) != (
-        PRODUCTION_ROWS,
+        rows,
         PRODUCTION_CHANNELS,
         PRODUCTION_HIDDEN_CHANNELS,
     ):
         _reject("the production FC2 MatMul contract is invalid")
     if (
-        bias_relu.rows != PRODUCTION_ROWS
+        bias_relu.rows != rows
         or bias_relu.channels != PRODUCTION_HIDDEN_CHANNELS
-        or final.rows != PRODUCTION_ROWS
+        or final.rows != rows
         or final.channels != PRODUCTION_CHANNELS
         or final.epsilon is None
     ):
@@ -257,13 +266,22 @@ def _emit_gpu_mlir(hybrid: Any) -> str:
 
     _fc1, bias_relu, _fc2, final = hybrid.calls
     epsilon = _float_literal(float(final.epsilon))
-    hidden_elements = PRODUCTION_ROWS * PRODUCTION_HIDDEN_CHANNELS
-    return f'''// GAC {TARGET}: production BEVFormer FFN fusion module.
+    rows = int(final.rows)
+    channels = int(final.channels)
+    hidden_channels = int(bias_relu.channels)
+    hidden_elements = rows * hidden_channels
+    model_name = "BEVFormer" if rows == PRODUCTION_ROWS else "UniAD"
+    module_name = (
+        "gac_bevformer_ffn_fusions_sm86"
+        if rows == PRODUCTION_ROWS
+        else "gac_uniad_ffn_fusions_sm86"
+    )
+    return f'''// GAC {TARGET}: production {model_name} FFN fusion module.
 module attributes {{gpu.container_module}} {{
-  gpu.module @gac_bevformer_ffn_fusions_sm86 {{
+  gpu.module @{module_name} {{
     gpu.func @{BIAS_RELU_SYMBOL}(
-        %value: memref<{PRODUCTION_ROWS}x{PRODUCTION_HIDDEN_CHANNELS}xf32, #gpu.address_space<global>>,
-        %bias: memref<{PRODUCTION_HIDDEN_CHANNELS}xf32, #gpu.address_space<global>>)
+        %value: memref<{rows}x{hidden_channels}xf32, #gpu.address_space<global>>,
+        %bias: memref<{hidden_channels}xf32, #gpu.address_space<global>>)
         kernel attributes {{known_block_size = array<i32: {THREADS_PER_BLOCK}, 1, 1>}} {{
       %block = gpu.block_id x
       %block_size = gpu.block_dim x
@@ -273,42 +291,42 @@ module attributes {{gpu.container_module}} {{
       %count = arith.constant {hidden_elements} : index
       %in_bounds = arith.cmpi ult, %linear, %count : index
       scf.if %in_bounds {{
-        %width = arith.constant {PRODUCTION_HIDDEN_CHANNELS} : index
+        %width = arith.constant {hidden_channels} : index
         %row = arith.divui %linear, %width : index
         %column = arith.remui %linear, %width : index
         %input = memref.load %value[%row, %column]
-          : memref<{PRODUCTION_ROWS}x{PRODUCTION_HIDDEN_CHANNELS}xf32, #gpu.address_space<global>>
+          : memref<{rows}x{hidden_channels}xf32, #gpu.address_space<global>>
         %bias_value = memref.load %bias[%column]
-          : memref<{PRODUCTION_HIDDEN_CHANNELS}xf32, #gpu.address_space<global>>
+          : memref<{hidden_channels}xf32, #gpu.address_space<global>>
         %biased = arith.addf %input, %bias_value : f32
         %zero = arith.constant 0.0 : f32
         %relu = arith.maximumf %biased, %zero : f32
         memref.store %relu, %value[%row, %column]
-          : memref<{PRODUCTION_ROWS}x{PRODUCTION_HIDDEN_CHANNELS}xf32, #gpu.address_space<global>>
+          : memref<{rows}x{hidden_channels}xf32, #gpu.address_space<global>>
       }}
       gpu.return
     }}
 
     gpu.func @{FINAL_SYMBOL}(
-        %projected: memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>,
-        %bias: memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>,
-        %residual: memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>,
-        %gamma: memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>,
-        %beta: memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>,
-        %output: memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>)
+        %projected: memref<{rows}x{channels}xf32, #gpu.address_space<global>>,
+        %bias: memref<{channels}xf32, #gpu.address_space<global>>,
+        %residual: memref<{rows}x{channels}xf32, #gpu.address_space<global>>,
+        %gamma: memref<{channels}xf32, #gpu.address_space<global>>,
+        %beta: memref<{channels}xf32, #gpu.address_space<global>>,
+        %output: memref<{rows}x{channels}xf32, #gpu.address_space<global>>)
         kernel attributes {{known_block_size = array<i32: {THREADS_PER_BLOCK}, 1, 1>}} {{
       %row = gpu.block_id x
       %column = gpu.thread_id x
       %projected_value = memref.load %projected[%row, %column]
-        : memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{rows}x{channels}xf32, #gpu.address_space<global>>
       %bias_value = memref.load %bias[%column]
-        : memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{channels}xf32, #gpu.address_space<global>>
       %residual_value = memref.load %residual[%row, %column]
-        : memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{rows}x{channels}xf32, #gpu.address_space<global>>
       %biased = arith.addf %projected_value, %bias_value : f32
       %value = arith.addf %biased, %residual_value : f32
       %sum = gpu.all_reduce add %value uniform {{}} : (f32) -> (f32)
-      %width = arith.constant 256.0 : f32
+      %width = arith.constant {float(channels):.1f} : f32
       %mean = arith.divf %sum, %width : f32
       %centered = arith.subf %value, %mean : f32
       %square = arith.mulf %centered, %centered : f32
@@ -319,13 +337,13 @@ module attributes {{gpu.container_module}} {{
       %inv_stddev = nvvm.rsqrt %adjusted : f32
       %normalized = arith.mulf %centered, %inv_stddev : f32
       %scale = memref.load %gamma[%column]
-        : memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{channels}xf32, #gpu.address_space<global>>
       %shift = memref.load %beta[%column]
-        : memref<{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{channels}xf32, #gpu.address_space<global>>
       %scaled = arith.mulf %normalized, %scale : f32
       %result = arith.addf %scaled, %shift : f32
       memref.store %result, %output[%row, %column]
-        : memref<{PRODUCTION_ROWS}x{PRODUCTION_CHANNELS}xf32, #gpu.address_space<global>>
+        : memref<{rows}x{channels}xf32, #gpu.address_space<global>>
       gpu.return
     }}
   }}
@@ -614,8 +632,11 @@ __all__ = [
     "FINAL_SYMBOL",
     "MlirCublasPtxProgram",
     "PTX_ENTRY_SYMBOLS",
+    "PRODUCTION_QUERY_SHAPE",
     "RUNTIME_ABI_VERSION",
+    "SUPPORTED_PRODUCTION_QUERY_SHAPES",
     "TARGET",
+    "UNIAD_QUERY_SHAPE",
     "assemble_mlir_cublas_ptx_program",
     "compile_mlir_cublas_ptx",
     "validate_mlir_cublas_ptx_program",

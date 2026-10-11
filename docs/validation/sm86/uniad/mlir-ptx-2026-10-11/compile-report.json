@@ -1,0 +1,385 @@
+{
+  "backends": {
+    "cuda_hxp": {
+      "compile_ms": 3.3148000002256595,
+      "dispatch_count": 6,
+      "executed_custom_artifact": "runtime-NVRTC-compiled-CUDA",
+      "matmul_lowering": "runtime-select cupy-cublas; generated CUDA fallback is explicit",
+      "nvrtc_required": true,
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\uniad-stage2-encoder-layer-0-sm86.hxp",
+      "ptx_generated_offline": false,
+      "sha256": "fb409c95e49c2825cd2c321b1617cea240ce9b97e65ecedfee82ddd044462705"
+    },
+    "mlir_cublas_ptx_sm86": {
+      "artifact": "gac.mlir-cublas-ptx-sm86.directory",
+      "artifact_schema_version": 1,
+      "compile_ms": 3730.590300001495,
+      "compile_ms_scope": "complete standalone artifact",
+      "compiler_backend": "mlir-cublas-ptx-sm86",
+      "deployment_boundary": "fusion device code and validated four-call ABI only; model weights remain in the separately validated graph constants",
+      "directory": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\mlir-cublas-ptx-sm86",
+      "dispatch_count": 4,
+      "executable": true,
+      "executed_custom_artifact": "textual-ptx",
+      "fusion_lowering": "mlir-gpu-nvvm-ptx",
+      "integrity_sha256": "b1a227af1ceab58eae000db97caa9f92cca60a3015360fe84ced1b006c8d664e",
+      "manifest": {
+        "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\mlir-cublas-ptx-sm86\\manifest.json",
+        "payload_sha256": "6034e8d3819a74f3565aad7279871ec78024fecf3ed694083b4d3ee01b74a82d",
+        "sha256": "13f00c73d9475639c207b42f13d69e7d363129ff675045a8ed184badc4b3dacb"
+      },
+      "matmul_lowering": "cupy-cublas",
+      "nvrtc_required": false,
+      "ptx_dispatch_count": 2,
+      "ptx_files": {
+        "ptx": {
+          "file": "fusions.ptx",
+          "sha256": "f98f21b72ffba884bc554870c856b64a36c27cffa9efe423868b252f828b93eb",
+          "size_bytes": 6239
+        }
+      },
+      "ptx_generated_offline": true,
+      "toolchain": {
+        "chip": "sm_86",
+        "command": [
+          "wsl.exe",
+          "-d",
+          "Ubuntu-24.04",
+          "--",
+          "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/gpu.mlir",
+          "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+          "--verify-each",
+          "-o",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/binary.mlir"
+        ],
+        "entries": [
+          "gac_bias_relu_inplace_f32",
+          "gac_bias_residual_layer_norm_f32"
+        ],
+        "features": "+ptx71",
+        "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+        "name": "mlir-opt",
+        "ptx_version": "7.1",
+        "source_sha256": "5c1b804d356147f08146ec352a9aff7b09bec364a44eb5811e2e91e28ba18aa1",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+      },
+      "toolchains": null
+    },
+    "mlir_cuda_sm86": {
+      "call_count": 4,
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 40000,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            80000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 20480000,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 40000,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            40000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 10240000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compile_ms": 317.6644000050146,
+      "directory": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\mlir-cuda-sm86",
+      "executed_custom_artifact": "runtime-NVRTC-compiled-CUDA",
+      "integrity_sha256": "fa05ce657a5fc4654935dceaf1cf541bb2141ebc8b0a7f1b166c0706d3651e2d",
+      "manifest_sha256": "0248a80d556e64ce43308919853eec22cb62f21d9da2f222e270b8cb69cfefb1",
+      "nvrtc_required": true,
+      "ptx_generated_offline": false
+    },
+    "mlir_tiled_ffn_sm86": {
+      "artifact": "gac.mlir-tiled-ffn-sm86.directory",
+      "artifact_schema_version": 2,
+      "base_program_reused": true,
+      "compile_ms": 10846.494199999142,
+      "compile_ms_scope": "complete standalone artifact including fusion dependency",
+      "compiler_backend": "mlir-tiled-ffn-sm86",
+      "dependency_compile_ms": 3730.590300001495,
+      "deployment_boundary": "three validated PTX dispatches only; model constants remain in the separately validated graph",
+      "directory": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\mlir-tiled-ffn-sm86",
+      "dispatch_count": 3,
+      "executable": true,
+      "executed_custom_artifact": "textual-ptx",
+      "fusion_lowering": "fc1-bias-relu-and-final-bias-residual-layernorm",
+      "incremental_compile_ms": 7115.903899997647,
+      "integrity_sha256": "164d3ac307c80475f9eb9a617d80ab3181b3feb11a5140db16d616d015d4be71",
+      "invocation_compile_ms": 7115.903899997647,
+      "manifest": {
+        "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\artifacts-checkpoint-v3\\mlir-tiled-ffn-sm86\\manifest.json",
+        "payload_sha256": "28dbfb1860a7710864417c670f3246c81603c94952fba685839e1f685d99e412",
+        "sha256": "ca40f7ab2999ad2220179e02a59d0c8f8af88252aee100fa3591a8baef47714c"
+      },
+      "matmul_lowering": "explicit-shared-memory-tiled-mlir-gpu",
+      "nvrtc_required": false,
+      "ptx_dispatch_count": 3,
+      "ptx_files": {
+        "fc1_ptx": {
+          "file": "fc1.ptx",
+          "sha256": "47d3cbc0d7313f53f0527138e7cc1e887fc12acdcb13b4503b58200eff8e2fe9",
+          "size_bytes": 4669
+        },
+        "fc2_ptx": {
+          "file": "fc2.ptx",
+          "sha256": "a0455f50bcfb8ad7427f889f1a4271e2f7bef14db0f1b34b4fdbd09e90311e3e",
+          "size_bytes": 4462
+        },
+        "fusion_ptx": {
+          "file": "fusion.ptx",
+          "sha256": "f98f21b72ffba884bc554870c856b64a36c27cffa9efe423868b252f828b93eb",
+          "size_bytes": 6239
+        }
+      },
+      "ptx_generated_offline": true,
+      "toolchain": null,
+      "toolchains": {
+        "fc1": {
+          "chip": "sm_86",
+          "command": [
+            "wsl.exe",
+            "-d",
+            "Ubuntu-24.04",
+            "--",
+            "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-820y9ro7/gpu.mlir",
+            "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+            "--verify-each",
+            "-o",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-820y9ro7/binary.mlir"
+          ],
+          "entries": [
+            "gac_bevformer_ffn_fc1_tiled_f32"
+          ],
+          "features": "+ptx71",
+          "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+          "ptx_version": "7.1",
+          "source_sha256": "a8e7edd366c3709b6dbd73064a1f9143a6c13cb745350f1912c65e59db268b2f",
+          "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+        },
+        "fc2": {
+          "chip": "sm_86",
+          "command": [
+            "wsl.exe",
+            "-d",
+            "Ubuntu-24.04",
+            "--",
+            "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-q_59kf44/gpu.mlir",
+            "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+            "--verify-each",
+            "-o",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-q_59kf44/binary.mlir"
+          ],
+          "entries": [
+            "gac_bevformer_ffn_fc2_tiled_f32"
+          ],
+          "features": "+ptx71",
+          "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+          "ptx_version": "7.1",
+          "source_sha256": "0d15ab8ace8ac9a311a6b654f738b87466b0648e889670e2006abc50f4dd8129",
+          "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+        },
+        "fusion": {
+          "chip": "sm_86",
+          "command": [
+            "wsl.exe",
+            "-d",
+            "Ubuntu-24.04",
+            "--",
+            "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/gpu.mlir",
+            "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+            "--verify-each",
+            "-o",
+            "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/binary.mlir"
+          ],
+          "entries": [
+            "gac_bias_relu_inplace_f32",
+            "gac_bias_residual_layer_norm_f32"
+          ],
+          "features": "+ptx71",
+          "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+          "ptx_version": "7.1",
+          "source_sha256": "5c1b804d356147f08146ec352a9aff7b09bec364a44eb5811e2e91e28ba18aa1",
+          "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+        }
+      }
+    }
+  },
+  "boundary": "compiler subgraph artifact; not end-to-end UniAD inference",
+  "offline_mlir_toolchain": {
+    "mlir_opt": "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+    "tiled_matmul_tile": [
+      16,
+      16,
+      16
+    ],
+    "timeout_seconds": 60.0,
+    "use_wsl": true,
+    "wsl_distribution": "Ubuntu-24.04"
+  },
+  "profile": {
+    "batch": 1,
+    "bev_h": 200,
+    "bev_w": 200,
+    "component": "bev_encoder_ffn",
+    "dropout": "inference-identity",
+    "dtype": "float32",
+    "embed_dim": 256,
+    "hidden_dim": 512,
+    "kind": "uniad-stage2-bev-encoder-ffn",
+    "layer": 0,
+    "layer_norm_epsilon": 1e-05,
+    "operation_order": [
+      "MatMul",
+      "BiasAdd",
+      "ReLU",
+      "MatMul",
+      "BiasAdd",
+      "ResidualAdd",
+      "LayerNorm"
+    ],
+    "schema_version": 1,
+    "stage": "stage2_e2e",
+    "weight_layout": "input_channel_output_channel"
+  },
+  "requested_backend": "all",
+  "schema_version": 1,
+  "scope": "one UniAD stage2 BEV encoder FFN",
+  "selected_backends": [
+    "cuda-hxp",
+    "mlir-cuda-sm86",
+    "mlir-cublas-ptx-sm86",
+    "mlir-tiled-ffn-sm86"
+  ],
+  "source_bundle": {
+    "format": "uniad-compiler-ffn-bundle",
+    "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\uniad-mlir-opt-20261011\\uniad-layer0-checkpoint.uniadffn",
+    "schema_version": 1,
+    "sha256": "a27bc607c4c7b03e8b95d3b60c42b44b74c200110ad745cf37e4f3e7382e1b41"
+  }
+}

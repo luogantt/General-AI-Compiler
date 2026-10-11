@@ -18,6 +18,7 @@ from gac.mlir_tiled_matmul import (
     FUNCTIONAL_MMA_FP16_SYMBOL,
     FUNCTIONAL_MMA_TF32_SYMBOL,
     FUNCTIONAL_MMA_K_SLICES,
+    SUPPORTED_FFN_ROWS,
     TiledMatmulConfig,
     bevformer_fc1_tiled_config,
     bevformer_fc2_tiled_config,
@@ -186,6 +187,23 @@ class TiledMatmulConfigTests(unittest.TestCase):
         self.assertEqual((fc2.m, fc2.k, fc2.n), (2500, 512, 256))
         self.assertFalse(fc2.fuse_bias_relu)
         self.assertEqual(fc2.grid, (16, 157, 1))
+
+    def test_uniad_profile_changes_only_rows_and_grid(self):
+        fc1 = bevformer_fc1_tiled_config(rows=40000)
+        fc2 = bevformer_fc2_tiled_config(rows=40000)
+        self.assertEqual(SUPPORTED_FFN_ROWS, (2500, 40000))
+        self.assertEqual((fc1.m, fc1.k, fc1.n), (40000, 256, 512))
+        self.assertEqual((fc2.m, fc2.k, fc2.n), (40000, 512, 256))
+        self.assertEqual(fc1.grid, (32, 2500, 1))
+        self.assertEqual(fc2.grid, (16, 2500, 1))
+        self.assertEqual(fc1.symbol, bevformer_fc1_tiled_config().symbol)
+        self.assertEqual(fc2.symbol, bevformer_fc2_tiled_config().symbol)
+
+        for invalid in (True, 2499, 40001):
+            with self.subTest(rows=invalid), self.assertRaises(
+                (TypeError, ValueError)
+            ):
+                bevformer_fc1_tiled_config(rows=invalid)
 
     def test_candidate_tiles_are_all_valid_for_both_matmuls(self):
         for tile_m, tile_n, tile_k in bevformer_tiled_candidates():

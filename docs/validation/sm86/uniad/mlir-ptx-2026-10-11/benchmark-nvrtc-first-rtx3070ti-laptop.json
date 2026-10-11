@@ -1,0 +1,1772 @@
+{
+  "autotune": {
+    "cache_hit": false,
+    "executable_candidates": [
+      {
+        "backend_strategy": "mlir-cublas-ptx-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "backend_strategy": "mlir-cuda-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      },
+      {
+        "backend_strategy": "mlir-tiled-ffn-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          16,
+          16,
+          16
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          16,
+          16,
+          1
+        ]
+      }
+    ],
+    "executed": true,
+    "selection": {
+      "candidate_space_sha256": "652fb8e4d2894d89f60fc5ad94f37840b60855a297d435d69faf951e352790f6",
+      "config": {
+        "atol": 1e-05,
+        "iterations": 30,
+        "repeats": 6,
+        "rtol": 0.0001,
+        "warmup": 10
+      },
+      "device": {
+        "candidate_backends": [
+          "mlir-cublas-ptx-sm86",
+          "mlir-cuda-sm86",
+          "mlir-tiled-ffn-sm86"
+        ],
+        "compute_capability": [
+          8,
+          6
+        ],
+        "device_id": 0,
+        "driver_version": 13000,
+        "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "resident_timing": "cuda-events",
+        "runtime_version": 12090
+      },
+      "device_sha256": "bc39cbc82aa5ad00836bb038363c38050783b762f7ecfce7ca6113b1d8ac6ec4",
+      "evaluations": [
+        {
+          "candidate": {
+            "backend_strategy": "mlir-cuda-sm86",
+            "fusion_strategy": "full-ffn",
+            "matmul_tile": [
+              1,
+              1,
+              1
+            ],
+            "precision": "fp32",
+            "thread_block": [
+              256,
+              1,
+              1
+            ]
+          },
+          "candidate_sha256": "950705490a6718c0981a4d5fce8aa6e9c284bdffb659dc56c008e6a900ff5edd",
+          "latency_samples_ms": [
+            3.187574513753255,
+            3.184435272216797,
+            3.206894938151042,
+            3.2110857645670574,
+            3.2155306498209635,
+            3.21082026163737
+          ],
+          "max_abs_error": 3.337860107421875e-06,
+          "max_rel_error": 0.02183273863920476,
+          "median_latency_ms": 3.208857599894206,
+          "rejection_reason": null,
+          "status": "eligible"
+        },
+        {
+          "candidate": {
+            "backend_strategy": "mlir-tiled-ffn-sm86",
+            "fusion_strategy": "full-ffn",
+            "matmul_tile": [
+              16,
+              16,
+              16
+            ],
+            "precision": "fp32",
+            "thread_block": [
+              16,
+              16,
+              1
+            ]
+          },
+          "candidate_sha256": "b357348f733c49fd9ccaf6b7adbfcf353d5005bca0da419e2a5a3d88bf9fff1e",
+          "latency_samples_ms": [
+            13.812778727213542,
+            13.980604044596355,
+            14.068941243489583,
+            13.965994262695313,
+            14.168894449869791,
+            14.004701741536458
+          ],
+          "max_abs_error": 3.0994415283203125e-06,
+          "max_rel_error": 0.027939677238464352,
+          "median_latency_ms": 13.992652893066406,
+          "rejection_reason": null,
+          "status": "eligible"
+        },
+        {
+          "candidate": {
+            "backend_strategy": "mlir-cublas-ptx-sm86",
+            "fusion_strategy": "full-ffn",
+            "matmul_tile": [
+              1,
+              1,
+              1
+            ],
+            "precision": "fp32",
+            "thread_block": [
+              256,
+              1,
+              1
+            ]
+          },
+          "candidate_sha256": "df0e33feaba43759bb907f88cdc8524e11868db61df43835eea9bd7f4df35578",
+          "latency_samples_ms": [
+            3.012403106689453,
+            3.128661346435547,
+            3.105962626139323,
+            3.1074305216471356,
+            3.1076075236002603,
+            3.096166483561198
+          ],
+          "max_abs_error": 3.337860107421875e-06,
+          "max_rel_error": 0.021839514374732968,
+          "median_latency_ms": 3.1066965738932293,
+          "rejection_reason": null,
+          "status": "eligible"
+        }
+      ],
+      "graph_sha256": "f1e9d6557f6bb802c019d1fcb1c38fe4af572a9ccbc794199416fefd14deadf2",
+      "kind": "gac.mlir-ptx-ffn-autotune",
+      "schema_version": 1,
+      "selected_candidate": {
+        "backend_strategy": "mlir-cublas-ptx-sm86",
+        "fusion_strategy": "full-ffn",
+        "matmul_tile": [
+          1,
+          1,
+          1
+        ],
+        "precision": "fp32",
+        "thread_block": [
+          256,
+          1,
+          1
+        ]
+      },
+      "selected_candidate_sha256": "df0e33feaba43759bb907f88cdc8524e11868db61df43835eea9bd7f4df35578",
+      "source_sha256": "32671191b4082661c4285c08d4997ff043ad2b3641970fa3d7744f439190a6a7"
+    },
+    "skipped_candidates": [
+      {
+        "candidate": {
+          "backend_strategy": "mlir-ptx-tiled",
+          "fusion_strategy": "full-ffn",
+          "matmul_tile": [
+            64,
+            64,
+            32
+          ],
+          "precision": "fp32",
+          "thread_block": [
+            256,
+            1,
+            1
+          ]
+        },
+        "candidate_sha256": "a831a980ef1736065b82857d2c3deab59377731dd77ff2d20ee5f77efd80df2a",
+        "reason": "no full-FFN runtime session consumes this tile/precision policy; metadata-only candidates are not executed or timed",
+        "status": "skipped"
+      },
+      {
+        "candidate": {
+          "backend_strategy": "mlir-nvgpu-mma",
+          "fusion_strategy": "full-ffn",
+          "matmul_tile": [
+            128,
+            64,
+            32
+          ],
+          "precision": "fp16",
+          "thread_block": [
+            128,
+            1,
+            1
+          ]
+        },
+        "candidate_sha256": "38f00af4ca3ad92ed5ce5b02aa10030bb21878435a02731a3e2e10bfe3493dd2",
+        "reason": "no full-FFN runtime session consumes this tile/precision policy; metadata-only candidates are not executed or timed",
+        "status": "skipped"
+      }
+    ]
+  },
+  "boundary": "production-shape stage2 BEV encoder FFN fragment; not full UniAD inference",
+  "comparison": {
+    "method": "paired-interleaved-order-balanced",
+    "mlir_cublas_ptx_minus_mlir_cuda_nvrtc_us": {
+      "max": -29.2938232421875,
+      "median": -100.69478352864576,
+      "min": -107.56174723307277,
+      "p10": -107.3211669921875,
+      "p90": -59.83950297037768,
+      "samples": [
+        -96.97265625,
+        -104.41691080729152,
+        -107.56174723307277,
+        -107.08058675130223,
+        -29.2938232421875,
+        -90.38518269856786
+      ]
+    },
+    "mlir_cublas_ptx_speedup_over_mlir_cuda_nvrtc": 1.0328999749855314,
+    "primary_estimator": "geometric mean of the PTX-first and NVRTC-first median per-repeat NVRTC/PTX CUDA Event latency ratios",
+    "ratio_of_backend_medians": 1.0343755098352767,
+    "speedup_by_order": {
+      "nvrtc-first": {
+        "max": 1.0349864640972868,
+        "median": 1.031873668889896,
+        "min": 1.0091228127421272,
+        "p10": 1.013672983971681,
+        "p90": 1.0343639050558087,
+        "samples": [
+          1.031873668889896,
+          1.0349864640972868,
+          1.0091228127421272
+        ]
+      },
+      "ptx-first": {
+        "max": 1.0348241214716385,
+        "median": 1.0339273018497297,
+        "min": 1.0281555723132687,
+        "p10": 1.029309918220561,
+        "p90": 1.0346447575472568,
+        "samples": [
+          1.0339273018497297,
+          1.0348241214716385,
+          1.0281555723132687
+        ]
+      }
+    },
+    "speedup_samples": {
+      "max": 1.0349864640972868,
+      "median": 1.032900485369813,
+      "min": 1.0091228127421272,
+      "p10": 1.018639192527698,
+      "p90": 1.0349052927844626,
+      "samples": [
+        1.031873668889896,
+        1.0339273018497297,
+        1.0349864640972868,
+        1.0348241214716385,
+        1.0091228127421272,
+        1.0281555723132687
+      ]
+    }
+  },
+  "device": {
+    "compiler_backend": "mlir-cublas-ptx-sm86",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cupy_version": "13.6.0",
+    "device_id": 0,
+    "driver_version": 13000,
+    "fusion_backend": {
+      "launch_count": 2,
+      "nvrtc_launch_count": 0,
+      "selected": "official-mlir-nvvm-ptx"
+    },
+    "matmul_backend": {
+      "call_count": 2,
+      "precision": "float32",
+      "selected": "cupy-cublas"
+    },
+    "multiprocessor_count": 46,
+    "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "runtime_version": 12090,
+    "supported_target": "cuda-sm86",
+    "total_memory_bytes": 8220901376
+  },
+  "git": {
+    "branch": "codex/uniad-mlir-ptx-opt",
+    "commit": "f77fed791cef4602ccff68181f32c7af831a8d3e",
+    "dirty": true
+  },
+  "kind": "uniad-stage2-encoder-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc",
+  "mlir_cublas_ptx": {
+    "artifact_directory": "/home/robot/gac-uniad-mlir-final-20261011-f77fed7-225025/build/uniad-mlir-opt-20261011/artifacts-checkpoint-v3/mlir-cublas-ptx-sm86",
+    "compile_or_load_ms": 854.6172190108337,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 3.337860107421875e-06,
+      "max_rel_error_with_1e-3_floor": 0.000521540641784668,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 3211.051686604818,
+      "median": 3076.281611124675,
+      "min": 3042.406463623047,
+      "p10": 3058.3941141764326,
+      "p90": 3210.6287638346357,
+      "samples": [
+        3042.406463623047,
+        3077.666219075521,
+        3074.381764729818,
+        3074.897003173828,
+        3211.051686604818,
+        3210.205841064453
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 3211.3298666666665,
+      "median": 3076.5662,
+      "min": 3042.789166666667,
+      "p10": 3058.7493833333338,
+      "p90": 3210.8931999999995,
+      "samples": [
+        3042.789166666667,
+        3077.9894333333336,
+        3074.7096,
+        3075.142966666667,
+        3211.3298666666665,
+        3210.456533333333
+      ]
+    },
+    "ffn_calls_per_second": 325.06776895318256,
+    "first_public_run": {
+      "gpu_stream_us": 8592.127799987793,
+      "wall_us": 23229.612037539482
+    },
+    "lowering": {
+      "artifact_kind": "mlir-cublas-calls-with-official-mlir-nvvm-ptx",
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 40000,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            80000,
+            1,
+            1
+          ],
+          "implementation": "mlir-ptx",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 20480000,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 40000,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            40000,
+            1,
+            1
+          ],
+          "implementation": "mlir-ptx",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 10240000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-cublas-ptx-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "cublas_dispatch_count": 2,
+      "dispatch_count": 4,
+      "executable": true,
+      "executed_custom_artifact": "textual-ptx",
+      "fusion_lowering": "mlir-gpu-nvvm-ptx",
+      "integrity": {
+        "algorithm": "sha256",
+        "binary_mlir_sha256": "249cb3cd9914c0759a470b0667e7fd9f44c944a4782b4e90895a712282cf8e7a",
+        "call_plan_sha256": "3a4bf99a276fa03f867517d33a0c2ac81134640b332ce54605c61ba012c35ec7",
+        "gpu_mlir_sha256": "5c1b804d356147f08146ec352a9aff7b09bec364a44eb5811e2e91e28ba18aa1",
+        "integrity_sha256": "b1a227af1ceab58eae000db97caa9f92cca60a3015360fe84ced1b006c8d664e",
+        "ptx_sha256": "f98f21b72ffba884bc554870c856b64a36c27cffa9efe423868b252f828b93eb",
+        "tensor_mlir_sha256": "16977c2f85bf53a67a6411c0775d6f7fb0580b267158e483d444b03fb63160f9"
+      },
+      "kernel_fusions": [
+        "bias+relu",
+        "bias+residual+layernorm"
+      ],
+      "lowering_stage": "cublas-runtime-calls-plus-ptx",
+      "matmul_lowering": "cupy-cublas",
+      "mlir_source_lowered": true,
+      "mlir_source_role": "lowering-input-for-executed-fusion-ptx",
+      "nvrtc_required": false,
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "cublas_compute_policy": "runtime-default",
+        "storage": "float32",
+        "tensor_core_policy": "not-forced-by-compiler"
+      },
+      "profile": {
+        "channels": 256,
+        "hidden_channels": 512,
+        "query_shape": [
+          1,
+          40000,
+          256
+        ],
+        "rows": 40000
+      },
+      "ptx_dispatch_count": 2,
+      "runtime_abi_version": 2,
+      "runtime_dispatch_source": "validated-hybrid-call-records",
+      "runtime_requirements": [
+        "CUDA Driver",
+        "cuBLAS",
+        "CuPy"
+      ],
+      "schema_version": 2,
+      "target": "mlir-cublas-ptx-sm86",
+      "target_intent": "cuda-sm86",
+      "toolchain": {
+        "chip": "sm_86",
+        "command": [
+          "wsl.exe",
+          "-d",
+          "Ubuntu-24.04",
+          "--",
+          "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/gpu.mlir",
+          "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+          "--verify-each",
+          "-o",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-o6_wowt7/binary.mlir"
+        ],
+        "entries": [
+          "gac_bias_relu_inplace_f32",
+          "gac_bias_residual_layer_norm_f32"
+        ],
+        "features": "+ptx71",
+        "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+        "name": "mlir-opt",
+        "ptx_version": "7.1",
+        "source_sha256": "5c1b804d356147f08146ec352a9aff7b09bec364a44eb5811e2e91e28ba18aa1",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+      }
+    },
+    "preparation": "verified-precompiled-mlir-cublas-ptx-artifact",
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 22244.954016059637,
+      "median": 21537.857013754547,
+      "min": 20892.544009257108,
+      "p10": 21021.606610156596,
+      "p90": 22103.53461559862,
+      "samples": [
+        21537.857013754547,
+        22244.954016059637,
+        20892.544009257108
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 7943.20011138916,
+      "median": 7808.800220489502,
+      "min": 7755.296230316162,
+      "p10": 7765.99702835083,
+      "p90": 7916.3201332092285,
+      "samples": [
+        7943.20011138916,
+        7808.800220489502,
+        7755.296230316162
+      ]
+    },
+    "runtime": {
+      "compiler_backend": "mlir-cublas-ptx-sm86",
+      "fusion_backend": {
+        "launch_count": 2,
+        "nvrtc_launch_count": 0,
+        "selected": "official-mlir-nvvm-ptx"
+      },
+      "implementations": [
+        "cupy-cublas",
+        "mlir-ptx",
+        "cupy-cublas",
+        "mlir-ptx"
+      ],
+      "matmul_backend": {
+        "call_count": 2,
+        "precision": "float32",
+        "selected": "cupy-cublas"
+      }
+    },
+    "session_setup_ms": 417.1291700331494
+  },
+  "mlir_cuda_nvrtc": {
+    "compile_ms": 397.33048900961876,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 3.337860107421875e-06,
+      "max_rel_error_with_1e-3_floor": 0.0005218898877501488,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 3300.591023763021,
+      "median": 3182.0303599039717,
+      "min": 3139.379119873047,
+      "p10": 3160.6613159179688,
+      "p90": 3270.468266805013,
+      "samples": [
+        3139.379119873047,
+        3182.0831298828125,
+        3181.9435119628906,
+        3181.9775899251304,
+        3240.3455098470054,
+        3300.591023763021
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 3300.8917,
+      "median": 3182.3211833333335,
+      "min": 3139.8345666666664,
+      "p10": 3161.035366666667,
+      "p90": 3270.7649333333334,
+      "samples": [
+        3139.8345666666664,
+        3182.369533333333,
+        3182.2728333333334,
+        3182.236166666667,
+        3240.6381666666666,
+        3300.8917
+      ]
+    },
+    "ffn_calls_per_second": 314.26475768451763,
+    "first_public_run": {
+      "gpu_stream_us": 123599.86877441406,
+      "wall_us": 137179.67801494524
+    },
+    "lowering": {
+      "artifact_kind": "mlir-abi-manifest-with-validated-runtime-call-plan",
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 40000,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            80000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 20480000,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 40000,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            40000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 10240000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-cuda-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "dialects": [
+        "builtin",
+        "func",
+        "memref"
+      ],
+      "executable": true,
+      "inputs": {
+        "query": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            40000,
+            256
+          ]
+        }
+      },
+      "integrity": {
+        "algorithm": "sha256",
+        "call_plan_sha256": "44b292ab052487c7f4536e9ac8ee11f84945014aca2234c22d782c2faa604fcd",
+        "integrity_sha256": "fa05ce657a5fc4654935dceaf1cf541bb2141ebc8b0a7f1b166c0706d3651e2d",
+        "kernel_source_sha256": "0c04e6347b95627af114f146ef30f0e2ec2b580ffda0c4a6ccadca5f9a058f03",
+        "mlir_source_sha256": "5e1436634f880f541a2a30c16c6e384ca26f8128306ee0cb2769ea7ec5733f31",
+        "tensor_source_sha256": "16977c2f85bf53a67a6411c0775d6f7fb0580b267158e483d444b03fb63160f9"
+      },
+      "integrity_sha256": "fa05ce657a5fc4654935dceaf1cf541bb2141ebc8b0a7f1b166c0706d3651e2d",
+      "integrity_validation": "deterministic recompilation and exact artifact comparison before CUDA access",
+      "kernel_fusions": [
+        "bias+relu",
+        "bias+residual+layernorm"
+      ],
+      "layer_norm_lowering": "one CUDA block per row with block reduction",
+      "lowering_stage": "runtime-call-plan",
+      "matmul_lowering": "cupy-cublas",
+      "mlir_source_executed": false,
+      "mlir_source_role": "verifiable-abi-manifest",
+      "name": "uniad_stage2_encoder_layer_0_ffn",
+      "outputs": {
+        "output": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            40000,
+            256
+          ]
+        }
+      },
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "cublas_compute_policy": "runtime-default",
+        "storage": "float32",
+        "tensor_core_policy": "not-forced-by-compiler"
+      },
+      "runtime_abi_version": 2,
+      "runtime_dispatch_source": "validated-call-records",
+      "runtime_requirements": [
+        "CUDA",
+        "cuBLAS",
+        "NVRTC",
+        "CuPy"
+      ],
+      "schema_version": 2,
+      "target": "mlir-cuda-sm86",
+      "target_intent": "cuda-sm86"
+    },
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 22451.445984188467,
+      "median": 21664.098952896893,
+      "min": 21003.239962738007,
+      "p10": 21135.411760769784,
+      "p90": 22293.976577930152,
+      "samples": [
+        21664.098952896893,
+        22451.445984188467,
+        21003.239962738007
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 7947.264194488525,
+      "median": 7943.424224853516,
+      "min": 7868.512153625488,
+      "p10": 7883.494567871094,
+      "p90": 7946.496200561523,
+      "samples": [
+        7947.264194488525,
+        7943.424224853516,
+        7868.512153625488
+      ]
+    },
+    "runtime": {
+      "compiler_backend": "mlir-cuda-sm86",
+      "fusion_backend": null,
+      "implementations": [
+        "cupy-cublas",
+        "nvrtc-cuda",
+        "cupy-cublas",
+        "nvrtc-cuda"
+      ],
+      "matmul_backend": {
+        "call_count": 2,
+        "precision": "float32",
+        "selected": "cupy-cublas"
+      }
+    },
+    "session_setup_ms": 2331.8505400093272
+  },
+  "mlir_tiled_ffn": {
+    "artifact_directory": "/home/robot/gac-uniad-mlir-final-20261011-f77fed7-225025/build/uniad-mlir-opt-20261011/artifacts-checkpoint-v3/mlir-tiled-ffn-sm86",
+    "compile_or_load_ms": 2927.6778480270877,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 3.0994415283203125e-06,
+      "max_rel_error_with_1e-3_floor": 0.000455416738986969,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 14097.91259765625,
+      "median": 13936.360677083334,
+      "min": 13868.099975585938,
+      "p10": 13869.717915852863,
+      "p90": 14075.648498535156,
+      "samples": [
+        13868.099975585938,
+        13912.883504231771,
+        14053.384399414062,
+        13871.335856119791,
+        14097.91259765625,
+        13959.837849934896
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 14097.720533333333,
+      "median": 13936.424183333333,
+      "min": 13868.2059,
+      "p10": 13869.687283333333,
+      "p90": 14075.529766666667,
+      "samples": [
+        13868.2059,
+        13913.045933333335,
+        14053.339,
+        13871.168666666666,
+        14097.720533333333,
+        13959.802433333332
+      ]
+    },
+    "ffn_calls_per_second": 71.75474452554744,
+    "first_public_run": {
+      "gpu_stream_us": 21519.359588623047,
+      "wall_us": 35350.37802066654
+    },
+    "lowering": {
+      "artifact_kind": "three-mlir-nvvm-ptx-dispatches",
+      "async_double_buffered": false,
+      "calls": [
+        {
+          "abi_version": 2,
+          "block": [
+            16,
+            16,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            32,
+            2500,
+            1
+          ],
+          "implementation": "mlir-tiled-ptx",
+          "inputs": [
+            "query",
+            "fc1_weight",
+            "fc1_bias"
+          ],
+          "kind": "fused-matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul",
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 40000,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bevformer_ffn_fc1_tiled_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            16,
+            16,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            16,
+            2500,
+            1
+          ],
+          "implementation": "mlir-tiled-ptx",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 40000,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_bevformer_ffn_fc2_tiled_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            40000,
+            1,
+            1
+          ],
+          "implementation": "mlir-ptx",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 10240000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 40000
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-tiled-ffn-sm86",
+      "components": {
+        "fc1": {
+          "binary_mlir_sha256": "ff2766ae96fdbedcd50c8bf4a6ec35073db8dd814fa93527e7859deb0618f6da",
+          "config": {
+            "block": [
+              16,
+              16,
+              1
+            ],
+            "fuse_bias_relu": true,
+            "grid": [
+              32,
+              2500,
+              1
+            ],
+            "k": 256,
+            "m": 40000,
+            "n": 512,
+            "symbol": "gac_bevformer_ffn_fc1_tiled_f32",
+            "tile_k": 16,
+            "tile_m": 16,
+            "tile_n": 16
+          },
+          "evidence": {
+            "async_copy_instructions": 0,
+            "barriers": 2,
+            "fma_instructions": 0,
+            "fp32_adds": 17,
+            "fp32_multiplies": 16,
+            "global_stores": 1,
+            "mma_instructions": 0,
+            "shared_declarations": 2,
+            "shared_loads": 20,
+            "shared_stores": 2,
+            "static_shared_bytes": 2048,
+            "vector_shared_loads": 4
+          },
+          "gpu_source_sha256": "a8e7edd366c3709b6dbd73064a1f9143a6c13cb745350f1912c65e59db268b2f",
+          "ptx_sha256": "47d3cbc0d7313f53f0527138e7cc1e887fc12acdcb13b4503b58200eff8e2fe9",
+          "toolchain": {
+            "chip": "sm_86",
+            "command": [
+              "wsl.exe",
+              "-d",
+              "Ubuntu-24.04",
+              "--",
+              "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+              "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-820y9ro7/gpu.mlir",
+              "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+              "--verify-each",
+              "-o",
+              "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-820y9ro7/binary.mlir"
+            ],
+            "entries": [
+              "gac_bevformer_ffn_fc1_tiled_f32"
+            ],
+            "features": "+ptx71",
+            "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+            "ptx_version": "7.1",
+            "source_sha256": "a8e7edd366c3709b6dbd73064a1f9143a6c13cb745350f1912c65e59db268b2f",
+            "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+          }
+        },
+        "fc2": {
+          "binary_mlir_sha256": "8e4e3ff2a939c6a58719ef5b1f1a5f4d2d236940075e37c2ff01e93b29f48cf0",
+          "config": {
+            "block": [
+              16,
+              16,
+              1
+            ],
+            "fuse_bias_relu": false,
+            "grid": [
+              16,
+              2500,
+              1
+            ],
+            "k": 512,
+            "m": 40000,
+            "n": 256,
+            "symbol": "gac_bevformer_ffn_fc2_tiled_f32",
+            "tile_k": 16,
+            "tile_m": 16,
+            "tile_n": 16
+          },
+          "evidence": {
+            "async_copy_instructions": 0,
+            "barriers": 2,
+            "fma_instructions": 0,
+            "fp32_adds": 17,
+            "fp32_multiplies": 16,
+            "global_stores": 1,
+            "mma_instructions": 0,
+            "shared_declarations": 2,
+            "shared_loads": 20,
+            "shared_stores": 2,
+            "static_shared_bytes": 2048,
+            "vector_shared_loads": 4
+          },
+          "gpu_source_sha256": "0d15ab8ace8ac9a311a6b654f738b87466b0648e889670e2006abc50f4dd8129",
+          "ptx_sha256": "a0455f50bcfb8ad7427f889f1a4271e2f7bef14db0f1b34b4fdbd09e90311e3e",
+          "toolchain": {
+            "chip": "sm_86",
+            "command": [
+              "wsl.exe",
+              "-d",
+              "Ubuntu-24.04",
+              "--",
+              "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+              "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-q_59kf44/gpu.mlir",
+              "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+              "--verify-each",
+              "-o",
+              "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-q_59kf44/binary.mlir"
+            ],
+            "entries": [
+              "gac_bevformer_ffn_fc2_tiled_f32"
+            ],
+            "features": "+ptx71",
+            "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+            "ptx_version": "7.1",
+            "source_sha256": "0d15ab8ace8ac9a311a6b654f738b87466b0648e889670e2006abc50f4dd8129",
+            "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+          }
+        },
+        "final_fusion": {
+          "executed_entry": "gac_bias_residual_layer_norm_f32",
+          "program_integrity_sha256": "b1a227af1ceab58eae000db97caa9f92cca60a3015360fe84ced1b006c8d664e",
+          "ptx_sha256": "f98f21b72ffba884bc554870c856b64a36c27cffa9efe423868b252f828b93eb"
+        }
+      },
+      "compute_capability": [
+        8,
+        6
+      ],
+      "dispatch_count": 3,
+      "executable": true,
+      "fusion_lowering": "fc1-bias-relu-and-final-bias-residual-layernorm",
+      "integrity": {
+        "algorithm": "sha256",
+        "base_integrity_sha256": "b1a227af1ceab58eae000db97caa9f92cca60a3015360fe84ced1b006c8d664e",
+        "call_plan_sha256": "303c65a4a2d13be368cd41563698724069cfd729125cbe431aa60fe5ecfeac9e",
+        "integrity_sha256": "164d3ac307c80475f9eb9a617d80ab3181b3feb11a5140db16d616d015d4be71"
+      },
+      "matmul_dispatch_count": 2,
+      "matmul_lowering": "explicit-shared-memory-tiled-mlir-gpu",
+      "matmul_tile": [
+        16,
+        16,
+        16
+      ],
+      "nvrtc_required": false,
+      "precision": "fp32",
+      "profile": {
+        "channels": 256,
+        "hidden_channels": 512,
+        "query_shape": [
+          1,
+          40000,
+          256
+        ],
+        "rows": 40000
+      },
+      "ptx_dispatch_count": 3,
+      "runtime_abi_version": 2,
+      "schema_version": 2,
+      "single_buffered_shared_memory": true,
+      "target": "mlir-tiled-ffn-sm86",
+      "target_intent": "cuda-sm86",
+      "thread_block": [
+        16,
+        16,
+        1
+      ]
+    },
+    "preparation": "verified-precompiled-mlir-tiled-ffn-artifact",
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 32480.629975907505,
+      "median": 31452.402006834745,
+      "min": 31168.51602680981,
+      "p10": 31225.2932228148,
+      "p90": 32274.984382092953,
+      "samples": [
+        31452.402006834745,
+        32480.629975907505,
+        31168.51602680981
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 18117.984771728516,
+      "median": 18039.487838745117,
+      "min": 18008.384704589844,
+      "p10": 18014.6053314209,
+      "p90": 18102.285385131836,
+      "samples": [
+        18117.984771728516,
+        18039.487838745117,
+        18008.384704589844
+      ]
+    },
+    "runtime": {
+      "compiler_backend": "mlir-tiled-ffn-sm86",
+      "fusion_backend": {
+        "dispatch_count": 3,
+        "fused_fc1_bias_relu": true,
+        "fused_final_bias_residual_layernorm": true,
+        "launch_count": 2,
+        "nvrtc_launch_count": 0,
+        "selected": "official-mlir-nvvm-ptx"
+      },
+      "implementations": [
+        "mlir-tiled-ptx",
+        "mlir-tiled-ptx",
+        "mlir-ptx"
+      ],
+      "matmul_backend": {
+        "call_count": 2,
+        "precision": "float32",
+        "selected": "mlir-shared-memory-tiled-ptx",
+        "single_buffered": true,
+        "thread_block": [
+          16,
+          16,
+          1
+        ],
+        "tile": [
+          16,
+          16,
+          16
+        ]
+      }
+    },
+    "session_setup_ms": 844.0504500176758
+  },
+  "protocol": {
+    "atol": 1e-05,
+    "each_repeat_serialized_by_end_event": true,
+    "initial_order": "nvrtc-first",
+    "iterations_per_repeat": 30,
+    "numpy_reference_ms": 298.8487060065381,
+    "order_reversed_after_each_repeat": true,
+    "public_run_boundary": "validation + H2D + compute + D2H + sync",
+    "public_samples": 3,
+    "reference_source": "GAC NumPy reference",
+    "repeats": 6,
+    "resident_inputs_and_weights": true,
+    "resident_query": {
+      "dtype": "float32",
+      "name": "query",
+      "nbytes": 40960000,
+      "sha256": "3322687565592e9d5b9cda5a771270953c7ed73772e2bf047a413a392a09e50b",
+      "shape": [
+        1,
+        40000,
+        256
+      ]
+    },
+    "rtol": 0.0001,
+    "sessions_co_resident": true,
+    "warmup": 10
+  },
+  "repeat_samples": [
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3042.406463623047,
+        "synchronized_wall_us": 3042.789166666667
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3139.379119873047,
+        "synchronized_wall_us": 3139.8345666666664
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 1
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3077.666219075521,
+        "synchronized_wall_us": 3077.9894333333336
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3182.0831298828125,
+        "synchronized_wall_us": 3182.369533333333
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 2
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3074.381764729818,
+        "synchronized_wall_us": 3074.7096
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3181.9435119628906,
+        "synchronized_wall_us": 3182.2728333333334
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 3
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3074.897003173828,
+        "synchronized_wall_us": 3075.142966666667
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3181.9775899251304,
+        "synchronized_wall_us": 3182.236166666667
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 4
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3211.051686604818,
+        "synchronized_wall_us": 3211.3298666666665
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3240.3455098470054,
+        "synchronized_wall_us": 3240.6381666666666
+      },
+      "order": [
+        "mlir_cuda_nvrtc",
+        "mlir_cublas_ptx"
+      ],
+      "repeat": 5
+    },
+    {
+      "mlir_cublas_ptx": {
+        "gpu_us": 3210.205841064453,
+        "synchronized_wall_us": 3210.456533333333
+      },
+      "mlir_cuda_nvrtc": {
+        "gpu_us": 3300.591023763021,
+        "synchronized_wall_us": 3300.8917
+      },
+      "order": [
+        "mlir_cublas_ptx",
+        "mlir_cuda_nvrtc"
+      ],
+      "repeat": 6
+    }
+  ],
+  "schema_version": 1,
+  "scope": "one FP32 UniAD 2.0 stage2 BEV encoder layer 0 FFN [1,40000,256] -> 512 -> 256",
+  "software": {
+    "executable": "/home/robot/gac-sm86-validation/.venv/bin/python",
+    "numpy": "2.5.3",
+    "platform": "Linux-7.0.0-34-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "source_sha256": {
+    "src/gac/__init__.py": "99552f0078dd1647346876b05c7d77c9ebbafdc1b72fd3a0a23c6dc57cabdb34",
+    "src/gac/backends/__init__.py": "20b6ccb099b23fb0718793a7601f647c11f1e9d5b64586534d41833befc59f69",
+    "src/gac/backends/cuda.py": "657fce71f51bffe64030fcc047f4a80c0728f0cdefdd6a2556a0f50e3fa604d4",
+    "src/gac/backends/mlir.py": "8c6c8f0b0d60b2e6f80e15c081874dfe3f064d0b99b380b61f9c33a749b3238a",
+    "src/gac/backends/mlir_cublas_ptx.py": "4931cd4a3395627601f7dd02e63233f7c404d9ca5aadcb566d68245e7d4e726a",
+    "src/gac/backends/mlir_cuda.py": "80ce1fd65a0fdfcc22b78fb1fbfd409314a014e70e90b21b812894a88f417237",
+    "src/gac/backends/mlir_ptx.py": "4c6a26d80a644c05c82eb4018ac59bb541792c3773bd5e4cc420eb4a9dd71a92",
+    "src/gac/bevformer.py": "a4b0844beab47c702b8dbaac101f1af217e9ebf76ccb78277844841acb5a204a",
+    "src/gac/bevformer_cold_pipeline.py": "95e2cf7b9d6805e670e692a66935cdae93fe6d7aed03f6a234147294184154a8",
+    "src/gac/bevformer_decoder.py": "431f1635ae68f0f3eb774762ead1221908ffafe92e7825e7aae806d944f767a2",
+    "src/gac/bevformer_decoder_layer.py": "4e3d69d0a91b3b6056b5f5f9257ccd21f51d66225b035eb970428fd86766964c",
+    "src/gac/bevformer_decoder_pipeline.py": "286200059703ad31e59bf6bab243f1223bdae63b9c80c38a2e53ce2568d88766",
+    "src/gac/bevformer_decoder_self.py": "2156811507a65cecfe2d2b7b74cb0c4f7165bb607c6d420ff02fb73ce2812058",
+    "src/gac/bevformer_decoder_stack.py": "90e8c4be0fbdf0daa640c4c7f9b3efe25346bb2e4e09c4b0c678c2409fe977d6",
+    "src/gac/bevformer_detection_head.py": "ce3a24909f5049a7b32a5b4b94dc88026998ce1c31e942f4911d029e47a880f0",
+    "src/gac/bevformer_detection_stack.py": "e0c335408ece1ab1c1c173d4ffcc6800556db4c2975ae2172fd6c371eb765e93",
+    "src/gac/bevformer_encoder.py": "71a288ced15115b1e59f2ca7c9013456d100befda3b47726d1de20f9195818cc",
+    "src/gac/bevformer_encoder_inputs.py": "cd395ae0f69e37d8e58a0cdf41e27bad3a2111146009b5be4667cc385c1d86c0",
+    "src/gac/bevformer_encoder_layer.py": "36b0e4554bd3c5c1e9d8ae0686a2efcc4315b7722e8691c34a6910a3a82e8e81",
+    "src/gac/bevformer_encoder_pipeline.py": "4469274c64a5e51dcad7307f722745f97148b3fadfe804a2fb0bbc4a9050723e",
+    "src/gac/bevformer_encoder_stack.py": "4ce5eea763ca4ce1e83cc7a2ddc6015fe55bf7006787ebb75c03b7ecf2423f26",
+    "src/gac/bevformer_feature_prep.py": "e2d2df573ae0063348cb2648e849c0b20ca4a56ef8eb789660d63601dcb8b7d7",
+    "src/gac/bevformer_ffn.py": "3810a253ceb67882bac9fef12568fc7565a0ca5af512471fce8d6bfb41344c68",
+    "src/gac/bevformer_geometry.py": "a651dd3886b5b64baae413e3ca618ea59ed9707dd7715c1ca29a366472797934",
+    "src/gac/bevformer_history_pipeline.py": "ee4c3ae4e973ceb29dc277fe022878a2138efac707a1df93e6b8fd1dd5e60500",
+    "src/gac/bevformer_motion.py": "0cff740353b09fe4eae7cea593ebaf79d24f6c9740ba0fd1d8599d4d7d8ded8e",
+    "src/gac/bevformer_postprocess.py": "c34d6e8af5204bc8c7d78e38044c5f06f0016174681a46d8fd0ee6678ebf64e1",
+    "src/gac/bevformer_query_init.py": "7647dcafa1cfef3cf9c1c99d6a63c61ce4bf66801e2a3b5c0919e4e31d06885e",
+    "src/gac/bevformer_refinement.py": "31d2af5ab51067e35303a8377c65b31605e5d18fd09e537d69f58264352980e6",
+    "src/gac/bevformer_runtime.py": "8cc3d1abfee61df3081ecbb1ecf03105ff9e7aa9c9726e8b10e001e8f8ece954",
+    "src/gac/bevformer_spatial.py": "232ce01fc58f3d20ed8e6849c0b64ffff934741c0f1c51a7f9c21700bf853266",
+    "src/gac/bevformer_step_pipeline.py": "9b94058250ce7eef305cbd1a3d825c59ae41e53cd1649fb72d84419beb4a8edd",
+    "src/gac/bevformer_temporal.py": "66c38420eb672064a041d7c5f01f19b42bfadead9881df9f6cd01282e7f9515e",
+    "src/gac/capability.py": "b5ac312b27c8dd8f13bc49184238010dc7e0b514cfc9472304434056ab458aef",
+    "src/gac/cli.py": "5577da2c2af0fdee32d09f4ee2df2af7a94c2333c3c2db8de5e37a18dc204771",
+    "src/gac/compose.py": "bf2df0087d63b6a19e21c9f8f4673694f54baf53b65d8946f32a760ee274c823",
+    "src/gac/errors.py": "7d16560334218bca7db5014c69159a382b745a33d3850e941dce49450fbb5a86",
+    "src/gac/frontends/__init__.py": "b6f0f9cc29df938e88eb75f1fc8eb2419ff35fa941811eb86b5a261d6ac6acf6",
+    "src/gac/frontends/bevformer_backbone.py": "5ba9cb45e65d5c49cc4625fb5d780866cc1cccdc30d98eb41ec2b60b183a1a59",
+    "src/gac/frontends/bevformer_export.py": "7e9a47edcedb3d5f5cd8f883cb7140def41a7e40174933af40672008a402d881",
+    "src/gac/frontends/bevformer_weights.py": "0e108c7817b6150e2d66098ebc40ce1680c54f2b08d185a368d793c675dfee4a",
+    "src/gac/frontends/json_frontend.py": "08fb409e008741001ae171549a23edb63ede2e1c12ca34bb35a4c04f245c5b33",
+    "src/gac/golden.py": "e573d369237fb93f5b114a63ce4c951f72400bea8ee12378882d781e6e4f82d1",
+    "src/gac/ir.py": "0c0619affe9083cfd1ae661e524cb8c0866fedc0fb6236183a3921ed97e1a6d1",
+    "src/gac/memory.py": "1a0a972aa020a216a43e1d957b595a5a38d46ec6b20712cba868a5f9e70b6e9f",
+    "src/gac/mlir_async_tiled_matmul.py": "dbc7b0ffdaea44cc62a8ba73c3c637083b03c5609ccd919887febfb7934b1177",
+    "src/gac/mlir_cublas_ptx_artifact.py": "f2225fa9137fd313b45bf8e89df55dbb35b9f056237c3d1b92ace6213827ed0d",
+    "src/gac/mlir_cublas_ptx_benchmark.py": "ad929e25837670cbb1dbbcd17861da4c4deee27f318fc00677785fcb67b4e804",
+    "src/gac/mlir_cublas_ptx_runtime.py": "d3f1307703c7df90df6dc207fff74f24a8504e8b382fc579b1aa1473b7c45f35",
+    "src/gac/mlir_ptx_artifact.py": "91e547595b93a0b71898ac94a7c720d7103269bbee908546eea032d3cb67fcdf",
+    "src/gac/mlir_ptx_autotune.py": "4897e509fd22391cf7cf0d65e6ad0e78e994d112e59b526cdeb17e9340992135",
+    "src/gac/mlir_ptx_runtime.py": "d4fe35690ec9e9a115b8f7b6f41a11c5d425abf6016e7581370fc3c72c8418e2",
+    "src/gac/mlir_runtime.py": "8c3997dda743f55cfe4ea4d6ebd77fd7ca7d13e1c17a68fca27843dcf3f75a09",
+    "src/gac/mlir_tiled_ffn.py": "970281c4207d178e4cdef9589c386d6093f66288f0d16a7fb4639d99fbf7fb37",
+    "src/gac/mlir_tiled_ffn_artifact.py": "cd4b09cd6351fcf78e1d9560fe623cd26ae75fb197118eac912d0760cf5baa18",
+    "src/gac/mlir_tiled_ffn_runtime.py": "52148e09b9a8d1f5ad8b208cf76535c8aae840d26b36b90e09fd125badea1486",
+    "src/gac/mlir_tiled_matmul.py": "ff6f70778a9575bd20e1fb3ca57c41f448ccd7c8ec3e6375dee4f5ae6fb4a069",
+    "src/gac/mlir_toolchain.py": "0424a27c2e96c75c0e9323f3fdabf817579bea4600b9329d272432c63c7ebceb",
+    "src/gac/ops.py": "bdf4363a1f67ea61173069cf1419d1596921c49b0d594ffdfa499ed6168e7f41",
+    "src/gac/package.py": "5bac5402700ce03662fe4baff631d081dce8dd7de72e25950a4f4b208229ba2d",
+    "src/gac/passes.py": "b628baa94aed3cd67461351188984c58b77f4e5a4b71eaa055ffccd17b1b800d",
+    "src/gac/profiler.py": "fbb080cd680020d175f0032d96f638be2c30258c4b17ada860bc7510a4de6ff3",
+    "src/gac/runtime.py": "5e7b2c4a3988951a0fa4f922604ce2ab58e971992a703e4625cab277f1722a3b",
+    "src/gac/tools/__init__.py": "136510e0d2bab04afa1d1386b03cc88af81ef07cae3486a4bd7f5951c02c1264",
+    "src/gac/tools/build_bevformer.py": "2812d51a3417c4d29bf8d65a6fe6d8042ac2c6cd7843e997bfc7f6bf25146888",
+    "src/gac/tools/export_bevformer_checkpoint.py": "4b1e224fcd2eb01e4ae304f4bd2de614fa1a5771d33255211e682dbf753aff84",
+    "src/gac/tools/uniad_benchmark_e2e.py": "c5415815a6c5e22ed8e89513a967e0b9d263e2d333d644e985693b32f8982573",
+    "src/gac/tools/uniad_benchmark_ffn.py": "7d9b9758b36789c1c6d7a0b921729acaa966b788efd4e14d580042f18a2c3563",
+    "src/gac/tools/uniad_compile_ffn.py": "21dcc0a47f58662501a4075c2ff3edc2e863c067f78c146e7a7644929cff877f",
+    "src/gac/tools/uniad_export_ffn.py": "67c33332ccedfd64b98bc04197dc1860dc875dc216e9f550806119e73cb75cec",
+    "src/gac/tools/uniad_make_synthetic_bundle.py": "5bf116bd39771d0288149dce98bfa9259a1c88effeeebeecfc865c716180660f",
+    "src/gac/transformer.py": "102226654a90aebe178e17e90e44bc7745ff5e25e0dd94c9a1c6628166b98d3e",
+    "src/gac/uniad/__init__.py": "eafca45c303c29d7f3a89935489373093ff55b3ae7a6d61af91e56d70f83e44b",
+    "src/gac/uniad/artifact.py": "fe991032e07308bf3ef12a3b15fb2af3ed424b1eba1db9e411e1132e11e6e826",
+    "src/gac/uniad/checkpoint.py": "eba4cfd03ebb8ccf91cfd890eaf8e8256dd2863b9759bd02b15d0d21665aeda0",
+    "src/gac/uniad/contract.py": "ad26122d11ad3b11dc30ac16b69f33db65af8f9186c9f3df474c537e46112cde",
+    "src/gac/version.py": "889b6515ef12de4018d101f0612d515dbac4bc1261278b35ceed2389cde69f50",
+    "src/gac/weights.py": "b3c5bf7f8991d338c24a5851f20fa9ed9a0e373fa625e46806c3c395a487dbd4",
+    "tools/benchmark_mlir_cublas_ptx_ffn.py": "0bd355e030300242eec69ae00b9912832dedbeaaca8ce98f8260538b51ed8e26",
+    "tools/benchmark_mlir_cuda_ffn.py": "df516512f4d09419ac6f2eb6f3bbf83759447736029b6ea084bc26564464e606"
+  },
+  "workload": {
+    "component": "stage2 BEV encoder FFN",
+    "dtype": "float32",
+    "hidden_channels": 512,
+    "layer": 0,
+    "model": "UniAD 2.0",
+    "output_shape": [
+      1,
+      40000,
+      256
+    ],
+    "profile": {
+      "batch": 1,
+      "bev_h": 200,
+      "bev_w": 200,
+      "component": "bev_encoder_ffn",
+      "dropout": "inference-identity",
+      "dtype": "float32",
+      "embed_dim": 256,
+      "hidden_dim": 512,
+      "kind": "uniad-stage2-bev-encoder-ffn",
+      "layer": 0,
+      "layer_norm_epsilon": 1e-05,
+      "operation_order": [
+        "MatMul",
+        "BiasAdd",
+        "ReLU",
+        "MatMul",
+        "BiasAdd",
+        "ResidualAdd",
+        "LayerNorm"
+      ],
+      "schema_version": 1,
+      "stage": "stage2_e2e",
+      "weight_layout": "input_channel_output_channel"
+    },
+    "query_shape": [
+      1,
+      40000,
+      256
+    ],
+    "query_source": "deterministic seeded synthetic query",
+    "reference_source": "GAC NumPy reference",
+    "seed": 20261011,
+    "source_bundle": {
+      "contains_expected_sample": false,
+      "format": "uniad-compiler-ffn-bundle",
+      "path": "/home/robot/gac-uniad-mlir-final-20261011-f77fed7-225025/build/uniad-mlir-opt-20261011/uniad-layer0-checkpoint.uniadffn",
+      "schema_version": 1,
+      "sha256": "a27bc607c4c7b03e8b95d3b60c42b44b74c200110ad745cf37e4f3e7382e1b41"
+    }
+  }
+}

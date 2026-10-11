@@ -26,6 +26,8 @@ from .mlir_toolchain import MlirPtxArtifact, lower_gpu_mlir_to_ptx
 
 
 BEVFORMER_ROWS = 2_500
+UNIAD_ROWS = 40_000
+SUPPORTED_FFN_ROWS = (BEVFORMER_ROWS, UNIAD_ROWS)
 BEVFORMER_CHANNELS = 256
 BEVFORMER_HIDDEN_CHANNELS = 512
 DEFAULT_TILE = 16
@@ -273,14 +275,32 @@ class AsyncDoubleBufferPtxProbe:
         return self.artifact.ptx
 
 
+def _require_supported_ffn_rows(rows: int) -> int:
+    if isinstance(rows, bool) or not isinstance(rows, int):
+        raise TypeError("rows must be an integer")
+    if rows not in SUPPORTED_FFN_ROWS:
+        raise ValueError(
+            f"rows must be one of the validated production profiles {SUPPORTED_FFN_ROWS}"
+        )
+    return rows
+
+
 def bevformer_fc1_tiled_config(
-    *, tile_m: int = DEFAULT_TILE, tile_n: int = DEFAULT_TILE, tile_k: int = DEFAULT_TILE
+    *,
+    rows: int = BEVFORMER_ROWS,
+    tile_m: int = DEFAULT_TILE,
+    tile_n: int = DEFAULT_TILE,
+    tile_k: int = DEFAULT_TILE,
 ) -> TiledMatmulConfig:
-    """Return a tiled config for ``[2500, 256] @ [256, 512] + bias + ReLU``."""
+    """Return the FC1 tiled config for a validated static FFN row profile.
+
+    The default retains the BEVFormer ``2500``-row ABI.  ``40000`` selects the
+    otherwise identical UniAD stage-2 encoder profile.
+    """
 
     return TiledMatmulConfig(
         symbol="gac_bevformer_ffn_fc1_tiled_f32",
-        m=BEVFORMER_ROWS,
+        m=_require_supported_ffn_rows(rows),
         n=BEVFORMER_HIDDEN_CHANNELS,
         k=BEVFORMER_CHANNELS,
         tile_m=tile_m,
@@ -293,13 +313,17 @@ def bevformer_fc1_tiled_config(
 
 
 def bevformer_fc2_tiled_config(
-    *, tile_m: int = DEFAULT_TILE, tile_n: int = DEFAULT_TILE, tile_k: int = DEFAULT_TILE
+    *,
+    rows: int = BEVFORMER_ROWS,
+    tile_m: int = DEFAULT_TILE,
+    tile_n: int = DEFAULT_TILE,
+    tile_k: int = DEFAULT_TILE,
 ) -> TiledMatmulConfig:
-    """Return a tiled config for ``[2500, 512] @ [512, 256]``."""
+    """Return the FC2 tiled config for a validated static FFN row profile."""
 
     return TiledMatmulConfig(
         symbol="gac_bevformer_ffn_fc2_tiled_f32",
-        m=BEVFORMER_ROWS,
+        m=_require_supported_ffn_rows(rows),
         n=BEVFORMER_CHANNELS,
         k=BEVFORMER_HIDDEN_CHANNELS,
         tile_m=tile_m,
@@ -1260,6 +1284,8 @@ __all__ = [
     "BEVFORMER_CHANNELS",
     "BEVFORMER_HIDDEN_CHANNELS",
     "BEVFORMER_ROWS",
+    "SUPPORTED_FFN_ROWS",
+    "UNIAD_ROWS",
     "AsyncDoubleBufferPtxProbe",
     "FUNCTIONAL_MMA_BLOCK",
     "FUNCTIONAL_MMA_FP16_K",

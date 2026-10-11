@@ -20,9 +20,11 @@ from .mlir_tiled_ffn import (
     MlirTiledFfnProgram,
     assemble_mlir_tiled_ffn_program,
     assemble_tiled_matmul_program,
+    infer_tiled_ffn_rows,
     validate_mlir_tiled_ffn_program,
 )
 from .mlir_tiled_matmul import (
+    BEVFORMER_ROWS,
     bevformer_fc1_tiled_config,
     bevformer_fc2_tiled_config,
 )
@@ -30,7 +32,8 @@ from .mlir_toolchain import MlirPtxArtifact
 
 
 ARTIFACT_KIND = "gac.mlir-tiled-ffn-sm86.directory"
-ARTIFACT_SCHEMA_VERSION = 1
+ARTIFACT_SCHEMA_VERSION = 2
+LEGACY_ARTIFACT_SCHEMA_VERSION = 1
 MANIFEST_FILE = "manifest.json"
 ARTIFACT_FILES = {
     "fusion_gpu_mlir": "fusion.gpu.mlir",
@@ -124,6 +127,36 @@ def _manifest(
             "fc2": _toolchain(program.fc2.artifact),
         },
     }
+    return {
+        **unsigned,
+        "manifest_payload_sha256": _sha256(_canonical(unsigned)),
+    }
+
+
+def _manifest_for_schema(
+    program: MlirTiledFfnProgram,
+    files: Mapping[str, Mapping[str, Any]],
+    schema_version: int,
+) -> dict[str, Any]:
+    """Render the canonical manifest for a supported on-disk schema.
+
+    Schema 1 predates the explicit FFN profile.  It can describe only the
+    original 2,500-row BEVFormer artifact.  Schema 2 makes the profile
+    mandatory so a 40,000-row UniAD artifact cannot be confused with it.
+    """
+
+    manifest = _manifest(program, files)
+    if schema_version == ARTIFACT_SCHEMA_VERSION:
+        return manifest
+    if (
+        schema_version != LEGACY_ARTIFACT_SCHEMA_VERSION
+        or program.rows != BEVFORMER_ROWS
+    ):
+        raise BackendError("unsupported legacy MLIR tiled FFN artifact profile")
+    unsigned = dict(manifest)
+    unsigned.pop("manifest_payload_sha256")
+    unsigned.pop("profile")
+    unsigned["artifact_schema_version"] = LEGACY_ARTIFACT_SCHEMA_VERSION
     return {
         **unsigned,
         "manifest_payload_sha256": _sha256(_canonical(unsigned)),
@@ -353,7 +386,10 @@ def load_mlir_tiled_ffn_artifact(
         or manifest.get("compiler_backend") != TARGET
         or isinstance(version, bool)
         or not isinstance(version, int)
-        or version != ARTIFACT_SCHEMA_VERSION
+        or version not in {
+            LEGACY_ARTIFACT_SCHEMA_VERSION,
+            ARTIFACT_SCHEMA_VERSION,
+        }
     ):
         raise BackendError("directory is not a supported MLIR tiled FFN artifact")
     digest = manifest.get("manifest_payload_sha256")
@@ -378,6 +414,7 @@ def load_mlir_tiled_ffn_artifact(
     base = assemble_mlir_cublas_ptx_program(graph, fusion)
     if loaded["fusion_gpu_mlir"] != base.gpu_source:
         raise BackendError("MLIR tiled FFN fusion source is not canonical")
+    rows = infer_tiled_ffn_rows(base)
 
     tile = manifest.get("matmul_tile")
     if (
@@ -387,8 +424,12 @@ def load_mlir_tiled_ffn_artifact(
     ):
         raise BackendError("MLIR tiled FFN tile metadata is invalid")
     configs = (
-        bevformer_fc1_tiled_config(tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]),
-        bevformer_fc2_tiled_config(tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]),
+        bevformer_fc1_tiled_config(
+            rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+        ),
+        bevformer_fc2_tiled_config(
+            rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+        ),
     )
     components = []
     for name, config in zip(("fc1", "fc2"), configs, strict=True):
@@ -403,7 +444,7 @@ def load_mlir_tiled_ffn_artifact(
             raise BackendError(f"MLIR tiled FFN {name} source is not canonical")
         components.append(component)
     program = assemble_mlir_tiled_ffn_program(base, components[0], components[1])
-    expected = _manifest(program, manifest["files"])
+    expected = _manifest_for_schema(program, manifest["files"], version)
     if _canonical(manifest) != _canonical(expected):
         raise BackendError("MLIR tiled FFN manifest does not match the reconstructed program")
     return program
@@ -413,6 +454,7 @@ __all__ = [
     "ARTIFACT_FILES",
     "ARTIFACT_KIND",
     "ARTIFACT_SCHEMA_VERSION",
+    "LEGACY_ARTIFACT_SCHEMA_VERSION",
     "DEPLOYMENT_BOUNDARY",
     "MANIFEST_FILE",
     "load_mlir_tiled_ffn_artifact",

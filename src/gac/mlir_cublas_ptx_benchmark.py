@@ -8,7 +8,10 @@ from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
 
-from .backends.mlir_cublas_ptx import TARGET as CUBLAS_PTX_TARGET
+from .backends.mlir_cublas_ptx import (
+    SUPPORTED_PRODUCTION_QUERY_SHAPES,
+    TARGET as CUBLAS_PTX_TARGET,
+)
 from .backends.mlir_cuda import TARGET as MLIR_CUDA_TARGET
 from .errors import BackendError, ValidationError
 from .mlir_ptx_autotune import AutotuneCandidate
@@ -149,12 +152,6 @@ class FfnSessionAutotuneRunner:
         strategies = EXECUTABLE_STRATEGIES + (
             (TILED_FFN_TARGET,) if TILED_FFN_TARGET in sessions else ()
         )
-        contiguous = np.ascontiguousarray(query)
-        if contiguous.shape != (1, 2500, 256) or contiguous.dtype != np.float32:
-            raise ValidationError(
-                "autotune query must be contiguous float32 [1,2500,256]"
-            )
-        self._query = contiguous.copy()
         self._sessions = dict(sessions)
         self._strategies = strategies
         self._tiled_candidate: AutotuneCandidate | None = None
@@ -163,10 +160,34 @@ class FfnSessionAutotuneRunner:
                 self._sessions[TILED_FFN_TARGET].program
             )
         self._submits: dict[str, Callable[[], None]] = {}
+        expected_query_shape: tuple[int, ...] | None = None
         for strategy, session in self._sessions.items():
-            if getattr(getattr(session, "program", None), "target", None) != strategy:
+            program = getattr(session, "program", None)
+            if getattr(program, "target", None) != strategy:
                 raise ValidationError(
                     f"session for {strategy!r} has a different compiler target"
+                )
+            graph = getattr(program, "graph", None)
+            inputs = getattr(graph, "inputs", None)
+            if not isinstance(inputs, Mapping) or set(inputs) != {"query"}:
+                raise ValidationError(
+                    f"session for {strategy!r} has no canonical query graph input"
+                )
+            spec = inputs["query"]
+            shape = tuple(getattr(spec, "shape", ()))
+            if (
+                shape not in SUPPORTED_PRODUCTION_QUERY_SHAPES
+                or getattr(spec, "dtype", None) != "float32"
+                or getattr(spec, "layout", None) != "contiguous"
+            ):
+                raise ValidationError(
+                    f"session for {strategy!r} has an unsupported FFN query profile"
+                )
+            if expected_query_shape is None:
+                expected_query_shape = shape
+            elif shape != expected_query_shape:
+                raise ValidationError(
+                    "autotune sessions must use the same FFN query profile"
                 )
             submit = getattr(session, "_execute_calls", None)
             if not callable(submit):
@@ -188,6 +209,15 @@ class FfnSessionAutotuneRunner:
                         f"session for {strategy!r} lacks {attribute}"
                     )
             self._submits[strategy] = submit
+
+        assert expected_query_shape is not None
+        contiguous = np.ascontiguousarray(query)
+        if contiguous.shape != expected_query_shape or contiguous.dtype != np.float32:
+            rendered = "[" + ",".join(str(value) for value in expected_query_shape) + "]"
+            raise ValidationError(
+                f"autotune query must be contiguous float32 {rendered}"
+            )
+        self._query = contiguous.copy()
 
         descriptions = {
             strategy: _device_projection(session.info)

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Compare executable MLIR/cuBLAS, NVRTC, and optional tiled PTX FFNs.
 
-The measured unit is one production-shape FP32 BEVFormer FFN, not end-to-end
-BEVFormer.  The primary pair uses two CuPy/cuBLAS MatMuls and differs only in
-whether its two fusion kernels come from official MLIR/NVVM textual PTX or
-NVRTC CUDA.  An optional three-dispatch candidate executes two real
+The default measured unit remains one production-shape FP32 BEVFormer FFN.
+``--uniad-bundle`` selects one production-shape UniAD stage-2 BEV encoder FFN
+from a verified compiler bundle instead.  Neither mode measures end-to-end
+model inference.  The primary pair uses two CuPy/cuBLAS MatMuls and differs
+only in whether its two fusion kernels come from official MLIR/NVVM textual
+PTX or NVRTC CUDA.  An optional three-dispatch candidate executes two real
 shared-memory tiled MLIR PTX MatMuls plus the final MLIR PTX fusion.
 Device-resident latency is measured with CUDA Events.  Public run latency
 separately includes input validation, H2D, compute, D2H, and sync.
@@ -14,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 from contextlib import ExitStack
+from dataclasses import dataclass
 import hashlib
 import json
 import math
@@ -42,6 +45,7 @@ from benchmark_mlir_cuda_ffn import (
 )
 from gac.backends.mlir_cublas_ptx import compile_mlir_cublas_ptx
 from gac.backends.mlir_cuda import compile_mlir_cuda
+from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
 from gac.mlir_cublas_ptx_artifact import (
     ARTIFACT_FILES,
     MANIFEST_FILE,
@@ -65,15 +69,168 @@ from gac.mlir_tiled_ffn_artifact import (
 )
 from gac.mlir_tiled_ffn_runtime import MlirTiledFfnSession
 from gac.runtime import reference_run
+from gac.uniad import ArtifactError, load_bundle
 
 
 PTX_PATH = "mlir_cublas_ptx"
 NVRTC_PATH = "mlir_cuda_nvrtc"
 TILED_PATH = "mlir_tiled_ffn"
+UNIAD_DEFAULT_SEED = 20261011
+
+
+@dataclass(frozen=True, slots=True)
+class _Workload:
+    graph: Any
+    query: np.ndarray
+    expected: np.ndarray | None
+    family: str
+    metadata: dict[str, Any]
 
 
 def _sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _seed(value: str) -> int:
+    try:
+        parsed = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("seed must be a non-negative integer") from exc
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("seed must be a non-negative integer")
+    return parsed
+
+
+def _prepare_workload(uniad_bundle: Path | None, seed: int) -> _Workload:
+    """Build the unchanged BEV workload or one verified UniAD bundle workload."""
+
+    if uniad_bundle is None:
+        graph, query = _make_graph()
+        return _Workload(
+            graph=graph,
+            query=query,
+            expected=None,
+            family="bevformer",
+            metadata={
+                "model": "BEVFormer-tiny",
+                "component": "BEV encoder FFN",
+                "profile": "bevformer-tiny",
+                "query_shape": list(query.shape),
+                "output_shape": list(query.shape),
+                "hidden_channels": 512,
+                "dtype": query.dtype.name,
+                "query_source": "built-in deterministic synthetic workload",
+                "reference_source": "GAC NumPy reference",
+            },
+        )
+
+    bundle_path = uniad_bundle.expanduser().resolve()
+    loaded = load_bundle(bundle_path)
+    profile = loaded.contract
+    actual_profile = (
+        profile.batch,
+        profile.bev_h,
+        profile.bev_w,
+        profile.embed_dim,
+        profile.hidden_dim,
+        profile.dtype,
+        profile.layer_norm_epsilon,
+    )
+    if actual_profile != (1, 200, 200, 256, 512, "float32", 1.0e-5):
+        raise ValueError(
+            "--uniad-bundle must use the production UniAD FP32 profile "
+            "batch=1, bev=200x200, embed=256, hidden=512, epsilon=1e-5"
+        )
+    config = BEVFormerFFNConfig(
+        batch=profile.batch,
+        bev_h=profile.bev_h,
+        bev_w=profile.bev_w,
+        embed_dim=profile.embed_dim,
+        post_layer_norm=True,
+        layer_norm_epsilon=profile.layer_norm_epsilon,
+        ffn_dropout=0.1,
+    )
+    graph = build_bevformer_ffn_graph(
+        loaded.weights,
+        config,
+        name=f"uniad_stage2_encoder_layer_{profile.layer}_ffn",
+    )
+    if loaded.sample is None:
+        generator = np.random.default_rng(seed)
+        query = generator.normal(0.0, 0.1, profile.input_shape).astype(np.float32)
+        expected = None
+        query_source = "deterministic seeded synthetic query"
+        reference_source = "GAC NumPy reference"
+        effective_seed: int | None = seed
+    else:
+        query = np.ascontiguousarray(loaded.sample["query"], dtype=np.float32)
+        expected = np.ascontiguousarray(loaded.sample["output"], dtype=np.float32)
+        query_source = "bundle-provided query sample"
+        reference_source = "bundle-provided expected output"
+        effective_seed = None
+    return _Workload(
+        graph=graph,
+        query=np.ascontiguousarray(query),
+        expected=expected,
+        family="uniad",
+        metadata={
+            "model": "UniAD 2.0",
+            "component": "stage2 BEV encoder FFN",
+            "layer": profile.layer,
+            "profile": profile.to_dict(),
+            "query_shape": list(profile.input_shape),
+            "output_shape": list(profile.output_shape),
+            "hidden_channels": profile.hidden_dim,
+            "dtype": "float32",
+            "query_source": query_source,
+            "reference_source": reference_source,
+            "seed": effective_seed,
+            "source_bundle": {
+                "path": str(bundle_path),
+                "sha256": _sha256_file(bundle_path),
+                "format": loaded.manifest["format"],
+                "schema_version": loaded.manifest["schema_version"],
+                "contains_expected_sample": loaded.sample is not None,
+            },
+        },
+    )
+
+
+def _report_identity(workload: _Workload, *, compile_only: bool) -> dict[str, str]:
+    if workload.family == "uniad":
+        layer = workload.metadata["layer"]
+        return {
+            "kind": (
+                "uniad-stage2-encoder-ffn-mlir-cublas-ptx-offline-compilation"
+                if compile_only
+                else "uniad-stage2-encoder-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc"
+            ),
+            "scope": (
+                f"one FP32 UniAD 2.0 stage2 BEV encoder layer {layer} FFN "
+                "[1,40000,256] -> 512 -> 256"
+            ),
+            "boundary": (
+                "production-shape stage2 BEV encoder FFN fragment; "
+                "not full UniAD inference"
+            ),
+        }
+    return {
+        "kind": (
+            "bevformer-ffn-mlir-cublas-ptx-offline-compilation"
+            if compile_only
+            else "bevformer-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc"
+        ),
+        "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
+        "boundary": "production-shape FFN fragment; not full BEVFormer inference",
+    }
 
 
 def _workload_sha256(
@@ -324,6 +481,23 @@ def _render(report: dict[str, Any], output: Path | None) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--uniad-bundle",
+        type=Path,
+        help=(
+            "benchmark one verified UniAD stage2 encoder FFN bundle instead "
+            "of the default BEVFormer workload"
+        ),
+    )
+    parser.add_argument(
+        "--seed",
+        type=_seed,
+        default=UNIAD_DEFAULT_SEED,
+        help=(
+            "synthetic UniAD query seed when --uniad-bundle has no Torch golden "
+            f"(default: {UNIAD_DEFAULT_SEED})"
+        ),
+    )
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--warmup", type=_positive, default=20)
     parser.add_argument("--iterations", type=_positive, default=50)
@@ -376,6 +550,11 @@ def main() -> None:
 
     if args.repeats % 2:
         parser.error("--repeats must be even for order-balanced comparison")
+    if (
+        args.uniad_bundle is not None
+        and not args.uniad_bundle.expanduser().is_file()
+    ):
+        parser.error(f"--uniad-bundle does not exist: {args.uniad_bundle}")
     if args.artifact_dir and args.emit_artifact_dir:
         parser.error("--artifact-dir and --emit-artifact-dir are mutually exclusive")
     if args.tiled_artifact_dir and args.emit_tiled_artifact_dir:
@@ -422,9 +601,21 @@ def main() -> None:
         args.output, args.autotune_cache
     ):
         parser.error("--output and --autotune-cache must name different files")
+    if args.uniad_bundle and args.output and _paths_alias(
+        args.uniad_bundle, args.output
+    ):
+        parser.error("--output must not replace --uniad-bundle")
+    if args.uniad_bundle and args.autotune_cache and _paths_alias(
+        args.uniad_bundle, args.autotune_cache
+    ):
+        parser.error("--autotune-cache must not replace --uniad-bundle")
 
     root = Path(__file__).resolve().parents[1]
-    graph, query = _make_graph()
+    try:
+        workload = _prepare_workload(args.uniad_bundle, args.seed)
+    except (ArtifactError, OSError, ValueError) as exc:
+        parser.error(f"cannot prepare benchmark workload: {exc}")
+    graph, query = workload.graph, workload.query
     preparation_started = time.perf_counter()
     if args.artifact_dir:
         ptx_program = load_mlir_cublas_ptx_artifact(args.artifact_dir, graph)
@@ -474,11 +665,12 @@ def main() -> None:
             args.emit_tiled_artifact_dir, tiled_program
         )
     if args.compile_only:
+        identity = _report_identity(workload, compile_only=True)
         _render(
             {
                 "schema_version": 1,
-                "kind": "bevformer-ffn-mlir-cublas-ptx-offline-compilation",
-                "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
+                **identity,
+                "workload": workload.metadata,
                 "artifact_directory": str(args.emit_artifact_dir.resolve()),
                 "compile_ms": preparation_ms,
                 "lowering": ptx_program.describe(),
@@ -498,9 +690,15 @@ def main() -> None:
         )
         return
 
-    reference_started = time.perf_counter()
-    expected = reference_run(graph, {"query": query})["output"]
-    reference_ms = (time.perf_counter() - reference_started) * 1000.0
+    if workload.expected is None:
+        reference_started = time.perf_counter()
+        expected = reference_run(graph, {"query": query})["output"]
+        reference_ms: float | None = (
+            time.perf_counter() - reference_started
+        ) * 1000.0
+    else:
+        expected = workload.expected
+        reference_ms = None
     baseline_started = time.perf_counter()
     nvrtc_program = compile_mlir_cuda(graph)
     baseline_compile_ms = (time.perf_counter() - baseline_started) * 1000.0
@@ -670,11 +868,11 @@ def main() -> None:
                 else args.emit_tiled_artifact_dir
             ).resolve()
         )
+    identity = _report_identity(workload, compile_only=False)
     report = {
         "schema_version": 1,
-        "kind": "bevformer-ffn-mlir-cublas-ptx-vs-mlir-cuda-nvrtc",
-        "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
-        "boundary": "production-shape FFN fragment; not full BEVFormer inference",
+        **identity,
+        "workload": workload.metadata,
         "device": device,
         "software": {
             "python": platform.python_version(),
@@ -697,6 +895,7 @@ def main() -> None:
             "resident_query": _resident_input_provenance(query),
             "public_run_boundary": "validation + H2D + compute + D2H + sync",
             "numpy_reference_ms": reference_ms,
+            "reference_source": workload.metadata["reference_source"],
             "rtol": RTOL,
             "atol": ATOL,
         },

@@ -33,6 +33,9 @@ from .backends.mlir_cuda import MlirCudaCall, RUNTIME_ABI_VERSION
 from .errors import BackendError
 from .ir import Graph
 from .mlir_tiled_matmul import (
+    BEVFORMER_CHANNELS,
+    BEVFORMER_HIDDEN_CHANNELS,
+    SUPPORTED_FFN_ROWS,
     TiledMatmulConfig,
     TiledMatmulPtxProgram,
     _validate_tiled_matmul_ptx_abi,
@@ -89,6 +92,48 @@ def _graph_sha256(graph: Graph) -> str:
         digest.update(name.encode("utf-8"))
         digest.update(memoryview(value).cast("B"))
     return digest.hexdigest()
+
+
+def infer_tiled_ffn_rows(base: MlirCublasPtxProgram) -> int:
+    """Return the validated static row count encoded by a base FFN plan."""
+
+    validate_mlir_cublas_ptx_program(base)
+    if len(base.calls) != 4:
+        _reject("base FFN call plan must contain exactly four calls")
+    fc1, bias_relu, fc2, final = base.calls
+    rows = fc1.m
+    if (
+        isinstance(rows, bool)
+        or not isinstance(rows, int)
+        or rows not in SUPPORTED_FFN_ROWS
+    ):
+        _reject(
+            "base FFN rows must select one of the validated production profiles "
+            f"{SUPPORTED_FFN_ROWS}"
+        )
+    if (fc1.n, fc1.k) != (
+        BEVFORMER_HIDDEN_CHANNELS,
+        BEVFORMER_CHANNELS,
+    ) or (fc2.m, fc2.n, fc2.k) != (
+        rows,
+        BEVFORMER_CHANNELS,
+        BEVFORMER_HIDDEN_CHANNELS,
+    ):
+        _reject("base FFN MatMul dimensions do not match the tiled ABI")
+    if (
+        bias_relu.rows != rows
+        or bias_relu.channels != BEVFORMER_HIDDEN_CHANNELS
+        or bias_relu.elements != rows * BEVFORMER_HIDDEN_CHANNELS
+        or final.rows != rows
+        or final.channels != BEVFORMER_CHANNELS
+    ):
+        _reject("base FFN fusion dimensions do not match the tiled ABI")
+    if len(base.graph.inputs) != 1:
+        _reject("base FFN graph must contain exactly one query input")
+    query = next(iter(base.graph.inputs.values()))
+    if query.shape != (1, rows, BEVFORMER_CHANNELS):
+        _reject("base FFN graph input shape does not match its call plan rows")
+    return rows
 
 
 def _artifact_record(program: TiledMatmulPtxProgram) -> dict[str, Any]:
@@ -236,6 +281,10 @@ class MlirTiledFfnProgram:
     def thread_block(self) -> tuple[int, int, int]:
         return self.fc1.block
 
+    @property
+    def rows(self) -> int:
+        return self.fc1.config.m
+
     def describe(self) -> dict[str, Any]:
         return {
             "schema_version": self.abi_version,
@@ -255,6 +304,12 @@ class MlirTiledFfnProgram:
             "fusion_lowering": "fc1-bias-relu-and-final-bias-residual-layernorm",
             "matmul_tile": list(self.matmul_tile),
             "thread_block": list(self.thread_block),
+            "profile": {
+                "query_shape": [1, self.rows, BEVFORMER_CHANNELS],
+                "rows": self.rows,
+                "channels": BEVFORMER_CHANNELS,
+                "hidden_channels": BEVFORMER_HIDDEN_CHANNELS,
+            },
             "single_buffered_shared_memory": True,
             "async_double_buffered": False,
             "calls": [call.to_dict() for call in self.calls],
@@ -386,12 +441,13 @@ def assemble_mlir_tiled_ffn_program(
     """Bind validated tiled MatMuls to an existing MLIR final-fusion artifact."""
 
     validate_mlir_cublas_ptx_program(base_program)
+    rows = infer_tiled_ffn_rows(base_program)
     tile = _require_common_tile(fc1, fc2)
     expected_fc1 = bevformer_fc1_tiled_config(
-        tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+        rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
     )
     expected_fc2 = bevformer_fc2_tiled_config(
-        tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+        rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
     )
     _validate_component(fc1, expected_fc1)
     _validate_component(fc2, expected_fc2)
@@ -456,15 +512,16 @@ def compile_mlir_tiled_ffn(
         "env": env,
         "llvm_root": llvm_root,
     }
+    rows = infer_tiled_ffn_rows(base)
     fc1 = lower_tiled_matmul_to_ptx(
         bevformer_fc1_tiled_config(
-            tile_m=tile_m, tile_n=tile_n, tile_k=tile_k
+            rows=rows, tile_m=tile_m, tile_n=tile_n, tile_k=tile_k
         ),
         **kwargs,
     )
     fc2 = lower_tiled_matmul_to_ptx(
         bevformer_fc2_tiled_config(
-            tile_m=tile_m, tile_n=tile_n, tile_k=tile_k
+            rows=rows, tile_m=tile_m, tile_n=tile_n, tile_k=tile_k
         ),
         **kwargs,
     )
@@ -486,17 +543,18 @@ def validate_mlir_tiled_ffn_program(program: MlirTiledFfnProgram) -> None:
     ):
         _reject("execution metadata is invalid")
     validate_mlir_cublas_ptx_program(program.base_program)
+    rows = infer_tiled_ffn_rows(program.base_program)
     tile = _require_common_tile(program.fc1, program.fc2)
     _validate_component(
         program.fc1,
         bevformer_fc1_tiled_config(
-            tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+            rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
         ),
     )
     _validate_component(
         program.fc2,
         bevformer_fc2_tiled_config(
-            tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
+            rows=rows, tile_m=tile[0], tile_n=tile[1], tile_k=tile[2]
         ),
     )
     expected_calls = _build_calls(program.base_program, program.fc1, program.fc2)
@@ -524,5 +582,6 @@ __all__ = [
     "assemble_mlir_tiled_ffn_program",
     "assemble_tiled_matmul_program",
     "compile_mlir_tiled_ffn",
+    "infer_tiled_ffn_rows",
     "validate_mlir_tiled_ffn_program",
 ]
