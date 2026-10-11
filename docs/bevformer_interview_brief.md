@@ -4,7 +4,7 @@
 
 ## 一句话定位
 
-GAC 是一款面向边缘推理的编译器与运行时原型：它把 BEVFormer-tiny 的模型配置和官方权重转换为统一静态图，完成图优化、显存规划和 CUDA SM86 代码生成，打包成可校验的 HXP，再由有状态 Runtime 执行连续帧推理。
+GAC 是一款面向边缘推理的编译器与运行时原型：它把 BEVFormer-tiny 的模型配置和官方权重转换为统一静态图，完成图优化、显存规划和 CUDA SM86 代码生成，打包成可校验的 HXP，再由有状态 Runtime 执行连续帧推理；同时已为生产形状 FFN 建立独立的 MLIR GPU→NVVM→PTX 编译与执行切片。
 
 ## 编译器分层
 
@@ -35,6 +35,21 @@ Runtime：加载、绑定输入、执行、计时、输出校验、跨帧状态�
 
 这套分层把“模型语义”“设备代码”和“运行时状态”分开。前端不关心 CUDA block，后端不重新解析 PyTorch 对象，Runtime 只消费已经确定的包和执行信息，因此每一层都可以独立测试和替换。
 
+## MLIR 到 PTX 的已实现范围
+
+`mlir-ptx-sm86` 当前只编译一个生产形状 FP32 FFN：
+
+```text
+[1, 2500, 256]
+  → MatMul(256, 512) + Bias + ReLU
+  → MatMul(512, 256)
+  → Bias + query residual + LayerNorm
+```
+
+编译器从 Canonical Graph 的独立分支严格检查 pattern，再直接物化三个 MLIR `gpu.func`；tensor-level MLIR 仅用于调试/审阅，不是 GPU emitter 的输入，也不进入部署 PTX artifact。官方 LLVM 24 `mlir-opt` 完成 GPU Dialect→NVVM lowering，LLVM NVPTX 后端生成 textual PTX 7.1 / `sm_86`。Runtime 校验 GPU MLIR 的 source hash、binary MLIR/PTX 一致性、64 位地址和三个精确 entry，随后加载 textual PTX，CUDA Driver 在模块加载时再 JIT 为 SASS。这个执行路径不调用 cuBLAS，不编译 CUDA C，也没有 NVRTC 或 CPU fallback。
+
+这里的“全流程”限定在这三个 FFN Kernel。Tensor/Linalg 到任意 GPU 图的通用 bufferization、tiling 和 GPU mapping 还没有完成；CNN、Spatial/Temporal Attention、MSDA、Decoder、Detection Head 与跨帧状态仍由现有 CUDA/HXP 路径执行。
+
 ## BEVFormer 冷帧与暖帧数据流
 
 六路经过归一化和 padding 的 FP16 图像先进入 ResNet-50 与单层 FPN，再完成相机布局转换、camera/level embedding、BEV query、位置编码和 CAN-bus 条件编码。三层 Encoder 通过 Temporal Self-Attention 与 Spatial Cross-Attention 生成 BEV，六层 Decoder 和六组分类/回归分支输出固定形状的 raw class、raw box 以及下一帧使用的 `next_bev`。
@@ -64,8 +79,12 @@ RTX 3070 的计算能力是 8.6，因此首版目标固定为 `cuda-sm86`。后�
 | cuDNN/cuBLAS 优化版 | cold `57.624464 / 69.403093 ms`；warm `56.823263 / 68.747440 ms`（GPU / wall） |
 | 本轮收益 | cold `7.38098× / 6.29484×`；warm `7.49750× / 6.36705×`（GPU / wall） |
 | fresh-process 中 Session 构建后的首个 cold `run` | `277.443573 ms` GPU；`289.668472 ms` wall |
+| MLIR 全 PTX 生产形状 FFN | `1.092～1.102 ms/FFN` device-resident；max abs error `7.153e-7` |
+| cuBLAS hybrid 同 FFN | `0.209～0.214 ms/FFN` device-resident；当前全 PTX 慢 `5.150～5.265×` |
 
-这些数据证明官方权重的 cold/warm 路径已经在 SM86 真机上完成数值和首轮性能优化闭环。表中全生成与优化版分别是 3 次和 10 次稳态运行的中位数；fresh-process 数据单独启动进程，并在 Session 构建完成后测量首次 `run`，不包含 Session 构建时间，也不把同一进程已预热后的 `116.635651 ms` 混作首次调用。它们不应外推为 RTX 3070 延迟。
+这些数据证明官方权重的 cold/warm CUDA/HXP 路径已经在 SM86 真机上完成数值和首轮性能优化闭环。表中全生成与优化版分别是 3 次和 10 次稳态运行的中位数；fresh-process 数据单独启动进程，并在 Session 构建完成后测量首次 `run`，不包含 Session 构建时间，也不把同一进程已预热后的 `116.635651 ms` 混作首次调用。MLIR 行来自同进程共驻留、两种首次顺序、每个 repeat 交替位置的独立 FFN 基准。全图数字与 FFN 数字范围不同，都不应外推为 RTX 3070 延迟。
+
+MLIR→PTX 并不会自动提高速度。离线 textual PTX 省去部署侧的 MLIR lowering 和 CUDA C/NVRTC 编译，但 Driver 的 PTX→SASS JIT 仍存在，稳态速度仍取决于 Kernel schedule。当前全 PTX 的两个 MatMul 是“一线程一个输出、串行遍历 K”的正确性实现，没有 shared-memory tiling、向量化、Tensor Core 或 autotuning，因此明显慢于 cuBLAS。下一步是 tiled/shared-memory MatMul、NVGPU/MMA Tensor Core、epilogue/LayerNorm 融合和 autotuning；生产版本也可让编译器选择 cuBLAS/cuBLASLt library-call lowering。
 
 ## 当前边界
 
@@ -73,11 +92,12 @@ RTX 3070 的计算能力是 8.6，因此首版目标固定为 `cuda-sm86`。后�
 - 输出是固定形状 raw class/box 与 FP16 `next_bev`；NMS-free 后处理仍在 CPU。
 - 当前数字不包含图像预处理和 CPU NMS-free 后处理，因此尚未宣称完整业务链达到实时性能。
 - FP32 cuDNN/cuBLAS 和首轮零拷贝已完成；后续仍需 Tensor Core/混合精度、更多融合、I/O 预绑定、CUDA Graph 和更少的 launch。
+- MLIR→PTX 当前只覆盖生产形状 FFN，不包含完整 BEVFormer；通用 tensor/linalg lowering、HXP PTX artifact 和 Tensor Core 调度仍待完成。
 - 已在同属 SM86 的 RTX 3080 验证；仍需在桌面 RTX 3070 上复测延迟、峰值显存和稳定性。
 
 ## 约 90 秒口述稿
 
-我做的是一个面向边缘推理的 AI 编译器和 Runtime 原型，首个完整模型选择了 BEVFormer-tiny，首个 GPU 目标是 RTX 3070 对应的 CUDA SM86。编译侧先把官方配置和 checkpoint 转换成统一静态图，同时把图像元数据和跨帧状态改成明确的 Tensor ABI；中间层做 shape/dtype 推导、常量与 Conv-BN 折叠、布局规范化和静态显存规划，内部 Reshape 与连续 Slice 可以直接成为零拷贝 view；后端为 BEV 专用算子生成 SM86 CUDA，也能为 FP32 Conv/MatMul 选择 cuDNN 和 cuBLAS，再把权重、计划和 Kernel 信息封装为可校验的 HXP。Runtime 管理上一帧 BEV，只有整帧成功才提交新状态，并用逐 launch CUDA Event Profiler 做按算子归因。现在已经在 RTX 3080 SM86 上用官方权重跑通 cold/warm，最大绝对误差为 `0.004856288`；全生成 cold 是 `425.325073 ms GPU`，接入零拷贝、cuDNN 和 cuBLAS 后是 `57.624464 ms`，加速 `7.38098×`。下一步先做 CUDA Graph、批量 dispatch 和更多融合，并在真实 RTX 3070 上复测。
+我做的是一个面向边缘推理的 AI 编译器和 Runtime 原型，首个完整模型选择了 BEVFormer-tiny，首个 GPU 目标是 RTX 3070 对应的 CUDA SM86。编译侧先把官方配置和 checkpoint 转换成统一静态图，把图像元数据和跨帧状态改成明确的 Tensor ABI，再做 shape/dtype 推导、Conv-BN 折叠、布局规范化和静态显存规划。生产全图路径为 BEV 专用算子生成 SM86 CUDA，并为 FP32 Conv/MatMul 选择 cuDNN 和 cuBLAS，最后封装成可校验的 HXP；Runtime 只有在整帧成功后才提交下一帧 BEV。官方权重的 cold/warm 已在 RTX 3080 SM86 跑通，最大绝对误差为 `0.004856288`，cold 从全生成的 `425.325073 ms GPU` 优化到 `57.624464 ms`。此外，我为生产形状 FFN 做了独立的 MLIR 全 PTX 切片：三个 `gpu.func` 经官方 GPU→NVVM→LLVM NVPTX 生成 textual PTX，由 Runtime 校验并加载，再由 CUDA Driver JIT 为 SASS。它的最大绝对误差是 `7.153e-7`，但当前 `1.092～1.102 ms`，比 `0.209～0.214 ms` 的 cuBLAS hybrid 慢 `5.150～5.265×`，因为 MatMul 还没有 tiled、Tensor Core 和 autotuning。下一步会做 shared-memory tiling、NVGPU/MMA、融合和调优，并在真实 RTX 3070 上复测；MLIR 结果只代表这个 FFN 编译单元，不代表完整 BEVFormer 已全部降低到 PTX。
 
 ## 常见追问
 
@@ -95,8 +115,12 @@ RTX 3070 的计算能力是 8.6，因此首版目标固定为 `cuda-sm86`。后�
 
 ### 4. 现在的精度和性能应该怎样描述？
 
-官方权重的 cold/warm 输出已经与参考实现完成真机数值对齐，最大绝对误差不超过 `0.004856288`。同一 RTX 3080 上，cold 的全生成与优化版中位数为 `425.325073 / 436.881591 ms` 和 `57.624464 / 69.403093 ms`（GPU / wall），提升 `7.38098× / 6.29484×`；warm 提升 `7.49750× / 6.36705×`。fresh-process 中 Session 构建后的首个 cold `run` 为 `277.443573 / 289.668472 ms`，Session 构建时间另计。完整预处理与 CPU 后处理不在这些数字内。
+官方权重的 cold/warm 输出已经与参考实现完成真机数值对齐，最大绝对误差不超过 `0.004856288`。同一 RTX 3080 上，cold 的全生成与优化版中位数为 `425.325073 / 436.881591 ms` 和 `57.624464 / 69.403093 ms`（GPU / wall），提升 `7.38098× / 6.29484×`；warm 提升 `7.49750× / 6.36705×`。fresh-process 中 Session 构建后的首个 cold `run` 为 `277.443573 / 289.668472 ms`，Session 构建时间另计。完整预处理与 CPU 后处理不在这些数字内。独立的生产形状 FFN 上，全 PTX 为 `1.092～1.102 ms`，cuBLAS hybrid 为 `0.209～0.214 ms`，所以当前全 PTX 慢 `5.150～5.265×`；该数据不能与完整 step 延时混为一谈。
 
 ### 5. HXP 和有状态 Runtime 解决了什么问题？
 
 HXP 把图、权重、目标、Kernel 和内存计划固定成可校验产物；有状态 Runtime 把 `prev_bev` 的生命周期和提交时机显式化，使连续帧可重放，并保证失败帧不会污染后续状态。
+
+### 6. MLIR 是怎样真正参与编译的？为什么当前没有更快？
+
+生产形状 FFN 后端生成三个标准 MLIR `gpu.func`，调用本地 LLVM 24 的 `mlir-opt` 将 GPU Dialect 降到 NVVM，再由 LLVM NVPTX 后端输出 textual PTX。编译器保存 GPU MLIR、含 `gpu.binary` 的 lowered MLIR、PTX、命令、revision 和摘要；部署侧校验后加载 PTX，CUDA Driver 再 JIT 为 SASS，所以它不是 Python 重写的“类 MLIR”，也不是只把 MLIR 当说明文档。当前 MatMul 的 GPU schedule 很朴素，成熟 cuBLAS 有 tiling、流水化和 Tensor Core 优化，因此 MLIR 版当前更慢。MLIR 的价值是提供可验证、可优化的 lowering 框架；真正提速仍要实现好的 schedule、融合和 autotuning。

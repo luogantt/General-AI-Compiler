@@ -16,6 +16,7 @@ import numpy as np
 from .backends.cuda import TARGET, compile_cuda
 from .backends.mlir import compile_mlir
 from .backends.mlir_cuda import TARGET as MLIR_CUDA_TARGET, compile_mlir_cuda
+from .backends.mlir_ptx import TARGET as MLIR_PTX_TARGET, compile_mlir_ptx
 from .errors import GACError
 from .frontends.json_frontend import JsonFrontendError, load_graph
 from .mlir_toolchain import (
@@ -28,6 +29,12 @@ from .mlir_toolchain import (
 from .package import load_package, rebuild_cuda_program, write_package
 from .runtime import CudaSession, cuda_device_info, reference_run
 from .mlir_runtime import MlirCudaSession
+from .mlir_ptx_artifact import (
+    ARTIFACT_FILES,
+    load_mlir_ptx_artifact,
+    write_mlir_ptx_artifact,
+)
+from .mlir_ptx_runtime import MlirPtxSession
 
 
 def _write_text_atomic(path: str | Path, value: str) -> None:
@@ -109,11 +116,34 @@ def _parser() -> argparse.ArgumentParser:
         help="optional WSL distribution name, for example Ubuntu-24.04",
     )
     mlir_compile.add_argument("--report", help="save the compilation report as JSON")
+    mlir_ptx_compile = sub.add_parser(
+        "mlir-ptx-compile",
+        help="compile the production BEVFormer FFN through GPU/NVVM to SM86 PTX",
+    )
+    mlir_ptx_compile.add_argument("model")
+    mlir_ptx_compile.add_argument(
+        "-o", "--output", required=True, help="output artifact directory"
+    )
+    mlir_ptx_compile.add_argument(
+        "--mlir-opt",
+        help="mlir-opt executable, or its Linux path when --wsl is used",
+    )
+    mlir_ptx_compile.add_argument(
+        "--timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help=f"MLIR-to-PTX timeout in seconds (default: {DEFAULT_TIMEOUT_SECONDS:g})",
+    )
+    mlir_ptx_compile.add_argument(
+        "--wsl", action="store_true", help="run the selected Linux mlir-opt through WSL"
+    )
+    mlir_ptx_compile.add_argument("--wsl-distribution")
+    mlir_ptx_compile.add_argument("--report", help="save the compilation report as JSON")
     run = sub.add_parser("run", help="compile a JSON model in memory and execute it")
     run.add_argument("model")
     run.add_argument(
         "--backend",
-        choices=[TARGET, MLIR_CUDA_TARGET, "numpy-cpu"],
+        choices=[TARGET, MLIR_CUDA_TARGET, MLIR_PTX_TARGET, "numpy-cpu"],
         default=TARGET,
     )
     run.add_argument("--device", type=int, default=0)
@@ -148,6 +178,27 @@ def _parser() -> argparse.ArgumentParser:
         help="save per-launch CUDA Event timings and per-op aggregates as JSON",
     )
     run.add_argument("--report", help="save device, correctness and timing report")
+    run.add_argument(
+        "--mlir-opt",
+        help="mlir-opt used by the mlir-ptx-sm86 backend",
+    )
+    run.add_argument(
+        "--mlir-timeout",
+        type=float,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help="MLIR-to-PTX timeout used by the mlir-ptx-sm86 backend",
+    )
+    run.add_argument(
+        "--wsl", action="store_true", help="run mlir-opt through WSL for mlir-ptx-sm86"
+    )
+    run.add_argument("--wsl-distribution")
+    run.add_argument(
+        "--mlir-ptx-artifact",
+        help=(
+            "load a verified offline mlir-ptx-sm86 directory instead of "
+            "running mlir-opt on this host"
+        ),
+    )
     inspect = sub.add_parser("inspect", help="verify and describe an .hxp model package without a GPU")
     inspect.add_argument("package")
     inspect.add_argument("--report")
@@ -173,6 +224,68 @@ def _paths_alias(first: str | Path, second: str | Path) -> bool:
     first_name = os.path.normcase(str(first_path.resolve(strict=False)))
     second_name = os.path.normcase(str(second_path.resolve(strict=False)))
     return first_name == second_name
+
+
+def _path_is_within(path: str | Path, directory: str | Path) -> bool:
+    candidate = Path(path).expanduser().resolve(strict=False)
+    parent = Path(directory).expanduser().resolve(strict=False)
+    return candidate == parent or parent in candidate.parents
+
+
+def _path_aliases_mlir_ptx_artifact(path: str | Path, directory: str | Path) -> bool:
+    """Include hard-link aliases that path containment alone cannot detect."""
+
+    if _path_is_within(path, directory):
+        return True
+    root = Path(directory).expanduser()
+    members = (*ARTIFACT_FILES.values(), "manifest.json")
+    return any(_paths_alias(path, root / name) for name in members)
+
+
+def _npz_destination(path: str | Path) -> Path:
+    """Return the file name NumPy uses for ``savez`` with a path argument."""
+
+    destination = Path(path).expanduser()
+    return (
+        destination
+        if os.fspath(destination).endswith(".npz")
+        else Path(f"{destination}.npz")
+    )
+
+
+def _validate_run_paths(args) -> Path | None:
+    """Reject run outputs that could overwrite inputs or one another."""
+
+    output_archive = _npz_destination(args.outputs) if args.outputs else None
+    destinations = {
+        "--outputs": output_archive,
+        "--trace": Path(args.trace) if args.trace else None,
+        "--profile": Path(args.profile) if args.profile else None,
+        "--report": Path(args.report) if args.report else None,
+    }
+    protected = {"model": Path(args.model)}
+    if args.inputs:
+        protected["input archive"] = Path(args.inputs)
+
+    selected = [(name, path) for name, path in destinations.items() if path is not None]
+    for name, destination in selected:
+        for protected_name, protected_path in protected.items():
+            if _paths_alias(destination, protected_path):
+                raise ValueError(f"run {name} must not overwrite the {protected_name}")
+        if args.mlir_ptx_artifact and _path_aliases_mlir_ptx_artifact(
+            destination, args.mlir_ptx_artifact
+        ):
+            raise ValueError(
+                f"run {name} must be outside the MLIR PTX artifact directory"
+            )
+
+    for index, (first_name, first_path) in enumerate(selected):
+        for second_name, second_path in selected[index + 1 :]:
+            if _paths_alias(first_path, second_path):
+                raise ValueError(
+                    f"run {first_name} and {second_name} must name different files"
+                )
+    return output_archive
 
 
 def _compile_mlir_command(args) -> dict:
@@ -300,6 +413,45 @@ def _compile_mlir_command(args) -> dict:
     return report
 
 
+def _compile_mlir_ptx_command(args) -> dict:
+    """Compile and publish one reviewable MLIR/NVVM/PTX artifact directory."""
+
+    if args.wsl_distribution and not args.wsl:
+        raise ValueError("--wsl-distribution requires --wsl")
+    if args.wsl and not args.mlir_opt:
+        raise ValueError("--wsl requires --mlir-opt with a Linux executable path")
+    destination = Path(args.output)
+    if destination.exists() and not destination.is_dir():
+        raise ValueError("mlir-ptx-compile output must be a directory")
+    if destination.exists() and any(destination.iterdir()):
+        raise ValueError("mlir-ptx-compile output directory must be empty")
+    if args.report:
+        if _paths_alias(args.model, args.report):
+            raise ValueError("mlir-ptx-compile --report must not overwrite the model")
+        if _path_is_within(args.report, destination):
+            raise ValueError(
+                "mlir-ptx-compile --report must be outside the artifact directory"
+            )
+
+    graph = load_graph(args.model)
+    program = compile_mlir_ptx(
+        graph,
+        mlir_opt=args.mlir_opt,
+        use_wsl=args.wsl,
+        wsl_distribution=args.wsl_distribution,
+        timeout=args.timeout,
+    )
+    report = write_mlir_ptx_artifact(destination, program)
+    report = {
+        **report,
+        "artifact_directory": str(destination.resolve(strict=False)),
+        "graph": graph.name,
+    }
+    # Keep the directory manifest self-contained and make the stdout/report
+    # view identify its location without rewriting the manifest after publish.
+    return report
+
+
 def _run(args) -> dict:
     if args.repeat < 1 or args.warmup < 0:
         raise ValueError("repeat must be positive and warmup must be non-negative")
@@ -307,11 +459,14 @@ def _run(args) -> dict:
         raise ValueError("--trace and --profile currently require the cuda-sm86 backend")
     started = time.perf_counter()
     model_path = Path(args.model)
+    output_archive = _validate_run_paths(args)
+    if args.mlir_ptx_artifact and args.backend != MLIR_PTX_TARGET:
+        raise ValueError("--mlir-ptx-artifact requires --backend mlir-ptx-sm86")
     if model_path.suffix.lower() == ".hxp":
-        if args.backend == MLIR_CUDA_TARGET:
+        if args.backend in {MLIR_CUDA_TARGET, MLIR_PTX_TARGET}:
             raise ValueError(
-                "HXP v1 packages do not carry the MLIR CUDA runtime-call plan; "
-                "run mlir-cuda-sm86 from a JSON graph"
+                "HXP v1 packages do not carry an MLIR execution artifact; "
+                f"run {args.backend} from a JSON graph"
             )
         if args.no_fuse:
             raise ValueError("--no-fuse cannot change an already compiled .hxp package")
@@ -319,27 +474,64 @@ def _run(args) -> dict:
         preparation = "verified-package-load-and-codegen-check"
     else:
         source_graph = load_graph(model_path)
-        if args.backend == MLIR_CUDA_TARGET:
+        if args.backend in {MLIR_CUDA_TARGET, MLIR_PTX_TARGET}:
             if args.no_fuse:
                 raise ValueError(
-                    "mlir-cuda-sm86 requires its explicit FFN fusion plan"
+                    f"{args.backend} requires its explicit FFN fusion plan"
                 )
             if args.conv_backend != "auto":
                 raise ValueError(
-                    "--conv-backend does not apply to the MLIR CUDA FFN plan"
+                    "--conv-backend does not apply to an MLIR FFN plan"
                 )
             if args.cudnn_tensor_core != "never":
                 raise ValueError(
-                    "--cudnn-tensor-core does not apply to the MLIR CUDA FFN plan"
+                    "--cudnn-tensor-core does not apply to an MLIR FFN plan"
                 )
-            if args.matmul_backend not in {"auto", "cupy"}:
-                raise ValueError(
-                    "mlir-cuda-sm86 has an explicit cuBLAS MatMul lowering"
-                )
-            program = compile_mlir_cuda(source_graph)
+            allowed_matmul = (
+                {"auto", "cupy"}
+                if args.backend == MLIR_CUDA_TARGET
+                else {"auto"}
+            )
+            if args.matmul_backend not in allowed_matmul:
+                if args.backend == MLIR_CUDA_TARGET:
+                    raise ValueError(
+                        "mlir-cuda-sm86 has an explicit cuBLAS MatMul lowering"
+                    )
+                raise ValueError("mlir-ptx-sm86 has an explicit PTX MatMul lowering")
+            if args.backend == MLIR_CUDA_TARGET:
+                program = compile_mlir_cuda(source_graph)
+            else:
+                if args.wsl_distribution and not args.wsl:
+                    raise ValueError("--wsl-distribution requires --wsl")
+                if args.mlir_ptx_artifact and (
+                    args.mlir_opt or args.wsl or args.wsl_distribution
+                ):
+                    raise ValueError(
+                        "--mlir-ptx-artifact cannot be combined with MLIR toolchain options"
+                    )
+                if args.wsl and not args.mlir_opt:
+                    raise ValueError(
+                        "--wsl requires --mlir-opt with a Linux executable path"
+                    )
+                if args.mlir_ptx_artifact:
+                    program = load_mlir_ptx_artifact(
+                        args.mlir_ptx_artifact, source_graph
+                    )
+                else:
+                    program = compile_mlir_ptx(
+                        source_graph,
+                        mlir_opt=args.mlir_opt,
+                        use_wsl=args.wsl,
+                        wsl_distribution=args.wsl_distribution,
+                        timeout=args.mlir_timeout,
+                    )
         else:
             program = compile_cuda(source_graph, fuse=not args.no_fuse)
-        preparation = "json-source-generation"
+        preparation = (
+            "verified-precompiled-mlir-ptx-artifact"
+            if args.backend == MLIR_PTX_TARGET and args.mlir_ptx_artifact
+            else "json-source-generation"
+        )
     preparation_ms = (time.perf_counter() - started) * 1000
     input_source = args.inputs or "seeded normal"
     if args.inputs:
@@ -440,6 +632,27 @@ def _run(args) -> dict:
             "H2D + explicit cuBLAS/fused-kernel call plan; excludes output D2H"
         )
         report["lowering"] = program.describe()
+    elif args.backend == MLIR_PTX_TARGET:
+        with MlirPtxSession(program, device_id=args.device) as session:
+            report["device"] = session.info
+            report["session_setup_ms"] = session.setup_ms
+            report["runtime_calls"] = session.kernel_info
+            first = session.run(inputs)
+            report["first_invocation_ms"] = first.wall_ms
+            verify(first.outputs)
+            for _ in range(args.warmup):
+                session.run(inputs)
+            for _ in range(args.repeat):
+                result = session.run(inputs)
+                outputs = result.outputs
+                wall.append(result.wall_ms)
+                gpu.append(result.gpu_stream_ms)
+                verify(outputs)
+        report["gpu_stream_ms"] = _stats(gpu)
+        report["gpu_stream_scope"] = (
+            "H2D + three MLIR-generated PTX kernels; excludes output D2H"
+        )
+        report["lowering"] = program.describe()
     else:
         report["device"] = {"name": "NumPy CPU reference", "physical_cuda_execution": False}
         for _ in range(args.warmup):
@@ -454,9 +667,9 @@ def _run(args) -> dict:
     report["verification"] = "passed" if expected is not None else "not requested"
     report["max_abs_error"] = max_errors
     report["outputs"] = {name: {"shape": list(value.shape), "dtype": value.dtype.name} for name, value in outputs.items()}
-    if args.outputs:
-        Path(args.outputs).parent.mkdir(parents=True, exist_ok=True)
-        np.savez(args.outputs, **outputs)
+    if output_archive is not None:
+        output_archive.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(output_archive, **outputs)
     return report
 
 
@@ -529,6 +742,8 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("compile output must end in .cu or .hxp")
         elif args.command == "mlir-compile":
             report = _compile_mlir_command(args)
+        elif args.command == "mlir-ptx-compile":
+            report = _compile_mlir_ptx_command(args)
         elif args.command == "inspect":
             report = _inspect_package(args.package)
         else:

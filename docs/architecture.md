@@ -2,9 +2,9 @@
 
 ## 1. 范围
 
-GAC 的目标是一个完整的编译—推理闭环：输入模型经过统一图表示、后端能力查询、设备划分和执行计划生成，被封装成 `.hxp`，再由 Runtime 加载执行。当前已实现前端、图优化、CUDA SM 8.6 源码生成、单 GPU Session、版本化 HXP 原型、静态 arena 规划及 CUDA Session 对 arena offset 的消费；MLIR 侧已实现 tensor/linalg emitter 和严格限定一个 BEVFormer FFN pattern 的 SM86 runtime-call 切片。通用异构划分、通用 MLIR GPU/NVVM lowering 与通用 Host Execution Plan 仍是设计目标。
+GAC 的目标是一个完整的编译—推理闭环：输入模型经过统一图表示、后端能力查询、设备划分和执行计划生成，被封装成 `.hxp`，再由 Runtime 加载执行。当前已实现前端、图优化、CUDA SM 8.6 源码生成、单 GPU Session、版本化 HXP 原型、静态 arena 规划及 CUDA Session 对 arena offset 的消费；MLIR 侧已实现 tensor/linalg emitter、严格限定一个 BEVFormer FFN pattern 的 SM86 runtime-call 切片，以及生产形状 FFN 的 GPU Dialect→NVVM→LLVM NVPTX→PTX 切片。通用异构划分、任意 tensor/linalg 图的通用 MLIR GPU lowering 与通用 Host Execution Plan 仍是设计目标。
 
-### 1.1 源码核对（2026-10-10）
+### 1.1 源码核对（2026-10-11）
 
 | 模块 | 当前证据 | 状态 |
 | --- | --- | --- |
@@ -17,6 +17,7 @@ GAC 的目标是一个完整的编译—推理闭环：输入模型经过统一�
 | CUDA Session、设备探测、Vendor Library 与 CLI | `src/gac/runtime.py`、`cli.py` | 已实现单卡执行、FP32 cuDNN Conv 和 FP32 CuPy/cuBLAS MatMul，不含自动回退 |
 | MLIR tensor emitter 与 verifier 接口 | `src/gac/backends/mlir.py`、`src/gac/mlir_toolchain.py` | 已实现标准 `func/tensor/linalg/arith/math` textual MLIR；只有实际 `mlir-opt` 成功的产物才标记 verified |
 | MLIR SM86 FFN runtime-call 切片 | `src/gac/backends/mlir_cuda.py`、`src/gac/mlir_runtime.py` | 严格匹配固定 FP32 FFN；MLIR source 是可审阅/可验证的 ABI manifest，实际由经校验的 Python call records 调度 2×CuPy/cuBLAS MatMul 与 2×NVRTC 融合 Kernel |
+| MLIR SM86 FFN PTX 切片 | `src/gac/backends/mlir_ptx.py`、`src/gac/mlir_ptx_runtime.py`、`src/gac/mlir_toolchain.py` | 严格匹配生产形状 `[1,2500,256] → 512 → 256`；三个 `gpu.func` 经官方 LLVM 24 GPU→NVVM/LLVM NVPTX pipeline 生成 textual PTX 7.1，并由 Runtime 校验后加载；CUDA Driver 再 JIT 为 SASS |
 | HXP 包与静态 arena | `src/gac/package.py`、`memory.py`、`runtime.py` | 包内计划已实现并校验；CUDA Session 一次性分配内部 arena；内部 Reshape 和满足连续条件的 Slice 可复用同一存储 view |
 | 图组合、MHA 与 BEVFormer 合同 | `src/gac/compose.py`、`transformer.py`、`bevformer_*.py`、`frontends/bevformer_*.py` | Graph Composer、MHA、ResNet50-FPN、feature-prep、learned encoder inputs、完整三层 Encoder、完整六层 Decoder、六层 raw detection projection、cold/history image-to-BEV、运动补偿、cold/Decoder/统一 cold-warm step pipeline、官方权重映射及导出/状态合同已实现；统一 step 已通过官方 checkpoint 的 SM86 真机数值验收 |
 | BEVFormer 状态 Runtime | `src/gac/bevformer_runtime.py` | scene/CAN-bus delta、cold/warm flag、状态提交与失败回滚已实现；当前 `prev_bev` 由主机 NumPy 状态持有 |
@@ -25,14 +26,16 @@ GAC 的目标是一个完整的编译—推理闭环：输入模型经过统一�
 | 通用 Execution Plan | 当前只有 CUDA launch metadata 与静态内存计划 | 待实现 |
 | 自动化测试 | `tests/` | 最终版本 RTX 3080 强制 CUDA 结果为 `Ran 287 tests in 18.881s ... OK (skipped=1)` |
 
-历史上已在 RTX 3070 Ti Laptop GPU 完成 MLP 与独立 MSDA 的真实 CUDA 验证，证据见 [融合运行报告](validation/sm86/gpu-fused.json) 与 [BEVFormer SM86 验证目录](validation/sm86/bevformer/)。2026-10-10 又在 Ubuntu 22.04、RTX 3080（同为 SM 8.6）上，使用官方 `bevformer_tiny_epoch_24.pth` 完成统一 cold/warm HXP 的真机数值验收。该结果验证 SM86 兼容性和固定 Profile 的 raw step；桌面 RTX 3070 的显存、吞吐和功耗仍须在该型号上单独测量。
+历史上已在 RTX 3070 Ti Laptop GPU 完成 MLP 与独立 MSDA 的真实 CUDA 验证，证据见 [融合运行报告](validation/sm86/gpu-fused.json) 与 [BEVFormer SM86 验证目录](validation/sm86/bevformer/)。2026-10-10 又在 Ubuntu 22.04、RTX 3080（同为 SM 8.6）上，使用官方 `bevformer_tiny_epoch_24.pth` 完成统一 cold/warm HXP 的真机数值验收。2026-10-11 在同一类 SM86 真机上完成生产形状 FFN 的官方 MLIR→NVVM→PTX 编译与执行验证。上述结果验证 SM86 兼容性和各自明确的固定范围；桌面 RTX 3070 的显存、吞吐和功耗仍须在该型号上单独测量。
 
 设计区分两类程序：
 
-1. **Device Program**：当前 CUDA 后端生成源码，NVRTC 在 Session 初始化时编译为设备代码；HXP 的 `KernelLaunch` 同时显式保存 `implementation_candidates`，使 cuDNN、CuPy/cuBLAS 与 generated CUDA 都是可检查的执行候选。
+1. **Device Program**：CUDA/HXP 后端生成 CUDA C，NVRTC 在 Session 初始化时编译为设备代码；HXP 的 `KernelLaunch` 显式保存 `implementation_candidates`，使 cuDNN、CuPy/cuBLAS 与 generated CUDA 都是可检查的执行候选。独立的 `mlir-ptx-sm86` FFN 切片则离线生成 textual PTX，由专用 Session 加载；CUDA Driver 在模块加载时再 JIT 为 SASS。
 2. **Host Execution Plan**：描述分配、复制、调用和输出。当前仅有 CUDA 启动元数据及固定 Session 执行顺序，通用计划仍待实现。
 
 `mlir-cuda-sm86` 是单独的窄切片：编译器同时产生 runtime-call MLIR ABI manifest 和内存中的 Python call records。Runtime 不解析或执行 MLIR source，dispatch 只由 call records 驱动；融合 Kernel 在 Session 建立时由 NVRTC 编译。HXP v1 不承载这组 call records，因此该后端当前只能从 JSON graph 直接运行。
+
+`mlir-ptx-sm86` 是第二条窄切片：编译器从 Canonical Graph 验证同一个 FFN pattern，并固定为生产形状 `[1,2500,256] → 512 → 256`，直接物化三个 `gpu.func`；tensor-level MLIR 仅是独立的调试/审阅输出，不是 GPU emitter 的输入，也不进入部署 PTX artifact。官方 LLVM 24 `mlir-opt` 将 GPU Dialect 降到 NVVM，并由 LLVM NVPTX 生成 `.target sm_86` 的 textual PTX 7.1；`MlirPtxSession` 验证 source hash、binary MLIR/PTX 一致性、目标和三个 entry 后加载 PTX，CUDA Driver 再 JIT 为 SASS。这是该固定 FFN 的真实 MLIR 到 PTX 路径，但不是任意 tensor/linalg 图的通用自动 lowering，也没有覆盖完整 BEVFormer 网络。HXP v1 还不能保存这类 PTX artifact。
 
 `sim-gpu` 将只验证控制面和异构边界。真实设备后端必须提供独立的编译产物、内存空间、队列和事件语义。
 
@@ -161,7 +164,7 @@ Execution Plan 是编译器与 Runtime 之间最重要的契约。它描述主�
 - CUDA C 源码与 launch metadata；
 - 区分外部 I/O、常驻常量和复用 arena 的静态内存计划。
 
-加载器会拒绝未知主版本、重复/越界/额外条目、摘要不符、不安全路径、object dtype 和不匹配的确定性内存计划；执行前还会从规范图重新生成 CUDA，并核对源码与 launch metadata。当前 HXP 不含 MLIR runtime-call plan、通用 Host Execution Plan、CPU 回退、多 target variant、GPU cubin 或签名认证。后续真实后端可加入 CPU 本地代码、GPU cubin/hsaco、NPU blob 或厂商缓存，并继续校验目标兼容性、Shape variant 和 artifact hash，不能仅凭文件扩展名信任内容。
+加载器会拒绝未知主版本、重复/越界/额外条目、摘要不符、不安全路径、object dtype 和不匹配的确定性内存计划；执行前还会从规范图重新生成 CUDA，并核对源码与 launch metadata。当前 HXP 不含 MLIR runtime-call plan、`mlir-ptx-sm86` PTX artifact、通用 Host Execution Plan、CPU 回退、多 target variant、GPU cubin 或签名认证。M2b 的 PTX 目前由独立 artifact 目录与 `MlirPtxSession` 管理；后续 HXP 可加入经验证的 PTX/cubin、CPU 本地代码、GPU hsaco、NPU blob 或厂商缓存，并继续校验目标兼容性、Shape variant 和 artifact hash，不能仅凭文件扩展名信任内容。
 
 ### 3.7 Runtime Session
 
@@ -211,7 +214,7 @@ Python 对象适合 v0.1 原型，但不能作为跨编译器版本的插件 ABI
 
 ## 6. 当前限制
 
-当前 CUDA 后端与 Session 尚未实现通用执行计划、多设备划分和回退。HXP 与静态 arena 计划已实现；Session 会调用同一规划器、一次性分配内部 arena，并按 allocation offset 建立中间值 view。内部 Reshape 和满足连续区间约束的 Slice 已能共享源 Tensor 存储，其他布局变换仍会物化。IR 可以表示部分动态维度，但 CUDA 后端只接受静态 Shape。FP32 Conv/MatMul 已分别接入 cuDNN 和 CuPy/cuBLAS；`KernelLaunch` 明确记录 `implementation_candidates`，Runtime 的最终选择写入 `session.info`、`kernel_info` 和 profile，因此 vendor 调用不是隐藏替换。MLIR 的通用路径仍停在 tensor/linalg；可执行 `mlir-cuda-sm86` 只支持当前固定 FFN pattern，严格要求 Compute Capability 8.6、CuPy、cuBLAS 与 NVRTC，且 HXP v1 不支持该计划。Tensor Core/混合精度主计算、多流调度、DLPack、AOT CPU 机器码、NPU 和量化仍未实现。BEVFormer 的 feature/input preparation、三层 Encoder、六层 Decoder、六层 raw detection projection、cold/history image-to-BEV、历史 BEV rotate/shift、统一 cold/warm step 及 Runtime 状态提交/失败回滚已经实现；公开 image/state ABI 使用 FP16，内部主要计算仍为 FP32。官方 checkpoint 的 cold/warm raw step 已在 RTX 3080 上完成物理 SM86 数值与首轮性能验收。NMS-free Top-K/box denormalization 以显式 CPU API 实现；真实 nuScenes 指标及桌面 RTX 3070 的设备专属显存/性能数据仍未完成。
+当前 CUDA 后端与 Session 尚未实现通用执行计划、多设备划分和回退。HXP 与静态 arena 计划已实现；Session 会调用同一规划器、一次性分配内部 arena，并按 allocation offset 建立中间值 view。内部 Reshape 和满足连续区间约束的 Slice 已能共享源 Tensor 存储，其他布局变换仍会物化。IR 可以表示部分动态维度，但 CUDA 后端只接受静态 Shape。FP32 Conv/MatMul 已分别接入 cuDNN 和 CuPy/cuBLAS；`KernelLaunch` 明确记录 `implementation_candidates`，Runtime 的最终选择写入 `session.info`、`kernel_info` 和 profile，因此 vendor 调用不是隐藏替换。MLIR 的通用 tensor/linalg 路径仍未完成 bufferization、tiling 和 GPU mapping；`mlir-cuda-sm86` 只支持固定 FFN pattern，并依赖 CuPy、cuBLAS 与 NVRTC；`mlir-ptx-sm86` 已为生产形状 FFN 完成 GPU Dialect→NVVM→PTX，但它直接物化固定 GPU module，尚不支持任意 shape、Tensor Core 调度、HXP v1 或完整 BEVFormer。两条路径都严格要求 Compute Capability 8.6。Tensor Core/混合精度主计算、多流调度、DLPack、AOT CPU 机器码、NPU 和量化仍未实现。BEVFormer 的 feature/input preparation、三层 Encoder、六层 Decoder、六层 raw detection projection、cold/history image-to-BEV、历史 BEV rotate/shift、统一 cold/warm step 及 Runtime 状态提交/失败回滚已经实现；公开 image/state ABI 使用 FP16，内部主要计算仍为 FP32。官方 checkpoint 的 cold/warm raw step 已在 RTX 3080 上完成物理 SM86 数值与首轮性能验收。NMS-free Top-K/box denormalization 以显式 CPU API 实现；真实 nuScenes 指标及桌面 RTX 3070 的设备专属显存/性能数据仍未完成。
 
 ## 7. 从参考源码落实到接口
 
@@ -322,6 +325,7 @@ model.hxp
 | 模块或计划模块 | 职责 | 当前状态/首个可验收结果 |
 | --- | --- | --- |
 | `backends/` | 协议、注册表、CPU 与模拟驱动 | 支持/拒绝原因明确，输出与参考语义一致 |
+| `backends/mlir_ptx.py`、`mlir_ptx_runtime.py`、`mlir_toolchain.py` | 固定生产形状 FFN 的 GPU MLIR 生成、官方 lowering、artifact 校验与 PTX 执行 | 已实现；严格 SM86/PTX 7.1 与三个 entry，完整网络和通用 tensor/linalg lowering 未实现 |
 | `partition.py` | 候选、代价、放置报告 | 高搬运成本时保留 CPU，未知组合拒绝 |
 | `plan.py` | Buffer/步骤定义、生成与校验 | 分支图、跨设备图均不读未初始化或已释放数据 |
 | `compiler.py` | 编排公共 Pass、候选选择和产物构建 | 保留原图语义，支持关闭融合排查问题 |
@@ -331,7 +335,7 @@ model.hxp
 | `runtime.py` | Session、Invocation、执行计划、Trace | 重复执行不污染常量或共享临时 Buffer |
 | `cli.py`、`tests/` | compile/inspect/run、契约和端到端测试 | README 三条命令在新进程中贯通 |
 
-对应实施批次见 [路线图](roadmap.md)。目前优先落地了一条直接 CUDA C/NVRTC 路径，具体实现如下；上表中的通用模块化方案仍是后续目标。
+对应实施批次见 [路线图](roadmap.md)。完整 BEVFormer 生产路径目前使用 CUDA C/NVRTC 与 vendor library；生产形状 FFN 另有独立 MLIR→PTX 切片。下面分别说明这两类 SM86 实现；上表中的通用模块化方案仍是后续目标。
 
 ## 10. RTX 3070 系列的首个实现
 
@@ -339,7 +343,15 @@ model.hxp
 
 编译入口 `compile_cuda(graph)` 不导入 CuPy、不访问设备。它检查静态 Shape、受支持 DType、连续布局及算子属性，执行公共 Pass，输出 `CudaProgram`：优化图、原始参考图、CUDA C，以及每个 `KernelLaunch` 的输入输出、grid、block、来源标识与 `implementation_candidates`。统一 step 的公开 image/state 边界允许 FP16，`has_prev_bev` 为 int32；其余核心计算仍以 FP32 为基线。`.cu` 和 `.plan.json` 是调试中间产物；CLI 也可把规范图、权重、源码、launch metadata 与静态内存计划写成可校验的 `.hxp`。
 
-当前 Kernel 策略：
+### 10.1 生产形状 FFN 的 MLIR→PTX 切片
+
+`mlir-ptx-sm86` 只编译 BEVFormer 生产形状 FP32 FFN：`[1,2500,256] → 512 → 256`，包括 FC1+bias+ReLU、FC2、query residual 和 LayerNorm。三个设备 Kernel 从 MLIR GPU Dialect 经官方 GPU lowering 到 NVVM，再由 LLVM NVPTX 生成 textual PTX 7.1；Runtime 加载该 PTX，CUDA Driver 仍会 JIT 为 SASS；设备执行不调用 cuBLAS，也不经过 CUDA C/NVRTC 或旧 CUDA fallback。
+
+RTX 3080 上两轮位置平衡的配对基准中，全 PTX device-resident 中位数为 `1.092～1.102 ms/FFN`，cuBLAS hybrid 为 `0.209～0.214 ms/FFN`，全 PTX 当前慢 `5.150～5.265×`；全 PTX 最大绝对误差为 `7.153e-7`。这组结果只覆盖该 FFN 编译单元，不是完整 BEVFormer 延时，也不是 RTX 3070 延时。
+
+MLIR→PTX 不会因为编译链改变而自动提速。离线 textual PTX 避免部署时的 MLIR lowering 和 CUDA C/NVRTC 编译，但保留 Driver PTX→SASS JIT，且不自动减少稳态计算量。当前 MatMul 为每线程一个输出、串行遍历 K 的正确性实现。下一步需要 shared-memory tiling、向量化、NVGPU/MMA Tensor Core、epilogue/LayerNorm 融合和 autotuning；生产策略还应让代价模型在优化后的 MLIR Kernel 与 cuBLAS/cuBLASLt library-call lowering 之间选择。产物和原始报告见 [MLIR PTX 验证记录](validation/sm86/mlir-ptx-2026-10-11/README.md)。
+
+当前 CUDA/HXP Kernel 策略：
 
 | 算子 | 映射策略 |
 | --- | --- |

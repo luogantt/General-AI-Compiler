@@ -1,6 +1,6 @@
 # 开发路线图
 
-> 状态核对：2026-10-10。官方 `bevformer_tiny_epoch_24.pth` 的统一 cold/warm 五输入三输出 step 已在 Ubuntu 22.04、RTX 3080（SM 8.6）上完成 HXP 真机数值验收。HXP 融合前图有 876 个节点；39 组安全 Add+ReLU 融合后为 837 个执行节点，零拷贝后实际设备 dispatch 为 703，内部 arena 保持 `552,960,000` bytes；最终强制 CUDA 测试结果为 `Ran 287 tests in 18.881s ... OK (skipped=1)`。首轮性能优化已完成内部 Reshape/连续 Slice 零拷贝、Add+ReLU 融合、FP32 cuDNN Conv、FP32 CuPy/cuBLAS MatMul 和逐 launch Profiler：cold 从 `425.325073 / 436.881591 ms` 降到 `57.624464 / 69.403093 ms`，warm 从 `426.032532 / 437.718436 ms` 降到 `56.823263 / 68.747440 ms`（GPU / wall）。RTX 3080 与目标 RTX 3070 的编译目标相同，但桌面 RTX 3070 的设备专属性能/显存仍待测试；显式 CPU NMS-free 后处理、真实 nuScenes 数据验收和通用异构基础设施仍是后续工作。
+> 状态核对：2026-10-11。官方 `bevformer_tiny_epoch_24.pth` 的统一 cold/warm 五输入三输出 step 已在 Ubuntu 22.04、RTX 3080（SM 8.6）上完成 HXP 真机数值验收。HXP 融合前图有 876 个节点；39 组安全 Add+ReLU 融合后为 837 个执行节点，零拷贝后实际设备 dispatch 为 703，内部 arena 保持 `552,960,000` bytes；最终强制 CUDA 测试结果为 `Ran 287 tests in 18.881s ... OK (skipped=1)`。首轮性能优化已完成内部 Reshape/连续 Slice 零拷贝、Add+ReLU 融合、FP32 cuDNN Conv、FP32 CuPy/cuBLAS MatMul 和逐 launch Profiler：cold 从 `425.325073 / 436.881591 ms` 降到 `57.624464 / 69.403093 ms`，warm 从 `426.032532 / 437.718436 ms` 降到 `56.823263 / 68.747440 ms`（GPU / wall）。RTX 3080 与目标 RTX 3070 的编译目标相同，但桌面 RTX 3070 的设备专属性能/显存仍待测试；显式 CPU NMS-free 后处理、真实 nuScenes 数据验收和通用异构基础设施仍是后续工作。
 
 ## 路线原则
 
@@ -18,9 +18,10 @@
 - 已实现并真机验收：官方 rotate/shift 运动补偿、`has_prev_bev` cold/warm 选择和 `BevFormerRuntime` 状态管理。warm 每层共享 `[motion prev, initial query]`，cold 每层动态构造 `[current query, current query]`。冷启动只清零 `can_bus_delta[:3]` 与 `can_bus_delta[-1]`，保留四元数、绝对 heading 与其他 CAN-bus 特征；只有 Session 执行和输出校验成功才提交状态。
 - 已验收：官方 checkpoint 的 cold/warm raw step、生产 HXP 及物理 SM86 数值。性能版 cold 的 cls/bbox/bev max abs 为 `0.003891945` / `0.004856288` / `0.001953125`，warm 为 `0.000953674` / `0.000725389` / `0.001953125`。
 - 已验收：全生成 cold/warm 中位数分别为 `425.325073 / 436.881591 ms` 与 `426.032532 / 437.718436 ms`；零拷贝 view + FP32 cuDNN/cuBLAS 分别为 `57.624464 / 69.403093 ms` 与 `56.823263 / 68.747440 ms`（GPU / wall），cold 加速 `7.38098× / 6.29484×`，warm 加速 `7.49750× / 6.36705×`。fresh-process 中 Session 构建后的首个 cold `run` 为 `277.443573 / 289.668472 ms`，Session 构建时间另计；同进程已预热调用不作为 fresh 数据。
-- 已实现并进入切片真机验收：`mlir-cuda-sm86` 严格匹配一个静态 FP32 BEVFormer FFN，使用 2×CuPy/cuBLAS MatMul、NVRTC `Bias+ReLU` 和 `Bias+Residual+LayerNorm`。MLIR source 仅是可审阅/可验证的 runtime-call ABI manifest，实际 dispatch 由经校验的 Python call records 驱动；HXP v1 不承载该计划。生产尺寸单 FFN 基准必须保存 artifact hash，在同进程中按 repeat 交替 MLIR/CUDA 的测量位置，并用两种首轮顺序独立重跑；具体数字只从最终原始 JSON 引用，不能外推为完整 BEVFormer 或 RTX 3070 结果。证据目录见 [`validation/sm86/mlir-cuda-cublas-2026-10-10`](validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)。
-- 下一步基础设施：固定 Buffer/Artifact/Driver 接口，加入通用执行计划和 CPU/GPU 候选选择；性能与产品验收继续完成混合精度/Tensor Core、真实 nuScenes、CPU 后处理 Trace 和桌面 RTX 3070 测量。
-- 性能深化：以当前 FP32 vendor-library 基线为对照，优先推进 CUDA Graph、批量 dispatch 和更多融合，再评估 FP16/Tensor Core；每次都报告数值误差和含传输的端到端收益。显式 128 MiB cuDNN workspace 虽把 55 个 Conv p50 从 `35.030 ms` 降至 `25.781 ms`，整图 p50 却从 `57.924 ms` 变为 `58.231 ms`，且多占 120 MiB，本轮不集成；当前 `cupyx.cudnn` capture 不兼容，后续图捕获需稳定的低层 API。
+- 已实现并进入切片真机验收：`mlir-cuda-sm86` 严格匹配一个静态 FP32 BEVFormer FFN，使用 2×CuPy/cuBLAS MatMul、NVRTC `Bias+ReLU` 和 `Bias+Residual+LayerNorm`。MLIR source 仅是可审阅/可验证的 runtime-call ABI manifest，实际 dispatch 由经校验的 Python call records 驱动；HXP v1 不承载该计划。证据目录见 [`validation/sm86/mlir-cuda-cublas-2026-10-10`](validation/sm86/mlir-cuda-cublas-2026-10-10/README.md)。
+- 已实现并真机验收：`mlir-ptx-sm86` 只接受生产形状 FP32 FFN `[1,2500,256] → 512 → 256`。它从 Canonical Graph 的严格 pattern 分支直接物化三个 `gpu.func`；tensor-level MLIR 仅用于调试/审阅，不是 GPU emitter 的输入，也不进入部署 PTX artifact。官方 LLVM 24 MLIR GPU→NVVM pipeline 和 LLVM NVPTX 生成 textual PTX 7.1。Runtime 校验 GPU MLIR、binary MLIR/PTX 一致性、SM86 目标、三个 entry 和摘要后加载 PTX，CUDA Driver 再 JIT 为 SASS；该设备执行不调用 cuBLAS、不编译 CUDA C，也没有 NVRTC/CPU fallback。RTX 3080 上全 PTX 为 `1.092～1.102 ms/FFN`，cuBLAS hybrid 为 `0.209～0.214 ms/FFN`，全 PTX 慢 `5.150～5.265×`，最大绝对误差 `7.153e-7`。它只覆盖一个 FFN 编译单元，不是完整 BEVFormer 网络或 RTX 3070 性能。证据见 [`validation/sm86/mlir-ptx-2026-10-11`](validation/sm86/mlir-ptx-2026-10-11/README.md)。
+- 下一步基础设施：固定 Buffer/Artifact/Driver 接口，加入通用执行计划和 CPU/GPU 候选选择；把 M2b 从固定 GPU module 扩展为通用 tensor/linalg bufferization、tiling 与 GPU/NVGPU lowering；性能与产品验收继续完成真实 nuScenes、CPU 后处理 Trace 和桌面 RTX 3070 测量。
+- 性能深化：MLIR MatMul 先实现 shared-memory tiling 和 vectorization，再接入 NVGPU/MMA Tensor Core、epilogue/LayerNorm 融合和 autotuning；生产模式保留 cuBLAS/cuBLASLt library-call lowering 候选。整图路径继续以当前 FP32 vendor-library 基线为对照，推进 CUDA Graph、批量 dispatch 和更多融合，再评估 FP16/Tensor Core；每次都报告数值误差和含传输的端到端收益。显式 128 MiB cuDNN workspace 虽把 55 个 Conv p50 从 `35.030 ms` 降至 `25.781 ms`，整图 p50 却从 `57.924 ms` 变为 `58.231 ms`，且多占 120 MiB，本轮不集成；当前 `cupyx.cudnn` capture 不兼容，后续图捕获需稳定的低层 API。
 
 当前 `.cu`/`.plan.json` 是调试中间产物；`.hxp` 已能保存规范图、权重、CUDA 源码、带 `implementation_candidates` 的 launch metadata 和静态内存计划，并支持校验加载。Runtime 把最终选择写入 `session.info`、`kernel_info` 和 profile。它还没有通用异构步骤表、CPU 回退、多 target variant 或预编译 cubin。参考 [架构说明第 10 节](architecture.md#10-rtx-3070-系列的首个实现) 和 [真机报告](validation/sm86/gpu-fused.json)。
 
@@ -72,7 +73,7 @@
 | ResNet50 + 单层 FPN | 规范图、严格导入合同、generated 基线和 FP32 cuDNN 真机路径已验证 | 混合精度与更细的性能归因 |
 | 导出、官方权重映射、golden、时序状态合同 | 官方 checkpoint 映射、golden、cold/warm 状态执行已验收 | ONNX/`torch.export` 捕获仍待完成 |
 | Feature-prep 与 learned encoder inputs | 已实现并进入官方 checkpoint 全图 HXP 验收 | 保持逐层回归 |
-| BEV geometry、Spatial/Temporal Attention、tiny FFN | 完整三层 Encoder 已进入 cold/warm 真机验收 | 保持逐层回归与更多边界样例 |
+| BEV geometry、Spatial/Temporal Attention、tiny FFN | 完整三层 Encoder 已进入 cold/warm CUDA/HXP 真机验收；生产形状 FFN 另有固定的 MLIR→PTX 三 Kernel 切片 | MLIR 切片仍需 tiled/Tensor Core MatMul、通用 lowering；保持全图逐层回归 |
 | Cold image-to-BEV Encoder pipeline | cold 最终 raw 输出与 `next_bev` 已对齐官方 golden | 真实 nuScenes cold 样例 |
 | History image-to-BEV 与运动补偿 | warm 最终 raw 输出与 `next_bev` 已对齐官方 golden | 真实连续帧与设备状态驻留优化 |
 | Decoder | 完整六层 stack 已随最终 raw 输出通过官方 checkpoint 真机对比 | 真实 nuScenes 逐帧回归 |
@@ -99,7 +100,7 @@
 
 完成标准：至少一个子图真正运行在非 CPU 设备上；Trace 和设备 Profiler 能证明 dispatch 发生在目标设备，跨设备复制次数可解释，关闭该后端时存在明确 CPU fallback 或清晰错误。
 
-SM 8.6 已选择 CUDA C/NVRTC 与 vendor library 混合路径；MatMul/Add/GELU、LayerNorm、MSDA、CNN/MHA 以及官方 checkpoint 的统一 BEVFormer step 均已进入真机验证。静态 arena、零拷贝内部 view 及 CUDA Session 的一次性分配已在 RTX 3080 生产 HXP 中使用。逐 launch Profiler 已能用 CUDA Event 做按 op 和实际 implementation 归因；最终受扰动 Profile 为 `76.05085 ms GPU / 95.8321 ms wall`，Kernel Event 求和 `63.4391 ms`，与普通稳态基准分开解释。下一步继续扩展通用异步执行，并在桌面 RTX 3070 上核对实际峰值显存。性能工作必须分别记录编译时间、首次加载、fresh-process 首次 `run`、稳态端到端延迟和设备 Event 时间，并包含输入上传和输出回传；当前优化版 cold/warm 中位数为 `57.624464 / 56.823263 ms GPU` 与 `69.403093 / 68.747440 ms wall`，仍需 RTX 3070 实测。
+SM 8.6 已选择 CUDA C/NVRTC 与 vendor library 混合路径；MatMul/Add/GELU、LayerNorm、MSDA、CNN/MHA 以及官方 checkpoint 的统一 BEVFormer step 均已进入真机验证。生产形状 FFN 还完成了独立的官方 MLIR GPU→NVVM→PTX 闭环，但其当前朴素 MatMul 比 cuBLAS hybrid 慢 `5.150～5.265×`，所以该结果是编译正确性基线，不能表述为性能收益。离线 textual PTX 避免 CUDA C/NVRTC 编译，但 CUDA Driver 仍需把 PTX JIT 为 SASS。静态 arena、零拷贝内部 view 及 CUDA Session 的一次性分配已在 RTX 3080 生产 HXP 中使用。逐 launch Profiler 已能用 CUDA Event 做按 op 和实际 implementation 归因；最终受扰动 Profile 为 `76.05085 ms GPU / 95.8321 ms wall`，Kernel Event 求和 `63.4391 ms`，与普通稳态基准分开解释。下一步继续扩展通用异步执行，并在桌面 RTX 3070 上核对实际峰值显存。性能工作必须分别记录编译时间、首次加载、fresh-process 首次 `run`、稳态端到端延迟和设备 Event 时间，并包含输入上传和输出回传；当前优化版 cold/warm 中位数为 `57.624464 / 56.823263 ms GPU` 与 `69.403093 / 68.747440 ms wall`，仍需 RTX 3070 实测。
 
 ## v0.3：跨 ISA 与插件化
 

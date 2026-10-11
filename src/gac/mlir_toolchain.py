@@ -7,6 +7,8 @@ subprocess execution only happen when a caller explicitly asks to verify MLIR.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -22,6 +24,17 @@ from .errors import BackendError
 DEFAULT_TIMEOUT_SECONDS = 30.0
 MAX_STDERR_CHARS = 8_192
 _GIT_REVISION_PATTERN = re.compile(r"(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})\Z")
+_PTX_ENTRY_PATTERN = re.compile(r"[A-Za-z_$][A-Za-z0-9_.$]*\Z")
+SM86_NVVM_PIPELINE = (
+    "--gpu-lower-to-nvvm-pipeline="
+    "kernel-bare-ptr-calling-convention=1 "
+    "cubin-triple=nvptx64-nvidia-cuda "
+    "cubin-chip=sm_86 "
+    "cubin-features=+ptx71 "
+    "cubin-format=isa "
+    "opt-level=3 "
+    "allow-pattern-rollback=0"
+)
 
 
 class MlirToolchainError(BackendError):
@@ -34,6 +47,38 @@ class MlirOptNotFoundError(MlirToolchainError):
 
 class MlirVerificationError(MlirToolchainError):
     """``mlir-opt`` rejected a module or produced no verified output."""
+
+
+class MlirPtxLoweringError(MlirToolchainError):
+    """GPU MLIR could not be lowered to a complete SM86 PTX artifact."""
+
+
+@dataclass(frozen=True, slots=True)
+class MlirPtxArtifact:
+    """One verified, single-module SM86 PTX lowering result.
+
+    ``binary_mlir`` is the post-pipeline module containing one ``gpu.binary``
+    object.  ``ptx`` is the decoded textual assembly from that object.  The
+    command is retained verbatim for provenance; its input and output paths
+    point at the temporary files used by this invocation.
+    """
+
+    binary_mlir: str
+    ptx: str
+    source_sha256: str
+    command: tuple[str, ...]
+    mlir_opt_version: str
+    mlir_opt_source_revision: str | None
+    target_chip: str
+    target_features: str
+    ptx_version: str
+    entries: tuple[str, ...]
+
+    @property
+    def lowered_mlir(self) -> str:
+        """Compatibility name for callers that describe binary MLIR as lowered MLIR."""
+
+        return self.binary_mlir
 
 
 def _binary_names() -> tuple[str, ...]:
@@ -312,8 +357,15 @@ def probe_mlir_opt_version(
     timeout_value = _validate_timeout(timeout)
 
     if command is None:
-        executable = discover_mlir_opt(mlir_opt, env=env, llvm_root=llvm_root)
-        base_command = (str(executable),)
+        if use_wsl:
+            if mlir_opt is None:
+                raise MlirOptNotFoundError(
+                    "use_wsl=True requires an explicit Linux mlir_opt path or command"
+                )
+            base_command = _normalize_command((mlir_opt,))
+        else:
+            executable = discover_mlir_opt(mlir_opt, env=env, llvm_root=llvm_root)
+            base_command = (str(executable),)
     else:
         base_command = _normalize_command(command)
     argv = _wrap_tool_command_for_wsl(
@@ -394,8 +446,15 @@ def verify_mlir(
     timeout_value = _validate_timeout(timeout)
 
     if command is None:
-        executable = discover_mlir_opt(mlir_opt, env=env, llvm_root=llvm_root)
-        base_command = (str(executable),)
+        if use_wsl:
+            if mlir_opt is None:
+                raise MlirOptNotFoundError(
+                    "use_wsl=True requires an explicit Linux mlir_opt path or command"
+                )
+            base_command = _normalize_command((mlir_opt,))
+        else:
+            executable = discover_mlir_opt(mlir_opt, env=env, llvm_root=llvm_root)
+            base_command = (str(executable),)
     else:
         base_command = _normalize_command(command)
 
@@ -467,3 +526,349 @@ def verify_mlir(
                 f"mlir-opt produced empty output; stderr:\n{diagnostic}"
             )
         return verified
+
+
+def _validated_expected_ptx_entries(
+    expected_entries: Sequence[str],
+) -> tuple[str, ...]:
+    if isinstance(expected_entries, (str, bytes)):
+        raise TypeError("expected_entries must be a sequence of PTX entry names")
+    try:
+        entries = tuple(expected_entries)
+    except TypeError as exc:
+        raise TypeError("expected_entries must be a sequence of PTX entry names") from exc
+    if not entries:
+        raise ValueError("expected_entries must contain at least one PTX entry name")
+    for entry in entries:
+        if not isinstance(entry, str) or _PTX_ENTRY_PATTERN.fullmatch(entry) is None:
+            raise ValueError(f"invalid PTX entry name: {entry!r}")
+    if len(set(entries)) != len(entries):
+        raise ValueError("expected_entries must not contain duplicates")
+    return entries
+
+
+def _decode_mlir_string_literal(source: str, quote_offset: int) -> tuple[str, int]:
+    """Decode one MLIR string beginning at ``quote_offset``.
+
+    MLIR prints binary strings using two-digit hexadecimal byte escapes (for
+    example ``\\0A``), while quotes and backslashes use the familiar escaped
+    spelling.  PTX is UTF-8 text, so decoding via bytes also rejects malformed
+    or truncated object payloads instead of silently replacing them.
+    """
+
+    if quote_offset >= len(source) or source[quote_offset] != '"':
+        raise ValueError("quote_offset does not point at an MLIR string")
+
+    decoded = bytearray()
+    cursor = quote_offset + 1
+    while cursor < len(source):
+        character = source[cursor]
+        if character == '"':
+            try:
+                return decoded.decode("utf-8"), cursor + 1
+            except UnicodeDecodeError as exc:
+                raise MlirPtxLoweringError(
+                    "gpu.binary assembly is not valid UTF-8 text"
+                ) from exc
+        if character != "\\":
+            if character in "\r\n" or ord(character) < 0x20:
+                raise MlirPtxLoweringError(
+                    "gpu.binary assembly contains an unescaped control character"
+                )
+            decoded.extend(character.encode("utf-8"))
+            cursor += 1
+            continue
+
+        if cursor + 1 >= len(source):
+            raise MlirPtxLoweringError("gpu.binary assembly has a truncated escape")
+        first = source[cursor + 1]
+        if (
+            cursor + 2 < len(source)
+            and first in "0123456789abcdefABCDEF"
+            and source[cursor + 2] in "0123456789abcdefABCDEF"
+        ):
+            decoded.append(int(source[cursor + 1 : cursor + 3], 16))
+            cursor += 3
+            continue
+
+        escapes = {"n": b"\n", "r": b"\r", "t": b"\t", '"': b'"', "\\": b"\\"}
+        replacement = escapes.get(first)
+        if replacement is None:
+            raise MlirPtxLoweringError(
+                f"gpu.binary assembly contains unsupported MLIR escape \\{first}"
+            )
+        decoded.extend(replacement)
+        cursor += 2
+
+    raise MlirPtxLoweringError("gpu.binary assembly string is unterminated")
+
+
+def _extract_assembly_objects(binary_mlir: str) -> tuple[str, ...]:
+    marker = re.compile(r"(?<![A-Za-z0-9_])assembly\s*=\s*\"")
+    objects: list[str] = []
+    for match in marker.finditer(binary_mlir):
+        value, _ = _decode_mlir_string_literal(binary_mlir, match.end() - 1)
+        objects.append(value)
+    return tuple(objects)
+
+
+def _single_ptx_directive(ptx: str, pattern: str, name: str) -> str:
+    values = re.findall(pattern, ptx, flags=re.MULTILINE)
+    if len(values) != 1:
+        raise MlirPtxLoweringError(
+            f"PTX must contain exactly one {name} directive, found {len(values)}"
+        )
+    return values[0]
+
+
+def _validate_and_describe_sm86_ptx(
+    ptx: str, expected_entries: tuple[str, ...]
+) -> tuple[str, tuple[str, ...]]:
+    if any(character not in "\n\r\t" and ord(character) < 0x20 for character in ptx):
+        raise MlirPtxLoweringError("PTX contains an unsupported control character")
+    version = _single_ptx_directive(
+        ptx,
+        r"^[ \t]*\.version[ \t]+([0-9]+(?:\.[0-9]+)?)[ \t]*$",
+        ".version",
+    )
+    if version != "7.1":
+        raise MlirPtxLoweringError(
+            f"PTX version must be exactly 7.1 for the +ptx71 target, got {version!r}"
+        )
+    target = _single_ptx_directive(
+        ptx,
+        r"^[ \t]*\.target[ \t]+([A-Za-z0-9_]+)(?:[ \t]*,[^\r\n]*)?[ \t]*$",
+        ".target",
+    )
+    if target != "sm_86":
+        raise MlirPtxLoweringError(
+            f"PTX target must be exactly sm_86, got {target!r}"
+        )
+    address_size = _single_ptx_directive(
+        ptx,
+        r"^[ \t]*\.address_size[ \t]+([0-9]+)[ \t]*$",
+        ".address_size",
+    )
+    if address_size != "64":
+        raise MlirPtxLoweringError(
+            f"PTX address size must be exactly 64, got {address_size!r}"
+        )
+
+    visible_entries = tuple(
+        re.findall(
+            r"^[ \t]*\.visible[ \t]+\.entry[ \t]+"
+            r"([A-Za-z_$][A-Za-z0-9_.$]*)[ \t]*\(",
+            ptx,
+            flags=re.MULTILINE,
+        )
+    )
+    all_entries = tuple(
+        re.findall(
+            r"^[ \t]*(?:(?:\.visible|\.extern|\.weak)[ \t]+)*"
+            r"\.entry[ \t]+([A-Za-z_$][A-Za-z0-9_.$]*)[ \t]*\(",
+            ptx,
+            flags=re.MULTILINE,
+        )
+    )
+    if len(set(all_entries)) != len(all_entries):
+        raise MlirPtxLoweringError("PTX contains duplicate entry declarations")
+    if set(all_entries) != set(expected_entries):
+        missing = sorted(set(expected_entries) - set(all_entries))
+        unexpected = sorted(set(all_entries) - set(expected_entries))
+        raise MlirPtxLoweringError(
+            "PTX entry set does not match expected_entries; "
+            f"missing={missing}, unexpected={unexpected}"
+        )
+    if set(visible_entries) != set(expected_entries):
+        hidden = sorted(set(expected_entries) - set(visible_entries))
+        raise MlirPtxLoweringError(
+            f"all expected PTX entries must be visible; hidden={hidden}"
+        )
+    return version, all_entries
+
+
+def extract_sm86_ptx(
+    binary_mlir: str, *, expected_entries: Sequence[str]
+) -> str:
+    """Extract and validate one SM86 PTX object from post-lowering MLIR.
+
+    The accepted artifact contains exactly one ``gpu.binary`` and exactly one
+    textual ``assembly`` object.  This intentionally rejects multi-target or
+    partially lowered modules because the runtime contract needs one
+    unambiguous PTX image and an exact kernel ABI.
+    """
+
+    if not isinstance(binary_mlir, str):
+        raise TypeError("binary_mlir must be a string")
+    entries = _validated_expected_ptx_entries(expected_entries)
+    binary_count = len(re.findall(r"\bgpu\.binary[ \t]+@", binary_mlir))
+    if binary_count != 1:
+        raise MlirPtxLoweringError(
+            f"lowered MLIR must contain exactly one gpu.binary, found {binary_count}"
+        )
+    object_count = len(re.findall(r"#gpu\.object\s*<", binary_mlir))
+    if object_count != 1:
+        raise MlirPtxLoweringError(
+            f"gpu.binary must contain exactly one GPU object, found {object_count}"
+        )
+    if re.search(r"\bgpu\.(?:module|func)\b", binary_mlir):
+        raise MlirPtxLoweringError(
+            "lowered MLIR still contains gpu.module or gpu.func operations"
+        )
+    objects = _extract_assembly_objects(binary_mlir)
+    if len(objects) != 1:
+        raise MlirPtxLoweringError(
+            "gpu.binary must contain exactly one textual assembly object, "
+            f"found {len(objects)}"
+        )
+    ptx = objects[0]
+    _validate_and_describe_sm86_ptx(ptx, entries)
+    return ptx
+
+
+def lower_gpu_mlir_to_ptx(
+    source: str,
+    *,
+    expected_entries: Sequence[str],
+    mlir_opt: str | os.PathLike[str] | None = None,
+    command: Sequence[str | os.PathLike[str]] | None = None,
+    use_wsl: bool = False,
+    wsl_distribution: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    env: Mapping[str, str] | None = None,
+    llvm_root: str | os.PathLike[str] | None = None,
+) -> MlirPtxArtifact:
+    """Lower one explicit GPU module through NVVM to textual SM86 PTX.
+
+    The input must already contain explicit GPU parallelism.  Stock MLIR's
+    ``gpu-lower-to-nvvm-pipeline`` does not tile or map tensor/linalg programs.
+    The fixed pipeline emits PTX ISA 7.1 for RTX 30-series compatibility and
+    uses a bare-pointer kernel ABI suitable for CUDA Driver/CuPy loading.
+    """
+
+    if not isinstance(source, str):
+        raise TypeError("source must be a string")
+    if not source.strip():
+        raise ValueError("source must be non-empty")
+    entries = _validated_expected_ptx_entries(expected_entries)
+    if command is not None and mlir_opt is not None:
+        raise ValueError("command and mlir_opt are mutually exclusive")
+    timeout_value = _validate_timeout(timeout)
+
+    if command is None:
+        if use_wsl:
+            if mlir_opt is None:
+                raise MlirOptNotFoundError(
+                    "use_wsl=True requires an explicit Linux mlir_opt path or command"
+                )
+            base_command = _normalize_command((mlir_opt,))
+        else:
+            executable = discover_mlir_opt(mlir_opt, env=env, llvm_root=llvm_root)
+            base_command = (str(executable),)
+    else:
+        base_command = _normalize_command(command)
+
+    version = probe_mlir_opt_version(
+        command=base_command,
+        use_wsl=use_wsl,
+        wsl_distribution=wsl_distribution,
+        timeout=timeout_value,
+        env=env,
+    )
+    source_revision = None
+    if len(base_command) == 1:
+        source_revision = probe_mlir_opt_source_revision(
+            base_command[0],
+            use_wsl=use_wsl,
+            wsl_distribution=wsl_distribution,
+            timeout=timeout_value,
+            env=env,
+        )
+
+    run_environment = None if env is None else dict(env)
+    with tempfile.TemporaryDirectory(prefix="gac-mlir-ptx-") as directory:
+        root = Path(directory)
+        input_path = root / "gpu.mlir"
+        output_path = root / "binary.mlir"
+        input_path.write_text(source, encoding="utf-8", newline="\n")
+
+        input_argument = str(input_path)
+        output_argument = str(output_path)
+        if use_wsl:
+            input_argument = _path_for_wsl(input_path)
+            output_argument = _path_for_wsl(output_path)
+        argv = _wrap_tool_command_for_wsl(
+            base_command,
+            use_wsl=use_wsl,
+            wsl_distribution=wsl_distribution,
+        )
+        argv.extend(
+            (
+                input_argument,
+                SM86_NVVM_PIPELINE,
+                "--verify-each",
+                "-o",
+                output_argument,
+            )
+        )
+
+        try:
+            completed = subprocess.run(
+                argv,
+                shell=False,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=timeout_value,
+                env=run_environment,
+                check=False,
+            )
+        except subprocess.TimeoutExpired as exc:
+            diagnostic = _bounded_stderr(exc.stderr)
+            raise MlirPtxLoweringError(
+                f"MLIR-to-PTX lowering timed out after {timeout_value:g} seconds; "
+                f"stderr:\n{diagnostic}"
+            ) from exc
+        except OSError as exc:
+            raise MlirPtxLoweringError(
+                f"failed to launch MLIR-to-PTX lowering: {exc}"
+            ) from exc
+
+        if completed.returncode != 0:
+            diagnostic = _bounded_stderr(completed.stderr)
+            raise MlirPtxLoweringError(
+                "MLIR-to-PTX lowering exited with status "
+                f"{completed.returncode}; stderr:\n{diagnostic}"
+            )
+
+        try:
+            binary_mlir = output_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            diagnostic = _bounded_stderr(completed.stderr)
+            raise MlirPtxLoweringError(
+                "MLIR-to-PTX lowering did not create a readable output file; "
+                f"stderr:\n{diagnostic}"
+            ) from exc
+        if not binary_mlir.strip():
+            diagnostic = _bounded_stderr(completed.stderr)
+            raise MlirPtxLoweringError(
+                f"MLIR-to-PTX lowering produced empty output; stderr:\n{diagnostic}"
+            )
+
+        ptx = extract_sm86_ptx(binary_mlir, expected_entries=entries)
+        ptx_version, actual_entries = _validate_and_describe_sm86_ptx(ptx, entries)
+        executed_command = tuple(argv)
+
+    return MlirPtxArtifact(
+        binary_mlir=binary_mlir,
+        ptx=ptx,
+        source_sha256=hashlib.sha256(source.encode("utf-8")).hexdigest(),
+        command=executed_command,
+        mlir_opt_version=version,
+        mlir_opt_source_revision=source_revision,
+        target_chip="sm_86",
+        target_features="+ptx71",
+        ptx_version=ptx_version,
+        entries=actual_entries,
+    )

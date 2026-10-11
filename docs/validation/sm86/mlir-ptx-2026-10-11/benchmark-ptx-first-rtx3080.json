@@ -1,0 +1,1405 @@
+{
+  "boundary": "production-shape FFN fragment; not full BEVFormer inference",
+  "comparison": {
+    "all_ptx_minus_cublas_hybrid_us": {
+      "max": 1072.1074867248535,
+      "median": 891.289587020874,
+      "min": 880.1920318603516,
+      "p10": 886.6835079193115,
+      "p90": 962.39412689209,
+      "samples": [
+        1002.557430267334,
+        957.9315376281738,
+        882.8301048278809,
+        880.1920318603516,
+        888.1152153015137,
+        889.6921730041504,
+        891.596794128418,
+        890.7571220397949,
+        890.9823799133301,
+        889.303035736084,
+        893.6882972717285,
+        887.1116638183594,
+        1072.1074867248535,
+        887.1731376647949,
+        897.7202987670898,
+        908.2879829406738,
+        904.006404876709,
+        893.460521697998,
+        898.8672065734863,
+        890.7967567443848
+      ]
+    },
+    "all_ptx_slowdown_vs_cublas_hybrid": 5.265347983640453,
+    "all_ptx_throughput_relative_to_cublas_hybrid": 0.1899209706760163,
+    "cublas_hybrid_speedup_over_all_ptx": 5.265347983640453,
+    "method": "paired-interleaved-order-balanced",
+    "slowdown_by_order": {
+      "hybrid-first": {
+        "max": 5.596049808780092,
+        "median": 5.296600962594901,
+        "min": 5.254891417195262,
+        "p10": 5.2567686293676505,
+        "p90": 5.415501835749061,
+        "samples": [
+          5.596049808780092,
+          5.254891417195262,
+          5.312289177789334,
+          5.327761336767644,
+          5.283614409857815,
+          5.293814164595933,
+          5.256977208497916,
+          5.395440949856725,
+          5.297704960928214,
+          5.295496964261588
+        ]
+      },
+      "ptx-first": {
+        "max": 6.0403424246828985,
+        "median": 5.234279415159897,
+        "min": 5.129016986377624,
+        "p10": 5.162602119233331,
+        "p90": 5.739944100545692,
+        "samples": [
+          5.706566508974892,
+          5.129016986377624,
+          5.236518363823776,
+          5.2320404664960165,
+          5.196084097496038,
+          5.241195029325387,
+          6.0403424246828985,
+          5.166333800661743,
+          5.179221577620958,
+          5.246323749042074
+        ]
+      }
+    },
+    "slowdown_samples": {
+      "max": 6.0403424246828985,
+      "median": 5.270295809177865,
+      "min": 5.129016986377624,
+      "p10": 5.177932799925037,
+      "p90": 5.607101478799572,
+      "samples": [
+        5.706566508974892,
+        5.596049808780092,
+        5.129016986377624,
+        5.254891417195262,
+        5.236518363823776,
+        5.312289177789334,
+        5.2320404664960165,
+        5.327761336767644,
+        5.196084097496038,
+        5.283614409857815,
+        5.241195029325387,
+        5.293814164595933,
+        6.0403424246828985,
+        5.256977208497916,
+        5.166333800661743,
+        5.395440949856725,
+        5.179221577620958,
+        5.297704960928214,
+        5.246323749042074,
+        5.295496964261588
+      ]
+    }
+  },
+  "device": {
+    "compiler_backend": "mlir-ptx-sm86",
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cupy_version": "13.6.0",
+    "device_id": 0,
+    "driver_version": 13000,
+    "matmul_backend": {
+      "cublas_launch_count": 0,
+      "nvrtc_launch_count": 0,
+      "precision": "float32",
+      "selected": "mlir-generated-ptx"
+    },
+    "memory_plan": {
+      "planned_device_bytes": 13853696,
+      "required_device_bytes_upper_bound": 13853696
+    },
+    "multiprocessor_count": 68,
+    "name": "NVIDIA GeForce RTX 3080",
+    "runtime_abi_version": 1,
+    "runtime_dispatch_source": "mlir-generated-ptx",
+    "runtime_version": 12090,
+    "supported_target": "cuda-sm86",
+    "total_memory_bytes": 10354753536
+  },
+  "git": {
+    "branch": null,
+    "commit": null,
+    "dirty": null
+  },
+  "kind": "bevformer-ffn-mlir-all-ptx-vs-cublas-hybrid",
+  "mlir_all_ptx": {
+    "compile_or_load_ms": 874.399384483695,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 7.152557373046875e-07,
+      "max_rel_error_with_1e-3_floor": 0.0001721782609820366,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 1284.8127746582031,
+      "median": 1101.8137741088867,
+      "min": 1087.0579528808594,
+      "p10": 1095.3912506103516,
+      "p90": 1171.277847290039,
+      "samples": [
+        1215.5699157714844,
+        1166.3565063476562,
+        1096.6413116455078,
+        1087.0579528808594,
+        1097.7484893798828,
+        1096.0076904296875,
+        1102.2745513916016,
+        1096.5811157226562,
+        1103.3190155029297,
+        1096.9087982177734,
+        1104.4044494628906,
+        1093.7139129638672,
+        1284.8127746582031,
+        1095.577621459961,
+        1113.1903839111328,
+        1114.9311828613281,
+        1120.316162109375,
+        1101.3529968261719,
+        1110.5484771728516,
+        1098.1759643554688
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 1285.26038,
+      "median": 1102.08853,
+      "min": 1087.33084,
+      "p10": 1095.90678,
+      "p90": 1171.5599020000002,
+      "samples": [
+        1216.03414,
+        1166.61832,
+        1096.9468399999998,
+        1087.33084,
+        1097.98586,
+        1096.3446000000001,
+        1102.5383199999999,
+        1097.00674,
+        1103.65406,
+        1097.2165,
+        1104.6961999999999,
+        1093.93668,
+        1285.26038,
+        1096.12568,
+        1113.5976799999999,
+        1115.15876,
+        1120.60152,
+        1101.6387399999999,
+        1110.85742,
+        1098.51204
+      ]
+    },
+    "ffn_calls_per_second": 907.5943898130784,
+    "first_public_run": {
+      "gpu_stream_us": 2115.583896636963,
+      "wall_us": 4378.693178296089
+    },
+    "lowering": {
+      "artifact_kind": "official-mlir-gpu-nvvm-ptx",
+      "compiler_backend": "mlir-ptx-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "dispatch_count": 3,
+      "executable": true,
+      "executed_artifact": "textual-ptx",
+      "integrity": {
+        "algorithm": "sha256",
+        "binary_mlir_sha256": "4b8b1b7452b49724d5d547d76629ed7d088d947284c392aa0b681713b470e1a5",
+        "gpu_mlir_sha256": "4cf92b08dd10c973fb2e143d1cfd4fe70c84661a829fd764e38c85dd87662942",
+        "integrity_sha256": "cd33c22319e767b887a009b973378a46cd307046fb0c39d82759d00c2e3b9152",
+        "launch_plan_sha256": "b8ff5c987e534764ca148f43c2c96e3c4da254347dc13a2ca019d9e6b6d8ced1",
+        "ptx_sha256": "5da8d168e2a1c042882c78d9ace1d33d9f9cacbba2d949cc05a29991d237f4c3",
+        "tensor_mlir_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+      },
+      "launches": [
+        {
+          "abi_version": 1,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            5000,
+            1,
+            1
+          ],
+          "implementation": "official-mlir-gpu-nvvm-ptx",
+          "inputs": [
+            "query",
+            "fc1_weight",
+            "fc1_bias"
+          ],
+          "kind": "mlir-ptx-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul",
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_mlir_ptx_fc1_bias_relu_f32"
+        },
+        {
+          "abi_version": 1,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            2500,
+            1,
+            1
+          ],
+          "implementation": "official-mlir-gpu-nvvm-ptx",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "mlir-ptx-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_mlir_ptx_fc2_f32"
+        },
+        {
+          "abi_version": 1,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            2500,
+            1,
+            1
+          ],
+          "implementation": "official-mlir-gpu-nvvm-ptx",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "mlir-ptx-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_mlir_ptx_bias_residual_layer_norm_f32"
+        }
+      ],
+      "lowering_stage": "ptx",
+      "matmul_lowering": "mlir-gpu-serial-f32",
+      "mlir_source_executed": false,
+      "mlir_source_lowered": true,
+      "mlir_source_role": "lowering-input-for-executed-ptx",
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "accumulator": "float32",
+        "storage": "float32",
+        "tensor_core_policy": "disabled-in-correctness-baseline"
+      },
+      "profile": {
+        "channels": 256,
+        "hidden_channels": 512,
+        "query_shape": [
+          1,
+          2500,
+          256
+        ],
+        "rows": 2500
+      },
+      "runtime_abi_version": 1,
+      "runtime_dispatch_source": "validated-ptx-launch-records",
+      "runtime_requirements": [
+        "CUDA Driver",
+        "CuPy"
+      ],
+      "schema_version": 1,
+      "target": "mlir-ptx-sm86",
+      "target_intent": "cuda-sm86",
+      "toolchain": {
+        "chip": "sm_86",
+        "command": [
+          "wsl.exe",
+          "-d",
+          "Ubuntu-24.04",
+          "--",
+          "/home/thomas/gac-mlir-build-lf/bin/mlir-opt",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-rg9hrwgs/gpu.mlir",
+          "--gpu-lower-to-nvvm-pipeline=kernel-bare-ptr-calling-convention=1 cubin-triple=nvptx64-nvidia-cuda cubin-chip=sm_86 cubin-features=+ptx71 cubin-format=isa opt-level=3 allow-pattern-rollback=0",
+          "--verify-each",
+          "-o",
+          "/mnt/c/Users/Thomas/AppData/Local/Temp/gac-mlir-ptx-rg9hrwgs/binary.mlir"
+        ],
+        "entries": [
+          "gac_mlir_ptx_fc1_bias_relu_f32",
+          "gac_mlir_ptx_fc2_f32",
+          "gac_mlir_ptx_bias_residual_layer_norm_f32"
+        ],
+        "features": "+ptx71",
+        "llvm_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+        "name": "mlir-opt",
+        "ptx_version": "7.1",
+        "source_sha256": "4cf92b08dd10c973fb2e143d1cfd4fe70c84661a829fd764e38c85dd87662942",
+        "version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build."
+      }
+    },
+    "preparation": "verified-precompiled-artifact",
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 3650.931641459465,
+      "median": 2545.027993619442,
+      "min": 2491.0103529691696,
+      "p10": 2506.863698363304,
+      "p90": 2600.2051308751106,
+      "samples": [
+        2524.5919823646545,
+        3650.931641459465,
+        2528.935670852661,
+        2579.914405941963,
+        2536.572515964508,
+        2586.07417345047,
+        2531.491219997406,
+        2560.3119283914566,
+        2499.520778656006,
+        2547.6813316345215,
+        2491.0103529691696,
+        2542.3746556043625,
+        2503.3801794052124,
+        2565.48635661602,
+        2522.0531970262527,
+        2581.9502770900726,
+        2522.449940443039,
+        2567.637711763382,
+        2507.2507560253143,
+        2556.348219513893,
+        2509.7019970417023,
+        2559.548243880272,
+        2519.184723496437,
+        2572.2794234752655,
+        2510.3725492954254,
+        2551.4494627714157,
+        2520.0657546520233,
+        2598.823979496956,
+        2612.6354932785034,
+        2673.3819395303726
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 1648.9280462265015,
+      "median": 1622.655987739563,
+      "min": 1612.4160289764404,
+      "p10": 1613.6480331420898,
+      "p90": 1645.9743738174438,
+      "samples": [
+        1636.9279623031616,
+        1646.7519998550415,
+        1634.6559524536133,
+        1640.28799533844,
+        1639.9680376052856,
+        1633.8239908218384,
+        1645.8879709243774,
+        1613.6640310287476,
+        1618.9759969711304,
+        1626.207947731018,
+        1612.4160289764404,
+        1613.5040521621704,
+        1612.9920482635498,
+        1618.2080507278442,
+        1633.7920427322388,
+        1617.184042930603,
+        1620.192050933838,
+        1623.9999532699585,
+        1620.5439567565918,
+        1614.400029182434,
+        1622.3360300064087,
+        1622.5919723510742,
+        1626.3359785079956,
+        1622.655987739563,
+        1622.655987739563,
+        1616.7680025100708,
+        1618.623971939087,
+        1624.9279975891113,
+        1648.9280462265015,
+        1648.4479904174805
+      ]
+    },
+    "session_setup_ms": 364.954212680459
+  },
+  "mlir_cublas_hybrid": {
+    "compile_ms": 464.9504367262125,
+    "correctness": {
+      "allclose": true,
+      "atol": 1e-05,
+      "max_abs_error": 9.5367431640625e-07,
+      "max_rel_error_with_1e-3_floor": 0.00011775409802794456,
+      "rtol": 0.0001
+    },
+    "device_resident_pipeline_gpu_us": {
+      "max": 216.30975723266602,
+      "median": 209.02912139892578,
+      "min": 205.82399368286133,
+      "p10": 206.57357597351074,
+      "p90": 213.97709465026855,
+      "samples": [
+        213.0124855041504,
+        208.42496871948242,
+        213.81120681762695,
+        206.8659210205078,
+        209.63327407836914,
+        206.3155174255371,
+        210.6777572631836,
+        205.82399368286133,
+        212.3366355895996,
+        207.60576248168945,
+        210.7161521911621,
+        206.6022491455078,
+        212.7052879333496,
+        208.40448379516602,
+        215.47008514404297,
+        206.6431999206543,
+        216.30975723266602,
+        207.89247512817383,
+        211.68127059936523,
+        207.37920761108398
+      ]
+    },
+    "device_resident_synchronized_wall_us": {
+      "max": 216.59964,
+      "median": 209.27606,
+      "min": 206.04268,
+      "p10": 206.793626,
+      "p90": 214.23330599999997,
+      "samples": [
+        213.32746,
+        208.66416,
+        214.06723999999997,
+        207.09452000000002,
+        209.88796,
+        206.5352,
+        211.23684,
+        206.04268,
+        212.61991999999998,
+        207.85438,
+        210.93306,
+        206.82234,
+        213.02669999999998,
+        208.62878,
+        215.7279,
+        206.87684000000002,
+        216.59964,
+        208.2356,
+        211.94616000000002,
+        207.58748
+      ]
+    },
+    "ffn_calls_per_second": 4784.022404665473,
+    "first_public_run": {
+      "gpu_stream_us": 50210.8154296875,
+      "wall_us": 52289.944142103195
+    },
+    "lowering": {
+      "artifact_kind": "mlir-abi-manifest-with-validated-runtime-call-plan",
+      "calls": [
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "query",
+            "fc1_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc1_matmul"
+          ],
+          "output": "fc1_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 256,
+            "m": 2500,
+            "n": 512,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear"
+          ],
+          "symbol": "gac_cublas_fc1_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "aliases_input": 0,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            5000,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc1_mm",
+            "fc1_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fused_fc1_bias_add_relu"
+          ],
+          "output": "activated",
+          "parameters": {
+            "channels": 512,
+            "elements": 1280000,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+          ],
+          "symbol": "gac_bias_relu_inplace_f32"
+        },
+        {
+          "abi_version": 2,
+          "dtype": "float32",
+          "implementation": "cupy-cublas",
+          "inputs": [
+            "activated",
+            "fc2_weight"
+          ],
+          "kind": "matmul",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_matmul"
+          ],
+          "output": "fc2_mm",
+          "parameters": {
+            "alpha": 1.0,
+            "beta": 0.0,
+            "k": 512,
+            "m": 2500,
+            "n": 256,
+            "transpose_a": false,
+            "transpose_b": false
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear"
+          ],
+          "symbol": "gac_cublas_fc2_matmul_f32"
+        },
+        {
+          "abi_version": 2,
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "dtype": "float32",
+          "grid": [
+            2500,
+            1,
+            1
+          ],
+          "implementation": "nvrtc-cuda",
+          "inputs": [
+            "fc2_mm",
+            "fc2_bias",
+            "query",
+            "norm_weight",
+            "norm_bias"
+          ],
+          "kind": "fused-kernel",
+          "layout": "contiguous",
+          "node_ids": [
+            "fc2_bias_add",
+            "residual_add",
+            "post_layer_norm"
+          ],
+          "output": "output",
+          "parameters": {
+            "channels": 256,
+            "elements": 640000,
+            "epsilon": 9.999999747378752e-06,
+            "rows": 2500
+          },
+          "source_nodes": [
+            "mmcv.cnn.bricks.transformer.FFN.layers[1].Linear",
+            "mmcv.cnn.bricks.transformer.FFN.forward.identity",
+            "BEVFormerLayer.operation_order.norm_after_ffn"
+          ],
+          "symbol": "gac_bias_residual_layer_norm_f32"
+        }
+      ],
+      "compiler_backend": "mlir-cuda-sm86",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "dialects": [
+        "builtin",
+        "func",
+        "memref"
+      ],
+      "executable": true,
+      "inputs": {
+        "query": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            2500,
+            256
+          ]
+        }
+      },
+      "integrity": {
+        "algorithm": "sha256",
+        "call_plan_sha256": "315fbb23f656f3476f6dba1643f320afb3811abe1c0ecefb924364c1b7f938b8",
+        "integrity_sha256": "42bd41083a0d37f36d74a665fe2a56ca51c1cdd1b37d60f1711fc894dfa2b00f",
+        "kernel_source_sha256": "aef915793c62de5616000c7aa361226ab3e65e4dd376671c03e6a0d14ee5c62b",
+        "mlir_source_sha256": "8aed1777c7401033c89e5e7fb840b6bdc45332c6e960a733e38741575df178af",
+        "tensor_source_sha256": "e6f76274ba4f2e2bad71e13f2e02677c92ed17219ab25f2e1eae2e6683335b3d"
+      },
+      "integrity_sha256": "42bd41083a0d37f36d74a665fe2a56ca51c1cdd1b37d60f1711fc894dfa2b00f",
+      "integrity_validation": "deterministic recompilation and exact artifact comparison before CUDA access",
+      "kernel_fusions": [
+        "bias+relu",
+        "bias+residual+layernorm"
+      ],
+      "layer_norm_lowering": "one CUDA block per row with block reduction",
+      "lowering_stage": "runtime-call-plan",
+      "matmul_lowering": "cupy-cublas",
+      "mlir_source_executed": false,
+      "mlir_source_role": "verifiable-abi-manifest",
+      "name": "bevformer_tiny_ffn",
+      "outputs": {
+        "output": {
+          "dtype": "float32",
+          "layout": "contiguous",
+          "shape": [
+            1,
+            2500,
+            256
+          ]
+        }
+      },
+      "pass_reports": [
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "fc1",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 14
+          },
+          "name": "shape-inference"
+        },
+        {
+          "changed": false,
+          "details": {
+            "created_constants": [],
+            "folded_nodes": []
+          },
+          "name": "constant-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "conv-batchnorm-folding"
+        },
+        {
+          "changed": false,
+          "details": {
+            "fusions": []
+          },
+          "name": "matmul-bias-gelu-fusion"
+        },
+        {
+          "changed": true,
+          "details": {
+            "fusions": [
+              {
+                "fused_node": "fused_fc1_bias_add_relu",
+                "source_nodes": [
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].Linear",
+                  "mmcv.cnn.bricks.transformer.FFN.layers[0].ReLU"
+                ]
+              }
+            ]
+          },
+          "name": "add-relu-fusion"
+        },
+        {
+          "changed": false,
+          "details": {
+            "removed_constants": [],
+            "removed_nodes": []
+          },
+          "name": "dead-code-elimination"
+        },
+        {
+          "changed": false,
+          "details": {
+            "inferred_values": [
+              "fc1_mm",
+              "activated",
+              "fc2_mm",
+              "projected",
+              "ffn_output",
+              "output"
+            ],
+            "value_count": 13
+          },
+          "name": "shape-inference"
+        }
+      ],
+      "precision": {
+        "cublas_compute_policy": "runtime-default",
+        "storage": "float32",
+        "tensor_core_policy": "not-forced-by-compiler"
+      },
+      "runtime_abi_version": 2,
+      "runtime_dispatch_source": "validated-call-records",
+      "runtime_requirements": [
+        "CUDA",
+        "cuBLAS",
+        "NVRTC",
+        "CuPy"
+      ],
+      "schema_version": 2,
+      "target": "mlir-cuda-sm86",
+      "target_intent": "cuda-sm86"
+    },
+    "public_run_h2d_compute_d2h_wall_us": {
+      "max": 2054.1921257972717,
+      "median": 1872.9111179709435,
+      "min": 1750.4673451185226,
+      "p10": 1778.75068038702,
+      "p90": 1998.068392276764,
+      "samples": [
+        1764.4427716732025,
+        1820.715144276619,
+        1761.1607909202576,
+        1808.3453178405762,
+        1828.4395337104797,
+        1811.8806183338165,
+        1750.4673451185226,
+        1900.8684903383255,
+        1910.6213003396988,
+        1923.760399222374,
+        1851.5177071094513,
+        2010.0194960832596,
+        1891.5645778179169,
+        1991.2589341402054,
+        1834.0963870286942,
+        1901.3751298189163,
+        1841.4221704006195,
+        2054.1921257972717,
+        1860.2032214403152,
+        1987.498253583908,
+        1828.0837684869766,
+        1998.00543487072,
+        1885.741949081421,
+        1943.4522837400436,
+        1885.6190145015717,
+        1908.6003303527832,
+        1815.0676041841507,
+        1998.63500893116,
+        1780.3404480218887,
+        1794.7778105735779
+      ]
+    },
+    "public_run_h2d_compute_gpu_us": {
+      "max": 1021.8240022659302,
+      "median": 904.2400121688843,
+      "min": 857.0560216903687,
+      "p10": 863.0240082740784,
+      "p90": 1003.823983669281,
+      "samples": [
+        866.4640188217163,
+        872.5119829177856,
+        857.0560216903687,
+        858.7200045585632,
+        898.6560106277466,
+        873.8880157470703,
+        859.1359853744507,
+        933.5359930992126,
+        1003.3919811248779,
+        972.4159836769104,
+        919.871985912323,
+        924.7679710388184,
+        900.4480242729187,
+        1013.152003288269,
+        919.1039800643921,
+        916.8959856033325,
+        925.7919788360596,
+        1021.8240022659302,
+        893.343985080719,
+        998.848021030426,
+        887.9039883613586,
+        993.503987789154,
+        918.1119799613953,
+        892.8639888763428,
+        904.3840169906616,
+        904.0960073471069,
+        870.2080249786377,
+        1007.7120065689087,
+        876.9919872283936,
+        863.4560108184814
+      ]
+    },
+    "session_setup_ms": 435.95876172184944
+  },
+  "protocol": {
+    "atol": 1e-05,
+    "initial_order": "ptx-first",
+    "iterations_per_repeat": 50,
+    "numpy_reference_ms": 146.54483273625374,
+    "order_reversed_after_each_repeat": true,
+    "public_samples": 30,
+    "repeats": 20,
+    "resident_inputs_and_weights": true,
+    "resident_query": {
+      "dtype": "float32",
+      "name": "query",
+      "nbytes": 2560000,
+      "sha256": "2a18848cb3781ef4f398fb32b88a6d6c04089a7295ee8af95ef4d863991fa257",
+      "shape": [
+        1,
+        2500,
+        256
+      ]
+    },
+    "rtol": 0.0001,
+    "sessions_co_resident": true,
+    "warmup": 20
+  },
+  "repeat_samples": [
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 213.0124855041504,
+        "synchronized_wall_us": 213.32746
+      },
+      "mlir_ptx": {
+        "gpu_us": 1215.5699157714844,
+        "synchronized_wall_us": 1216.03414
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 1
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 208.42496871948242,
+        "synchronized_wall_us": 208.66416
+      },
+      "mlir_ptx": {
+        "gpu_us": 1166.3565063476562,
+        "synchronized_wall_us": 1166.61832
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 2
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 213.81120681762695,
+        "synchronized_wall_us": 214.06723999999997
+      },
+      "mlir_ptx": {
+        "gpu_us": 1096.6413116455078,
+        "synchronized_wall_us": 1096.9468399999998
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 3
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 206.8659210205078,
+        "synchronized_wall_us": 207.09452000000002
+      },
+      "mlir_ptx": {
+        "gpu_us": 1087.0579528808594,
+        "synchronized_wall_us": 1087.33084
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 4
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 209.63327407836914,
+        "synchronized_wall_us": 209.88796
+      },
+      "mlir_ptx": {
+        "gpu_us": 1097.7484893798828,
+        "synchronized_wall_us": 1097.98586
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 5
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 206.3155174255371,
+        "synchronized_wall_us": 206.5352
+      },
+      "mlir_ptx": {
+        "gpu_us": 1096.0076904296875,
+        "synchronized_wall_us": 1096.3446000000001
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 6
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 210.6777572631836,
+        "synchronized_wall_us": 211.23684
+      },
+      "mlir_ptx": {
+        "gpu_us": 1102.2745513916016,
+        "synchronized_wall_us": 1102.5383199999999
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 7
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 205.82399368286133,
+        "synchronized_wall_us": 206.04268
+      },
+      "mlir_ptx": {
+        "gpu_us": 1096.5811157226562,
+        "synchronized_wall_us": 1097.00674
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 8
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 212.3366355895996,
+        "synchronized_wall_us": 212.61991999999998
+      },
+      "mlir_ptx": {
+        "gpu_us": 1103.3190155029297,
+        "synchronized_wall_us": 1103.65406
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 9
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 207.60576248168945,
+        "synchronized_wall_us": 207.85438
+      },
+      "mlir_ptx": {
+        "gpu_us": 1096.9087982177734,
+        "synchronized_wall_us": 1097.2165
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 10
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 210.7161521911621,
+        "synchronized_wall_us": 210.93306
+      },
+      "mlir_ptx": {
+        "gpu_us": 1104.4044494628906,
+        "synchronized_wall_us": 1104.6961999999999
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 11
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 206.6022491455078,
+        "synchronized_wall_us": 206.82234
+      },
+      "mlir_ptx": {
+        "gpu_us": 1093.7139129638672,
+        "synchronized_wall_us": 1093.93668
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 12
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 212.7052879333496,
+        "synchronized_wall_us": 213.02669999999998
+      },
+      "mlir_ptx": {
+        "gpu_us": 1284.8127746582031,
+        "synchronized_wall_us": 1285.26038
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 13
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 208.40448379516602,
+        "synchronized_wall_us": 208.62878
+      },
+      "mlir_ptx": {
+        "gpu_us": 1095.577621459961,
+        "synchronized_wall_us": 1096.12568
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 14
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 215.47008514404297,
+        "synchronized_wall_us": 215.7279
+      },
+      "mlir_ptx": {
+        "gpu_us": 1113.1903839111328,
+        "synchronized_wall_us": 1113.5976799999999
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 15
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 206.6431999206543,
+        "synchronized_wall_us": 206.87684000000002
+      },
+      "mlir_ptx": {
+        "gpu_us": 1114.9311828613281,
+        "synchronized_wall_us": 1115.15876
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 16
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 216.30975723266602,
+        "synchronized_wall_us": 216.59964
+      },
+      "mlir_ptx": {
+        "gpu_us": 1120.316162109375,
+        "synchronized_wall_us": 1120.60152
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 17
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 207.89247512817383,
+        "synchronized_wall_us": 208.2356
+      },
+      "mlir_ptx": {
+        "gpu_us": 1101.3529968261719,
+        "synchronized_wall_us": 1101.6387399999999
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 18
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 211.68127059936523,
+        "synchronized_wall_us": 211.94616000000002
+      },
+      "mlir_ptx": {
+        "gpu_us": 1110.5484771728516,
+        "synchronized_wall_us": 1110.85742
+      },
+      "order": [
+        "mlir_ptx",
+        "mlir_cublas_hybrid"
+      ],
+      "repeat": 19
+    },
+    {
+      "mlir_cublas_hybrid": {
+        "gpu_us": 207.37920761108398,
+        "synchronized_wall_us": 207.58748
+      },
+      "mlir_ptx": {
+        "gpu_us": 1098.1759643554688,
+        "synchronized_wall_us": 1098.51204
+      },
+      "order": [
+        "mlir_cublas_hybrid",
+        "mlir_ptx"
+      ],
+      "repeat": 20
+    }
+  ],
+  "schema_version": 1,
+  "scope": "one FP32 BEVFormer FFN [1,2500,256] -> 512 -> 256",
+  "software": {
+    "executable": "/root/miniconda3/envs/gac-sm86/bin/python",
+    "numpy": "2.4.6",
+    "platform": "Linux-5.4.0-216-generic-x86_64-with-glibc2.35",
+    "python": "3.11.17"
+  },
+  "source_sha256": {
+    "src/gac/__init__.py": "99552f0078dd1647346876b05c7d77c9ebbafdc1b72fd3a0a23c6dc57cabdb34",
+    "src/gac/backends/__init__.py": "20b6ccb099b23fb0718793a7601f647c11f1e9d5b64586534d41833befc59f69",
+    "src/gac/backends/cuda.py": "657fce71f51bffe64030fcc047f4a80c0728f0cdefdd6a2556a0f50e3fa604d4",
+    "src/gac/backends/mlir.py": "8c6c8f0b0d60b2e6f80e15c081874dfe3f064d0b99b380b61f9c33a749b3238a",
+    "src/gac/backends/mlir_cuda.py": "c0b9cfe6cbc113b23e671dd43526a01509ed7cc4be4834fdd18c1da68e540b3f",
+    "src/gac/backends/mlir_ptx.py": "4c6a26d80a644c05c82eb4018ac59bb541792c3773bd5e4cc420eb4a9dd71a92",
+    "src/gac/bevformer.py": "a4b0844beab47c702b8dbaac101f1af217e9ebf76ccb78277844841acb5a204a",
+    "src/gac/bevformer_cold_pipeline.py": "95e2cf7b9d6805e670e692a66935cdae93fe6d7aed03f6a234147294184154a8",
+    "src/gac/bevformer_decoder.py": "431f1635ae68f0f3eb774762ead1221908ffafe92e7825e7aae806d944f767a2",
+    "src/gac/bevformer_decoder_layer.py": "4e3d69d0a91b3b6056b5f5f9257ccd21f51d66225b035eb970428fd86766964c",
+    "src/gac/bevformer_decoder_pipeline.py": "286200059703ad31e59bf6bab243f1223bdae63b9c80c38a2e53ce2568d88766",
+    "src/gac/bevformer_decoder_self.py": "2156811507a65cecfe2d2b7b74cb0c4f7165bb607c6d420ff02fb73ce2812058",
+    "src/gac/bevformer_decoder_stack.py": "90e8c4be0fbdf0daa640c4c7f9b3efe25346bb2e4e09c4b0c678c2409fe977d6",
+    "src/gac/bevformer_detection_head.py": "ce3a24909f5049a7b32a5b4b94dc88026998ce1c31e942f4911d029e47a880f0",
+    "src/gac/bevformer_detection_stack.py": "e0c335408ece1ab1c1c173d4ffcc6800556db4c2975ae2172fd6c371eb765e93",
+    "src/gac/bevformer_encoder.py": "71a288ced15115b1e59f2ca7c9013456d100befda3b47726d1de20f9195818cc",
+    "src/gac/bevformer_encoder_inputs.py": "cd395ae0f69e37d8e58a0cdf41e27bad3a2111146009b5be4667cc385c1d86c0",
+    "src/gac/bevformer_encoder_layer.py": "36b0e4554bd3c5c1e9d8ae0686a2efcc4315b7722e8691c34a6910a3a82e8e81",
+    "src/gac/bevformer_encoder_pipeline.py": "4469274c64a5e51dcad7307f722745f97148b3fadfe804a2fb0bbc4a9050723e",
+    "src/gac/bevformer_encoder_stack.py": "4ce5eea763ca4ce1e83cc7a2ddc6015fe55bf7006787ebb75c03b7ecf2423f26",
+    "src/gac/bevformer_feature_prep.py": "e2d2df573ae0063348cb2648e849c0b20ca4a56ef8eb789660d63601dcb8b7d7",
+    "src/gac/bevformer_ffn.py": "3810a253ceb67882bac9fef12568fc7565a0ca5af512471fce8d6bfb41344c68",
+    "src/gac/bevformer_geometry.py": "a651dd3886b5b64baae413e3ca618ea59ed9707dd7715c1ca29a366472797934",
+    "src/gac/bevformer_history_pipeline.py": "ee4c3ae4e973ceb29dc277fe022878a2138efac707a1df93e6b8fd1dd5e60500",
+    "src/gac/bevformer_motion.py": "0cff740353b09fe4eae7cea593ebaf79d24f6c9740ba0fd1d8599d4d7d8ded8e",
+    "src/gac/bevformer_postprocess.py": "c34d6e8af5204bc8c7d78e38044c5f06f0016174681a46d8fd0ee6678ebf64e1",
+    "src/gac/bevformer_query_init.py": "7647dcafa1cfef3cf9c1c99d6a63c61ce4bf66801e2a3b5c0919e4e31d06885e",
+    "src/gac/bevformer_refinement.py": "31d2af5ab51067e35303a8377c65b31605e5d18fd09e537d69f58264352980e6",
+    "src/gac/bevformer_runtime.py": "8cc3d1abfee61df3081ecbb1ecf03105ff9e7aa9c9726e8b10e001e8f8ece954",
+    "src/gac/bevformer_spatial.py": "232ce01fc58f3d20ed8e6849c0b64ffff934741c0f1c51a7f9c21700bf853266",
+    "src/gac/bevformer_step_pipeline.py": "9b94058250ce7eef305cbd1a3d825c59ae41e53cd1649fb72d84419beb4a8edd",
+    "src/gac/bevformer_temporal.py": "66c38420eb672064a041d7c5f01f19b42bfadead9881df9f6cd01282e7f9515e",
+    "src/gac/capability.py": "b5ac312b27c8dd8f13bc49184238010dc7e0b514cfc9472304434056ab458aef",
+    "src/gac/cli.py": "92c05f89a99123ee66430d2c4f609e841c38500fce7058f65860d310920a985b",
+    "src/gac/compose.py": "bf2df0087d63b6a19e21c9f8f4673694f54baf53b65d8946f32a760ee274c823",
+    "src/gac/errors.py": "7d16560334218bca7db5014c69159a382b745a33d3850e941dce49450fbb5a86",
+    "src/gac/frontends/__init__.py": "b6f0f9cc29df938e88eb75f1fc8eb2419ff35fa941811eb86b5a261d6ac6acf6",
+    "src/gac/frontends/bevformer_backbone.py": "5ba9cb45e65d5c49cc4625fb5d780866cc1cccdc30d98eb41ec2b60b183a1a59",
+    "src/gac/frontends/bevformer_export.py": "7e9a47edcedb3d5f5cd8f883cb7140def41a7e40174933af40672008a402d881",
+    "src/gac/frontends/bevformer_weights.py": "0e108c7817b6150e2d66098ebc40ce1680c54f2b08d185a368d793c675dfee4a",
+    "src/gac/frontends/json_frontend.py": "08fb409e008741001ae171549a23edb63ede2e1c12ca34bb35a4c04f245c5b33",
+    "src/gac/golden.py": "e573d369237fb93f5b114a63ce4c951f72400bea8ee12378882d781e6e4f82d1",
+    "src/gac/ir.py": "0c0619affe9083cfd1ae661e524cb8c0866fedc0fb6236183a3921ed97e1a6d1",
+    "src/gac/memory.py": "1a0a972aa020a216a43e1d957b595a5a38d46ec6b20712cba868a5f9e70b6e9f",
+    "src/gac/mlir_ptx_artifact.py": "91e547595b93a0b71898ac94a7c720d7103269bbee908546eea032d3cb67fcdf",
+    "src/gac/mlir_ptx_runtime.py": "d4fe35690ec9e9a115b8f7b6f41a11c5d425abf6016e7581370fc3c72c8418e2",
+    "src/gac/mlir_runtime.py": "8c3997dda743f55cfe4ea4d6ebd77fd7ca7d13e1c17a68fca27843dcf3f75a09",
+    "src/gac/mlir_toolchain.py": "0424a27c2e96c75c0e9323f3fdabf817579bea4600b9329d272432c63c7ebceb",
+    "src/gac/ops.py": "bdf4363a1f67ea61173069cf1419d1596921c49b0d594ffdfa499ed6168e7f41",
+    "src/gac/package.py": "5bac5402700ce03662fe4baff631d081dce8dd7de72e25950a4f4b208229ba2d",
+    "src/gac/passes.py": "b628baa94aed3cd67461351188984c58b77f4e5a4b71eaa055ffccd17b1b800d",
+    "src/gac/profiler.py": "fbb080cd680020d175f0032d96f638be2c30258c4b17ada860bc7510a4de6ff3",
+    "src/gac/runtime.py": "5e7b2c4a3988951a0fa4f922604ce2ab58e971992a703e4625cab277f1722a3b",
+    "src/gac/tools/__init__.py": "136510e0d2bab04afa1d1386b03cc88af81ef07cae3486a4bd7f5951c02c1264",
+    "src/gac/tools/build_bevformer.py": "2812d51a3417c4d29bf8d65a6fe6d8042ac2c6cd7843e997bfc7f6bf25146888",
+    "src/gac/tools/export_bevformer_checkpoint.py": "4b1e224fcd2eb01e4ae304f4bd2de614fa1a5771d33255211e682dbf753aff84",
+    "src/gac/tools/uniad_benchmark_e2e.py": "c5415815a6c5e22ed8e89513a967e0b9d263e2d333d644e985693b32f8982573",
+    "src/gac/tools/uniad_benchmark_ffn.py": "7d9b9758b36789c1c6d7a0b921729acaa966b788efd4e14d580042f18a2c3563",
+    "src/gac/tools/uniad_compile_ffn.py": "9ebf88d353654e8f5991f8d0584664aee0130bb76769baef3c6d94e5d1cea687",
+    "src/gac/tools/uniad_export_ffn.py": "67c33332ccedfd64b98bc04197dc1860dc875dc216e9f550806119e73cb75cec",
+    "src/gac/tools/uniad_make_synthetic_bundle.py": "5bf116bd39771d0288149dce98bfa9259a1c88effeeebeecfc865c716180660f",
+    "src/gac/transformer.py": "102226654a90aebe178e17e90e44bc7745ff5e25e0dd94c9a1c6628166b98d3e",
+    "src/gac/uniad/__init__.py": "eafca45c303c29d7f3a89935489373093ff55b3ae7a6d61af91e56d70f83e44b",
+    "src/gac/uniad/artifact.py": "fe991032e07308bf3ef12a3b15fb2af3ed424b1eba1db9e411e1132e11e6e826",
+    "src/gac/uniad/checkpoint.py": "eba4cfd03ebb8ccf91cfd890eaf8e8256dd2863b9759bd02b15d0d21665aeda0",
+    "src/gac/uniad/contract.py": "ad26122d11ad3b11dc30ac16b69f33db65af8f9186c9f3df474c537e46112cde",
+    "src/gac/version.py": "889b6515ef12de4018d101f0612d515dbac4bc1261278b35ceed2389cde69f50",
+    "src/gac/weights.py": "b3c5bf7f8991d338c24a5851f20fa9ed9a0e373fa625e46806c3c395a487dbd4",
+    "tools/benchmark_mlir_cuda_ffn.py": "df516512f4d09419ac6f2eb6f3bbf83759447736029b6ea084bc26564464e606",
+    "tools/benchmark_mlir_ptx_ffn.py": "6372a8cadba2e9e69af705aea8f18e9138d4e3597001281f8a2513b4127ee50e"
+  }
+}
