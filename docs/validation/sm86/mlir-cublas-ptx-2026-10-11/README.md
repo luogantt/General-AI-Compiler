@@ -12,7 +12,7 @@
 
 ## 当前状态
 
-`mlir-cublas-ptx-sm86` 的代码、本地 LLVM 24 lowering 和真实 GPU 配对验收均已完成；真实输入 MMA 与双缓冲 MatMul 的功能报告也已保存。tiled 完整 FFN 已完成三候选预验收，固定 Git commit 的正式重跑仍待完成。设备是 **RTX 3070 Ti Laptop GPU、Compute Capability 8.6、8 GB**；它不是桌面 RTX 3070，也不是此前首版基准使用的 RTX 3080。
+`mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 与 `mlir-tiled-ffn-sm86` 的正式三候选真机验收已经完成；真实输入 MMA 与双缓冲 MatMul 的功能报告也已保存。正式报告绑定 Git 提交 `5794d2c7a54104874d6af93802276263896b8a49`（短 SHA `5794d2c`），记录 `git dirty=false`；报告中的 80 个源码 SHA-256 已与本地同名文件逐一核对，缺失和不匹配均为 0。设备是 **RTX 3070 Ti Laptop GPU、Compute Capability 8.6、8 GB**；它不是桌面 RTX 3070，也不是此前首版基准使用的 RTX 3080。
 
 | 环境项 | 值 |
 | --- | --- |
@@ -35,21 +35,21 @@ export LD_LIBRARY_PATH="/home/robot/miniconda3/envs/isaac/lib/python3.11/site-pa
 
 ## RTX 3070 Ti Laptop 实测结果
 
-正式协议为 warmup 50、40 个 repeat、每个 repeat 100 次完整四调用 FFN、public samples 30。每个 repeat 内交换新旧路径的位置，并分别用 PTX-first 与 NVRTC-first 作为首轮顺序重跑。
+正式协议为 warmup 50、40 个 repeat、每个 repeat 100 次完整 FFN、public samples 30。M2c 与 M2a 在每个 repeat 内交换位置，并分别用 PTX-first 与 NVRTC-first 作为首轮顺序重跑；单缓冲 tiled 完整 Session 使用相同 warmup/iterations/repeats，并与两条基线共同进入 correctness gate 和 autotune。
 
-| 首次测量次序 | 新 `mlir-cublas-ptx-sm86` | 旧 `mlir-cuda-sm86` | 位置平衡新路径加速 |
-| --- | ---: | ---: | ---: |
-| PTX first | 222.131 μs | 227.190 μs | 1.02414× |
-| NVRTC first | 222.694 μs | 228.204 μs | 1.02677× |
+| 首次测量次序 | M2c `mlir-cublas-ptx-sm86` | M2a `mlir-cuda-sm86` | `mlir-tiled-ffn-sm86` | M2c 位置平衡加速 |
+| --- | ---: | ---: | ---: | ---: |
+| PTX first | 221.915998 μs | 227.223997 μs | 892.597122 μs | 1.0248387378× |
+| NVRTC first | 223.343678 μs | 229.038086 μs | 893.539200 μs | 1.0274777097× |
 
-两轮 NumPy 对照均为 `allclose=True`，新路径最大绝对误差为 `7.152557e-7`。autotuner 两轮都选择 `mlir-cublas-ptx-sm86`。
+两轮中三个候选均为 `eligible`，autotuner 都选择 `mlir-cublas-ptx-sm86`。M2c 与 tiled 的 NumPy 对照均为 `allclose=True`，两者最大绝对误差都为 `7.152557e-7`。
 
 公共 `run` 包含输入校验、H2D、四调用计算、D2H 和同步；其中 GPU 与 wall 中位数为：
 
 | 首次测量次序 | 新路径 H2D+计算 GPU | 新路径含 D2H/同步 wall |
 | --- | ---: | ---: |
-| PTX first | 565.072 μs | 1240.842 μs |
-| NVRTC first | 564.096 μs | 1203.280 μs |
+| PTX first | 584.239990 μs | 1233.796007 μs |
+| NVRTC first | 575.888008 μs | 1192.150492 μs |
 
 这些数字只属于一个生产形状 FP32 FFN。它们不是完整 BEVFormer 延时，也不能外推为桌面 RTX 3070。RTX 3080 历史基线来自另一台设备，不能与这里的绝对延时直接横比。
 
@@ -57,11 +57,11 @@ export LD_LIBRARY_PATH="/home/robot/miniconda3/envs/isaac/lib/python3.11/site-pa
 
 | 文件 | 内容 |
 | --- | --- |
-| [`benchmark-ptx-first-rtx3070ti-laptop.json`](benchmark-ptx-first-rtx3070ti-laptop.json) | PTX-first 的 40×100 配对样本、公共 `run` 样本、正确性、设备和 artifact hash |
-| [`benchmark-nvrtc-first-rtx3070ti-laptop.json`](benchmark-nvrtc-first-rtx3070ti-laptop.json) | NVRTC-first 的同协议独立重跑 |
-| [`autotune-ptx-first-rtx3070ti-laptop.json`](autotune-ptx-first-rtx3070ti-laptop.json) | PTX-first 运行中的候选、正确性门、计时样本和选择结果 |
-| [`autotune-nvrtc-first-rtx3070ti-laptop.json`](autotune-nvrtc-first-rtx3070ti-laptop.json) | NVRTC-first 运行中的独立 autotune 结果 |
-| [`compile-report-llvm24.json`](compile-report-llvm24.json) | LLVM 24 lowering 命令、工具链 revision、PTX entry 和无权重 artifact 摘要 |
+| [`benchmark-ptx-first-rtx3070ti-laptop.json`](benchmark-ptx-first-rtx3070ti-laptop.json) | 固定提交 `5794d2c` 的 PTX-first 40×100 正式三候选样本、公共 `run`、正确性、设备、Git 状态和 80 个源码 SHA-256 |
+| [`benchmark-nvrtc-first-rtx3070ti-laptop.json`](benchmark-nvrtc-first-rtx3070ti-laptop.json) | 同一固定提交的 NVRTC-first 正式独立重跑 |
+| [`autotune-ptx-first-rtx3070ti-laptop.json`](autotune-ptx-first-rtx3070ti-laptop.json) | PTX-first 三个可执行 FFN 候选的正确性门、计时样本和选择结果 |
+| [`autotune-nvrtc-first-rtx3070ti-laptop.json`](autotune-nvrtc-first-rtx3070ti-laptop.json) | NVRTC-first 三候选独立 autotune 结果 |
+| [`compile-report-llvm24.json`](compile-report-llvm24.json) | M2c 与 tiled 两个无权重 artifact 的 LLVM 24 lowering 命令、工具链 revision、PTX entry 和摘要 |
 | [`functional-mma-fp16-tf32-llvm24-sm86.json`](functional-mma-fp16-tf32-llvm24-sm86.json) | FP16/TF32 真实输入功能 MMA 的 LLVM 24 lowering、PTX 指令计数与 SHA-256 |
 | [`functional-mma-fp16-rtx3070ti-laptop.json`](functional-mma-fp16-rtx3070ti-laptop.json) | FP16 功能 MMA 的真机输入、参考输出、逐样本计时与误差 |
 | [`functional-mma-tf32-rtx3070ti-laptop.json`](functional-mma-tf32-rtx3070ti-laptop.json) | TF32 功能 MMA 的真机输入、参考输出、逐样本计时与误差 |
@@ -146,15 +146,14 @@ PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
 
 这证明显式 workgroup tile 与 LLVM 生成的向量 shared load 已进入 PTX。Kernel 仍是单缓冲、一线程一个标量输出，但现在已由 `src/gac/mlir_tiled_ffn.py`、`mlir_tiled_ffn_runtime.py` 和 `mlir_tiled_ffn_artifact.py` 接成完整的三 dispatch `mlir-tiled-ffn-sm86` Session：FC1+Bias+ReLU、FC2、MLIR PTX Bias+Residual+LayerNorm。
 
-RTX 3070 Ti Laptop 上使用 warmup 50、每个 repeat 100 次完整 FFN、40 个 repeat、public samples 30 的三候选**预验收**结果如下：
+固定 Git 提交 `5794d2c` 在 RTX 3070 Ti Laptop 上使用 warmup 50、每个 repeat 100 次完整 FFN、40 个 repeat、public samples 30 的正式三候选结果如下：
 
-| 完整 FFN Session | device-resident 中位数 | 正确性门 | autotune |
-| --- | ---: | --- | --- |
-| `mlir-tiled-ffn-sm86` | 0.891556 ms | `allclose=True`，max abs `7.152557e-7` | eligible |
-| `mlir-cublas-ptx-sm86` | 0.221634 ms | eligible | selected |
-| `mlir-cuda-sm86` | 0.227610 ms | eligible | eligible |
+| 首次测量次序 | tiled | M2c cuBLAS+PTX | M2a cuBLAS+NVRTC | autotune |
+| --- | ---: | ---: | ---: | --- |
+| PTX first | 0.892597122 ms | 0.221915998 ms | 0.227223997 ms | 三者 eligible，选择 M2c |
+| NVRTC first | 0.893539200 ms | 0.223343678 ms | 0.229038086 ms | 三者 eligible，选择 M2c |
 
-这轮尚未绑定最终 Git commit，原始 tiled benchmark 报告因此没有复制进本验证目录，不能替代固定 commit 后的正式重跑。它证明 tiled 完整 Session 和三候选选择链路已经接通，不构成发布性能结论。
+两份 benchmark JSON 都保存 tiled 的逐次样本、正确性、artifact 摘要、完整 Git 提交和 80 个源码 SHA-256；两份独立 autotune JSON 保存三个候选的全部评估与最终选择。M2c 与 tiled 两轮均为 `allclose=True`，最大绝对误差都为 `7.152557e-7`。
 
 同一 lowering 工具还生成两种**真实输入**的固定尺寸 NVGPU MMA 功能候选：
 
@@ -234,7 +233,7 @@ PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
   --output build/mlir-three-candidate-benchmark.json
 ```
 
-正式重跑需从固定 Git commit 建立新目录并保存 commit、设备、artifact hash 与原始样本；当前 `0.891556 / 0.221634 / 0.227610 ms` 仅是预验收。
+本目录正式报告已满足固定 Git commit、clean tree、设备、artifact hash、80 个源码 hash 和逐次原始样本的可追溯要求。
 
 ## 真机验收协议
 
@@ -243,19 +242,18 @@ PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
 1. 保存设备名、显存、Compute Capability、Driver、CUDA Runtime、CuPy 和工具链 revision；
 2. 在同一进程同时建立参与比较的完整 FFN Session；四调用正式报告比较 M2c/M2a，tiled 正式报告还必须加入 `mlir-tiled-ffn-sm86`；
 3. 权重和 query 常驻设备，用 CUDA Event 包住候选的完整 call plan（三个或四个 dispatch），排除 H2D/D2H；
-4. 平衡候选测量次序；两候选正式配对分别以新路径 first 和旧路径 first 重跑，三候选报告保存逐 repeat 的实际顺序；
+4. M2c/M2a 配对按 repeat 交换次序，并分别以新路径 first 和旧路径 first 重跑；tiled 保存相同 warmup/iterations/repeats 下的逐次样本；
 5. 另报公共 `run` 的 H2D+计算 GPU 时间、含 D2H/同步的 wall 时间、setup 与首次调用；
 6. 对同一 NumPy 参考保存最大绝对/相对误差；
 7. 保存 artifact/call-plan/source hash 和逐次原始样本，禁止只保存汇总数字。
 
-本目录的两份四调用 benchmark JSON、两份对应 autotune JSON、一份四调用 LLVM 24 compile report、三份功能 MMA 报告、两份真实异步 MatMul 报告和一份早期异步调度 probe report 是本轮可审计证据；汇总数字必须能回溯到逐次样本和 source manifest。tiled 三候选数据仍是预验收，原始报告未复制到此目录，等待固定 Git commit 后重跑替换。
+本目录的两份正式三候选 benchmark JSON、两份对应 autotune JSON、一份 M2c+tiled LLVM 24 compile report、三份功能 MMA 报告、两份真实异步 MatMul 报告和一份早期异步调度 probe report 是本轮可审计证据；汇总数字均能回溯到逐次样本、artifact/source manifest 与固定提交 `5794d2c`。
 
 ## 尚未完成
 
 - cuBLASLt 及其 epilogue；
 - 把已通过真实输入功能验证的异步双 stage `cp.async` MatMul 接入生产 FC1/FC2 与完整 FFN，并完成正式数值和性能验收；
 - 把固定尺寸真实输入 FP16/TF32 NVGPU/MMA 扩展到生产 FC1/FC2 shape、边界处理和完整 FFN；
-- 从固定 Git commit 重跑单缓冲 tiled 完整 FFN 的三候选正式报告；
 - HXP v2 混合执行计划；
 - 完整 BEVFormer 的 MLIR 覆盖；
 - 桌面 RTX 3070 的延时、显存和稳定性验收。

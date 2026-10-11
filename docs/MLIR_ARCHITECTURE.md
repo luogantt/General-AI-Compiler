@@ -69,8 +69,8 @@ HXP v2 混合 Execution Plan                          路线图 M4/M5
 | M1：首个算子切片 | 手工 JSON 图中的 BEVFormer-like tiny FFN/MLP smoke；覆盖 MatMul、Bias Add、GELU/ReLU、`AddReLU` 和末轴 LayerNorm，包含静态 shape 和广播约束 | 单元测试检查确定性、类型/shape 拒绝路径和 MLIR 文本；可选集成测试在配置实际 `mlir-opt` 后运行 | 官方 checkpoint importer、真实 BEVFormer 子图导出、完整 Encoder/Decoder、MSDA、GridSample、Conv 等全图算子覆盖 |
 | M2a：SM86 FFN runtime-call 切片 | 严格匹配 `MatMul → AddReLU → MatMul → Add → Add(query residual) → LayerNorm`；发出两次 CuPy/cuBLAS MatMul 和两个 NVRTC 融合 Kernel 的显式 call plan | runtime-call MLIR ABI manifest 已由 LLVM 24 `mlir-opt --verify-each` 验证；独立的 Python call records 已在 RTX 3080 SM86 上完成输出正确性测试 | GPU/NVGPU/NVVM/PTX、HXP v1 打包、任意 MLP、完整 BEVFormer |
 | M2b：生产形状 FFN MLIR→PTX 切片 | 只接受 `[1,2500,256] → 512 → 256` 的 FP32 FFN；从严格 pattern 生成三个 `gpu.func`，由官方 MLIR GPU→NVVM pipeline 与 LLVM NVPTX 生成 textual PTX 7.1 | 保存实际 GPU MLIR、含唯一 `gpu.binary` 的 lowered MLIR、PTX、SHA-256 和工具链 revision；RTX 3080 上最大绝对误差 `7.153e-7` | 通用 tensor/linalg→GPU 自动 lowering、Tensor Core 调度、HXP v1 打包、任意 MLP、完整 BEVFormer |
-| M2c：cuBLAS+MLIR PTX 生产候选 | 同一生产 FFN 的固定四调用计划：cuBLAS FC1、PTX `Bias+ReLU`、cuBLAS FC2、PTX `Bias+Residual+LayerNorm`；无 NVRTC | GPU MLIR→PTX 编译、entry/指针 ABI、call plan、Runtime 和无权重目录均有测试；RTX 3070 Ti Laptop 两轮为 `222.131 / 222.694 μs/FFN`，autotuner 均选择 M2c | cuBLASLt、HXP v1、完整 BEVFormer、桌面 RTX 3070 性能 |
-| M2d：Kernel 调度实验 | 单缓冲 16×16×16 tiled 完整 FFN；真实输入 FP16/TF32 NVGPU MMA 与 `16×16×64` 双 stage `cp.async` MatMul；正确性优先的 autotuner | tiled Session 已与 M2a/M2c 同轮做三候选预验收；TF32/FP16 MMA 最大绝对误差为 0、分别为 `3.879600 / 4.012688 μs`；双缓冲 MatMul 逐元素 exact、为 `2.652160 μs` | 固定 commit 的 tiled 正式报告、双缓冲生产 FFN、生产 shape MMA/Tensor Core FC1/FC2、cuBLASLt |
+| M2c：cuBLAS+MLIR PTX 生产候选 | 同一生产 FFN 的固定四调用计划：cuBLAS FC1、PTX `Bias+ReLU`、cuBLAS FC2、PTX `Bias+Residual+LayerNorm`；无 NVRTC | GPU MLIR→PTX 编译、entry/指针 ABI、call plan、Runtime 和无权重目录均有测试；RTX 3070 Ti Laptop 固定提交 `5794d2c` 两轮为 `221.915998 / 223.343678 μs/FFN`，autotuner 均选择 M2c | cuBLASLt、HXP v1、完整 BEVFormer、桌面 RTX 3070 性能 |
+| M2d：Kernel 调度实验 | 单缓冲 16×16×16 tiled 完整 FFN；真实输入 FP16/TF32 NVGPU MMA 与 `16×16×64` 双 stage `cp.async` MatMul；正确性优先的 autotuner | tiled Session 已与 M2a/M2c 完成固定提交三候选正式验收；TF32/FP16 MMA 最大绝对误差为 0、分别为 `3.879600 / 4.012688 μs`；双缓冲 MatMul 逐元素 exact、为 `2.652160 μs` | 双缓冲生产 FFN、生产 shape MMA/Tensor Core FC1/FC2、cuBLASLt |
 
 M0/M1 的价值不是“把 CUDA 字符串换成另一种字符串”。实际执行 `mlir-opt` 时，它会解析 IR 和方言，并检查 SSA 使用、类型、区域、block 参数和算子约束；只有该命令成功，特定产物才算通过 verifier。通用 tensor/linalg 产物仍停在 tensor-level MLIR。M2a 的执行来自显式 CuPy/cuBLAS 与 NVRTC runtime binding。M2b 真正生成并加载三个 PTX Kernel；M2c 真正加载两个 MLIR PTX 融合 Kernel，并用结构化 call record 调度两个 cuBLAS MatMul；M2d 的 tiled Session 真正加载三个 PTX entry，MMA/异步候选也真正加载固定尺寸 PTX 并运行真实输入。它们都先对固定 FFN 或固定微内核做 pattern-specialized GPU IR 物化，不等于任意 tensor/linalg 图已经具备通用自动 lowering。
 
@@ -180,10 +180,10 @@ RTX 3070 Ti Laptop（SM86、8 GB）上的两轮正式结果如下；每轮 warmu
 
 | 首次测量次序 | M2c cuBLAS+PTX | M2a cuBLAS+NVRTC | M2c 位置平衡加速 |
 | --- | ---: | ---: | ---: |
-| PTX first | 222.131 μs | 227.190 μs | 1.02414× |
-| NVRTC first | 222.694 μs | 228.204 μs | 1.02677× |
+| PTX first | 221.915998 μs | 227.223997 μs | 1.0248387378× |
+| NVRTC first | 223.343678 μs | 229.038086 μs | 1.0274777097× |
 
-两轮 `allclose=True`，M2c 最大绝对误差为 `7.152557e-7`，autotuner 都选择 `mlir-cublas-ptx-sm86`。M2c 公共 `run` 的 H2D+计算 GPU 中位数为 `565.072 / 564.096 μs`，含 D2H 与同步的 wall 中位数为 `1240.842 / 1203.280 μs`。这只证明一个生产形状 FFN 在这台 Laptop GPU 上略快于语义相同的 NVRTC 融合路径。RTX 3080 上的 `0.209～0.214 ms/FFN` 是旧 hybrid 的跨设备历史基线，不能与这里的绝对延时直接横比。
+正式报告绑定 clean Git 提交 `5794d2c`，80 个源码 SHA-256 与本地逐一匹配。两轮三个候选均为 `eligible`，autotuner 都选择 `mlir-cublas-ptx-sm86`；M2c 与 tiled 均 `allclose=True`，最大绝对误差都为 `7.152557e-7`。M2c 公共 `run` 的 H2D+计算 GPU 中位数为 `584.239990 / 575.888008 μs`，含 D2H 与同步的 wall 中位数为 `1233.796007 / 1192.150492 μs`。这只证明一个生产形状 FFN 在这台 Laptop GPU 上略快于语义相同的 NVRTC 融合路径。RTX 3080 上的 `0.209～0.214 ms/FFN` 是旧 hybrid 的跨设备历史基线，不能与这里的绝对延时直接横比。
 
 ### 3.6 tiled、NVGPU/MMA、异步双 stage 与 autotuning
 
@@ -195,7 +195,7 @@ RTX 3070 Ti Laptop（SM86、8 GB）上的两轮正式结果如下；每轮 warmu
 
 [`mlir_ptx_autotune.py`](../src/gac/mlir_ptx_autotune.py) 用 `(backend, tile, block, precision, fusion)` 描述候选。每个候选先过数值正确性门，再采集指定重复次数的样本，并以中位数最小者获胜；完全相同的中位数用候选 SHA-256 确定性破同分。缓存绑定 graph/source SHA-256、设备描述、候选空间和测量配置，以原子 replace 发布，并拒绝损坏、重复 key 或上下文变化。
 
-[`mlir_cublas_ptx_benchmark.py`](../src/gac/mlir_cublas_ptx_benchmark.py) 提供真实 CUDA adapter：三个常驻 Session 用 CUDA Event 测完整 FFN，`mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和 `mlir-tiled-ffn-sm86` 都先过正确性门再进入选择。RTX 3070 Ti Laptop 的预验收采用 warmup 50、100 次/repeat、40 个 repeat 和 30 个 public samples，device-resident 中位数分别为 `0.221634 / 0.227610 / 0.891556 ms/FFN`；三者均 eligible，tiled 最大绝对误差为 `7.152557e-7`，最终选择 M2c。该轮还未固定最终 Git commit，数字只能标为预验收，不能替代正式报告。固定尺寸 MMA 与双缓冲 MatMul 没有完整 FFN Session，仍不参与这组三候选 autotune。双缓冲 tiled FFN、生产 Tensor Core FC1/FC2、cuBLASLt 和更多 tile 候选尚未完成。
+[`mlir_cublas_ptx_benchmark.py`](../src/gac/mlir_cublas_ptx_benchmark.py) 提供真实 CUDA adapter：三个常驻 Session 用 CUDA Event 测完整 FFN，`mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和 `mlir-tiled-ffn-sm86` 都先过正确性门再进入选择。RTX 3070 Ti Laptop 的固定提交 `5794d2c` 正式验收采用 warmup 50、100 次/repeat、40 个 repeat 和 30 个 public samples；PTX-first 的 device-resident 中位数依次为 `0.221915998 / 0.227223997 / 0.892597122 ms/FFN`，NVRTC-first 为 `0.223343678 / 0.229038086 / 0.893539200 ms/FFN`。两轮三者均 eligible，最终选择 M2c；M2c 与 tiled 两轮最大绝对误差均为 `7.152557e-7`。固定尺寸 MMA 与双缓冲 MatMul 没有完整 FFN Session，仍不参与这组三候选 autotune。双缓冲 tiled FFN、生产 Tensor Core FC1/FC2、cuBLASLt 和更多 tile 候选尚未完成。
 
 复现编译证据：
 
@@ -297,9 +297,9 @@ bash tools/build_mlir_wsl.sh
 - [`examples/mlir_sm86_add_relu.mlir`](../examples/mlir_sm86_add_relu.mlir) 作为独立的手写 GPU Dialect smoke，执行 `gpu-lower-to-nvvm-pipeline`，目标 `cubin-chip=sm_86`、`cubin-format=isa`，成功生成一个 `gpu.binary`；内嵌 PTX 包含 `.target sm_86` 与 `add_relu_broadcast` entry，生成结果再次执行 `--verify-each` 通过；
 - M2b 的生产形状 FFN 从 Canonical Graph 生成三个 `gpu.func`，由同一官方 pipeline 生成 textual PTX 7.1；实际产物包含唯一 `gpu.binary`、`.target sm_86`、64 位地址和三个精确 entry，产物与工具链 revision 均已保存；
 - RTX 3080 上，全 PTX FFN 最大绝对误差为 `7.153e-7`；两种首次测量顺序下 device-resident 中位数为 `1.102 ms` 和 `1.092 ms`，对应 cuBLAS hybrid 为 `0.209 ms` 和 `0.214 ms`，即全 PTX 慢 `5.265×` 和 `5.150×`。
-- RTX 3070 Ti Laptop 上，M2c 在 PTX-first / NVRTC-first 两轮的 device-resident 中位数为 `222.131 / 222.694 μs`，同轮 M2a 为 `227.190 / 228.204 μs`，位置平衡加速 `1.02414× / 1.02677×`；两轮 autotuner 均选择 M2c；
+- RTX 3070 Ti Laptop 固定提交 `5794d2c` 上，M2c 在 PTX-first / NVRTC-first 两轮的 device-resident 中位数为 `221.915998 / 223.343678 μs`，同轮 M2a 为 `227.223997 / 229.038086 μs`，位置平衡加速 `1.0248387378× / 1.0274777097×`；两轮三个候选均 eligible，autotuner 均选择 M2c；
 - M2d 的 16×16×16 FC1/FC2 tiled module 已由同一 LLVM 24 revision 生成 PTX 7.1；指令审计分别确认两个 shared 声明、shared load/store、两次 barrier 和四处向量 shared load，且没有 `mma.sync`；单缓冲 tiled Kernel 已组成完整三 dispatch FFN Session；
-- 三候选预验收中，tiled、M2c、M2a 都通过正确性门并进入计时，device-resident 中位数为 `0.891556 / 0.221634 / 0.227610 ms/FFN`，选择 M2c；该轮等待固定 Git commit 后正式重跑；
+- 正式三候选验收中，tiled 的 PTX-first / NVRTC-first device-resident 中位数为 `0.892597122 / 0.893539200 ms/FFN`；M2c 与 tiled 两轮均 `allclose=True`，最大绝对误差都为 `7.152557e-7`；报告保存 clean Git 提交与 80 个已匹配的源码 SHA-256；
 - TF32 与 FP16 的真实输入 NVGPU MMA 候选分别生成 4 条 `m16n8k4` 和 2 条 `m16n8k16` `mma.sync`，RTX 3070 Ti Laptop 上最大绝对误差均为 0，单次 launch 中位数为 `3.879600 / 4.012688 μs`；
 - 真实输入 `16×16×64` 异步双 stage MatMul 的 PTX 含 8 条 `cp.async`、4 个 commit、`wait_group [1,1,1,0]` 和 4096 bytes shared memory，真机逐元素 exact，单次 launch 中位数为 `2.652160 μs`。MMA 与双缓冲结果均是固定尺寸功能候选，不是生产 FFN 性能。
 
@@ -361,7 +361,7 @@ RTX 3080、RTX 3070 Ti Laptop 与桌面 RTX 3070 都属于 SM86，可以验证�
 - FP16/TF32 MMA 固定尺寸功能候选必须加载真实输入，并保存 `mma.sync`、global load/store、真机正确性和 CUDA Event 证据；要升级为生产候选，还必须覆盖真实 FC1/FC2 shape、边界处理、占用率和完整 FFN 性能；
 - 异步双 stage MatMul 功能候选必须在 PTX 中保留预期的 `cp.async`/commit group、wait 深度与两阶段 shared-memory 消费顺序，并保存真实输入正确性和 CUDA Event 证据；升级为生产候选仍需接入真实 FC1/FC2 与完整 FFN；
 - autotune 候选先过正确性门才允许计时，缓存绑定图、源码、设备、候选空间和测量配置；
-- 单缓冲 tiled 完整 FFN 必须与 M2a/M2c 使用同一正确性门和计时协议；正式性能结论需绑定固定 Git commit，预验收数字不得冒充正式报告；
+- 单缓冲 tiled 完整 FFN 必须与 M2a/M2c 使用同一正确性门和计时协议；当前正式报告已绑定 clean Git 提交 `5794d2c`、逐次样本和 80 个源码 SHA-256；
 - 固定尺寸 MMA 与双缓冲 MatMul 没有完整 FFN runner，不能填入 FFN 延时；双缓冲 tiled FFN 集成、cuBLASLt 和生产 Tensor Core 路径完成前继续标为未实现。
 
 ### M3：通用 Bufferization 与 GPU/NVVM 门槛
@@ -388,7 +388,7 @@ RTX 3080、RTX 3070 Ti Laptop 与桌面 RTX 3070 都属于 SM86，可以验证�
 | M2a（严格 FFN runtime-call 切片已实现） | pattern matcher、四调用 ABI manifest/call records、CuPy/cuBLAS、NVRTC 融合 Kernel、SM86 Session | 可审阅/可验证的 MLIR ABI manifest、内存中 call plan、FFN 真机报告 |
 | M2b（生产形状 FFN MLIR→PTX 已实现） | 三个 `gpu.func`、官方 GPU→NVVM→LLVM NVPTX pipeline、离线 artifact 校验、PTX Session | GPU MLIR、binary MLIR、SM86 PTX、SHA-256、RTX 3080 正确性与性能原始报告 |
 | M2c（cuBLAS+MLIR PTX 生产候选已实测） | 两次 CuPy/cuBLAS、两个 MLIR PTX 融合 Kernel、无权重 artifact、严格 Session | 四调用 program/目录、GPU MLIR、binary MLIR、PTX；RTX 3070 Ti Laptop 双顺序配对与 autotune 报告 |
-| M2d（调度/选择基础设施已实现） | 单缓冲 tiled 三 dispatch 完整 FFN、真实输入 FP16/TF32 MMA、真实 `cp.async` 双缓冲 MatMul、正确性优先 autotuner、三个真实 FFN Session adapter | tiled 无权重 artifact 与三候选预验收；MMA/异步功能报告；固定 commit 正式重跑、双缓冲生产 FFN 和生产 Tensor Core 待完成 |
+| M2d（调度/选择基础设施已实现） | 单缓冲 tiled 三 dispatch 完整 FFN、真实输入 FP16/TF32 MMA、真实 `cp.async` 双缓冲 MatMul、正确性优先 autotuner、三个真实 FFN Session adapter | 固定提交三候选正式报告、tiled 无权重 artifact 与 MMA/异步功能报告；双缓冲生产 FFN 和生产 Tensor Core 待完成 |
 | M3 | 通用 One-Shot Bufferize、memref lifetime、linalg tiling/fusion/vectorization、GPU/NVGPU/NVVM | 不依赖固定 FFN 模板的 bufferized MLIR、PTX/cubin 与内存报告 |
 | M4 | `bev` 方言、MSDA/GridSample lowering、库调用选择 | BEVFormer 编译区域与混合 artifact |
 | M5 | HXP v2 Host Execution Plan、多 artifact 校验、Runtime 混合调度 | 可部署的完整模型包 |
@@ -399,7 +399,7 @@ RTX 3080、RTX 3070 Ti Laptop 与桌面 RTX 3070 都属于 SM86，可以验证�
 
 可以这样简要介绍：
 
-> 我把现有编译器设计成渐进式 MLIR 架构。M0/M1 能把 JSON/Canonical Graph 中的 tiny FFN smoke 生成标准 tensor/linalg IR，并接入本地 LLVM 24 verifier。M2a 针对严格 FFN pattern，用两次 cuBLAS MatMul 与两个 NVRTC 融合 Kernel 执行；M2b 对生产尺寸 `[1,2500,256] → 512 → 256` 生成三个 `gpu.func`，由官方 pipeline 降到 NVVM 和 PTX 7.1，Runtime 校验后加载。RTX 3080 历史结果显示全 PTX 为 `1.092～1.102 ms`，cuBLAS hybrid 为 `0.209～0.214 ms`，说明换成 MLIR 并不会自动提速，关键是调度与库调用。M2c 因此保留两次 cuBLAS，把 Bias+ReLU 和 Bias+Residual+LayerNorm 改为 MLIR PTX，形成无 NVRTC 的四调用生产候选；RTX 3070 Ti Laptop 两轮实测为 `222.131 / 222.694 μs`，比同轮 M2a 快 `1.02414× / 1.02677×`，autotuner 都选择 M2c。M2d 已把单缓冲 shared-memory tile 接成完整三 dispatch FFN，并与 M2a/M2c 做了三候选预验收；真实输入 FP16/TF32 `mma.sync` 与 `cp.async` 双缓冲 MatMul 也已完成固定尺寸正确性和微基准。生产 Tensor Core FFN、双缓冲生产 FFN、cuBLASLt 和固定 commit 的 tiled 正式重跑仍未完成。所有数字只覆盖一个 FFN 编译单元或固定尺寸微内核及对应设备，不是完整 BEVFormer；HXP v2 最终再把 MLIR artifact、vendor 调用和现有 BEV Kernel 编成显式混合计划。
+> 我把现有编译器设计成渐进式 MLIR 架构。M0/M1 能把 JSON/Canonical Graph 中的 tiny FFN smoke 生成标准 tensor/linalg IR，并接入本地 LLVM 24 verifier。M2a 针对严格 FFN pattern，用两次 cuBLAS MatMul 与两个 NVRTC 融合 Kernel 执行；M2b 对生产尺寸 `[1,2500,256] → 512 → 256` 生成三个 `gpu.func`，由官方 pipeline 降到 NVVM 和 PTX 7.1，Runtime 校验后加载。RTX 3080 历史结果显示全 PTX 为 `1.092～1.102 ms`，cuBLAS hybrid 为 `0.209～0.214 ms`，说明换成 MLIR 并不会自动提速，关键是调度与库调用。M2c 因此保留两次 cuBLAS，把 Bias+ReLU 和 Bias+Residual+LayerNorm 改为 MLIR PTX，形成无 NVRTC 的四调用生产候选；RTX 3070 Ti Laptop 固定提交 `5794d2c` 两轮实测为 `221.915998 / 223.343678 μs`，比同轮 M2a 快 `1.0248387378× / 1.0274777097×`。M2d 已把单缓冲 shared-memory tile 接成完整三 dispatch FFN，并与 M2a/M2c 完成三候选正式验收；三个候选两轮均 eligible，autotuner 都选择 M2c。真实输入 FP16/TF32 `mma.sync` 与 `cp.async` 双缓冲 MatMul 也已完成固定尺寸正确性和微基准。生产 Tensor Core FFN、双缓冲生产 FFN 和 cuBLASLt 仍未完成。所有数字只覆盖一个 FFN 编译单元或固定尺寸微内核及对应设备，不是完整 BEVFormer；HXP v2 最终再把 MLIR artifact、vendor 调用和现有 BEV Kernel 编成显式混合计划。
 
 被追问“是否已经用了 MLIR”时，准确回答是：已经有标准 tensor/linalg emitter，也已经有固定生产形状 FFN 的真实 GPU Dialect→NVVM→PTX 编译与执行闭环；新四调用路径的两个融合 Kernel 同样来自 MLIR PTX，而 MatMul 显式交给 cuBLAS。当前没有完成任意 tensor/linalg 图的通用自动 lowering、checkpoint 到 MLIR 的 importer、HXP v2、生产 Tensor Core Kernel 或完整 BEVFormer 网络的 MLIR 执行。
 
