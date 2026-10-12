@@ -49,6 +49,14 @@ JSON graph / BEVFormer config + checkpoint
 
 冻结的 BEVFormer-tiny Profile 为 6 相机、`480×800` 图像、`50×50` BEV、256 embedding。统一 step 输入为 `images`、`lidar2img`、`can_bus_delta`、`prev_bev`、`has_prev_bev`，输出最后一层 `cls_logits`、raw `bbox_regression` 和 FP16 `next_bev`。公开图像与状态存储边界使用 FP16，Transformer/MSDA 等主要计算仍以 FP32 为基线。
 
+## Vortex 3.0 FFN 垂直切片
+
+`vortex-v3` 后端已接通一条独立于 CUDA/PTX 的 BEVFormer FFN 路径：Canonical Graph → 标准 Tensor/Linalg MLIR → 第一次外部 `mlir-opt --verify-each --canonicalize --cse` → `optimized.mlir` 严格解析 → 确定性 lowering 到标准 `func.call` Runtime ABI → 第二次 `mlir-opt` → `vortex.mlir` 严格解析 → 固定 Vortex C++ 模板 → VOLT RISC-V/Vortex ELF → `.vxbin` → `vortex2`。`vortex.mlir` 使用静态 FP32 memref，保存三次调用的顺序与类型、launch size、LayerNorm epsilon 和六个外部权重 SHA-256；最终源码由这份已经验证的 call plan 驱动生成。
+
+当前只覆盖 `MatMul → Bias+ReLU → MatMul → Bias+Residual → LayerNorm` FFN，不包含 ResNet/FPN、MSDeformableAttention、Encoder/Decoder、检测头或完整时序 step。上游 Vortex 3.0 没有 Vortex MLIR dialect 或通用 MLIR-to-Vortex kernel translator，因此这是 **MLIR 驱动的、受限的 Runtime-call lowering**，不是通用 Vortex dialect/kernel codegen。artifact manifest 采用精确的 17 个 payload 文件白名单；`make` 的 host、VOLT、`.vxbin` 以及所有 `run-*` 目标都会先执行 `verify_artifact.py`，同时拒绝非 RV32 build。代码边界、artifact 文件、本地生成和远端部署命令见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)。
+
+当前实测已用官方 BEVFormer-tiny checkpoint 第 0 层真实权重跑通一行生产宽度 `[1,1,256] → 512 → 256`，SimX 对冻结 GAC/NumPy golden 的最大绝对误差为 `1.90734863e-6`；完整 2500-row 真实权重 artifact 已成功编译为 `.vxbin`。验证记录见 [Vortex BEVFormer FFN validation](docs/validation/vortex/bevformer-ffn-2026-10-13/README.md)。
+
 ## MLIR / `mlir-opt` 文件在哪里？
 
 **`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它，把 GPU Dialect MLIR 降到 NVVM 和 SM86 PTX；部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
@@ -503,6 +511,7 @@ src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLI
 src/gac/backends/mlir_cuda.py        严格 FFN pattern 到显式 cuBLAS/NVRTC call plan
 src/gac/backends/mlir_ptx.py         严格生产 FFN 到 GPU Dialect/NVVM/PTX artifact
 src/gac/backends/mlir_cublas_ptx.py  2×cuBLAS + 2×MLIR PTX 的严格四调用计划
+src/gac/backends/vortex.py           两级 MLIR 审计、标准 func.call Vortex Runtime plan 与固定 Kernel/host 生成
 src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
 src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
 src/gac/mlir_ptx_runtime.py          校验并加载 MLIR 生成 PTX 的 SM86 Runtime
@@ -524,6 +533,7 @@ src/gac/frontends/                   JSON、BEVFormer 合同与 Backbone 导入
 src/gac/uniad/                       UniAD FFN 合同、bundle 与 checkpoint 映射
 src/gac/bevformer*.py                BEVFormer 算子、Encoder/Decoder/raw head 与状态 Runtime
 src/gac/tools/build_bevformer.py     权重检查及 BEVFormer 子图/HXP 构建入口
+src/gac/tools/build_bevformer_vortex.py BEVFormer FFN 的 MLIR→Vortex artifact 构建入口
 src/gac/tools/uniad_*.py             UniAD 导出、编译、FFN 与端到端基准入口
 src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
 examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
@@ -548,6 +558,7 @@ docs/                                架构、设计、后端约定、路线图�
 - 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口。`mlir-ptx-sm86` 已完成一个生产形状 FFN 的 GPU/NVVM/PTX 闭环；`mlir-cublas-ptx-sm86` 只完成固定四调用生产候选。两者都不是通用 bufferization/GPU mapping，也没有完整 BEVFormer 或 RTX 3070 性能数据。
 - MLIR 的 BEVFormer 相关输入仍是手写的 tiny FFN JSON smoke，真机 benchmark 使用相同构图器生成生产尺寸 FFN；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
 - 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
+- Vortex 3.0 路径当前只覆盖一个静态 FP32 BEVFormer FFN；SimX 用于 ISA/ABI/数值 smoke，其耗时不是 FPGA/ASIC 延时，也不能与 RTX 3070 数据直接比较。
 - UniAD 编译覆盖当前只包含一个 stage2 BEV encoder FFN；tracking、mapping、motion、occupancy、planning 和 attention 尚未接入 HXP/MLIR。完整 UniAD 报告是外部 checkout 的 native PyTorch 基线，不是编译后整网数据。
 - HXP v1 不携带 MLIR runtime-call plan 或 PTX artifact；`mlir-ptx-sm86` 可通过独立的已校验目录和 `--mlir-ptx-artifact` 加载，尚未并入 HXP。
 - M0/M1 把小型 smoke 权重写成内联 `dense` 常量；完整模型需要资源化常量或外部权重 ABI，不能直接沿用这种文本承载方式。
