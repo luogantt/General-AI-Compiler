@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "timestamp": "2026-10-13T00:36:29+08:00",
+  "backend": "vortex-v3",
+  "compiler": {
+    "repository": "General-AI-Compiler",
+    "branch": "codex/bevformer-vortex-mlir",
+    "source_commit": "76bbb36d14c5ef20332358d295281311c3a8ba10",
+    "mlir_opt_version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build.",
+    "mlir_opt_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01"
+  },
+  "target": {
+    "vortex_version": "3.0",
+    "vortex_commit": "14926ffc8755ceb664ec017028bba7f4a250096a",
+    "working_tree_status": [
+      " M third_party/cocogfx",
+      "?? start.sh"
+    ],
+    "config_mk_sha256": "99bc7ddc92371790199a0b1039ad14fd7009d7c05be464ed6508bf29140cd7d9",
+    "vx_config_toml_sha256": "ae535ee43b5b6aece2f3374b971b7b558e7b016de5da15ccf338cc395d61c436",
+    "config_stamp_sha256": "1dbb1b64bdd09b6d9065762dbb7d4aa2378e1659bc9ec3fd5e6c5eecba11f3ea",
+    "xlen": 32,
+    "cores": 1,
+    "warps_per_core": 4,
+    "threads_per_warp": 4,
+    "tcu_enabled": false,
+    "volt_clang_version": "20.1.8",
+    "volt_source_revision": "b2ecfe086df2d002333a87f3d3ebe6a74aba129e2",
+    "driver": "simx"
+  },
+  "weights": {
+    "kind": "deterministic-synthetic",
+    "seed": 3070,
+    "suitable_for_accuracy_evaluation": false
+  },
+  "profile": {
+    "rows": 2,
+    "channels": 4,
+    "hidden": 8,
+    "epsilon": 9.999999747378752e-06,
+    "input_shape": [
+      1,
+      2,
+      4
+    ],
+    "output_shape": [
+      1,
+      2,
+      4
+    ],
+    "kernels": [
+      "bevformer_fc1_bias_relu",
+      "bevformer_fc2_bias_residual",
+      "bevformer_layer_norm"
+    ]
+  },
+  "mlir": {
+    "frontend_sha256": "8360bae618e266b55d6ba8a6ee1daa31dfe0b93a10ed3e97258ec50f552f21cb",
+    "optimized_sha256": "7e6bfb8162c2e28b2de93f9dbef02afe1a69f78f9d3833acac1c4050ef74db6e",
+    "vortex_call_plan_sha256": "777e761563c21ce59bf360d03d0d721b5bf8e707d72a622feddee6cc85cc074d",
+    "external_weight_sha256": {
+      "fc1_weight": "b24e2ecd5192be868883645c607cf4747771d552a111e6ad9413a8cfe184e5c6",
+      "fc1_bias": "e99e7589732adbf7a4a5dc3932c3fe5c52b4d267540b121c043ea3723710f246",
+      "fc2_weight": "e8f71a55f8f2459fd6cf25e468ba58ec4345df12c2d60430ef3c5c1aeaca5c15",
+      "fc2_bias": "1d2dd9ed2c3dada336246e7abcf38ab0999bdd057836c8db33201f601f3af7cc",
+      "norm_weight": "1263fd99a78bfe42d8d0bfc9d76ffd22d7fb050c5e9b32015f5152cf17ba577f",
+      "norm_bias": "0c6f3d9d0ca5951902edf2b4543c97048d2139295cc6925549fded1fdf97d34c"
+    }
+  },
+  "artifact": {
+    "manifest_file": "synthetic-smoke-manifest.json",
+    "manifest_sha256": "346152dc3341177c74a6f124e6b672cb616fa0f2bf7e072bce4c74792d8559d6",
+    "payload_file_count": 17,
+    "source_artifact_verified_before_build": true,
+    "kernel_vxbin_sha256": "2896b0a623eecae2e3e2dd40c639c40b4ebcf33163429071004174ff422e418e",
+    "kernel_vxbin_bytes": 5010,
+    "host_runner_sha256": "e452b381f699dac51b61e8fc90d61612f9fa3b269ef5c94d3a11e6b6c293bbcd",
+    "host_runner_bytes": 41928,
+    "uploaded_artifact_bundle_sha256": "3ae37da53422da44423419235a1044b15170b4ab781c6d1a71b57dce99f876cb"
+  },
+  "evidence": {
+    "raw_log": "synthetic-smoke-build-and-simx.log",
+    "raw_log_sha256": "46121cfedf81f566623f3012cd117ae1dd6ab0607d6de698c5d59ed9ce7dc7ed",
+    "downloaded_validation_bundle_sha256": "df5c97242e441d72503695490a5ce8b45c5c03486c78b794b4899481af25cae5"
+  },
+  "execution": {
+    "schema_version": 1,
+    "backend": "vortex-v3",
+    "driver": "simx",
+    "shape": [
+      1,
+      2,
+      4
+    ],
+    "hidden": 8,
+    "warmup": 1,
+    "repeat": 3,
+    "h2d_mean_ms": 0.039925,
+    "kernel_host_wall_mean_ms": 5.403756,
+    "kernel_device_profile_mean_ms": 5.334338,
+    "d2h_mean_ms": 0.054436,
+    "end_to_end_mean_ms": 5.49972,
+    "max_abs_error": 1.1920929e-07,
+    "tolerance": 0.001,
+    "finite": true,
+    "verified": true,
+    "optimized_mlir_sha256": "7e6bfb8162c2e28b2de93f9dbef02afe1a69f78f9d3833acac1c4050ef74db6e",
+    "vortex_call_plan_mlir_sha256": "777e761563c21ce59bf360d03d0d721b5bf8e707d72a622feddee6cc85cc074d",
+    "simx_perf": {
+      "instructions": 229,
+      "cycles": 2090,
+      "ipc": 0.11
+    },
+    "measurement_scope": "SimX functional simulator; not Vortex FPGA/ASIC latency"
+  },
+  "fallbacks": {
+    "cuda": false,
+    "ptx": false,
+    "cublas": false,
+    "cupy": false
+  }
+}

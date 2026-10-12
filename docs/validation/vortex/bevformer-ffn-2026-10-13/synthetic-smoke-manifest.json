@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "compiler_backend": "vortex-v3",
+  "target": {
+    "platform": "Vortex 3.0",
+    "xlen": 32,
+    "isa": "RV32IMAF+xvortex+zicond",
+    "binary_format": ".vxbin",
+    "runtime": "vortex2",
+    "drivers": [
+      "simx",
+      "rtlsim",
+      "xrt",
+      "opae",
+      "aved",
+      "firesim"
+    ]
+  },
+  "lowering": {
+    "frontend": "GAC canonical BEVFormer FFN graph",
+    "middle_end": "upstream tensor/linalg/arith/math MLIR",
+    "mlir_opt_passes": [
+      "verify-each",
+      "canonicalize",
+      "cse"
+    ],
+    "backend": "audited BEVFormer FFN pattern -> verified standard func.call Vortex runtime plan -> Vortex kernel C++ -> VOLT",
+    "pre_opt_mlir_sha256": "8360bae618e266b55d6ba8a6ee1daa31dfe0b93a10ed3e97258ec50f552f21cb",
+    "post_opt_mlir_sha256": "7e6bfb8162c2e28b2de93f9dbef02afe1a69f78f9d3833acac1c4050ef74db6e",
+    "vortex_call_plan_mlir_sha256": "777e761563c21ce59bf360d03d0d721b5bf8e707d72a622feddee6cc85cc074d",
+    "external_weight_sha256": {
+      "fc1_weight": "b24e2ecd5192be868883645c607cf4747771d552a111e6ad9413a8cfe184e5c6",
+      "fc1_bias": "e99e7589732adbf7a4a5dc3932c3fe5c52b4d267540b121c043ea3723710f246",
+      "fc2_weight": "e8f71a55f8f2459fd6cf25e468ba58ec4345df12c2d60430ef3c5c1aeaca5c15",
+      "fc2_bias": "1d2dd9ed2c3dada336246e7abcf38ab0999bdd057836c8db33201f601f3af7cc",
+      "norm_weight": "1263fd99a78bfe42d8d0bfc9d76ffd22d7fb050c5e9b32015f5152cf17ba577f",
+      "norm_bias": "0c6f3d9d0ca5951902edf2b4543c97048d2139295cc6925549fded1fdf97d34c"
+    },
+    "mlir_opt_version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build.",
+    "mlir_opt_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01",
+    "llvm_version_boundary": "MLIR middle-end and VOLT are separate textual/source stages; LLVM bitcode is not exchanged across versions"
+  },
+  "graph": "bevformer_ffn_vortex_synthetic_smoke",
+  "model_provenance": {
+    "kind": "deterministic-synthetic",
+    "seed": 3070,
+    "suitable_for_accuracy_evaluation": false
+  },
+  "profile": {
+    "rows": 2,
+    "channels": 4,
+    "hidden": 8,
+    "epsilon": 9.999999747378752e-06,
+    "input_shape": [
+      1,
+      2,
+      4
+    ],
+    "output_shape": [
+      1,
+      2,
+      4
+    ],
+    "kernels": [
+      "bevformer_fc1_bias_relu",
+      "bevformer_fc2_bias_residual",
+      "bevformer_layer_norm"
+    ]
+  },
+  "dispatch_count": 3,
+  "oracle": {
+    "kind": "GAC NumPy reference_run",
+    "query": "deterministic query.bin",
+    "output": "golden.bin",
+    "runtime_recomputes_oracle": false
+  },
+  "fallbacks": {
+    "cuda": false,
+    "ptx": false,
+    "cublas": false,
+    "cupy": false
+  },
+  "status": "Vortex executable project; run make to produce kernel.vxbin",
+  "files": {
+    "Makefile": {
+      "bytes": 942,
+      "sha256": "078933748592d1d2bde7b04c6718352494fc16a966892f05d7fc33cdbdeee1ce"
+    },
+    "common.h": {
+      "bytes": 683,
+      "sha256": "2482ddfbf779505ecc9b119b8d4009c52561431be4f992deb41d7db16693f046"
+    },
+    "fc1_bias.bin": {
+      "bytes": 32,
+      "sha256": "e99e7589732adbf7a4a5dc3932c3fe5c52b4d267540b121c043ea3723710f246"
+    },
+    "fc1_weight.bin": {
+      "bytes": 128,
+      "sha256": "b24e2ecd5192be868883645c607cf4747771d552a111e6ad9413a8cfe184e5c6"
+    },
+    "fc2_bias.bin": {
+      "bytes": 16,
+      "sha256": "1d2dd9ed2c3dada336246e7abcf38ab0999bdd057836c8db33201f601f3af7cc"
+    },
+    "fc2_weight.bin": {
+      "bytes": 128,
+      "sha256": "e8f71a55f8f2459fd6cf25e468ba58ec4345df12c2d60430ef3c5c1aeaca5c15"
+    },
+    "frontend.mlir": {
+      "bytes": 7456,
+      "sha256": "8360bae618e266b55d6ba8a6ee1daa31dfe0b93a10ed3e97258ec50f552f21cb"
+    },
+    "golden.bin": {
+      "bytes": 32,
+      "sha256": "b872f722b6756514f9d38cbaaf1b6bfcb6ddaf76a83469b62e6a4bff95a24f5a"
+    },
+    "kernel.cpp": {
+      "bytes": 3051,
+      "sha256": "d859785f99003a9787c62d646b93b0ee1fb0f11abf437169fd5efc831e7d9306"
+    },
+    "main.cpp": {
+      "bytes": 14833,
+      "sha256": "c5e4c4d186efc7b99f6c189c9c6a419dd63538a336f7cf7c50fd01a41e8ad903"
+    },
+    "model_config.h": {
+      "bytes": 535,
+      "sha256": "84c1665efbfeded6736b36ceca41d3ebfb486c8d1d5f65392f5ff13bf0d23e2f"
+    },
+    "norm_bias.bin": {
+      "bytes": 16,
+      "sha256": "0c6f3d9d0ca5951902edf2b4543c97048d2139295cc6925549fded1fdf97d34c"
+    },
+    "norm_weight.bin": {
+      "bytes": 16,
+      "sha256": "1263fd99a78bfe42d8d0bfc9d76ffd22d7fb050c5e9b32015f5152cf17ba577f"
+    },
+    "optimized.mlir": {
+      "bytes": 5732,
+      "sha256": "7e6bfb8162c2e28b2de93f9dbef02afe1a69f78f9d3833acac1c4050ef74db6e"
+    },
+    "query.bin": {
+      "bytes": 32,
+      "sha256": "d0fd28c655c4b2835539737cbd2a06ff82577b66ba882ed148520aeca57be8fa"
+    },
+    "verify_artifact.py": {
+      "bytes": 4559,
+      "sha256": "3c641e2d85d8e1174e2c13eecb2e92563d2d767f35123755719866d7dacaadf0"
+    },
+    "vortex.mlir": {
+      "bytes": 1973,
+      "sha256": "777e761563c21ce59bf360d03d0d721b5bf8e707d72a622feddee6cc85cc074d"
+    }
+  }
+}

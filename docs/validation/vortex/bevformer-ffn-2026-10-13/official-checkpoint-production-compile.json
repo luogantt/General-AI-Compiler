@@ -1,0 +1,99 @@
+{
+  "schema_version": 2,
+  "timestamp": "2026-10-13T00:36:34+08:00",
+  "backend": "vortex-v3",
+  "compiler": {
+    "repository": "General-AI-Compiler",
+    "branch": "codex/bevformer-vortex-mlir",
+    "source_commit": "76bbb36d14c5ef20332358d295281311c3a8ba10",
+    "mlir_opt_version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build.",
+    "mlir_opt_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01"
+  },
+  "target": {
+    "vortex_version": "3.0",
+    "vortex_commit": "14926ffc8755ceb664ec017028bba7f4a250096a",
+    "working_tree_status": [
+      " M third_party/cocogfx",
+      "?? start.sh"
+    ],
+    "config_mk_sha256": "99bc7ddc92371790199a0b1039ad14fd7009d7c05be464ed6508bf29140cd7d9",
+    "vx_config_toml_sha256": "ae535ee43b5b6aece2f3374b971b7b558e7b016de5da15ccf338cc395d61c436",
+    "config_stamp_sha256": "1dbb1b64bdd09b6d9065762dbb7d4aa2378e1659bc9ec3fd5e6c5eecba11f3ea",
+    "xlen": 32,
+    "cores": 1,
+    "warps_per_core": 4,
+    "threads_per_warp": 4,
+    "tcu_enabled": false,
+    "volt_clang_version": "20.1.8",
+    "volt_source_revision": "b2ecfe086df2d002333a87f3d3ebe6a74aba129e2",
+    "driver": null
+  },
+  "weights": {
+    "kind": "verified-gacweights",
+    "source_checkpoint_sha256": "7305046dbaa4fe8b1fa6d6acb9e0e3d605a70a3c473f763e936103428d2b2f12",
+    "encoder_layer": 0,
+    "compiled_rows": 2500,
+    "suitable_for_accuracy_evaluation": true
+  },
+  "profile": {
+    "rows": 2500,
+    "channels": 256,
+    "hidden": 512,
+    "epsilon": 9.999999747378752e-06,
+    "input_shape": [
+      1,
+      2500,
+      256
+    ],
+    "output_shape": [
+      1,
+      2500,
+      256
+    ],
+    "kernels": [
+      "bevformer_fc1_bias_relu",
+      "bevformer_fc2_bias_residual",
+      "bevformer_layer_norm"
+    ]
+  },
+  "mlir": {
+    "frontend_sha256": "db3707aa4d63dacfe1a56b93013a9f2066ee75a2bb1505e0207a55efdf2e6206",
+    "optimized_sha256": "ad93326850d563fc9e8c32ade2082bea065982fc3e7930e6e87840ae78989193",
+    "vortex_call_plan_sha256": "064dff7d62fa1cd30db3fb1966fb72a236a51e32a96e76ffb0d539164becc690",
+    "external_weight_sha256": {
+      "fc1_weight": "2f707612770f5c653b91dad1e3d36be93fc953602250ef45b322273d4e6b970b",
+      "fc1_bias": "04eaa7748bc1bf8446cbce1c0cdca694d6d8141670e11e2b477a18905df217e9",
+      "fc2_weight": "b2bd902d2e2612058a0f1e47671ea2afc77ac11580639e473a716f68a271fd76",
+      "fc2_bias": "51ff3ee33ebe487a7bac05019202d7788a7b37fd9f11361421e3068b53fe6fc5",
+      "norm_weight": "b2b8c0924c33838571c7e37c8ab27519d565fad7e16ff5feb005ce1956d0546a",
+      "norm_bias": "a58756a7980660a62b187f9ec157de594dab348294823c4807f2b6d1706dec8d"
+    }
+  },
+  "artifact": {
+    "manifest_file": "official-checkpoint-production-manifest.json",
+    "manifest_sha256": "43be04a94fb68a527b7cee0328a90c4c86daeb8d57393863089707d7122379d1",
+    "payload_file_count": 17,
+    "source_artifact_verified_before_build": true,
+    "kernel_vxbin_sha256": "2896b0a623eecae2e3e2dd40c639c40b4ebcf33163429071004174ff422e418e",
+    "kernel_vxbin_bytes": 5010,
+    "host_runner_sha256": "4bd5c59fb449a557a4b8a8a2d0864f6baf209017eb2d953942461c02e73a04b4",
+    "host_runner_bytes": 41928,
+    "uploaded_artifact_bundle_sha256": "3ae37da53422da44423419235a1044b15170b4ab781c6d1a71b57dce99f876cb"
+  },
+  "evidence": {
+    "raw_log": "official-checkpoint-production-build.log",
+    "raw_log_sha256": "da3a11b5f4c6a0069a10933a6e26e93b053e82c889f2ac28af3ac856bf90ac11",
+    "downloaded_validation_bundle_sha256": "df5c97242e441d72503695490a5ce8b45c5c03486c78b794b4899481af25cae5"
+  },
+  "execution": {
+    "volt_compile": "passed",
+    "full_2500_row_simx_run": "not run",
+    "reason": "The scalar SimX run is a functional simulation and is not a useful full-profile hardware-latency measurement; one production-width row is validated separately."
+  },
+  "fallbacks": {
+    "cuda": false,
+    "ptx": false,
+    "cublas": false,
+    "cupy": false
+  }
+}
