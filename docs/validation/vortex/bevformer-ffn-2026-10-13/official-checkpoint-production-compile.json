@@ -1,19 +1,17 @@
 {
   "schema_version": 2,
-  "timestamp": "2026-10-13T00:36:34+08:00",
+  "timestamp": "2026-10-13T01:04:55+08:00",
   "backend": "vortex-v3",
   "compiler": {
-    "repository": "General-AI-Compiler",
-    "branch": "codex/bevformer-vortex-mlir",
-    "source_commit": "76bbb36d14c5ef20332358d295281311c3a8ba10",
+    "source_commit": "e38fff29a3b2096bbb54d0bcc2b88c63293fe3ad",
     "mlir_opt_version": "LLVM (http://llvm.org/):\n  LLVM version 24.0.0git\n  Optimized build.",
     "mlir_opt_source_revision": "765392a6b4498f1dc57233f03a31b87462fdef01"
   },
   "target": {
-    "vortex_version": "3.0",
+    "platform": "Vortex 3.0",
     "vortex_commit": "14926ffc8755ceb664ec017028bba7f4a250096a",
     "working_tree_status": [
-      " M third_party/cocogfx",
+      " ? third_party/cocogfx",
       "?? start.sh"
     ],
     "config_mk_sha256": "99bc7ddc92371790199a0b1039ad14fd7009d7c05be464ed6508bf29140cd7d9",
@@ -25,7 +23,7 @@
     "threads_per_warp": 4,
     "tcu_enabled": false,
     "volt_clang_version": "20.1.8",
-    "volt_source_revision": "b2ecfe086df2d002333a87f3d3ebe6a74aba129e2",
+    "volt_source_revision": "b2ecfe086df2d00233a87f3d3ebe6a74aba129e2",
     "driver": null
   },
   "weights": {
@@ -75,20 +73,18 @@
     "payload_file_count": 17,
     "source_artifact_verified_before_build": true,
     "kernel_vxbin_sha256": "2896b0a623eecae2e3e2dd40c639c40b4ebcf33163429071004174ff422e418e",
-    "kernel_vxbin_bytes": 5010,
-    "host_runner_sha256": "4bd5c59fb449a557a4b8a8a2d0864f6baf209017eb2d953942461c02e73a04b4",
-    "host_runner_bytes": 41928,
-    "uploaded_artifact_bundle_sha256": "3ae37da53422da44423419235a1044b15170b4ab781c6d1a71b57dce99f876cb"
+    "host_runner_sha256": "bb860e7db3114b15780a46f5dd2c557b1694971a8e3bfdd4f4be6a2c81bfb8e3",
+    "uploaded_artifact_bundle_sha256": "884be26ce4ae70a2192fefc349d0a05c733b419c38bbbc42407314fa686d22b5"
   },
   "evidence": {
     "raw_log": "official-checkpoint-production-build.log",
-    "raw_log_sha256": "da3a11b5f4c6a0069a10933a6e26e93b053e82c889f2ac28af3ac856bf90ac11",
-    "downloaded_validation_bundle_sha256": "df5c97242e441d72503695490a5ce8b45c5c03486c78b794b4899481af25cae5"
+    "raw_log_sha256": "7e67804d7ef29ea45392851fc4bc5ab9360a040b6e7d8f8992ce08c90d25a8e7",
+    "downloaded_validation_bundle_sha256": "0f6ec741440faec0cd36182ef967b58a02f09e8387061183b011b9916b4c4d60"
   },
   "execution": {
     "volt_compile": "passed",
-    "full_2500_row_simx_run": "not run",
-    "reason": "The scalar SimX run is a functional simulation and is not a useful full-profile hardware-latency measurement; one production-width row is validated separately."
+    "simx_run": "not_run",
+    "evidence": "The raw log contains the completed VOLT build and no VORTEX_DRIVER execution record."
   },
   "fallbacks": {
     "cuda": false,
