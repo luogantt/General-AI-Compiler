@@ -311,6 +311,187 @@ class VortexCompileTests(unittest.TestCase):
                         compile_vortex(graph, mlir_opt=_MLIR_OPT)
                 self.assertEqual(verify.call_count, 2)
 
+    def test_rejects_dense_weight_value_changed_by_high_level_mlir_opt(self):
+        graph = _ffn_graph()
+        verification_count = 0
+
+        def tamper_fc1_weight(source: str, **_kwargs) -> str:
+            nonlocal verification_count
+            verification_count += 1
+            if verification_count != 1:
+                return source
+            dense = re.search(
+                r"dense<(?P<payload>[^>]*)>\s*:\s*tensor<4x8xf32>",
+                source,
+                flags=re.DOTALL,
+            )
+            self.assertIsNotNone(dense)
+            assert dense is not None
+            payload = dense.group("payload")
+            changed_payload, substitutions = re.subn(
+                r"[+-]?(?:(?:\d+(?:\.\d*)?|\.\d+)(?:[Ee][+-]?\d+)?)",
+                "9.25",
+                payload,
+                count=1,
+            )
+            self.assertEqual(substitutions, 1)
+            start, end = dense.span("payload")
+            return source[:start] + changed_payload + source[end:]
+
+        with (
+            mock.patch(
+                "gac.backends.vortex.verify_mlir",
+                side_effect=tamper_fc1_weight,
+            ) as verify,
+            mock.patch("gac.backends.vortex.probe_mlir_opt_version"),
+            mock.patch("gac.backends.vortex.probe_mlir_opt_source_revision"),
+        ):
+            with self.assertRaisesRegex(
+                BackendError, "dense weights.*bit-for-bit"
+            ):
+                compile_vortex(graph, mlir_opt=_MLIR_OPT)
+
+        self.assertGreaterEqual(verify.call_count, 1)
+
+    def test_accepts_mlir24_raw_hex_dense_weight_payload(self):
+        graph = _ffn_graph()
+        fc1_weight_bytes = np.ascontiguousarray(
+            graph.constants["fc1_weight"], dtype="<f4"
+        ).tobytes(order="C")
+        raw_literal = f'"0x{fc1_weight_bytes.hex().upper()}"'
+        verification_count = 0
+
+        def print_fc1_weight_as_raw_hex(source: str, **_kwargs) -> str:
+            nonlocal verification_count
+            verification_count += 1
+            if verification_count == 1:
+                dense = re.search(
+                    r"dense<(?P<payload>[^>]*)>\s*:\s*tensor<4x8xf32>",
+                    source,
+                    flags=re.DOTALL,
+                )
+                self.assertIsNotNone(dense)
+                assert dense is not None
+                start, end = dense.span("payload")
+                return source[:start] + raw_literal + source[end:]
+            return re.sub(
+                r"\bfunc\.call(?=\s+@gac_vortex_)", "call", source
+            )
+
+        with (
+            mock.patch(
+                "gac.backends.vortex.verify_mlir",
+                side_effect=print_fc1_weight_as_raw_hex,
+            ) as verify,
+            mock.patch(
+                "gac.backends.vortex.probe_mlir_opt_version",
+                return_value=_MLIR_VERSION,
+            ),
+            mock.patch(
+                "gac.backends.vortex.probe_mlir_opt_source_revision",
+                return_value=_MLIR_REVISION,
+            ),
+        ):
+            program = compile_vortex(graph, mlir_opt=_MLIR_OPT)
+
+        self.assertEqual(verify.call_count, 2)
+        self.assertEqual(verification_count, 2)
+        self.assertIn(f"dense<{raw_literal}> : tensor<4x8xf32>", program.optimized_mlir)
+        self.assertEqual(program.plan.rows, 2)
+        self.assertEqual(program.plan.channels, 4)
+        self.assertEqual(program.plan.hidden, 8)
+        self.assertRegex(
+            program.vortex_mlir,
+            r"\bcall\s+@gac_vortex_fc2_bias_residual",
+        )
+
+    def test_rejects_layer_norm_weight_and_bias_ssa_role_swap(self):
+        graph = _ffn_graph()
+        verification_count = 0
+
+        def swap_normalize_parameter_uses(source: str, **_kwargs) -> str:
+            nonlocal verification_count
+            verification_count += 1
+            if verification_count != 1:
+                return source
+
+            normalize_location = source.index('loc("post_layer_norm.normalize")')
+            inputs_marker = source.rfind("} ins(", 0, normalize_location)
+            self.assertNotEqual(inputs_marker, -1)
+            values_start = inputs_marker + len("} ins(")
+            values_end = source.index(" :", values_start, normalize_location)
+            arguments = [
+                value.strip()
+                for value in source[values_start:values_end].split(",")
+            ]
+            self.assertEqual(len(arguments), 4)
+            norm_weight_ssa, norm_bias_ssa = arguments[2:]
+            self.assertNotEqual(norm_weight_ssa, norm_bias_ssa)
+            for ssa in (norm_weight_ssa, norm_bias_ssa):
+                self.assertRegex(
+                    source,
+                    rf"{re.escape(ssa)}\s*=\s*arith\.constant\s+dense<",
+                )
+
+            arguments[2], arguments[3] = norm_bias_ssa, norm_weight_ssa
+            return (
+                source[:values_start]
+                + ", ".join(arguments)
+                + source[values_end:]
+            )
+
+        with (
+            mock.patch(
+                "gac.backends.vortex.verify_mlir",
+                side_effect=swap_normalize_parameter_uses,
+            ) as verify,
+            mock.patch("gac.backends.vortex.probe_mlir_opt_version"),
+            mock.patch("gac.backends.vortex.probe_mlir_opt_source_revision"),
+        ):
+            with self.assertRaisesRegex(
+                BackendError, "dense weight role 'norm_weight' changed"
+            ):
+                compile_vortex(graph, mlir_opt=_MLIR_OPT)
+
+        self.assertEqual(verify.call_count, 1)
+
+    def test_rejects_same_type_fc2_ssa_argument_substitution(self):
+        graph = _ffn_graph()
+        verification_count = 0
+
+        def substitute_fc2_query(source: str, **_kwargs) -> str:
+            nonlocal verification_count
+            verification_count += 1
+            if verification_count == 1:
+                return source
+            pretty = re.sub(
+                r"\bfunc\.call(?=\s+@gac_vortex_)", "call", source
+            )
+            changed, substitutions = re.subn(
+                r"((?:func\.)?call\s+@gac_vortex_fc2_bias_residual\s*"
+                r"\(\s*%fc2_launch\s*,\s*)%query(\s*,\s*%activation\s*,)",
+                r"\g<1>%residual\g<2>",
+                pretty,
+                count=1,
+            )
+            self.assertEqual(substitutions, 1)
+            return changed
+
+        with (
+            mock.patch(
+                "gac.backends.vortex.verify_mlir",
+                side_effect=substitute_fc2_query,
+            ) as verify,
+            mock.patch("gac.backends.vortex.probe_mlir_opt_version"),
+            mock.patch("gac.backends.vortex.probe_mlir_opt_source_revision"),
+        ):
+            with self.assertRaisesRegex(
+                BackendError, "call 1 buffer dataflow changed"
+            ):
+                compile_vortex(graph, mlir_opt=_MLIR_OPT)
+
+        self.assertEqual(verify.call_count, 2)
+
     def test_rejects_optimized_mlir_outside_the_audited_pattern(self):
         graph = _ffn_graph()
 

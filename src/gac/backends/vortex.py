@@ -391,6 +391,142 @@ def _parse_optimized_mlir(source: str, expected: VortexFFNPlan) -> VortexFFNPlan
     return actual
 
 
+def _audit_optimized_weights(source: str, graph: Graph) -> None:
+    """Require every externally stored weight to occur bit-for-bit in MLIR.
+
+    ``canonicalize``/CSE may merge identical constants, so the comparison is
+    over unique ``(shape, payload)`` fingerprints rather than SSA definition
+    count.  The standard MLIR float printer emits enough digits to round-trip
+    finite f32 values exactly.
+    """
+
+    actual_by_ssa: dict[str, tuple[tuple[int, ...], str]] = {}
+    dense_pattern = re.compile(
+        rf"(?P<ssa>{_SSA})\s*=\s*arith\.constant\s+"
+        r"dense<(?P<payload>.*?)>\s*:\s*"
+        r"tensor<(?P<type>[^>]+)>",
+        flags=re.DOTALL,
+    )
+    for index, match in enumerate(dense_pattern.finditer(source), start=1):
+        shape = _parse_static_f32_type(
+            match.group("type"), kind=f"dense constant {index}"
+        )
+        payload = match.group("payload").strip()
+        element_count = math.prod(shape)
+        raw_hex = re.fullmatch(r'"0x(?P<hex>[0-9A-Fa-f]+)"', payload)
+        if raw_hex is not None:
+            raw_text = raw_hex.group("hex")
+            if len(raw_text) % 2:
+                raise BackendError(
+                    f"{TARGET}: optimized MLIR dense constant {index} has "
+                    "a malformed raw-byte literal"
+                )
+            raw_bytes = bytes.fromhex(raw_text)
+            if len(raw_bytes) != element_count * np.dtype("<f4").itemsize:
+                raise BackendError(
+                    f"{TARGET}: optimized MLIR dense constant {index} has "
+                    f"{len(raw_bytes)} raw bytes, expected {element_count * 4}"
+                )
+            payload_bytes = raw_bytes
+        elif re.fullmatch(_FLOAT, payload):
+            values = np.full(element_count, float(payload), dtype="<f4")
+            payload_bytes = values.tobytes(order="C")
+        else:
+            remainder = re.sub(_FLOAT, "", payload)
+            if re.fullmatch(r"[\[\],\s]*", remainder) is None:
+                raise BackendError(
+                    f"{TARGET}: optimized MLIR dense constant {index} is unsupported"
+                )
+            tokens = re.findall(_FLOAT, payload)
+            if len(tokens) != element_count:
+                raise BackendError(
+                    f"{TARGET}: optimized MLIR dense constant {index} has "
+                    f"{len(tokens)} values, expected {element_count}"
+                )
+            values = np.asarray(tokens, dtype="<f4")
+            payload_bytes = values.tobytes(order="C")
+        actual_by_ssa[match.group("ssa")] = (
+            shape,
+            hashlib.sha256(payload_bytes).hexdigest(),
+        )
+
+    expected_by_role = {
+        name: (
+            graph.constants[name].shape,
+            hashlib.sha256(
+                np.ascontiguousarray(graph.constants[name], dtype="<f4").tobytes(
+                    order="C"
+                )
+            ).hexdigest(),
+        )
+        for name in _REQUIRED_CONSTANTS
+    }
+    actual = set(actual_by_ssa.values())
+    expected = set(expected_by_role.values())
+    if actual != expected:
+        missing = len(expected - actual)
+        unexpected = len(actual - expected)
+        raise BackendError(
+            f"{TARGET}: optimized MLIR dense weights do not match the canonical "
+            f"graph bit-for-bit (missing={missing}, unexpected={unexpected})"
+        )
+
+    matmul_uses = list(
+        re.finditer(
+            rf"linalg\.matmul\s+ins\(\s*(?P<lhs>{_SSA})\s*,\s*"
+            rf"(?P<rhs>{_SSA})\s*:",
+            source,
+        )
+    )
+    generic_uses: list[tuple[tuple[str, ...], str]] = []
+    for generic in re.finditer(
+        rf"{_SSA}\s*=\s*linalg\.generic\b.*?\bins\((?P<inputs>[^)]*)\)\s*"
+        r"outs\([^)]*\)\s*\{(?P<body>.*?)^\s*\}\s*->",
+        source,
+        flags=re.DOTALL | re.MULTILINE,
+    ):
+        input_values = generic.group("inputs").split(":", 1)[0]
+        generic_uses.append(
+            (tuple(re.findall(_SSA, input_values)), generic.group("body"))
+        )
+
+    relu_uses = [item for item in generic_uses if "arith.maximumf" in item[1]]
+    fc2_bias_uses = [
+        item
+        for item in generic_uses
+        if "arith.addf" in item[1]
+        and "arith.maximumf" not in item[1]
+        and "math.rsqrt" not in item[1]
+        and len(item[0]) == 2
+        and item[0][1] in actual_by_ssa
+    ]
+    layer_norm_uses = [item for item in generic_uses if "math.rsqrt" in item[1]]
+    if (
+        len(matmul_uses) != 2
+        or len(relu_uses) != 1
+        or len(fc2_bias_uses) != 1
+        or len(layer_norm_uses) != 1
+        or len(relu_uses[0][0]) != 2
+        or len(layer_norm_uses[0][0]) != 4
+    ):
+        raise BackendError(
+            f"{TARGET}: optimized MLIR weight dataflow is outside the supported FFN pattern"
+        )
+    role_ssas = {
+        "fc1_weight": matmul_uses[0].group("rhs"),
+        "fc1_bias": relu_uses[0][0][1],
+        "fc2_weight": matmul_uses[1].group("rhs"),
+        "fc2_bias": fc2_bias_uses[0][0][1],
+        "norm_weight": layer_norm_uses[0][0][2],
+        "norm_bias": layer_norm_uses[0][0][3],
+    }
+    for role, ssa in role_ssas.items():
+        if actual_by_ssa.get(ssa) != expected_by_role[role]:
+            raise BackendError(
+                f"{TARGET}: optimized MLIR dense weight role {role!r} changed"
+            )
+
+
 def _memref_type(shape: tuple[int, ...]) -> str:
     return "memref<" + "x".join(str(dim) for dim in shape) + "xf32>"
 
@@ -500,10 +636,14 @@ def _parse_vortex_mlir(
     if attributes != dict(expected_weight_sha256):
         raise BackendError(f"{TARGET}: verified Vortex MLIR external weight binding changed")
 
-    argument_types = tuple(
-        match.group(1).strip()
-        for match in re.finditer(rf"{_SSA}\s*:\s*([^,\n]+)", function.group("args"))
+    arguments = tuple(
+        (match.group("ssa"), match.group("type").strip())
+        for match in re.finditer(
+            rf"(?P<ssa>{_SSA})\s*:\s*(?P<type>[^,\n]+)", function.group("args")
+        )
     )
+    argument_ssas = tuple(ssa for ssa, _type in arguments)
+    argument_types = tuple(_type for _ssa, _type in arguments)
     if len(argument_types) != 10:
         raise BackendError(f"{TARGET}: verified Vortex MLIR plan ABI requires ten buffers")
     shapes = tuple(
@@ -550,6 +690,23 @@ def _parse_vortex_mlir(
         ("index", argument_types[0], argument_types[7], *argument_types[3:5], argument_types[8]),
         ("index", argument_types[8], *argument_types[5:7], argument_types[9], "f32"),
     )
+    expected_buffer_arguments = (
+        (argument_ssas[0], argument_ssas[1], argument_ssas[2], argument_ssas[7]),
+        (
+            argument_ssas[0],
+            argument_ssas[7],
+            argument_ssas[3],
+            argument_ssas[4],
+            argument_ssas[8],
+        ),
+        (
+            argument_ssas[8],
+            argument_ssas[5],
+            argument_ssas[6],
+            argument_ssas[9],
+        ),
+    )
+    parsed_call_arguments: list[tuple[str, ...]] = []
     for index, (call, callee, expected_types) in enumerate(
         zip(calls, _RUNTIME_CALLEES, expected_call_types)
     ):
@@ -565,6 +722,15 @@ def _parse_vortex_mlir(
             raise BackendError(
                 f"{TARGET}: verified Vortex MLIR declaration {index} ABI changed"
             )
+        call_arguments = tuple(item.strip() for item in call.group("args").split(","))
+        parsed_call_arguments.append(call_arguments)
+        buffer_arguments = (
+            call_arguments[1:-1] if index == 2 else call_arguments[1:]
+        )
+        if buffer_arguments != expected_buffer_arguments[index]:
+            raise BackendError(
+                f"{TARGET}: verified Vortex MLIR call {index} buffer dataflow changed"
+            )
 
     constants: dict[str, tuple[str, str]] = {}
     for constant in re.finditer(
@@ -577,14 +743,15 @@ def _parse_vortex_mlir(
             constant.group("type"),
         )
     expected_launches = (rows * hidden, rows * channels, rows)
-    for index, (call, expected_launch) in enumerate(zip(calls, expected_launches)):
-        call_arguments = tuple(item.strip() for item in call.group("args").split(","))
+    for index, (call_arguments, expected_launch) in enumerate(
+        zip(parsed_call_arguments, expected_launches)
+    ):
         if not call_arguments or call_arguments[0] not in constants:
             raise BackendError(f"{TARGET}: verified Vortex MLIR call {index} lacks launch size")
         value, value_type = constants[call_arguments[0]]
         if value_type != "index" or int(value) != expected_launch:
             raise BackendError(f"{TARGET}: verified Vortex MLIR call {index} launch size changed")
-    norm_arguments = tuple(item.strip() for item in calls[2].group("args").split(","))
+    norm_arguments = parsed_call_arguments[2]
     if len(norm_arguments) != 6 or norm_arguments[-1] not in constants:
         raise BackendError(f"{TARGET}: verified Vortex MLIR LayerNorm epsilon is missing")
     epsilon_text, epsilon_type = constants[norm_arguments[-1]]
@@ -1303,6 +1470,7 @@ def compile_vortex(
         timeout=timeout,
     )
     optimized_plan = _parse_optimized_mlir(optimized, graph_plan)
+    _audit_optimized_weights(optimized, mlir_program.graph)
     optimized_hash = _sha256_text(optimized)
     weight_sha256 = _weight_sha256(mlir_program.graph)
     vortex_mlir_input = _runtime_call_mlir(

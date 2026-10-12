@@ -67,7 +67,8 @@ kernel translator。因此这一版采用明确的两级 MLIR 和 Runtime-call �
 2. 第一次外部 `mlir-opt` 真实验证、规范化并做 CSE，产生 `optimized.mlir`。
 3. 后端从优化后的 Tensor/Linalg 文本重新解析函数 ABI、静态类型、两个 MatMul
    的 shape、ReLU 和 LayerNorm epsilon，并与 Canonical Graph 合同逐项核对；超出这份
-   受支持 fingerprint 的模块会被拒绝。
+   受支持 fingerprint 的模块会被拒绝。同时，六组 `dense<...>` FP32 常量按
+   `(shape, little-endian f32 payload SHA-256)` 与 Graph 常量逐 bit 核对。
 4. 解析结果确定性 lowering 为第二个标准方言 MLIR module。它不引入自定义
    Vortex op，而是用 `func.call` 表达三次 Vortex Runtime 调用。
 5. 第二次外部 `mlir-opt` 验证并规范化这个 module，artifact 保存其输出为
@@ -83,6 +84,31 @@ FP32 memref 参数，分别承载 query、六个权重/偏置、activation、res
 LayerNorm epsilon 是显式 `f32` 常量。函数属性还保存
 `fc1_weight`、`fc1_bias`、`fc2_weight`、`fc2_bias`、`norm_weight`、`norm_bias` 六个
 外部 `.bin` 文件的 SHA-256。
+
+权重绑定分成两道检查。编译时，后端解析 `optimized.mlir` 中所有 dense FP32
+常量；无论 MLIR 将常量打印成逐元素列表、scalar splat，还是 `dense<"0x...">`
+raw bytes，都会还原成 FP32 bytes，再比较 shape 和 payload 摘要。后端还根据两次
+`linalg.matmul` 和三个对应 `linalg.generic` 的 SSA 用途，把六个常量逐一绑定到
+`fc1_weight`、`fc1_bias`、`fc2_weight`、`fc2_bias`、`norm_weight` 和 `norm_bias`；
+同 shape 的 LayerNorm scale/bias 对调也会被拒绝。这样允许 `canonicalize`/CSE 合并
+内容完全相同的常量，同时拒绝任意 bit、shape、语义角色、缺项或额外 dense 常量变化。发布 artifact 时，
+六个外部 `.bin` 直接由同一组 Graph 常量按 little-endian FP32 写出；其摘要同时进入
+`vortex.mlir` 属性、manifest lowering metadata 和逐文件记录，部署前校验再把三者
+逐一核对。因此绑定链是 `optimized.mlir dense ↔ Canonical Graph ↔ 外部 .bin`。
+
+Runtime-call parser 也校验每次调用的完整 SSA buffer 实参，而不只校验 callee 名称和
+memref 类型。冻结的数据流必须恰好为：
+
+```text
+fc1(query, fc1_weight, fc1_bias -> activation)
+fc2(query, activation, fc2_weight, fc2_bias -> residual)
+layer_norm(residual, norm_weight, norm_bias -> output; epsilon)
+```
+
+解析器从 plan 函数的 10 个参数取得 SSA 名称，并逐调用比较上述输入、权重、scratch
+和输出的准确顺序；即使两个 buffer 具有相同 shape/type，交换 SSA 实参也会被拒绝。
+每次调用引用的 launch SSA 还必须分别解析为预期的 `index` 常量，LayerNorm 最后一个
+实参必须引用已经核对的 `f32` epsilon 常量。
 
 这里没有跨 LLVM 版本传递 LLVM bitcode。标准 MLIR 是 GAC 的中间层和审计边界，
 VOLT 是 Vortex 的目标编译器。这应描述为 **MLIR 驱动的 Runtime-call lowering**；
