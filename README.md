@@ -59,6 +59,9 @@ compatibility C++ bridge 已用官方 BEVFormer-tiny checkpoint 第 0 层真实�
 
 `lg/bevformer-vortex-direct-mlir` 分支加入 `--device-lowering direct-mlir`：三个设备 Kernel 由 [vortex_device_mlir.py](src/gac/backends/vortex_device_mlir.py) 直接生成 LLVM Dialect MLIR，携带 RV32 参数 ABI、CTA CSR、`vortex.kernel` annotation、`llvm.used` 和 `llvm.compiler.used`。artifact 的 Makefile 从同一个固定 VOLT LLVM 20.1.8 树依次调用 `mlir-opt`、`mlir-translate`、VOLT clang 和 `ld.lld`，最后由 `vxbin.py` 生成 `.vxbin`；设备目录中不再生成 `kernel.cpp`。这条路径现已实际完成 `MLIR → LLVM IR → VOLT → ELF → vxbin → SimX`：合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为 `1.1920929e-7`。10 次 SimX 的 runtime event-profile 均值为 `4.447282 ms`、端到端均值为 `4.602381 ms`；这些是软件模拟器的小尺寸结果，不能作为 Vortex 硬件或完整 BEVFormer 的推理速度。统一工具链、生成命令、ABI 和验证边界见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)、[Vortex Direct-MLIR ABI](docs/designs/vortex_direct_mlir_abi.md) 与 [direct-MLIR 验证记录](docs/validation/vortex/direct-mlir-2026-10-13/README.md)。这一步先建立标量机器码基线；分块、LMEM 复用、融合、双缓冲和 TCU 映射属于后续性能 lowering。
 
+如果要从输入模型开始逐层理解每一份 MLIR、Vortex Kernel ABI、VOLT 链接与 Runtime
+调度，请阅读 [BEVFormer Direct-MLIR → Vortex 编译器分层架构](docs/bevformer_vortex_direct_mlir_architecture.md)。
+
 ## MLIR / `mlir-opt` 文件在哪里？
 
 **`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它：CUDA 路径把 GPU Dialect MLIR 降到 NVVM/SM86 PTX；Vortex direct 路径由固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect，再用同一工具树的 `mlir-translate` 生成 LLVM IR。部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。

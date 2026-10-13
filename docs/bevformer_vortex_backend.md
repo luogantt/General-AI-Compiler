@@ -63,6 +63,8 @@ kernel.ll → VOLT RISC-V/Vortex 指令选择 → ld.lld → ELF → vxbin.py
 承担调度、设备启动、链接、封装和执行职责。更细的入口 ABI、CSR、参数字段偏移与
 VectorAdd golden 见
 [`designs/vortex_direct_mlir_abi.md`](designs/vortex_direct_mlir_abi.md)。
+从输入 Graph、三层 MLIR、VOLT 机器码到 Host Runtime 的完整分层逻辑见
+[`bevformer_vortex_direct_mlir_architecture.md`](bevformer_vortex_direct_mlir_architecture.md)。
 
 这条路径当前只覆盖一个静态 FP32 BEVFormer Transformer FFN：
 
