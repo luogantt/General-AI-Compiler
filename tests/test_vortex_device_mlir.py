@@ -28,6 +28,23 @@ class VortexDeviceMlirTests(unittest.TestCase):
             call_plan_mlir_sha256="b" * 64,
         )
 
+    def _audit_ffn(
+        self,
+        source: str,
+        *,
+        kernels: tuple[str, ...] = BEVFORMER_FFN_KERNELS,
+    ) -> None:
+        audit_bevformer_ffn_device_mlir(
+            source,
+            kernels=kernels,
+            rows=900,
+            channels=256,
+            hidden=512,
+            epsilon=1.0e-5,
+            optimized_mlir_sha256="a" * 64,
+            call_plan_mlir_sha256="b" * 64,
+        )
+
     def test_vector_add_is_a_direct_rv32_vortex_module(self) -> None:
         source = emit_vector_add_device_mlir()
 
@@ -53,6 +70,7 @@ class VortexDeviceMlirTests(unittest.TestCase):
         ):
             self.assertIn(f"constant({csr} : i32)", source)
         self.assertEqual(source.count("llvm.inttoptr"), 3)
+        self.assertEqual(source.count("llvm.trunc"), 3)
         self.assertIn("llvm.fadd", source)
         self.assertNotIn("#include", source)
 
@@ -60,10 +78,7 @@ class VortexDeviceMlirTests(unittest.TestCase):
         source = self._emit_ffn()
 
         self.assertEqual(source, self._emit_ffn())
-        audit_bevformer_ffn_device_mlir(
-            source,
-            kernels=BEVFORMER_FFN_KERNELS,
-        )
+        self._audit_ffn(source)
         self.assertIn("@__gac_plan_rows(900 : i32)", source)
         self.assertIn("@__gac_plan_channels(256 : i32)", source)
         self.assertIn("@__gac_plan_hidden(512 : i32)", source)
@@ -94,6 +109,7 @@ class VortexDeviceMlirTests(unittest.TestCase):
             source,
         )
         self.assertEqual(source.count("llvm.inttoptr"), 13)
+        self.assertEqual(source.count("llvm.trunc"), 13)
         self.assertIn("%query_addr_ptr = llvm.getelementptr %args[0, 4]", source)
         self.assertIn("%activation_addr_ptr = llvm.getelementptr %args[0, 5]", source)
         self.assertIn("%input_addr_ptr = llvm.getelementptr %args[0, 4]", source)
@@ -113,6 +129,8 @@ class VortexDeviceMlirTests(unittest.TestCase):
             {"channels": -1},
             {"hidden": 1 << 32},
             {"rows": 1 << 16, "channels": 1 << 16},
+            {"rows": 1, "channels": 1 << 16, "hidden": 1 << 16},
+            {"rows": 1, "channels": 1, "hidden": 1 << 30},
             {"epsilon": 0.0},
             {"epsilon": float("nan")},
             {"optimized_mlir_sha256": "xyz"},
@@ -123,6 +141,16 @@ class VortexDeviceMlirTests(unittest.TestCase):
                 arguments = valid | update
                 with self.assertRaises(BackendError):
                     emit_bevformer_ffn_device_mlir(**arguments)
+
+        largest_addressable_fp32_buffer = valid | {
+            "rows": 1,
+            "channels": 1,
+            "hidden": ((1 << 32) - 1) // 4,
+        }
+        self.assertIn(
+            "@__gac_plan_hidden(1073741823 : i32)",
+            emit_bevformer_ffn_device_mlir(**largest_addressable_fp32_buffer),
+        )
 
     def test_audit_rejects_missing_or_substituted_abi_markers(self) -> None:
         source = self._emit_ffn()
@@ -136,28 +164,82 @@ class VortexDeviceMlirTests(unittest.TestCase):
             source.replace('passthrough = ["vortex-kernel"]', 'passthrough = ["ordinary"]', 1),
             source.replace(".vx_entry.bevformer_fc1_bias_relu", ".text", 1),
             source.replace('llvm.call_intrinsic "llvm.sqrt"', 'llvm.call_intrinsic "llvm.fabs"', 1),
+            source.replace(
+                "%record0_2 = llvm.insertvalue %annotation_text, %record0_1[1]",
+                "%record0_2 = llvm.insertvalue %source_file, %record0_1[1]",
+                1,
+            ),
+            source.replace(
+                "llvm.return %used3 : !llvm.array<3 x ptr>",
+                "llvm.return %used0 : !llvm.array<3 x ptr>",
+                1,
+            ),
+            source.replace(
+                "llvm.return %compiler_used3 : !llvm.array<3 x ptr>",
+                "llvm.return %compiler_used0 : !llvm.array<3 x ptr>",
+                1,
+            ),
             source + "\n// kernel.cpp\n",
         )
         for corrupted in corruptions:
             with self.subTest(corruption=corrupted[-80:]):
                 with self.assertRaises(BackendError):
-                    audit_bevformer_ffn_device_mlir(
-                        corrupted,
-                        kernels=BEVFORMER_FFN_KERNELS,
-                    )
+                    self._audit_ffn(corrupted)
+
+    def test_audit_rejects_changed_provenance_values(self) -> None:
+        source = self._emit_ffn()
+        corruptions = (
+            source.replace("@__gac_plan_rows(900 : i32)", "@__gac_plan_rows(901 : i32)", 1),
+            source.replace("@__gac_plan_channels(256 : i32)", "@__gac_plan_channels(128 : i32)", 1),
+            source.replace("@__gac_plan_hidden(512 : i32)", "@__gac_plan_hidden(256 : i32)", 1),
+            source.replace(
+                "@__gac_plan_epsilon(1.000000000e-05 : f32)",
+                "@__gac_plan_epsilon(2.000000000e-05 : f32)",
+                1,
+            ),
+            source.replace("a" * 64 + "\\00", "c" * 64 + "\\00", 1),
+            source.replace("b" * 64 + "\\00", "d" * 64 + "\\00", 1),
+        )
+        for corrupted in corruptions:
+            with self.subTest(corruption=corrupted[-120:]):
+                with self.assertRaises(BackendError):
+                    self._audit_ffn(corrupted)
+
+    def test_audit_rejects_changed_argument_fields_and_index_math(self) -> None:
+        source = self._emit_ffn()
+        corruptions = (
+            source.replace(
+                "%query_addr_ptr = llvm.getelementptr %args[0, 4]",
+                "%query_addr_ptr = llvm.getelementptr %args[0, 5]",
+                1,
+            ),
+            source.replace(
+                "%weight_index = llvm.add %weight_row, %column : i32",
+                "%weight_index = llvm.add %weight_row, %row : i32",
+                1,
+            ),
+            source.replace(
+                "%activation_index = llvm.add %activation_row, %k : i32",
+                "%activation_index = llvm.add %activation_row, %column : i32",
+                1,
+            ),
+            source.replace(
+                "%variance_epsilon = llvm.fadd %variance, %epsilon : f32",
+                "%variance_epsilon = llvm.fadd %mean, %epsilon : f32",
+                1,
+            ),
+        )
+        for corrupted in corruptions:
+            with self.subTest(corruption=corrupted[-120:]):
+                with self.assertRaises(BackendError):
+                    self._audit_ffn(corrupted)
 
     def test_audit_rejects_a_different_runtime_plan(self) -> None:
         source = self._emit_ffn()
         with self.assertRaises(BackendError):
-            audit_bevformer_ffn_device_mlir(
-                source,
-                kernels=BEVFORMER_FFN_KERNELS[:-1],
-            )
+            self._audit_ffn(source, kernels=BEVFORMER_FFN_KERNELS[:-1])
         with self.assertRaises(BackendError):
-            audit_bevformer_ffn_device_mlir(
-                source,
-                kernels=(BEVFORMER_FFN_KERNELS[0],) * 3,
-            )
+            self._audit_ffn(source, kernels=(BEVFORMER_FFN_KERNELS[0],) * 3)
 
 
 if __name__ == "__main__":

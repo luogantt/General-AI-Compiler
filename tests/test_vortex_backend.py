@@ -7,8 +7,10 @@ from dataclasses import replace
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -17,7 +19,13 @@ from unittest import mock
 
 import numpy as np
 
-from gac.backends.vortex import compile_vortex, write_vortex_artifact
+from gac.backends.vortex import (
+    DIRECT_MLIR_LOWERING,
+    VOLT_LLVM_REVISION,
+    compile_vortex,
+    compile_vortex_direct,
+    write_vortex_artifact,
+)
 from gac.bevformer_ffn import (
     BEVFormerFFNConfig,
     build_bevformer_ffn_graph,
@@ -33,6 +41,8 @@ from gac.tools.build_bevformer_vortex import _synthetic_graph
 _MLIR_OPT = "/opt/llvm/bin/mlir-opt"
 _MLIR_VERSION = "LLVM version 24.0.0git"
 _MLIR_REVISION = "7" * 40
+_VOLT_MLIR_VERSION = "LLVM version 20.1.8"
+_VOLT_MLIR_REVISION = "b2ecfe086df2d00233a87f3d3ebe6a74aba129e2"
 
 
 def _ffn_graph(
@@ -79,6 +89,38 @@ def _compile_with_mock_mlir(graph: Graph):
         ) as probe_revision,
     ):
         program = compile_vortex(
+            graph,
+            mlir_opt=_MLIR_OPT,
+            use_wsl=True,
+            wsl_distribution="Ubuntu-24.04",
+            timeout=17,
+        )
+    return program, verify, probe_version, probe_revision
+
+
+def _compile_direct_with_mock_mlir(graph: Graph):
+    def emulate_mlir_opt_printer(source: str, **_kwargs) -> str:
+        if "@bevformer_vortex_plan_" in source:
+            return re.sub(
+                r"\bfunc\.call(?=\s+@gac_vortex_)", "call", source
+            )
+        return source
+
+    with (
+        mock.patch(
+            "gac.backends.vortex.verify_mlir",
+            side_effect=emulate_mlir_opt_printer,
+        ) as verify,
+        mock.patch(
+            "gac.backends.vortex.probe_mlir_opt_version",
+            return_value=_VOLT_MLIR_VERSION,
+        ) as probe_version,
+        mock.patch(
+            "gac.backends.vortex.probe_mlir_opt_source_revision",
+            return_value=_VOLT_MLIR_REVISION,
+        ) as probe_revision,
+    ):
+        program = compile_vortex_direct(
             graph,
             mlir_opt=_MLIR_OPT,
             use_wsl=True,
@@ -544,6 +586,122 @@ class VortexCompileTests(unittest.TestCase):
                 verify.assert_not_called()
 
 
+class VortexDirectCompileTests(unittest.TestCase):
+    def test_direct_lowering_uses_third_mlir_verification_and_pinned_volt(self):
+        self.assertEqual(VOLT_LLVM_REVISION, _VOLT_MLIR_REVISION)
+        graph = _ffn_graph()
+
+        program, verify, probe_version, probe_revision = (
+            _compile_direct_with_mock_mlir(graph)
+        )
+
+        self.assertEqual(verify.call_count, 3)
+        high_level_call, call_plan_call, device_call = verify.call_args_list
+        expected_toolchain_arguments = {
+            "mlir_opt": _MLIR_OPT,
+            "use_wsl": True,
+            "wsl_distribution": "Ubuntu-24.04",
+            "timeout": 17,
+        }
+        self.assertEqual(high_level_call.kwargs, expected_toolchain_arguments)
+        self.assertEqual(call_plan_call.kwargs, expected_toolchain_arguments)
+        self.assertEqual(device_call.kwargs, expected_toolchain_arguments)
+        self.assertEqual(program.device_lowering, DIRECT_MLIR_LOWERING)
+        self.assertEqual(program.device_mlir, device_call.args[0])
+        self.assertEqual(program.source, program.device_mlir)
+        self.assertEqual(program.kernel_source, "")
+        self.assertIn(
+            'llvm.target_triple = "riscv32-unknown-unknown-elf"',
+            program.device_mlir,
+        )
+        for kernel in program.plan.kernels:
+            self.assertIn(f"llvm.func @{kernel}", program.device_mlir)
+
+        probe_version.assert_called_once_with(
+            mlir_opt=_MLIR_OPT,
+            use_wsl=True,
+            wsl_distribution="Ubuntu-24.04",
+            timeout=17,
+        )
+        probe_revision.assert_called_once_with(
+            _MLIR_OPT,
+            use_wsl=True,
+            wsl_distribution="Ubuntu-24.04",
+            timeout=17,
+        )
+        description = program.describe()
+        self.assertEqual(
+            description["lowering"]["mlir_opt_version"],
+            _VOLT_MLIR_VERSION,
+        )
+        self.assertEqual(
+            description["lowering"]["mlir_opt_source_revision"],
+            _VOLT_MLIR_REVISION,
+        )
+        self.assertEqual(
+            description["lowering"]["volt_llvm_revision_expected"],
+            _VOLT_MLIR_REVISION,
+        )
+
+    def test_direct_lowering_rejects_wrong_volt_version_or_revision(self):
+        cases = (
+            (
+                "LLVM version 24.0.0git",
+                _VOLT_MLIR_REVISION,
+                "requires VOLT LLVM 20.1.8",
+            ),
+            (
+                _VOLT_MLIR_VERSION,
+                "0" * 40,
+                "requires VOLT revision",
+            ),
+        )
+        for version, revision, message in cases:
+            with self.subTest(version=version, revision=revision):
+                with (
+                    mock.patch(
+                        "gac.backends.vortex.verify_mlir",
+                        side_effect=lambda source, **_kwargs: re.sub(
+                            r"\bfunc\.call(?=\s+@gac_vortex_)",
+                            "call",
+                            source,
+                        ),
+                    ) as verify,
+                    mock.patch(
+                        "gac.backends.vortex.probe_mlir_opt_version",
+                        return_value=version,
+                    ),
+                    mock.patch(
+                        "gac.backends.vortex.probe_mlir_opt_source_revision",
+                        return_value=revision,
+                    ),
+                ):
+                    with self.assertRaisesRegex(BackendError, message):
+                        compile_vortex_direct(_ffn_graph(), mlir_opt=_MLIR_OPT)
+                self.assertEqual(verify.call_count, 2)
+
+    def test_direct_lowering_rejects_unverified_volt_revision(self):
+        with (
+            mock.patch(
+                "gac.backends.vortex.verify_mlir",
+                side_effect=lambda source, **_kwargs: re.sub(
+                    r"\bfunc\.call(?=\s+@gac_vortex_)", "call", source
+                ),
+            ) as verify,
+            mock.patch(
+                "gac.backends.vortex.probe_mlir_opt_version",
+                return_value=_VOLT_MLIR_VERSION,
+            ),
+            mock.patch(
+                "gac.backends.vortex.probe_mlir_opt_source_revision",
+                return_value=None,
+            ),
+        ):
+            with self.assertRaisesRegex(BackendError, "requires VOLT revision"):
+                compile_vortex_direct(_ffn_graph(), mlir_opt=_MLIR_OPT)
+        self.assertEqual(verify.call_count, 2)
+
+
 class VortexArtifactTests(unittest.TestCase):
     def test_artifact_contains_hash_checked_sources_and_little_endian_weights(self):
         program, *_ = _compile_with_mock_mlir(_ffn_graph())
@@ -717,6 +875,340 @@ class VortexArtifactTests(unittest.TestCase):
             self.assertEqual(marker.read_text(encoding="utf-8"), "keep")
 
 
+class VortexDirectArtifactTests(unittest.TestCase):
+    def test_direct_artifact_binds_kernel_mlir_and_rejects_tampering(self):
+        program, *_ = _compile_direct_with_mock_mlir(_ffn_graph())
+
+        with tempfile.TemporaryDirectory() as directory:
+            destination = Path(directory) / "bevformer_vortex_direct"
+            report = write_vortex_artifact(destination, program)
+            manifest_path = destination / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+            self.assertTrue((destination / "kernel.mlir").is_file())
+            self.assertFalse((destination / "kernel.cpp").exists())
+            self.assertIn("kernel.mlir", manifest["files"])
+            self.assertNotIn("kernel.cpp", manifest["files"])
+            device_payload = (destination / "kernel.mlir").read_bytes()
+            device_hash = hashlib.sha256(device_payload).hexdigest()
+            self.assertEqual(
+                manifest["files"]["kernel.mlir"]["sha256"],
+                device_hash,
+            )
+            self.assertEqual(
+                manifest["lowering"]["device_kernel_mlir_sha256"],
+                device_hash,
+            )
+            argument_abi = manifest["lowering"]["device_argument_abi"]
+            self.assertEqual(
+                argument_abi["data_layout"],
+                "e-m:e-p:32:32-i64:64-n32-S128",
+            )
+            self.assertEqual(
+                argument_abi["device_pointer_conversion"],
+                {
+                    "storage_type": "i64",
+                    "device_pointer_bits": 32,
+                    "operations": [
+                        "llvm.trunc i64 to i32",
+                        "llvm.inttoptr i32 to !llvm.ptr",
+                    ],
+                },
+            )
+            expected_buffers = {
+                "bevformer_fc1_bias_relu": (
+                    48,
+                    {
+                        "rows": 0,
+                        "channels": 4,
+                        "hidden": 8,
+                        "_padding0": 12,
+                        "query_addr": 16,
+                        "weight_addr": 24,
+                        "bias_addr": 32,
+                        "output_addr": 40,
+                    },
+                ),
+                "bevformer_fc2_bias_residual": (
+                    56,
+                    {
+                        "rows": 0,
+                        "channels": 4,
+                        "hidden": 8,
+                        "_padding0": 12,
+                        "query_addr": 16,
+                        "activation_addr": 24,
+                        "weight_addr": 32,
+                        "bias_addr": 40,
+                        "output_addr": 48,
+                    },
+                ),
+                "bevformer_layer_norm": (
+                    48,
+                    {
+                        "rows": 0,
+                        "channels": 4,
+                        "epsilon": 8,
+                        "_padding0": 12,
+                        "input_addr": 16,
+                        "scale_addr": 24,
+                        "bias_addr": 32,
+                        "output_addr": 40,
+                    },
+                ),
+            }
+            self.assertEqual(set(argument_abi["buffers"]), set(expected_buffers))
+            common_header = (destination / "common.h").read_text(encoding="utf-8")
+            host_types = {
+                "bevformer_fc1_bias_relu": "fc1_args_t",
+                "bevformer_fc2_bias_residual": "fc2_args_t",
+                "bevformer_layer_norm": "layer_norm_args_t",
+            }
+            for kernel, (size_bytes, offsets) in expected_buffers.items():
+                buffer = argument_abi["buffers"][kernel]
+                self.assertEqual(buffer["alignment_bytes"], 8)
+                self.assertEqual(buffer["size_bytes"], size_bytes)
+                self.assertEqual(
+                    {field["name"]: field["offset_bytes"] for field in buffer["fields"]},
+                    offsets,
+                )
+                host_type = host_types[kernel]
+                self.assertIn(
+                    f"static_assert(sizeof({host_type}) == {size_bytes},",
+                    common_header,
+                )
+                self.assertIn(
+                    f"static_assert(alignof({host_type}) == "
+                    f"{buffer['alignment_bytes']},",
+                    common_header,
+                )
+                for field_name, offset_bytes in offsets.items():
+                    self.assertIn(
+                        f"static_assert(offsetof({host_type}, {field_name}) == "
+                        f"{offset_bytes},",
+                        common_header,
+                    )
+            self.assertEqual(common_header.count("uint32_t _padding0;"), 3)
+            host_source = (destination / "main.cpp").read_text(encoding="utf-8")
+            self.assertIn(
+                "device address exceeds the RV32 pointer ABI", host_source
+            )
+            for initializer in (
+                "fc1_args_t fc1 = {kRows, kChannels, kHidden, 0u,",
+                "fc2_args_t fc2 = {kRows, kChannels, kHidden, 0u,",
+                "layer_norm_args_t norm = {kRows, kChannels, "
+                "kLayerNormEpsilon, 0u,",
+            ):
+                self.assertIn(initializer, host_source)
+            self.assertEqual(
+                report["manifest_sha256"],
+                hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+            )
+
+            makefile = (destination / "Makefile").read_text(encoding="utf-8")
+            self.assertIn("VX_SRCS := kernel.ll", makefile)
+            self.assertIn(
+                "override MLIR_OPT := $(LLVM_PATH)/bin/mlir-opt", makefile
+            )
+            self.assertIn(
+                "override MLIR_TRANSLATE := $(LLVM_PATH)/bin/mlir-translate",
+                makefile,
+            )
+            self.assertIn(
+                "VX_LDFLAGS += -fuse-ld=lld "
+                "--ld-path=$(LLVM_PATH)/bin/ld.lld",
+                makefile,
+            )
+            self.assertIn(_VOLT_MLIR_REVISION, makefile)
+            self.assertRegex(
+                makefile,
+                r"(?m)^verify-toolchain:\s*$",
+            )
+            self.assertRegex(
+                makefile,
+                r"(?m)^kernel\.opt\.mlir: kernel\.mlir \| "
+                r"verify-artifact verify-toolchain$",
+            )
+            self.assertRegex(
+                makefile,
+                r"(?m)^\t\$\(MLIR_OPT\) --verify-each --canonicalize --cse "
+                r"\$< -o \$@$",
+            )
+            self.assertRegex(
+                makefile,
+                r"(?m)^kernel\.ll: kernel\.opt\.mlir$",
+            )
+            self.assertRegex(
+                makefile,
+                r"(?m)^\t\$\(MLIR_TRANSLATE\) --mlir-to-llvmir \$< -o \$@$",
+            )
+            self.assertLess(
+                makefile.index("kernel.opt.mlir: kernel.mlir"),
+                makefile.index("kernel.ll: kernel.opt.mlir"),
+            )
+
+            verifier = destination / "verify_artifact.py"
+            accepted = subprocess.run(
+                [sys.executable, str(verifier)],
+                cwd=destination,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(accepted.returncode, 0, accepted.stderr)
+
+            (destination / "kernel.mlir").write_text(
+                "module {}\n", encoding="utf-8"
+            )
+            rejected_payload = subprocess.run(
+                [sys.executable, str(verifier)],
+                cwd=destination,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(rejected_payload.returncode, 1)
+            self.assertIn("mismatch", rejected_payload.stderr)
+
+            (destination / "kernel.mlir").write_bytes(device_payload)
+            manifest["lowering"]["device_kernel_mlir_sha256"] = "0" * 64
+            manifest_path.write_text(
+                json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+            rejected_binding = subprocess.run(
+                [sys.executable, str(verifier)],
+                cwd=destination,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(rejected_binding.returncode, 1)
+            self.assertIn("not bound", rejected_binding.stderr)
+
+    def test_direct_make_dry_run_rebuilds_future_dated_derived_outputs(self):
+        make = shutil.which("make")
+        if make is None:
+            self.skipTest("GNU make is required for the generated Makefile test")
+
+        program, *_ = _compile_direct_with_mock_mlir(_ffn_graph())
+        with tempfile.TemporaryDirectory() as directory:
+            build_root = Path(directory) / "vortex-build"
+            regression = build_root / "tests" / "regression"
+            destination = regression / "gac_bevformer_vortex"
+            regression.mkdir(parents=True)
+            (build_root / "config.mk").write_text(
+                "XLEN := 32\nLLVM_PATH := /fake/pinned-volt\n",
+                encoding="utf-8",
+            )
+            (regression / "common.mk").write_text(
+                """\
+APP := $(PROJECT)
+VX_APP_OBJS := kernel.o
+
+all: $(APP) kernel.vxbin kernel.dump
+
+vx_start.o: $(VX_SRCS)
+	@echo FAKE_COMPILE_LL
+	@touch kernel.o vx_start.o
+
+$(APP): $(SRCS)
+	@echo FAKE_BUILD_HOST
+	@touch $@
+
+kernel.elf: vx_start.o $(VX_SRCS)
+	@echo FAKE_LINK_ELF
+	@touch $@
+
+kernel.vxbin: kernel.elf
+	@echo FAKE_PACK_VXBIN
+	@touch $@
+
+kernel.dump: kernel.elf
+	@echo FAKE_DUMP_ELF
+	@touch $@
+
+.depend: $(SRCS)
+	@echo FAKE_DEPEND
+	@touch $@
+
+clean-kernel:
+	@rm -f kernel.elf kernel.vxbin kernel.dump
+
+clean-host:
+	@rm -f $(APP) *.o .depend
+
+clean: clean-kernel clean-host
+
+ifneq ($(MAKECMDGOALS),clean)
+-include .depend
+endif
+""",
+                encoding="utf-8",
+            )
+            write_vortex_artifact(destination, program)
+
+            # Reproduce a persistent rsync destination whose unmanifested build
+            # outputs have timestamps newer than the newly deployed source.
+            old_source_time = 1_700_000_000
+            future_output_time = 2_100_000_000
+            os.utime(
+                destination / "kernel.mlir",
+                (old_source_time, old_source_time),
+            )
+            stale_outputs = (
+                "kernel.opt.mlir",
+                "kernel.ll",
+                "kernel.o",
+                "vx_start.o",
+                "gac_bevformer_vortex",
+                "kernel.elf",
+                "kernel.vxbin",
+                "kernel.dump",
+            )
+            for name in stale_outputs:
+                path = destination / name
+                path.write_text("STALE OUTPUT\n", encoding="utf-8")
+                os.utime(path, (future_output_time, future_output_time))
+            dependency_file = destination / ".depend"
+            dependency_file.write_text("# current dependency file\n", encoding="utf-8")
+            os.utime(dependency_file, (future_output_time, future_output_time))
+
+            completed = subprocess.run(
+                [make, "--no-print-directory", "-n", "all"],
+                cwd=destination,
+                env={**os.environ, "MAKEFLAGS": ""},
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            commands = completed.stdout
+            for required_command in (
+                "/fake/pinned-volt/bin/mlir-opt --verify-each",
+                "/fake/pinned-volt/bin/mlir-translate --mlir-to-llvmir",
+                "FAKE_COMPILE_LL",
+                "FAKE_BUILD_HOST",
+                "FAKE_LINK_ELF",
+                "FAKE_PACK_VXBIN",
+                "FAKE_DUMP_ELF",
+            ):
+                self.assertIn(required_command, commands)
+
+            makefile = (destination / "Makefile").read_text(encoding="utf-8")
+            self.assertRegex(
+                makefile,
+                r"(?m)^\.PHONY: kernel\.opt\.mlir kernel\.ll vx_start\.o "
+                r"\$\(APP\) kernel\.elf kernel\.vxbin kernel\.dump$",
+            )
+            gate = next(
+                line
+                for line in makefile.splitlines()
+                if line.startswith("kernel.opt.mlir kernel.ll vx_start.o")
+            )
+            self.assertNotIn(".depend", gate)
+
+
 class VortexBuildToolTests(unittest.TestCase):
     def test_synthetic_smoke_profile_is_deterministic_and_reviewable(self):
         first = _synthetic_graph("smoke", 41)
@@ -798,6 +1290,65 @@ class VortexBuildToolTests(unittest.TestCase):
             self.assertEqual(json.loads(stdout.getvalue()), expected)
             self.assertEqual(
                 json.loads(report_path.read_text(encoding="utf-8")), expected
+            )
+
+    def test_cli_routes_direct_mlir_to_the_direct_compiler(self):
+        program = object()
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "artifact"
+            stdout = io.StringIO()
+            with (
+                mock.patch.object(
+                    build_bevformer_vortex,
+                    "compile_vortex_direct",
+                    return_value=program,
+                ) as compile_direct,
+                mock.patch.object(
+                    build_bevformer_vortex,
+                    "compile_vortex",
+                ) as compile_legacy,
+                mock.patch.object(
+                    build_bevformer_vortex,
+                    "write_vortex_artifact",
+                    return_value={"status": "generated-direct"},
+                ) as write_artifact,
+                redirect_stdout(stdout),
+            ):
+                result = build_bevformer_vortex.main(
+                    [
+                        "--synthetic-smoke",
+                        "--output",
+                        str(output),
+                        "--mlir-opt",
+                        _MLIR_OPT,
+                        "--device-lowering",
+                        DIRECT_MLIR_LOWERING,
+                        "--wsl",
+                        "--wsl-distribution",
+                        "Ubuntu-24.04",
+                        "--timeout",
+                        "11",
+                    ]
+                )
+
+            self.assertEqual(result, 0)
+            compile_legacy.assert_not_called()
+            self.assertEqual(compile_direct.call_count, 1)
+            graph = compile_direct.call_args.args[0]
+            self.assertEqual(graph.inputs["query"].shape, (1, 2, 4))
+            self.assertEqual(
+                compile_direct.call_args.kwargs,
+                {
+                    "mlir_opt": _MLIR_OPT,
+                    "use_wsl": True,
+                    "wsl_distribution": "Ubuntu-24.04",
+                    "timeout": 11.0,
+                },
+            )
+            write_artifact.assert_called_once_with(str(output), program)
+            self.assertEqual(
+                json.loads(stdout.getvalue())["status"],
+                "generated-direct",
             )
 
     def test_cli_rejects_report_inside_artifact_before_compilation(self):

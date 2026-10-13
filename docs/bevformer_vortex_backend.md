@@ -2,7 +2,8 @@
 
 ## 当前状态
 
-GAC 已实现一条可审阅、可构建的 BEVFormer FFN 垂直切片：
+GAC 已实现一条可审阅、可构建的 BEVFormer FFN 垂直切片。下面先列出保留的
+`cpp-template` compatibility 路径：
 
 ```text
 GAC JSON / BEVFormer FFN builder
@@ -38,6 +39,31 @@ VOLT clang++ → RISC-V/Vortex ELF → vxbin.py → kernel.vxbin
       vortex2 → SimX / RTL simulator / FPGA driver
 ```
 
+在 `lg/bevformer-vortex-direct-mlir` 分支上，后端另提供
+`--device-lowering direct-mlir`。它保留前面的 Graph、Tensor/Linalg MLIR 和严格
+call-plan 审计，但把最后的设备实现替换为：
+
+```text
+面向 Vortex 的 LLVM Dialect kernel.mlir
+  ├── RV32 data layout 与 a0 参数缓冲解包
+  ├── CTA thread/block CSR inline asm
+  ├── vortex-kernel 函数属性
+  ├── llvm.global.annotations 中的 vortex.kernel
+  └── llvm.used + llvm.compiler.used
+                │
+                ▼
+同一个 VOLT LLVM 20.1.8：mlir-opt → mlir-translate
+                │
+                ▼
+kernel.ll → VOLT RISC-V/Vortex 指令选择 → ld.lld → ELF → vxbin.py
+```
+
+这个模式的 artifact 不包含设备端 `kernel.cpp`。`main.cpp`、Vortex startup、
+`libvortex2.a`、linker script、`vxbin.py` 和 host runtime 继续复用，因为它们分别
+承担调度、设备启动、链接、封装和执行职责。更细的入口 ABI、CSR、参数字段偏移与
+VectorAdd golden 见
+[`designs/vortex_direct_mlir_abi.md`](designs/vortex_direct_mlir_abi.md)。
+
 这条路径当前只覆盖一个静态 FP32 BEVFormer Transformer FFN：
 
 ```text
@@ -61,7 +87,8 @@ lowering 到 Vortex。当前代码也没有把原来的 CUDA、PTX 或 cuBLAS �
 ## MLIR 与 Vortex 的边界
 
 上游 Vortex 3.0 当前没有 Vortex MLIR Dialect，也没有通用的 MLIR-to-Vortex
-kernel translator。因此这一版采用明确的两级 MLIR 和 Runtime-call 边界：
+kernel translator。因此这一版采用两级 MLIR 和一份经过严格审计的 Runtime call
+plan；前五步由两种设备 lowering 共用：
 
 1. GAC 把 Canonical Graph 发射为标准 Tensor/Linalg MLIR。
 2. 第一次外部 `mlir-opt` 真实验证、规范化并做 CSE，产生 `optimized.mlir`。
@@ -73,10 +100,14 @@ kernel translator。因此这一版采用明确的两级 MLIR 和 Runtime-call �
    Vortex op，而是用 `func.call` 表达三次 Vortex Runtime 调用。
 5. 第二次外部 `mlir-opt` 验证并规范化这个 module，artifact 保存其输出为
    `vortex.mlir`。
-6. 后端严格解析 `vortex.mlir`，只有调用声明、调用顺序、静态 memref ABI、launch
-   size、epsilon 和外部权重绑定全部符合冻结合同，才用固定模板生成 Vortex C++。
-7. Vortex 自带的 VOLT 工具链把 C++ 编译为带 `+xvortex`/`+zicond` 的 RISC-V
-   ELF，`vxbin.py` 再打包为 `kernel.vxbin`。
+6. 后端严格解析 `vortex.mlir`；只有调用声明、调用顺序、静态 memref ABI、launch
+   size、epsilon 和外部权重绑定全部符合冻结合同，才允许进入设备 lowering。
+7. `cpp-template` compatibility 模式用固定模板生成 Vortex C++；`direct-mlir` 模式
+   根据同一份冻结 plan 直接生成三个 LLVM Dialect Kernel，并再次审计函数体、RV32
+   参数解包、CTA CSR、入口 annotation、retention global 和 provenance hash。
+8. compatibility 模式由 VOLT 编译 C++；direct 模式由固定的同一棵 LLVM/VOLT
+   20.1.8 工具树执行 `mlir-opt → mlir-translate → VOLT clang → ld.lld`。两者最终
+   都由 `vxbin.py` 把 ELF 打包为 `kernel.vxbin`。
 
 `vortex.mlir` 的公开 plan 函数名包含 `optimized.mlir` 的 SHA-256。它有 10 个静态
 FP32 memref 参数，分别承载 query、六个权重/偏置、activation、residual 和 output；
@@ -111,11 +142,12 @@ layer_norm(residual, norm_weight, norm_bias -> output; epsilon)
 实参必须引用已经核对的 `f32` epsilon 常量。
 
 这里没有跨 LLVM 版本传递 LLVM bitcode。标准 MLIR 是 GAC 的中间层和审计边界，
-VOLT 是 Vortex 的目标编译器。这应描述为 **MLIR 驱动的 Runtime-call lowering**；
-它不是通用 MLIR Vortex dialect，也不是 stock `mlir-opt` 自动生成 Vortex Kernel。
-`frontend.mlir`、`optimized.mlir`、`vortex.mlir`、生成源码和文件摘要一起保存在
-artifact 中，使这条受限 lowering 可复核。摘要用于发现意外损坏和错配，不是
-发布者签名。
+VOLT 是 Vortex 的目标编译器。compatibility 模式属于 **MLIR 驱动的 Runtime-call
+lowering**；direct 模式已经移除设备 C++，但它仍是专门覆盖三个静态 FFN Kernel 的
+受限 LLVM Dialect lowering，并非通用 Vortex dialect，也不是 stock `mlir-opt`
+自动生成 Vortex Kernel。`frontend.mlir`、`optimized.mlir`、`vortex.mlir`、设备源码
+和文件摘要一起保存在 artifact 中，使这两条 lowering 都可复核。摘要用于发现意外
+损坏和错配，不是发布者签名。
 
 ## Kernel 与 Runtime
 
@@ -162,6 +194,24 @@ python tools/build_bevformer_vortex.py `
   --report build/bevformer-vortex-smoke.json
 ```
 
+生成不含设备 C++ 的 direct-MLIR artifact 时，先把本地 LLVM checkout 切到固定的
+VOLT revision `b2ecfe086df2d00233a87f3d3ebe6a74aba129e2`，再在 WSL 构建统一工具链：
+
+```bash
+bash tools/build_volt_mlir_wsl.sh
+```
+
+随后显式选择 direct lowering；Makefile 会从同一个 `LLVM_PATH` 使用
+`mlir-opt`、`mlir-translate` 和 VOLT clang：
+
+```bash
+PYTHONPATH=src python tools/build_bevformer_vortex.py \
+  --synthetic-smoke \
+  --device-lowering direct-mlir \
+  --output build/bevformer-vortex-direct-smoke \
+  --mlir-opt "$HOME/.cache/gac-volt-llvm20/current-build/bin/mlir-opt"
+```
+
 `--synthetic-smoke` 生成 `[1,2,4]` 小 workload，适合先跑 SimX；
 `--synthetic-width-smoke` 使用一行、256 通道和 512 hidden，适合验证生产通道宽度；
 `--synthetic-production` 使用 `[1,2500,256] → 512 → 256`。也可以用
@@ -189,14 +239,14 @@ PYTHONPATH=src python tools/build_bevformer_vortex.py \
 | `frontend.mlir` | 优化前的标准 MLIR |
 | `optimized.mlir` | 第一次外部 `mlir-opt` 的 Tensor/Linalg 输出 |
 | `vortex.mlir` | 第二次外部 `mlir-opt` 验证后的标准 `func.call` Runtime plan |
-| `kernel.cpp` | 三个 Vortex device entry |
+| `kernel.cpp` 或 `kernel.mlir` | compatibility C++ entry，或三个 direct LLVM-dialect MLIR entry |
 | `main.cpp` | `vortex2` host、正确性检查和计时 |
 | `common.h`、`model_config.h` | Host/Kernel ABI 与冻结 profile |
 | `fc1_weight.bin` 等六个 `.bin` | FP32 FFN 常量 |
 | `query.bin`、`golden.bin` | 冻结的确定性输入与 GAC/NumPy oracle |
 | `verify_artifact.py` | 构建前校验每个源文件、权重和 golden 的大小与 SHA-256 |
 | `Makefile` | Vortex regression build 接入 |
-| `manifest.json` | 目标、工具链、profile 和逐文件摘要 |
+| `manifest.json` | 目标、工具链、profile、direct 参数 ABI 和逐文件摘要 |
 
 目标目录必须不存在或为空，避免把旧 Kernel 或旧权重混入新 artifact。
 
@@ -206,17 +256,23 @@ PYTHONPATH=src python tools/build_bevformer_vortex.py \
 ```text
 Makefile                 common.h               model_config.h
 frontend.mlir            optimized.mlir         vortex.mlir
-kernel.cpp               main.cpp               verify_artifact.py
+kernel.cpp/kernel.mlir   main.cpp               verify_artifact.py
 fc1_weight.bin           fc1_bias.bin           fc2_weight.bin
 fc2_bias.bin             norm_weight.bin        norm_bias.bin
 query.bin                golden.bin
 ```
 
+两种模式都恰好有 17 个 payload；上面斜线表示二选一，不能同时存在。
 `verify_artifact.py` 拒绝缺失或额外的 manifest 文件记录、重复 JSON key、非有限 JSON
 数、目录穿越名、symlink、大小或 SHA-256 不符。它还要求三份 MLIR 的摘要绑定到
 lowering metadata，并逐一核对 `vortex.mlir` 中的六个权重 SHA 与对应 `.bin` 以及
 manifest 一致。普通 build 输出（例如后续生成的 `.o`、`.elf`、`.vxbin`）不属于这
 17 个输入 payload。
+
+direct manifest 的 `lowering.device_argument_abi` 还逐 Kernel 记录参数缓冲区的
+字段名、LLVM 类型、byte offset、字段大小与对齐、结构总大小/对齐，以及设备地址从
+`i64` 存储值显式截断为 RV32 `i32` 后再 `inttoptr` 的转换合同。Host 在 launch 前
+拒绝超过 `UINT32_MAX` 的设备地址，避免截断丢失有效地址位。
 
 ## 部署到已经配置好的 Vortex build 树
 
@@ -229,9 +285,14 @@ manifest 一致。普通 build 输出（例如后续生成的 `.o`、`.elf`、`.
 例如，从本地同步目录；SSH 密码不应写进命令、脚本或仓库：
 
 ```bash
-rsync -av build/bevformer-vortex-smoke/ \
-  robot@192.168.84.129:/home/robot/project/vortex/build/tests/regression/gac_bevformer_vortex/
+VORTEX_HOST=vortex-host.example
+rsync -av --delete build/bevformer-vortex-smoke/ \
+  "robot@$VORTEX_HOST:/home/robot/project/vortex/build/tests/regression/gac_bevformer_vortex/"
 ```
+
+目标目录必须只用于这一份 artifact。`--delete` 会移除上一次构建留下的
+`kernel.ll`、对象、ELF 和 `.vxbin`；如果目标目录还承载其他内容，应改用新的空目录，
+不能把不同 artifact 增量覆盖到同一个目录。
 
 登录远端后先构建，再用 SimX 做正确性 smoke：
 
@@ -242,9 +303,31 @@ make -j"$(nproc)"
 make run-simx OPTS="--data-dir . --kernel kernel.vxbin --warmup 1 --repeat 3"
 ```
 
+direct-MLIR artifact 还必须把 `LLVM_PATH` 指向上面固定 revision 构建出的统一
+LLVM/VOLT 20.1.8 目录。这个目录同时提供 `mlir-opt`、`mlir-translate`、clang、
+`ld.lld` 和 VOLT 后端；生成的链接参数还用 `--ld-path` 绑定到这个目录中的
+`ld.lld`，不会依赖 `PATH` 里的其他 linker：
+
+```bash
+VOLT_BUILD="$HOME/.cache/gac-volt-llvm20/current-build"
+make LLVM_PATH="$VOLT_BUILD" verify-artifact verify-toolchain
+make LLVM_PATH="$VOLT_BUILD" -j"$(nproc)"
+make LLVM_PATH="$VOLT_BUILD" run-simx \
+  OPTS="--data-dir . --kernel kernel.vxbin --warmup 1 --repeat 3"
+```
+
+`verify-toolchain` 会检查 MLIR/Clang 工具的 `20.1.8` 版本、Vortex 构建实际使用的
+`clang++`/`llvm-objdump`/`llvm-objcopy`，以及构建目录中的
+`.gac-build-revision`。revision 不等于
+`b2ecfe086df2d00233a87f3d3ebe6a74aba129e2` 时构建立即失败，防止 LLVM 24
+生成的 IR 被悄悄交给 LLVM 20 VOLT 后端。
+
 `make verify-artifact` 可显式检查部署是否完整。生成的 Makefile 还把这项检查设为
 host executable、VOLT object/ELF、`kernel.vxbin`、dump 以及所有 `run-*` 目标的
 order-only 前置条件，所以直接执行并行 `make` 或 `make run-simx` 也不能绕过校验。
+direct-MLIR 模式进一步把 `kernel.opt.mlir`、`kernel.ll`、设备对象、host executable、
+ELF、`.vxbin` 和 dump 声明为强制重建目标；即使目录中存在时间戳更新的旧产物，也会
+从当前 manifest 绑定的 `kernel.mlir` 重新生成完整派生链。
 Makefile 在解析时要求 Vortex build 的 `XLEN=32`；当前 artifact ABI 没有验证 RV64。
 
 构建命令由 Vortex build 配置选择 VOLT `clang++`，生成 `kernel.elf` 和
@@ -252,12 +335,20 @@ Makefile 在解析时要求 Vortex build 的 `XLEN=32`；当前 artifact ABI 没
 `vortex2` 启动三个 entry。成功标准是程序输出的 JSON 同时满足
 `"verified": true`、`"finite": true`，且 `max_abs_error <= tolerance`。
 
-2026-10-13 的实际验证包含两层：合成 `[1,2,4]` smoke 连续执行 3 次通过，最大
-绝对误差 `1.1920929e-7`；SHA-256 已核对的官方 BEVFormer-tiny checkpoint 第 0 层
-权重在 `[1,1,256] → 512 → 256` 上通过，最大绝对误差 `1.90734863e-6`。真实权重的
-完整 `[1,2500,256]` artifact 也已由 VOLT 编译成 `.vxbin`。详细的 MLIR/VXBIN
-摘要、SimX cycles 和计时边界保存在
+2026-10-13 的 compatibility C++ bridge 验证包含两层：合成 `[1,2,4]` smoke 连续
+执行 3 次通过，最大绝对误差 `1.1920929e-7`；SHA-256 已核对的官方
+BEVFormer-tiny checkpoint 第 0 层权重在 `[1,1,256] → 512 → 256` 上通过，最大
+绝对误差 `1.90734863e-6`。真实权重的完整 `[1,2500,256]` artifact 也已由 VOLT
+编译成 `.vxbin`。详细的 MLIR/VXBIN 摘要、SimX cycles 和计时边界保存在
 [`docs/validation/vortex/bevformer-ffn-2026-10-13`](validation/vortex/bevformer-ffn-2026-10-13/README.md)。
+
+direct-MLIR 路径已用固定 LLVM/VOLT 20.1.8 完成 RV32 Vortex 可重定位对象、最终
+ELF、`.vxbin` 和 SimX 数值验收，并核对 Kernel alias、`.vx_entry`、CTA CSR 与
+`vx_split_n/vx_join`。合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为
+`1.1920929e-7`；10 次 SimX 的 device profile 均值为 `4.447282 ms`、端到端均值为
+`4.602381 ms`。这是软件模拟器的小尺寸计时，不能作为真实 Vortex 硬件或完整
+BEVFormer 的推理速度。证据与复现步骤见
+[`docs/validation/vortex/direct-mlir-2026-10-13`](validation/vortex/direct-mlir-2026-10-13/README.md)。
 
 同一 artifact 可以在已经配置好相应环境的 build 树中使用 `make run-rtlsim`。
 FPGA 运行还需要该 build 配置匹配的 bitstream、板卡驱动和运行环境；不能仅把
@@ -287,6 +378,7 @@ FPGA 运行还需要该 build 配置匹配的 bitstream、板卡驱动和运行�
 6. 在真实 checkpoint 与 nuScenes 输入上做逐层对齐、整网正确性、峰值内存和硬件
    端到端延时验收。
 
-在这些阶段完成前，准确的支持声明是“BEVFormer FFN 已通过两级标准 MLIR、两次
-外部 `mlir-opt` 和受限 Runtime-call lowering，生成可由 Vortex 工具链构建的
-工程”，不是“完整 BEVFormer 已运行在 Vortex”。
+在这些阶段完成前，准确的支持声明是“BEVFormer FFN 已通过两级标准 MLIR 和严格
+call-plan 审计；compatibility 路径生成 C++ Kernel，direct 路径直接生成 LLVM
+Dialect Kernel 并已完成 VOLT、ELF、`.vxbin` 与 SimX 数值验证”，不是“完整
+BEVFormer 已运行在 Vortex”。

@@ -25,7 +25,7 @@
 | bundle SHA-256 | `a27bc607c4c7b03e8b95d3b60c42b44b74c200110ad745cf37e4f3e7382e1b41` |
 | bundle expected sample | `null`；报告使用 synthetic query 与 NumPy reference |
 | 权重转换 | Torch Tensor -> Python list -> NumPy；provenance 记录为精确保留 FP32 值 |
-| Git branch / commit | `codex/uniad-mlir-ptx-opt` / `f77fed791cef4602ccff68181f32c7af831a8d3e` |
+| Git branch / commit | `lg/uniad-mlir-ptx-opt` / `f77fed791cef4602ccff68181f32c7af831a8d3e` |
 | Git 状态 | `dirty: true`；以 source snapshot 的逐文件 SHA-256 为实际被测源码依据 |
 | source snapshot | `80` 个源码文件；规范化 source map SHA-256 `8a0a4f2f62a36b9bf7edcbfc2ae4c9638ff09deb1c415b10899031b8b6a21ed1` |
 | 远端冻结 archive | SHA-256 `e7bc37a72ec3e138978feb3550ed23d93c09c7e3cdd0eeb29bb5f25de70353b0` |

@@ -2,7 +2,7 @@
 
 ## 当前状态与范围
 
-- 开发分支：`codex/uniad-mlir-ptx-opt`
+- 开发分支：`lg/uniad-mlir-ptx-opt`
 - 当前编译单元：UniAD 2.0 `stage2_e2e` 的一个 BEV encoder FFN。
 - 静态输入：`float32 [1, 40000, 256]`，其中 `40000 = 200 × 200` 个 BEV token。
 - 中间宽度：`512`；输出：`float32 [1, 40000, 256]`。
@@ -15,7 +15,7 @@
 
 **`mlir-opt` 不在 General-AI-Compiler 仓库中，也不是 GAC 直接调用的动态库。** 它是项目外部 LLVM/MLIR 源码构建得到的命令行程序。GAC 通过 [`mlir_toolchain.py`](../src/gac/mlir_toolchain.py) 启动该程序，将 GPU Dialect MLIR 离线降低到 NVVM 和 SM86 PTX。二进制与构建目录依赖平台和 LLVM revision，所以不提交到 Git。
 
-GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`codex/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/codex/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前不含这些文件。当前机器用于正式验证的二进制是 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`，其外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`。
+GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/lg/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前不含这些文件。当前机器用于正式验证的二进制是 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`，其外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`。
 
 - [`tools/build_mlir_wsl.sh`](../tools/build_mlir_wsl.sh) 从本地 `llvm-project` checkout 构建 `mlir-opt`、`mlir-translate` 和 `llc`。默认稳定路径为 WSL 的 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
 - [`src/gac/backends/mlir_ptx.py`](../src/gac/backends/mlir_ptx.py) 实现 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/backends/mlir_cublas_ptx.py`](../src/gac/backends/mlir_cublas_ptx.py) 实现 BEVFormer/UniAD 固定 FFN 的 cuBLAS + MLIR PTX lowering。

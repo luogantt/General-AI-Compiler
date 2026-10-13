@@ -51,17 +51,19 @@ JSON graph / BEVFormer config + checkpoint
 
 ## Vortex 3.0 FFN 垂直切片
 
-`vortex-v3` 后端已接通一条独立于 CUDA/PTX 的 BEVFormer FFN 路径：Canonical Graph → 标准 Tensor/Linalg MLIR → 第一次外部 `mlir-opt --verify-each --canonicalize --cse` → `optimized.mlir` 严格解析 → 确定性 lowering 到标准 `func.call` Runtime ABI → 第二次 `mlir-opt` → `vortex.mlir` 严格解析 → 固定 Vortex C++ 模板 → VOLT RISC-V/Vortex ELF → `.vxbin` → `vortex2`。`vortex.mlir` 使用静态 FP32 memref，保存三次调用的顺序与类型、launch size、LayerNorm epsilon 和六个外部权重 SHA-256；最终源码由这份已经验证的 call plan 驱动生成。
+`vortex-v3` 后端已接通一条独立于 CUDA/PTX 的 BEVFormer FFN 路径。两种设备 lowering 共用 Canonical Graph → 标准 Tensor/Linalg MLIR → 第一次外部 `mlir-opt --verify-each --canonicalize --cse` → `optimized.mlir` 严格解析 → 确定性 lowering 到标准 `func.call` Runtime ABI → 第二次 `mlir-opt` → `vortex.mlir` 严格解析。`cpp-template` compatibility 模式随后生成固定 Vortex C++ Kernel；`direct-mlir` 模式则直接生成 LLVM Dialect MLIR，经同一棵 VOLT LLVM 20.1.8 工具树生成机器码。`vortex.mlir` 使用静态 FP32 memref，保存三次调用的顺序与类型、launch size、LayerNorm epsilon 和六个外部权重 SHA-256；两种设备实现都由这份已经验证的 call plan 驱动生成。
 
-当前只覆盖 `MatMul → Bias+ReLU → MatMul → Bias+Residual → LayerNorm` FFN，不包含 ResNet/FPN、MSDeformableAttention、Encoder/Decoder、检测头或完整时序 step。上游 Vortex 3.0 没有 Vortex MLIR dialect 或通用 MLIR-to-Vortex kernel translator，因此这是 **MLIR 驱动的、受限的 Runtime-call lowering**，不是通用 Vortex dialect/kernel codegen。artifact manifest 采用精确的 17 个 payload 文件白名单；`make` 的 host、VOLT、`.vxbin` 以及所有 `run-*` 目标都会先执行 `verify_artifact.py`，同时拒绝非 RV32 build。代码边界、artifact 文件、本地生成和远端部署命令见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)。
+两种模式当前都只覆盖 `MatMul → Bias+ReLU → MatMul → Bias+Residual → LayerNorm` FFN，不包含 ResNet/FPN、MSDeformableAttention、Encoder/Decoder、检测头或完整时序 step。上游 Vortex 3.0 没有 Vortex MLIR dialect 或通用 MLIR-to-Vortex kernel translator；这里的 direct lowering 是 GAC 针对这三个静态 FFN Kernel 实现的受限 LLVM Dialect 发射器，并保留 VOLT 做最终指令选择、寄存器分配和 ELF 生成。artifact manifest 采用精确的 17 个 payload 文件白名单；`make` 的 host、VOLT、`.vxbin` 以及所有 `run-*` 目标都会先执行 `verify_artifact.py`，同时拒绝非 RV32 build。代码边界、artifact 文件、本地生成和远端部署命令见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)。
 
-当前实测已用官方 BEVFormer-tiny checkpoint 第 0 层真实权重跑通一行生产宽度 `[1,1,256] → 512 → 256`，SimX 对冻结 GAC/NumPy golden 的最大绝对误差为 `1.90734863e-6`；完整 2500-row 真实权重 artifact 已成功编译为 `.vxbin`。验证记录见 [Vortex BEVFormer FFN validation](docs/validation/vortex/bevformer-ffn-2026-10-13/README.md)。
+compatibility C++ bridge 已用官方 BEVFormer-tiny checkpoint 第 0 层真实权重跑通一行生产宽度 `[1,1,256] → 512 → 256`，SimX 对冻结 GAC/NumPy golden 的最大绝对误差为 `1.90734863e-6`；完整 2500-row 真实权重 artifact 已成功编译为 `.vxbin`。验证记录见 [Vortex BEVFormer FFN validation](docs/validation/vortex/bevformer-ffn-2026-10-13/README.md)。
+
+`lg/bevformer-vortex-direct-mlir` 分支加入 `--device-lowering direct-mlir`：三个设备 Kernel 由 [vortex_device_mlir.py](src/gac/backends/vortex_device_mlir.py) 直接生成 LLVM Dialect MLIR，携带 RV32 参数 ABI、CTA CSR、`vortex.kernel` annotation、`llvm.used` 和 `llvm.compiler.used`。artifact 的 Makefile 从同一个固定 VOLT LLVM 20.1.8 树依次调用 `mlir-opt`、`mlir-translate`、VOLT clang 和 `ld.lld`，最后由 `vxbin.py` 生成 `.vxbin`；设备目录中不再生成 `kernel.cpp`。这条路径现已实际完成 `MLIR → LLVM IR → VOLT → ELF → vxbin → SimX`：合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为 `1.1920929e-7`。10 次 SimX 的 device profile 均值为 `4.447282 ms`、端到端均值为 `4.602381 ms`；这些是软件模拟器的小尺寸结果，不能作为 Vortex 硬件或完整 BEVFormer 的推理速度。统一工具链、生成命令、ABI 和验证边界见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)、[Vortex Direct-MLIR ABI](docs/designs/vortex_direct_mlir_abi.md) 与 [direct-MLIR 验证记录](docs/validation/vortex/direct-mlir-2026-10-13/README.md)。这一步先建立标量机器码基线；分块、LMEM 复用、融合、双缓冲和 TCU 映射属于后续性能 lowering。
 
 ## MLIR / `mlir-opt` 文件在哪里？
 
-**`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它，把 GPU Dialect MLIR 降到 NVVM 和 SM86 PTX；部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
+**`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它：CUDA 路径把 GPU Dialect MLIR 降到 NVVM/SM86 PTX；Vortex direct 路径由固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect，再用同一工具树的 `mlir-translate` 生成 LLVM IR。部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
 
-GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`codex/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/codex/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前没有下面这些工具链、lowering 和验证产物，因此直接浏览 `main` 会找不到。查看代码时请先切换到该分支。
+GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/lg/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前没有下面这些工具链、lowering 和验证产物，因此直接浏览 `main` 会找不到。查看代码时请先切换到该分支。
 
 - [`tools/build_mlir_wsl.sh`](tools/build_mlir_wsl.sh) 从项目外部的 `llvm-project` checkout 构建 `mlir-opt`、`mlir-translate` 和 `llc`。默认稳定路径是 WSL 中的 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
 - 本次 BEVFormer/UniAD 验证实际使用的可执行文件是 WSL 中的 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`；它是本机编译产物，不在 Git 中。对应的外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`，同样位于 General-AI-Compiler 仓库之外。
@@ -511,7 +513,8 @@ src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLI
 src/gac/backends/mlir_cuda.py        严格 FFN pattern 到显式 cuBLAS/NVRTC call plan
 src/gac/backends/mlir_ptx.py         严格生产 FFN 到 GPU Dialect/NVVM/PTX artifact
 src/gac/backends/mlir_cublas_ptx.py  2×cuBLAS + 2×MLIR PTX 的严格四调用计划
-src/gac/backends/vortex.py           两级 MLIR 审计、标准 func.call Vortex Runtime plan 与固定 Kernel/host 生成
+src/gac/backends/vortex.py           两级 MLIR 审计、Vortex Runtime plan、direct-MLIR/compatibility artifact 与 host 生成
+src/gac/backends/vortex_device_mlir.py 面向 Vortex/VOLT 的 RV32 LLVM Dialect device Kernel emitter
 src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
 src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
 src/gac/mlir_ptx_runtime.py          校验并加载 MLIR 生成 PTX 的 SM86 Runtime
@@ -538,6 +541,7 @@ src/gac/tools/uniad_*.py             UniAD 导出、编译、FFN 与端到端基
 src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
 examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
 tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
+tools/build_volt_mlir_wsl.sh         构建固定 revision 的 LLVM 20.1.8 MLIR/VOLT 统一工具链
 tools/benchmark_mlir_cuda_ffn.py     生产尺寸 FFN 切片的真机基准与正确性报告
 tools/benchmark_mlir_cublas_ptx_ffn.py cuBLAS+MLIR PTX 的配对基准、artifact 与 autotune 报告
 tools/probe_mlir_tiled_matmul.py     tiled MatMul 与 FP16/TF32 MMA lowering probe

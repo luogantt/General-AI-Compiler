@@ -1,22 +1,21 @@
 """BEVFormer FFN lowering from verified MLIR to Vortex 3.0.
 
-This is a deliberately narrow vertical slice.  It accepts the canonical
-BEVFormer FFN graph, runs the existing tensor/linalg exporter through the
-real external ``mlir-opt``, audits the resulting operation pattern, and emits
-a Vortex multi-entry kernel plus a ``vortex2`` host runner.  VOLT performs the
-final C++ -> RISC-V/Vortex ELF lowering and ``vxbin.py`` packages that ELF.
+This deliberately narrow vertical slice accepts the canonical BEVFormer FFN
+graph, verifies its tensor/linalg form with an external ``mlir-opt``, audits
+the operation and buffer contracts, and emits a ``vortex2`` host runner.
 
-The boundary is explicit because upstream Vortex 3.0 does not ship a Vortex
-MLIR dialect or an MLIR-to-Vortex translation.  GAC therefore lowers the
-optimized tensor program to a second, standard-dialect MLIR module whose
-``func.call`` operations are the Vortex runtime ABI.  That verified call plan
-is parsed to generate the Vortex sources, which keeps the temporary boundary
-executable and reviewable without pretending that an upstream dialect exists.
+Two device boundaries are kept explicit.  ``cpp-template`` is the validated
+compatibility bridge that lets VOLT lower generated Vortex C++.  The newer
+``direct-mlir`` mode materializes LLVM-dialect device kernels, including the
+Vortex launch ABI, and uses one pinned Vortex LLVM 20.1.8 tree for
+``mlir-opt -> mlir-translate -> VOLT -> ELF``.  ``vxbin.py`` packages the linked
+ELF in both modes.  The direct mode removes device C++ without claiming that
+upstream Vortex ships a general Vortex MLIR dialect.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import json
 import math
@@ -43,6 +42,10 @@ from .mlir import MlirProgram, compile_mlir
 
 TARGET = "vortex-v3"
 ARTIFACT_SCHEMA_VERSION = 1
+DIRECT_MLIR_LOWERING = "direct-mlir"
+LEGACY_CPP_LOWERING = "cpp-template"
+VOLT_LLVM_VERSION = "20.1.8"
+VOLT_LLVM_REVISION = "b2ecfe086df2d00233a87f3d3ebe6a74aba129e2"
 _REQUIRED_CONSTANTS = (
     "fc1_weight",
     "fc1_bias",
@@ -51,6 +54,79 @@ _REQUIRED_CONSTANTS = (
     "norm_weight",
     "norm_bias",
 )
+
+
+def _direct_argument_abi() -> dict[str, Any]:
+    def field(
+        name: str,
+        offset_bytes: int,
+        llvm_type: str,
+        size_bytes: int,
+        alignment_bytes: int,
+    ) -> dict[str, Any]:
+        return {
+            "name": name,
+            "offset_bytes": offset_bytes,
+            "llvm_type": llvm_type,
+            "size_bytes": size_bytes,
+            "alignment_bytes": alignment_bytes,
+        }
+
+    pointer_conversion = {
+        "storage_type": "i64",
+        "device_pointer_bits": 32,
+        "operations": ["llvm.trunc i64 to i32", "llvm.inttoptr i32 to !llvm.ptr"],
+    }
+    return {
+        "data_layout": "e-m:e-p:32:32-i64:64-n32-S128",
+        "byte_order": "little-endian",
+        "device_pointer_conversion": pointer_conversion,
+        "buffers": {
+            "bevformer_fc1_bias_relu": {
+                "alignment_bytes": 8,
+                "size_bytes": 48,
+                "fields": [
+                    field("rows", 0, "i32", 4, 4),
+                    field("channels", 4, "i32", 4, 4),
+                    field("hidden", 8, "i32", 4, 4),
+                    field("_padding0", 12, "i32", 4, 4),
+                    field("query_addr", 16, "i64", 8, 8),
+                    field("weight_addr", 24, "i64", 8, 8),
+                    field("bias_addr", 32, "i64", 8, 8),
+                    field("output_addr", 40, "i64", 8, 8),
+                ],
+            },
+            "bevformer_fc2_bias_residual": {
+                "alignment_bytes": 8,
+                "size_bytes": 56,
+                "fields": [
+                    field("rows", 0, "i32", 4, 4),
+                    field("channels", 4, "i32", 4, 4),
+                    field("hidden", 8, "i32", 4, 4),
+                    field("_padding0", 12, "i32", 4, 4),
+                    field("query_addr", 16, "i64", 8, 8),
+                    field("activation_addr", 24, "i64", 8, 8),
+                    field("weight_addr", 32, "i64", 8, 8),
+                    field("bias_addr", 40, "i64", 8, 8),
+                    field("output_addr", 48, "i64", 8, 8),
+                ],
+            },
+            "bevformer_layer_norm": {
+                "alignment_bytes": 8,
+                "size_bytes": 48,
+                "fields": [
+                    field("rows", 0, "i32", 4, 4),
+                    field("channels", 4, "i32", 4, 4),
+                    field("epsilon", 8, "f32", 4, 4),
+                    field("_padding0", 12, "i32", 4, 4),
+                    field("input_addr", 16, "i64", 8, 8),
+                    field("scale_addr", 24, "i64", 8, 8),
+                    field("bias_addr", 32, "i64", 8, 8),
+                    field("output_addr", 40, "i64", 8, 8),
+                ],
+            },
+        },
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -97,15 +173,59 @@ class VortexProgram:
     model_config_header: str
     makefile: str
     verifier_source: str
+    device_lowering: str = LEGACY_CPP_LOWERING
+    device_mlir: str | None = None
 
     @property
     def source(self) -> str:
+        if self.device_lowering == DIRECT_MLIR_LOWERING:
+            if self.device_mlir is None:
+                raise BackendError(f"{TARGET}: direct MLIR program has no device module")
+            return self.device_mlir
         return self.kernel_source
 
     def describe(self) -> dict[str, Any]:
         pre_hash = _sha256_text(self.mlir_program.source)
         post_hash = _sha256_text(self.optimized_mlir)
         vortex_hash = _sha256_text(self.vortex_mlir)
+        direct = self.device_lowering == DIRECT_MLIR_LOWERING
+        lowering_backend = (
+            "audited BEVFormer FFN -> LLVM dialect device MLIR -> "
+            "mlir-translate LLVM IR -> VOLT RISC-V/Vortex machine code"
+            if direct
+            else (
+                "audited BEVFormer FFN pattern -> verified standard func.call "
+                "Vortex runtime plan -> Vortex kernel C++ -> VOLT"
+            )
+        )
+        lowering: dict[str, Any] = {
+            "frontend": "GAC canonical BEVFormer FFN graph",
+            "middle_end": "upstream tensor/linalg/arith/math MLIR",
+            "mlir_opt_passes": ["verify-each", "canonicalize", "cse"],
+            "device_lowering": self.device_lowering,
+            "backend": lowering_backend,
+            "pre_opt_mlir_sha256": pre_hash,
+            "post_opt_mlir_sha256": post_hash,
+            "vortex_call_plan_mlir_sha256": vortex_hash,
+            "external_weight_sha256": _weight_sha256(self.graph),
+            "mlir_opt_version": self.mlir_opt_version,
+            "mlir_opt_source_revision": self.mlir_opt_source_revision,
+            "llvm_version_boundary": (
+                "one VOLT LLVM 20.1.8 tree provides mlir-opt, mlir-translate, "
+                "clang, lld, and the Vortex RISC-V backend"
+                if direct
+                else (
+                    "MLIR middle-end and VOLT are separate textual/source stages; "
+                    "LLVM bitcode is not exchanged across versions"
+                )
+            ),
+        }
+        if direct:
+            if self.device_mlir is None:
+                raise BackendError(f"{TARGET}: direct MLIR program has no device module")
+            lowering["device_kernel_mlir_sha256"] = _sha256_text(self.device_mlir)
+            lowering["volt_llvm_revision_expected"] = VOLT_LLVM_REVISION
+            lowering["device_argument_abi"] = _direct_argument_abi()
         return {
             "schema_version": ARTIFACT_SCHEMA_VERSION,
             "compiler_backend": TARGET,
@@ -117,25 +237,7 @@ class VortexProgram:
                 "runtime": "vortex2",
                 "drivers": ["simx", "rtlsim", "xrt", "opae", "aved", "firesim"],
             },
-            "lowering": {
-                "frontend": "GAC canonical BEVFormer FFN graph",
-                "middle_end": "upstream tensor/linalg/arith/math MLIR",
-                "mlir_opt_passes": ["verify-each", "canonicalize", "cse"],
-                "backend": (
-                    "audited BEVFormer FFN pattern -> verified standard func.call "
-                    "Vortex runtime plan -> Vortex kernel C++ -> VOLT"
-                ),
-                "pre_opt_mlir_sha256": pre_hash,
-                "post_opt_mlir_sha256": post_hash,
-                "vortex_call_plan_mlir_sha256": vortex_hash,
-                "external_weight_sha256": _weight_sha256(self.graph),
-                "mlir_opt_version": self.mlir_opt_version,
-                "mlir_opt_source_revision": self.mlir_opt_source_revision,
-                "llvm_version_boundary": (
-                    "MLIR middle-end and VOLT are separate textual/source stages; "
-                    "LLVM bitcode is not exchanged across versions"
-                ),
-            },
+            "lowering": lowering,
             "graph": self.graph.name,
             "model_provenance": self.graph.metadata.get(
                 "weights_provenance", "provided canonical graph constants"
@@ -154,7 +256,12 @@ class VortexProgram:
                 "cublas": False,
                 "cupy": False,
             },
-            "status": "Vortex executable project; run make to produce kernel.vxbin",
+            "status": (
+                "direct MLIR Vortex executable project; run make to translate "
+                "kernel.mlir and produce kernel.vxbin"
+                if direct
+                else "Vortex executable project; run make to produce kernel.vxbin"
+            ),
         }
 
 
@@ -215,11 +322,11 @@ def _match_bevformer_ffn(program: MlirProgram) -> VortexFFNPlan:
     rows = math.prod(query.shape[:-1])
     channels = query.shape[-1]
     hidden = graph.constants["fc1_weight"].shape[1]
-    uint32_max = (1 << 32) - 1
-    if any(value > uint32_max for value in (rows, channels, hidden)) or any(
-        value > uint32_max for value in (rows * hidden, rows * channels)
-    ):
-        raise BackendError(f"{TARGET}: shape exceeds the Vortex uint32 launch ABI")
+    from .vortex_device_mlir import validate_bevformer_ffn_rv32_extents
+
+    rows, channels, hidden = validate_bevformer_ffn_rv32_extents(
+        rows, channels, hidden
+    )
     expected_shapes = {
         "fc1_weight": (channels, hidden),
         "fc1_bias": (hidden,),
@@ -776,12 +883,14 @@ def _common_header() -> str:
     return r'''#ifndef GAC_BEVFORMER_VORTEX_COMMON_H
 #define GAC_BEVFORMER_VORTEX_COMMON_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 typedef struct {
   uint32_t rows;
   uint32_t channels;
   uint32_t hidden;
+  uint32_t _padding0;
   uint64_t query_addr;
   uint64_t weight_addr;
   uint64_t bias_addr;
@@ -792,6 +901,7 @@ typedef struct {
   uint32_t rows;
   uint32_t channels;
   uint32_t hidden;
+  uint32_t _padding0;
   uint64_t query_addr;
   uint64_t activation_addr;
   uint64_t weight_addr;
@@ -803,11 +913,48 @@ typedef struct {
   uint32_t rows;
   uint32_t channels;
   float epsilon;
+  uint32_t _padding0;
   uint64_t input_addr;
   uint64_t scale_addr;
   uint64_t bias_addr;
   uint64_t output_addr;
 } layer_norm_args_t;
+
+#if defined(__cplusplus)
+static_assert(sizeof(fc1_args_t) == 48, "fc1_args_t size must match device ABI");
+static_assert(alignof(fc1_args_t) == 8, "fc1_args_t alignment must match device ABI");
+static_assert(offsetof(fc1_args_t, rows) == 0, "fc1_args_t.rows ABI offset");
+static_assert(offsetof(fc1_args_t, channels) == 4, "fc1_args_t.channels ABI offset");
+static_assert(offsetof(fc1_args_t, hidden) == 8, "fc1_args_t.hidden ABI offset");
+static_assert(offsetof(fc1_args_t, _padding0) == 12, "fc1_args_t._padding0 ABI offset");
+static_assert(offsetof(fc1_args_t, query_addr) == 16, "fc1_args_t.query_addr ABI offset");
+static_assert(offsetof(fc1_args_t, weight_addr) == 24, "fc1_args_t.weight_addr ABI offset");
+static_assert(offsetof(fc1_args_t, bias_addr) == 32, "fc1_args_t.bias_addr ABI offset");
+static_assert(offsetof(fc1_args_t, output_addr) == 40, "fc1_args_t.output_addr ABI offset");
+
+static_assert(sizeof(fc2_args_t) == 56, "fc2_args_t size must match device ABI");
+static_assert(alignof(fc2_args_t) == 8, "fc2_args_t alignment must match device ABI");
+static_assert(offsetof(fc2_args_t, rows) == 0, "fc2_args_t.rows ABI offset");
+static_assert(offsetof(fc2_args_t, channels) == 4, "fc2_args_t.channels ABI offset");
+static_assert(offsetof(fc2_args_t, hidden) == 8, "fc2_args_t.hidden ABI offset");
+static_assert(offsetof(fc2_args_t, _padding0) == 12, "fc2_args_t._padding0 ABI offset");
+static_assert(offsetof(fc2_args_t, query_addr) == 16, "fc2_args_t.query_addr ABI offset");
+static_assert(offsetof(fc2_args_t, activation_addr) == 24, "fc2_args_t.activation_addr ABI offset");
+static_assert(offsetof(fc2_args_t, weight_addr) == 32, "fc2_args_t.weight_addr ABI offset");
+static_assert(offsetof(fc2_args_t, bias_addr) == 40, "fc2_args_t.bias_addr ABI offset");
+static_assert(offsetof(fc2_args_t, output_addr) == 48, "fc2_args_t.output_addr ABI offset");
+
+static_assert(sizeof(layer_norm_args_t) == 48, "layer_norm_args_t size must match device ABI");
+static_assert(alignof(layer_norm_args_t) == 8, "layer_norm_args_t alignment must match device ABI");
+static_assert(offsetof(layer_norm_args_t, rows) == 0, "layer_norm_args_t.rows ABI offset");
+static_assert(offsetof(layer_norm_args_t, channels) == 4, "layer_norm_args_t.channels ABI offset");
+static_assert(offsetof(layer_norm_args_t, epsilon) == 8, "layer_norm_args_t.epsilon ABI offset");
+static_assert(offsetof(layer_norm_args_t, _padding0) == 12, "layer_norm_args_t._padding0 ABI offset");
+static_assert(offsetof(layer_norm_args_t, input_addr) == 16, "layer_norm_args_t.input_addr ABI offset");
+static_assert(offsetof(layer_norm_args_t, scale_addr) == 24, "layer_norm_args_t.scale_addr ABI offset");
+static_assert(offsetof(layer_norm_args_t, bias_addr) == 32, "layer_norm_args_t.bias_addr ABI offset");
+static_assert(offsetof(layer_norm_args_t, output_addr) == 40, "layer_norm_args_t.output_addr ABI offset");
+#endif
 
 #endif
 '''
@@ -999,6 +1146,8 @@ struct DeviceBuffers {
 uint64_t address(vx_buffer_h buffer) {
   uint64_t result = 0;
   CHECK(vx_buffer_address(buffer, &result));
+  if (result > std::numeric_limits<uint32_t>::max())
+    throw std::runtime_error("device address exceeds the RV32 pointer ABI");
   return result;
 }
 
@@ -1058,14 +1207,14 @@ IterationResult run_once(
   timings.h2d_ms = elapsed_ms(h2d_start, Clock::now());
   CHECK(vx_event_release(write_event));
 
-  fc1_args_t fc1 = {kRows, kChannels, kHidden,
+  fc1_args_t fc1 = {kRows, kChannels, kHidden, 0u,
                     address(buffers.query), address(buffers.w1),
                     address(buffers.b1), address(buffers.activation)};
-  fc2_args_t fc2 = {kRows, kChannels, kHidden,
+  fc2_args_t fc2 = {kRows, kChannels, kHidden, 0u,
                     address(buffers.query), address(buffers.activation),
                     address(buffers.w2), address(buffers.b2),
                     address(buffers.residual)};
-  layer_norm_args_t norm = {kRows, kChannels, kLayerNormEpsilon,
+  layer_norm_args_t norm = {kRows, kChannels, kLayerNormEpsilon, 0u,
                             address(buffers.residual), address(buffers.scale),
                             address(buffers.norm_bias), address(buffers.output)};
   const vx_launch_info_t fc1_launch = launch_info(
@@ -1313,8 +1462,91 @@ all: verify-artifact
 '''
 
 
-def _artifact_verifier_source() -> str:
-    return r'''#!/usr/bin/env python3
+def _direct_makefile() -> str:
+    return r'''ROOT_DIR := $(realpath ../../..)
+include $(ROOT_DIR)/config.mk
+
+ifneq ($(XLEN),32)
+$(error this GAC Vortex artifact targets the validated RV32 ABI; use an XLEN=32 build)
+endif
+
+PROJECT := gac_bevformer_vortex
+SRC_DIR := $(CURDIR)
+SRCS := $(SRC_DIR)/main.cpp
+VOLT_LLVM_REVISION_EXPECTED := b2ecfe086df2d00233a87f3d3ebe6a74aba129e2
+override MLIR_OPT := $(LLVM_PATH)/bin/mlir-opt
+override MLIR_TRANSLATE := $(LLVM_PATH)/bin/mlir-translate
+VX_SRCS := kernel.ll
+VX_HDRS := $(SRC_DIR)/common.h $(SRC_DIR)/model_config.h
+HDRS := $(VX_HDRS)
+KERNEL_LIB := vortex2
+OPTS ?= --data-dir . --kernel kernel.vxbin --warmup 1 --repeat 3
+
+include ../common.mk
+
+# Keep the final ELF link in the same pinned LLVM tree as MLIR translation and
+# Vortex instruction selection.  The Vortex toolchain documents ld.lld as its
+# device linker; spelling it explicitly avoids accidentally selecting a GNU ld
+# from RISCV_TOOLCHAIN_PATH.
+VX_LDFLAGS += -fuse-ld=lld --ld-path=$(LLVM_PATH)/bin/ld.lld
+
+.PHONY: verify-artifact
+verify-artifact:
+	python3 verify_artifact.py
+
+.PHONY: verify-toolchain
+verify-toolchain:
+	test -x "$(MLIR_OPT)"
+	test -x "$(MLIR_TRANSLATE)"
+	test -x "$(LLVM_PATH)/bin/clang"
+	test -x "$(LLVM_PATH)/bin/clang++"
+	test -x "$(LLVM_PATH)/bin/ld.lld"
+	test -x "$(LLVM_PATH)/bin/llvm-objdump"
+	test -x "$(LLVM_PATH)/bin/llvm-objcopy"
+	test -r "$(LLVM_PATH)/.gac-build-revision"
+	test "$$(cat "$(LLVM_PATH)/.gac-build-revision")" = "$(VOLT_LLVM_REVISION_EXPECTED)"
+	$(MLIR_OPT) --version | grep -F "20.1.8" >/dev/null
+	$(MLIR_TRANSLATE) --version | grep -F "20.1.8" >/dev/null
+	$(LLVM_PATH)/bin/clang --version | grep -F "20.1.8" >/dev/null
+	$(LLVM_PATH)/bin/clang++ --version | grep -F "20.1.8" >/dev/null
+	$(LLVM_PATH)/bin/ld.lld --version | grep -F "20.1.8" >/dev/null
+
+# Both MLIR tools and VOLT clang come from LLVM_PATH.  This deliberately keeps
+# LLVM dialect parsing, LLVM IR translation, and Vortex code generation on the
+# same LLVM 20.1.8 source revision.
+.PHONY: kernel.opt.mlir kernel.ll vx_start.o $(APP) kernel.elf kernel.vxbin kernel.dump
+
+# Build outputs are intentionally outside the source-artifact manifest.  Force
+# the complete derived chain to rebuild so a pre-existing or future-dated
+# kernel.ll/object/ELF/vxbin can never bypass the manifest-bound kernel.mlir.
+kernel.opt.mlir: kernel.mlir | verify-artifact verify-toolchain
+	$(MLIR_OPT) --verify-each --canonicalize --cse $< -o $@
+
+kernel.ll: kernel.opt.mlir
+	$(MLIR_TRANSLATE) --mlir-to-llvmir $< -o $@
+
+.PHONY: clean-direct-mlir
+clean-direct-mlir:
+	rm -f kernel.opt.mlir kernel.ll
+
+clean-kernel: clean-direct-mlir
+
+# GNU make merges these prerequisites with the rules in common.mk.  Order-only
+# edges prevent both parallel builds and direct run targets from consuming an
+# artifact before its complete manifest has been checked.
+kernel.opt.mlir kernel.ll vx_start.o $(APP) kernel.elf kernel.vxbin kernel.dump: | verify-artifact verify-toolchain
+run-simx run-rtlsim run-firesim run-opae run-xrt run-aved: | verify-artifact
+
+all: verify-artifact
+'''
+
+
+def _artifact_verifier_source(
+    *,
+    device_file: str = "kernel.cpp",
+    bind_device_mlir: bool = False,
+) -> str:
+    source = r'''#!/usr/bin/env python3
 """Verify the generated source artifact before VOLT consumes it."""
 
 from __future__ import annotations
@@ -1335,7 +1567,7 @@ EXPECTED_FILES = {
     "fc2_weight.bin",
     "frontend.mlir",
     "golden.bin",
-    "kernel.cpp",
+    "__GAC_DEVICE_FILE__",
     "main.cpp",
     "model_config.h",
     "norm_bias.bin",
@@ -1410,6 +1642,7 @@ def main() -> int:
             "vortex_call_plan_mlir_sha256"
         ):
             raise ValueError("Vortex MLIR hash is not bound to lowering metadata")
+__GAC_DEVICE_HASH_CHECK__
         vortex_text = (root / "vortex.mlir").read_text(encoding="utf-8")
         weight_bindings = {
             match.group("name"): match.group("digest")
@@ -1444,6 +1677,15 @@ def main() -> int:
 if __name__ == "__main__":
     raise SystemExit(main())
 '''
+    hash_check = ""
+    if bind_device_mlir:
+        hash_check = '''        if files["kernel.mlir"]["sha256"] != lowering.get(
+            "device_kernel_mlir_sha256"
+        ):
+            raise ValueError("device kernel MLIR hash is not bound to lowering metadata")'''
+    return source.replace("__GAC_DEVICE_FILE__", device_file).replace(
+        "__GAC_DEVICE_HASH_CHECK__", hash_check
+    )
 
 
 def compile_vortex(
@@ -1528,6 +1770,94 @@ def compile_vortex(
     )
 
 
+def _require_volt_llvm20_toolchain(program: VortexProgram) -> None:
+    if re.search(r"\b(?:LLVM\s+)?version\s+20\.1\.8\b", program.mlir_opt_version) is None:
+        raise BackendError(
+            f"{TARGET}: direct MLIR lowering requires VOLT LLVM {VOLT_LLVM_VERSION}; "
+            f"selected mlir-opt reported {program.mlir_opt_version!r}"
+        )
+    revision = program.mlir_opt_source_revision
+    if revision != VOLT_LLVM_REVISION:
+        raise BackendError(
+            f"{TARGET}: direct MLIR lowering requires VOLT revision "
+            f"{VOLT_LLVM_REVISION}, selected mlir-opt records {revision!r}; "
+            "build it with tools/build_volt_mlir_wsl.sh so the revision marker "
+            "is installed next to the toolchain"
+        )
+
+
+def compile_vortex_direct(
+    graph: Graph,
+    *,
+    mlir_opt: str | os.PathLike[str] | None = None,
+    use_wsl: bool = False,
+    wsl_distribution: str | None = None,
+    timeout: float = DEFAULT_TIMEOUT_SECONDS,
+) -> VortexProgram:
+    """Compile the supported BEVFormer FFN to device LLVM-dialect MLIR.
+
+    This mode removes the generated device C++ kernel.  The returned artifact
+    translates ``kernel.mlir`` with ``mlir-translate`` and sends the resulting
+    LLVM IR directly through the VOLT RISC-V/Vortex backend.  All LLVM tools
+    must come from the pinned LLVM 20.1.8 Vortex fork.
+    """
+
+    program = compile_vortex(
+        graph,
+        mlir_opt=mlir_opt,
+        use_wsl=use_wsl,
+        wsl_distribution=wsl_distribution,
+        timeout=timeout,
+    )
+    _require_volt_llvm20_toolchain(program)
+
+    # Keep this import local so the legacy C++ bridge remains independently
+    # usable and so the device emitter has no import cycle with VortexProgram.
+    from .vortex_device_mlir import (
+        audit_bevformer_ffn_device_mlir,
+        emit_bevformer_ffn_device_mlir,
+    )
+
+    optimized_hash = _sha256_text(program.optimized_mlir)
+    call_plan_hash = _sha256_text(program.vortex_mlir)
+    device_input = emit_bevformer_ffn_device_mlir(
+        rows=program.plan.rows,
+        channels=program.plan.channels,
+        hidden=program.plan.hidden,
+        epsilon=program.plan.epsilon,
+        optimized_mlir_sha256=optimized_hash,
+        call_plan_mlir_sha256=call_plan_hash,
+    )
+    device_mlir = verify_mlir(
+        device_input,
+        mlir_opt=mlir_opt,
+        use_wsl=use_wsl,
+        wsl_distribution=wsl_distribution,
+        timeout=timeout,
+    )
+    audit_bevformer_ffn_device_mlir(
+        device_mlir,
+        kernels=program.plan.kernels,
+        rows=program.plan.rows,
+        channels=program.plan.channels,
+        hidden=program.plan.hidden,
+        epsilon=program.plan.epsilon,
+        optimized_mlir_sha256=optimized_hash,
+        call_plan_mlir_sha256=call_plan_hash,
+    )
+    return replace(
+        program,
+        kernel_source="",
+        makefile=_direct_makefile(),
+        verifier_source=_artifact_verifier_source(
+            device_file="kernel.mlir",
+            bind_device_mlir=True,
+        ),
+        device_lowering=DIRECT_MLIR_LOWERING,
+        device_mlir=device_mlir,
+    )
+
+
 def _write_f32(path: Path, value: np.ndarray) -> None:
     array = np.ascontiguousarray(value, dtype="<f4")
     path.write_bytes(array.tobytes(order="C"))
@@ -1561,17 +1891,24 @@ def write_vortex_artifact(
     target.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{target.name}-", dir=target.parent))
     try:
-        text_files: Mapping[str, str] = {
+        text_files: dict[str, str] = {
             "frontend.mlir": program.mlir_program.source,
             "optimized.mlir": program.optimized_mlir,
             "vortex.mlir": program.vortex_mlir,
-            "kernel.cpp": program.kernel_source,
             "common.h": program.common_header,
             "main.cpp": program.host_source,
             "model_config.h": program.model_config_header,
             "Makefile": program.makefile,
             "verify_artifact.py": program.verifier_source,
         }
+        if program.device_lowering == DIRECT_MLIR_LOWERING:
+            if program.device_mlir is None or program.kernel_source:
+                raise BackendError(f"{TARGET}: invalid direct MLIR artifact state")
+            text_files["kernel.mlir"] = program.device_mlir
+        else:
+            if program.device_mlir is not None:
+                raise BackendError(f"{TARGET}: invalid legacy C++ artifact state")
+            text_files["kernel.cpp"] = program.kernel_source
         for name, contents in text_files.items():
             (staging / name).write_text(contents, encoding="utf-8", newline="\n")
         for name in _REQUIRED_CONSTANTS:
@@ -1622,9 +1959,14 @@ def write_vortex_artifact(
 
 __all__ = [
     "ARTIFACT_SCHEMA_VERSION",
+    "DIRECT_MLIR_LOWERING",
+    "LEGACY_CPP_LOWERING",
     "TARGET",
+    "VOLT_LLVM_REVISION",
+    "VOLT_LLVM_VERSION",
     "VortexFFNPlan",
     "VortexProgram",
     "compile_vortex",
+    "compile_vortex_direct",
     "write_vortex_artifact",
 ]

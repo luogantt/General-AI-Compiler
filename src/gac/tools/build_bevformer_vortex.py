@@ -10,7 +10,13 @@ import sys
 
 import numpy as np
 
-from ..backends.vortex import compile_vortex, write_vortex_artifact
+from ..backends.vortex import (
+    DIRECT_MLIR_LOWERING,
+    LEGACY_CPP_LOWERING,
+    compile_vortex,
+    compile_vortex_direct,
+    write_vortex_artifact,
+)
 from ..bevformer_ffn import (
     BEVFormerFFNConfig,
     build_bevformer_ffn_graph,
@@ -53,6 +59,16 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--output", "-o", required=True, help="new artifact directory")
     parser.add_argument("--mlir-opt", required=True, help="external mlir-opt path")
+    parser.add_argument(
+        "--device-lowering",
+        choices=(DIRECT_MLIR_LOWERING, LEGACY_CPP_LOWERING),
+        default=LEGACY_CPP_LOWERING,
+        help=(
+            "device implementation: direct-mlir emits LLVM dialect MLIR and "
+            "requires the pinned VOLT LLVM 20.1.8 tree; cpp-template keeps the "
+            "validated compatibility bridge (default: cpp-template)"
+        ),
+    )
     parser.add_argument(
         "--wsl",
         action="store_true",
@@ -191,7 +207,12 @@ def main(argv: list[str] | None = None) -> int:
                 )
             )
             graph = _synthetic_graph(profile, args.seed)
-        program = compile_vortex(
+        compiler = (
+            compile_vortex_direct
+            if args.device_lowering == DIRECT_MLIR_LOWERING
+            else compile_vortex
+        )
+        program = compiler(
             graph,
             mlir_opt=args.mlir_opt,
             use_wsl=args.wsl,
