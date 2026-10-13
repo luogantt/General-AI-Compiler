@@ -3,7 +3,8 @@
 ## Status and scope
 
 This document fixes the ABI contract for removing the generated device-side
-`kernel.cpp` from the GAC Vortex path.  The intended pipeline is:
+`kernel.cpp` from the GAC Vortex path.  The implemented and validated phase-1
+pipeline is:
 
 ```text
 GAC graph
@@ -16,7 +17,12 @@ GAC graph
   -> ELF
   -> vxbin.py
   -> .vxbin
+  -> vortex2 host
+  -> SimX
 ```
+
+The full run and its reproducible evidence are recorded in the
+[direct-MLIR validation report](../validation/vortex/direct-mlir-2026-10-13/README.md).
 
 The device kernel is generated from MLIR/LLVM IR.  VOLT remains the machine
 code backend: it still performs instruction selection, register allocation,

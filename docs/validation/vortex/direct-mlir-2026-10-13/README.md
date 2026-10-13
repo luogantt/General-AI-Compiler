@@ -100,6 +100,8 @@ content hashes after the complete direct-MLIR/Vortex pipeline:
 | `kernel.o` | `d39b3be0e7c0c75ff6d7815a89d0529ca6d634672753f71c11a6911fa15beaa3` |
 | `kernel.elf` | `88bead43bbaeed6dd9a91adebe0501db211987cef7b4f8b06ccf577796e4735d` |
 | `kernel.vxbin` | `0ecb8582200acae7f89707b06e6f5afe40d45f72ea2f815464e1bddcf0ddae20` |
+| `kernel.dump` | `be75b25fcad3f241acac85d429c4eb00b1960df6ca5e705e4feafd2761d7d34c` |
+| `gac_bevformer_vortex` | `fd79043ce84aa6bde2e00c58da1a796edac1824e628ce1df52a2d49648a7b809` |
 
 The translated module triple was
 `riscv32-unknown-unknown-elf`. This is the canonical triple emitted by the
@@ -109,8 +111,11 @@ the Vortex `-Werror` flags does not trigger `-Woverride-module`.
 The raw repeat-10 result is preserved in [simx-repeat10.log](simx-repeat10.log),
 and the output digests are preserved in
 [artifact-hashes.sha256](artifact-hashes.sha256).
+The log's `optimized_mlir_sha256` identifies the upstream Tensor/Linalg
+`optimized.mlir` used to derive the call plan; it is distinct from the device
+module's `kernel.opt.mlir` hash listed above.
 
-The repeat-10 SimX means were `4.447282 ms` for device profiling,
+The repeat-10 SimX means were `4.447282 ms` for the runtime event-profile,
 `4.513678 ms` for host-observed kernel time, and `4.602381 ms` end to end.
 These are software-simulator wall-clock measurements for the tiny synthetic
 shape `[1,2,4] → 8 → 4`; they are not Vortex hardware latency or an inference
@@ -251,7 +256,7 @@ make -C "$DEPLOY_DIR" LLVM_PATH="$LLVM_PREFIX" run-simx \
   OPTS="--data-dir . --kernel kernel.vxbin --warmup 1 --repeat 10"
 ```
 
-The first three full-runtime gates are complete: startup/runtime link,
+The software-runtime gates are complete: startup/runtime link,
 `VXSYMTAB` packaging, and SimX numerical parity. Remaining target acceptance
 requires repeating numerical validation on Vortex hardware and measuring
 warm-up-separated hardware latency there.

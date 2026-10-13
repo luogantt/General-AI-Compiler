@@ -163,7 +163,7 @@ lowering**；direct 模式已经移除设备 C++，但它仍是专门覆盖三�
 它上传常驻权重和每轮 query，按 event 依赖顺序提交三个 Kernel，再读取 output。
 artifact 生成时由 GAC/NumPy reference 独立冻结 `query.bin` 和 `golden.bin`；远端
 runner 加载 golden，并以 `1e-3` 最大绝对误差门验证结果。
-输出 JSON 分开记录 H2D、三个 Kernel 的 host wall、可用时的 device event profile、
+输出 JSON 分开记录 H2D、三个 Kernel 的 host wall、可用时的 runtime event profile、
 D2H、端到端均值和正确性结果。
 
 首版 MatMul 是每个输出线程串行遍历 K，LayerNorm 也是每行单线程归约。这是验证
@@ -345,7 +345,7 @@ BEVFormer-tiny checkpoint 第 0 层权重在 `[1,1,256] → 512 → 256` 上通�
 direct-MLIR 路径已用固定 LLVM/VOLT 20.1.8 完成 RV32 Vortex 可重定位对象、最终
 ELF、`.vxbin` 和 SimX 数值验收，并核对 Kernel alias、`.vx_entry`、CTA CSR 与
 `vx_split_n/vx_join`。合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为
-`1.1920929e-7`；10 次 SimX 的 device profile 均值为 `4.447282 ms`、端到端均值为
+`1.1920929e-7`；10 次 SimX 的 runtime event-profile 均值为 `4.447282 ms`、端到端均值为
 `4.602381 ms`。这是软件模拟器的小尺寸计时，不能作为真实 Vortex 硬件或完整
 BEVFormer 的推理速度。证据与复现步骤见
 [`docs/validation/vortex/direct-mlir-2026-10-13`](validation/vortex/direct-mlir-2026-10-13/README.md)。
