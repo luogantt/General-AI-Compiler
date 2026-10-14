@@ -158,7 +158,7 @@ function renderSource(scope,index){
   const local=item.tree==='gac'?'../'+item.path:'file:///'+sourceData.meta.roots[item.tree]+item.path;
   const remote='https://github.com/luogantt/General-AI-Compiler/blob/'+sourceData.meta.commit+'/'+item.path+'#L'+item.start+'-L'+item.end;
   const highlights=new Set(item.notes.map(x=>x.line));
-  const lines=item.code.split('\n').map((line,i)=>'<span class="code-row'+(highlights.has(item.start+i)?' focus-line':'')+'"><span class="line-no">'+(item.start+i)+'</span><span class="code-text">'+esc(line)+'</span></span>').join('');
+  const lines=item.code.split('\n').map((line,i)=>'<span class="code-row'+(highlights.has(item.start+i)?' focus-line':'')+'"><span class="line-no">'+(item.start+i)+'</span><span class="code-text">'+esc(line)+'</span></span>').join('\n');
   box.querySelectorAll('[data-snippet]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===n)));
   box.querySelector('.source-view').innerHTML='<div class="detail-head"><h3>'+esc(item.symbol)+'</h3><span class="tag">'+esc(item.role)+'</span></div><p>'+esc(item.explanation)+'</p><p class="source-file"><a href="'+local+'">本地源码：'+esc(item.path)+'</a>'+(item.tree==='gac'?'<a href="'+remote+'">GitHub 固定版本 / 行号</a>':'')+'</p><p class="source-state">原文件 L'+item.start+'～L'+item.end+' · 文件 SHA-256 '+sourceData.files[item.file].sha256.slice(0,12)+'…</p><pre aria-label="'+esc(item.symbol)+' 的真实代码摘录"><code>'+lines+'</code></pre><ol class="code-notes">'+item.notes.map(x=>'<li><strong>L'+x.line+'</strong>：'+esc(x.text)+'</li>').join('')+'</ol>';
  };
