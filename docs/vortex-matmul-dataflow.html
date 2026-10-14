@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vortex 100×100 SGEMM 硬件数据流</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: Canvas;
+      --fg: CanvasText;
+      --surface: color-mix(in srgb, Canvas 94%, Highlight 6%);
+      --surface-strong: color-mix(in srgb, Canvas 86%, Highlight 14%);
+      --muted: color-mix(in srgb, CanvasText 62%, Canvas 38%);
+      --border: color-mix(in srgb, CanvasText 20%, Canvas 80%);
+      --wire: color-mix(in srgb, CanvasText 27%, Canvas 73%);
+      --active: Highlight;
+      --active-fg: HighlightText;
+      --memory: LinkText;
+      --compute: ActiveText;
+      --control: VisitedText;
+      --store: MarkText;
+      --radius: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); color: var(--fg); }
+    body { margin: 0; min-width: 320px; background: var(--bg); color: var(--fg); }
+    button, select { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 3px;
+    }
+    code, pre { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    #vortex-matmul-demo {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: clamp(14px, 2.2vw, 30px);
+    }
+
+    .hero {
+      display: grid;
+      gap: 8px;
+      padding-right: 100px;
+    }
+    .eyebrow {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 0; font-size: clamp(1.55rem, 3vw, 2.45rem); font-weight: 500; line-height: 1.15; }
+    h2 { margin-bottom: 0; font-size: 1.04rem; font-weight: 500; }
+    h3 { margin-bottom: 0; font-size: 0.96rem; font-weight: 500; }
+    .hero-copy { max-width: 980px; margin: 0; color: var(--muted); }
+
+    .context-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .context-chip {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg);
+      font-size: 0.86rem;
+    }
+    .context-chip strong { font-weight: 500; }
+    .context-chip--answer {
+      background: color-mix(in srgb, Highlight 12%, Canvas 88%);
+      border-color: color-mix(in srgb, Highlight 38%, Canvas 62%);
+    }
+
+    .control-deck {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .controls, .status-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .btn, .select {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: Canvas;
+      color: CanvasText;
+    }
+    .btn { padding: 8px 13px; }
+    .btn-primary {
+      background: Highlight;
+      color: HighlightText;
+      border-color: Highlight;
+      min-width: 94px;
+    }
+    .btn:disabled { opacity: 0.45; }
+    .speed-label { margin-left: auto; color: var(--muted); font-size: 0.88rem; }
+    .select { padding: 7px 32px 7px 10px; }
+
+    .status-item {
+      display: flex;
+      gap: 6px;
+      align-items: baseline;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .status-item strong { color: var(--fg); font-weight: 500; }
+    .phase-status { flex: 1 1 280px; }
+    .progress-wrap { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    progress { width: 100%; height: 8px; accent-color: Highlight; }
+    .progress-label { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(290px, 0.72fr);
+      gap: clamp(14px, 2vw, 24px);
+      align-items: start;
+    }
+    .visual-column { min-width: 0; display: grid; gap: 18px; }
+    .visual-column > section, .layout > * { min-width: 0; }
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .section-note { margin: 0; color: var(--muted); font-size: 0.82rem; }
+
+    .architecture-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1000 / 540;
+      min-height: 490px;
+      border-block: 1px solid var(--border);
+      overflow: hidden;
+      background:
+        linear-gradient(to bottom,
+          color-mix(in srgb, Canvas 96%, VisitedText 4%) 0 24%,
+          transparent 24% 25%,
+          color-mix(in srgb, Canvas 96%, ActiveText 4%) 25% 65%,
+          transparent 65% 66%,
+          color-mix(in srgb, Canvas 96%, LinkText 4%) 66% 100%);
+    }
+    .architecture-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      color: var(--wire);
+      pointer-events: none;
+    }
+    .band-label {
+      fill: var(--muted);
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .wire {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+    }
+    .wire-control { stroke-dasharray: 5 5; }
+    .active-flow {
+      fill: none;
+      stroke: Highlight;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      filter: drop-shadow(0 0 4px color-mix(in srgb, Highlight 58%, transparent));
+    }
+    .packet { fill: Highlight; stroke: HighlightText; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+
+    .unit-banner {
+      --unit-width: 146px;
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: var(--unit-width);
+      min-height: 62px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      align-content: center;
+      gap: 2px;
+      padding: 9px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: Canvas;
+      color: CanvasText;
+      text-align: left;
+      box-shadow: 0 2px 8px color-mix(in srgb, CanvasText 8%, transparent);
+      transition: background-color 140ms ease, border-color 140ms ease, transform 140ms ease;
+      z-index: 2;
+    }
+    .unit-banner:hover { transform: translate(-50%, -50%) translateY(-2px); }
+    .unit-banner[aria-pressed="true"] {
+      border-color: LinkText;
+      box-shadow: 0 0 0 2px color-mix(in srgb, LinkText 40%, transparent);
+    }
+    .unit-banner.is-active {
+      background: color-mix(in srgb, Highlight 18%, Canvas 82%);
+      border-color: Highlight;
+    }
+    .unit-title { font-weight: 500; font-size: 0.88rem; line-height: 1.15; }
+    .unit-subtitle { color: var(--muted); font-size: 0.72rem; line-height: 1.2; }
+    .unit-state-dot {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    .unit-banner.is-active .unit-state-dot { background: Highlight; }
+
+    .path-readout {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      min-height: 42px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .path-node {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      color: var(--fg);
+    }
+    .path-arrow { color: Highlight; }
+
+    .matrix-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(150px, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+    .matrix-figure { margin: 0; min-width: 0; }
+    .matrix-label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+    .matrix-label strong { font-weight: 500; }
+    .matrix-label span { color: var(--muted); font-size: 0.78rem; }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(25, 1fr);
+      aspect-ratio: 1;
+      gap: 1px;
+      padding: 3px;
+      background: color-mix(in srgb, CanvasText 8%, Canvas 92%);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+    }
+    .matrix-cell { min-width: 0; min-height: 0; background: color-mix(in srgb, CanvasText 9%, Canvas 91%); }
+    .matrix-cell.is-active { background: Highlight; }
+    .matrix-cell.is-output { background: LinkText; }
+    .matrix-caption { margin: 6px 0 0; color: var(--muted); font-size: 0.78rem; min-height: 2.3em; }
+
+    .wave-shell { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; padding-bottom: 3px; }
+    .wave-grid {
+      min-width: 680px;
+      display: grid;
+      grid-template-columns: 86px repeat(24, minmax(16px, 1fr));
+      gap: 2px;
+      align-items: center;
+    }
+    .wave-label { color: var(--muted); font-size: 0.74rem; white-space: nowrap; }
+    .wave-cell {
+      position: relative;
+      height: 18px;
+      background: color-mix(in srgb, CanvasText 6%, Canvas 94%);
+    }
+    .wave-cell.is-on { background: color-mix(in srgb, Highlight 64%, Canvas 36%); }
+    .wave-cell.is-current::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-inline-end: 2px solid Highlight;
+    }
+    .clock-segment {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: CanvasText;
+    }
+    .clock-segment.high { top: 3px; }
+    .clock-segment.low { bottom: 3px; }
+    .cycle-axis { color: var(--muted); font-size: 0.67rem; text-align: center; font-variant-numeric: tabular-nums; }
+
+    .detail-panel {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .detail-head { padding: 16px 16px 13px; border-bottom: 1px solid var(--border); }
+    .detail-kicker { margin: 0 0 5px; color: var(--muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .detail-title-row { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+    .detail-badge {
+      flex: none;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: color-mix(in srgb, Highlight 15%, Canvas 85%);
+      color: var(--fg);
+      font-size: 0.72rem;
+    }
+    .detail-body { padding: 16px; display: grid; gap: 14px; }
+    .detail-description, .live-state { margin: 0; }
+    .detail-description { color: var(--muted); }
+    .live-state {
+      padding: 10px 11px;
+      border-inline-start: 3px solid Highlight;
+      background: color-mix(in srgb, Highlight 9%, Canvas 91%);
+      font-size: 0.86rem;
+    }
+    .source-row { display: grid; gap: 5px; }
+    .source-label { color: var(--muted); font-size: 0.75rem; }
+    .source-link { color: LinkText; overflow-wrap: anywhere; text-underline-offset: 3px; }
+    pre {
+      margin: 0;
+      max-width: 100%;
+      overflow: auto;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: Canvas;
+      color: CanvasText;
+      font-size: 0.76rem;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+    .facts { display: grid; gap: 8px; margin: 0; }
+    .fact { display: grid; grid-template-columns: 108px 1fr; gap: 8px; font-size: 0.82rem; }
+    .fact dt { color: var(--muted); }
+    .fact dd { margin: 0; }
+    .workload-button {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: Canvas;
+      color: CanvasText;
+      text-align: left;
+    }
+
+    .footnote { margin: 16px 0 0; color: var(--muted); font-size: 0.8rem; }
+
+    @media (max-width: 1050px) {
+      .layout { grid-template-columns: 1fr; }
+      .visual-column { display: contents; }
+      .visual-column > section:nth-child(1) { order: 1; }
+      .detail-panel { order: 2; }
+      .visual-column > section:nth-child(2) { order: 3; }
+      .visual-column > section:nth-child(3) { order: 4; }
+      .detail-panel { display: grid; grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1fr); }
+      .detail-head { border-bottom: 0; border-inline-end: 1px solid var(--border); }
+    }
+
+    @media (max-width: 760px) {
+      .hero { padding-right: 0; }
+      .speed-label { margin-left: 0; }
+      .architecture-stage {
+        aspect-ratio: auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px 0;
+        overflow: visible;
+        background: transparent;
+      }
+      .architecture-svg { display: none; }
+      .unit-banner {
+        position: relative;
+        inset: auto;
+        width: auto;
+        min-height: 64px;
+        transform: none;
+      }
+      .unit-banner:hover { transform: translateY(-1px); }
+      .matrix-flow { grid-template-columns: 1fr; }
+      .matrix-figure { display: grid; grid-template-columns: minmax(120px, 0.55fr) minmax(150px, 1fr); column-gap: 12px; align-items: start; }
+      .matrix-label, .matrix-caption { grid-column: 2; }
+      .matrix-grid { grid-column: 1; grid-row: 1 / span 2; }
+      .detail-panel { display: block; }
+      .detail-head { border-inline-end: 0; border-bottom: 1px solid var(--border); }
+    }
+
+    @media (max-width: 480px) {
+      #vortex-matmul-demo { padding: 12px; }
+      .architecture-stage { grid-template-columns: 1fr; }
+      .matrix-figure { display: block; }
+      .matrix-label, .matrix-caption, .matrix-grid { grid-column: auto; grid-row: auto; }
+      .matrix-grid { max-width: 240px; }
+      .btn { flex: 1 1 auto; }
+      .speed-label { width: 100%; }
+      .select { flex: 1 1 auto; }
+      .fact { grid-template-columns: 92px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+      .packet { display: none; }
+    }
+
+    @media (pointer: coarse) {
+      .btn, .select, .workload-button { min-height: 44px; }
+    }
+  </style>
+</head>
+<body>
+  <main id="vortex-matmul-demo">
+    <header class="hero">
+      <p class="eyebrow">Vortex GPGPU · hardware-only view</p>
+      <h1>100×100 矩阵乘法：硬件数据怎样流动</h1>
+      <p class="hero-copy">放大观察一个 4×4 CTA：A/B 从全局内存进入 D$，经 LSU 写入片上 Local Memory SRAM，4 个 warp 同步后由 FPU 完成乘加，结果通过 Commit/GPR 和 LSU 写回 C。</p>
+    </header>
+
+    <div class="context-strip" aria-label="架构类比与默认配置">
+      <span class="context-chip"><strong>Vortex Core</strong> ≈ CUDA SM（功能类比）</span>
+      <span class="context-chip"><strong>默认拓扑</strong> 1 cluster × 1 core</span>
+      <span class="context-chip"><strong>4 warps × 4 lanes</strong>（当前默认）</span>
+      <span class="context-chip"><strong>LMEM SRAM</strong> ≈ CUDA shared memory</span>
+      <span class="context-chip context-chip--answer"><strong>NoC？</strong> 默认没有通用路由 NoC；使用 valid/ready 通道、仲裁器和 cache 层次</span>
+    </div>
+
+    <section class="control-deck" aria-label="演示控制">
+      <div class="controls">
+        <button class="btn btn-primary" id="play-button" type="button" aria-pressed="false">播放</button>
+        <button class="btn" id="prev-button" type="button">上一步</button>
+        <button class="btn" id="next-button" type="button">下一步</button>
+        <button class="btn" id="reset-button" type="button">复位</button>
+        <label class="speed-label" for="speed-select">速度</label>
+        <select class="select" id="speed-select">
+          <option value="700">0.5×</option>
+          <option value="360" selected>1×</option>
+          <option value="170">2×</option>
+          <option value="80">4×</option>
+        </select>
+      </div>
+      <div class="status-row" aria-label="当前演示状态">
+        <span class="status-item">演示周期 <strong id="cycle-value">0</strong></span>
+        <span class="status-item phase-status">阶段 <strong id="phase-value">CTA 分派</strong></span>
+        <span class="status-item">K 块 <strong id="k-value">—</strong></span>
+        <span class="status-item">j <strong id="j-value">—</strong></span>
+      </div>
+      <div class="progress-wrap">
+        <progress id="progress" max="100" value="0" aria-label="代表 CTA 的演示进度"></progress>
+        <span class="progress-label" id="progress-label">0 / 256</span>
+      </div>
+      <span id="play-state" class="sr-only" aria-live="polite">已暂停</span>
+    </section>
+
+    <div class="layout">
+      <div class="visual-column">
+        <section aria-labelledby="architecture-heading">
+          <div class="section-heading">
+            <h2 id="architecture-heading">硬件拓扑与当前数据路径</h2>
+            <p class="section-note">点击任一 Banner，查看职责、实时状态与对应源码</p>
+          </div>
+
+          <div class="architecture-stage" id="architecture-stage">
+            <svg class="architecture-svg" viewBox="0 0 1000 540" preserveAspectRatio="none" role="img" aria-labelledby="topology-title topology-desc">
+              <title id="topology-title">Vortex 默认单核配置的结构级拓扑</title>
+              <desc id="topology-desc">KMU 分派 CTA，调度器经过取指和发射选择 ALU、LSU 或 FPU。LSU 可访问 local memory SRAM，也可通过 D cache、L2 和 L3 直通节点访问外部内存。执行结果由 Commit 写回 GPR。</desc>
+              <defs>
+                <marker id="arrow-neutral" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0 L7,3.5 L0,7 Z" fill="currentColor"></path>
+                </marker>
+                <marker id="arrow-active" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <path d="M0,0 L7,3.5 L0,7 Z" fill="Highlight"></path>
+                </marker>
+              </defs>
+              <text class="band-label" x="14" y="18">DEVICE CONTROL</text>
+              <text class="band-label" x="14" y="154">CORE PIPELINE / EXECUTION</text>
+              <text class="band-label" x="14" y="357">MEMORY HIERARCHY + ON-CHIP SRAM</text>
+
+              <path class="wire" d="M173 65 H247" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M393 65 H472" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M618 65 H717" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M790 98 V132 H180 V190" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M790 98 V145 H430 V190" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M790 98 V158 H680 V190" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M253 225 H802" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M503 225 H802" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M753 225 H802" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M430 258 V342" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire wire-control" d="M680 342 C680 285 320 290 320 98" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M503 375 C580 375 680 320 680 258" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M430 258 V430 Q430 450 475 450 V452" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M427 485 H408" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M292 485 H273" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire" d="M138 485 H132" marker-end="url(#arrow-neutral)"></path>
+              <path class="wire wire-control" d="M548 485 H687"></path>
+
+              <path id="active-flow" class="active-flow" d="M173 65 H247" marker-end="url(#arrow-active)"></path>
+              <circle id="packet-a" class="packet" r="6" cx="200" cy="65"></circle>
+              <circle id="packet-b" class="packet" r="4" cx="225" cy="65"></circle>
+            </svg>
+
+            <button class="unit-banner" type="button" data-unit="kmu" style="--x:10%;--y:12%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">KMU / CTA</span><span class="unit-subtitle">Grid → CTA descriptor</span></button>
+            <button class="unit-banner" type="button" data-unit="scheduler" style="--x:32%;--y:12%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Warp Scheduler</span><span class="unit-subtitle">4 warp 槽与发射选择</span></button>
+            <button class="unit-banner" type="button" data-unit="fetch" style="--x:54.5%;--y:12%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Fetch + I$</span><span class="unit-subtitle">PC → instruction</span></button>
+            <button class="unit-banner" type="button" data-unit="issue" style="--x:79%;--y:12%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Decode / Issue</span><span class="unit-subtitle">IBuffer · scoreboard · operands</span></button>
+
+            <button class="unit-banner" type="button" data-unit="alu" style="--x:18%;--y:42%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">ALU</span><span class="unit-subtitle">索引、地址、循环与分支</span></button>
+            <button class="unit-banner" type="button" data-unit="lsu" style="--x:43%;--y:42%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">LSU + Coalescer</span><span class="unit-subtitle">local/global 路径选择</span></button>
+            <button class="unit-banner" type="button" data-unit="fpu" style="--x:68%;--y:42%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">FPU lanes</span><span class="unit-subtitle">FP multiply-accumulate</span></button>
+            <button class="unit-banner" type="button" data-unit="commit" style="--x:87.5%;--y:42%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Commit + GPR</span><span class="unit-subtitle">结果仲裁与寄存器写回</span></button>
+
+            <button class="unit-banner" type="button" data-unit="lmem" style="--x:43%;--y:69.5%;" aria-pressed="true"><span class="unit-state-dot"></span><span class="unit-title">Local Memory SRAM</span><span class="unit-subtitle">4 banks · CTA scratchpad</span></button>
+            <button class="unit-banner" type="button" data-unit="barrier" style="--x:68%;--y:69.5%;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Barrier unit</span><span class="unit-subtitle">4 warps rendezvous</span></button>
+
+            <button class="unit-banner" type="button" data-unit="dram" style="--x:7%;--y:90%;--unit-width:118px;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">External DRAM</span><span class="unit-subtitle">A · B · C</span></button>
+            <button class="unit-banner" type="button" data-unit="l3" style="--x:20.5%;--y:90%;--unit-width:118px;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">L3 wrapper</span><span class="unit-subtitle">默认 passthrough</span></button>
+            <button class="unit-banner" type="button" data-unit="l2" style="--x:34%;--y:90%;--unit-width:118px;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">L2 wrapper</span><span class="unit-subtitle">默认 passthrough</span></button>
+            <button class="unit-banner" type="button" data-unit="dcache" style="--x:50%;--y:90%;--unit-width:118px;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">D$ cache</span><span class="unit-subtitle">默认启用 / write-back</span></button>
+            <button class="unit-banner" type="button" data-unit="fabric" style="--x:78%;--y:90%;--unit-width:168px;" aria-pressed="false"><span class="unit-state-dot"></span><span class="unit-title">Arbiter / Adapter fabric</span><span class="unit-subtitle">固定层次互连，不是 NoC mesh</span></button>
+          </div>
+
+          <div class="path-readout" id="path-readout" aria-label="当前数据路径">
+            <span>当前：</span><span class="path-node">KMU</span><span class="path-arrow">→</span><span class="path-node">Warp Scheduler</span>
+          </div>
+        </section>
+
+        <section aria-labelledby="matrix-heading">
+          <div class="section-heading">
+            <h2 id="matrix-heading">100×100 矩阵中的当前 4×4 tile</h2>
+            <p class="section-note">25×25 个 tile；这里跟踪代表 CTA block(12, 7)</p>
+          </div>
+          <div class="matrix-flow">
+            <figure class="matrix-figure">
+              <figcaption class="matrix-label"><strong>A</strong><span>100×100 · 40 KiB</span></figcaption>
+              <div class="matrix-grid" id="matrix-a" role="img" aria-label="矩阵 A 的 25 乘 25 tile 视图"></div>
+              <p class="matrix-caption" id="matrix-a-caption">等待读取 A[48:51, 0:3]</p>
+            </figure>
+            <figure class="matrix-figure">
+              <figcaption class="matrix-label"><strong>B</strong><span>100×100 · 40 KiB</span></figcaption>
+              <div class="matrix-grid" id="matrix-b" role="img" aria-label="矩阵 B 的 25 乘 25 tile 视图"></div>
+              <p class="matrix-caption" id="matrix-b-caption">等待读取 B[0:3, 28:31]</p>
+            </figure>
+            <figure class="matrix-figure">
+              <figcaption class="matrix-label"><strong>C</strong><span>100×100 · 40 KiB</span></figcaption>
+              <div class="matrix-grid" id="matrix-c" role="img" aria-label="矩阵 C 的 25 乘 25 tile 视图"></div>
+              <p class="matrix-caption" id="matrix-c-caption">累加 C[48:51, 28:31]</p>
+            </figure>
+          </div>
+        </section>
+
+        <section aria-labelledby="wave-heading">
+          <div class="section-heading">
+            <h2 id="wave-heading">最近 24 个演示周期</h2>
+            <p class="section-note">高亮表示对应资源在该演示周期参与；不是 Verilator 精确波形</p>
+          </div>
+          <div class="wave-shell">
+            <div class="wave-grid" id="wave-grid" role="img" aria-label="结构级时钟与硬件活动波形"></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="detail-panel" aria-labelledby="detail-title">
+        <span id="selection-state" class="sr-only" aria-live="polite"></span>
+        <div class="detail-head">
+          <p class="detail-kicker">选中硬件单元</p>
+          <div class="detail-title-row">
+            <h2 id="detail-title">Local Memory SRAM</h2>
+            <span class="detail-badge" id="detail-badge">片上存储</span>
+          </div>
+        </div>
+        <div class="detail-body">
+          <p class="detail-description" id="detail-description"></p>
+          <p class="live-state" id="live-state"></p>
+          <dl class="facts">
+            <div class="fact"><dt>当前配置</dt><dd id="detail-config"></dd></div>
+            <div class="fact"><dt>本例数据</dt><dd id="detail-data"></dd></div>
+          </dl>
+          <div class="source-row">
+            <span class="source-label">对应源码</span>
+            <a class="source-link" id="source-link" href="#" target="_blank" rel="noopener"></a>
+          </div>
+          <pre><code id="source-code"></code></pre>
+          <button class="workload-button" id="kernel-button" type="button">查看负载映射：sgemm2/kernel.cpp（软件，不属于硬件框图）</button>
+        </div>
+      </aside>
+    </div>
+
+    <p class="footnote">说明：真实周期数取决于命中率、ready/valid 背压、bank 冲突、仲裁和编译结果。本页只把仓库中的真实结构与 sgemm2 数据流按“演示周期”压缩展示；L2/L3 在当前默认配置中保留 wrapper，但工作在 passthrough 模式。cache 与 LMEM 之间没有直连搬运：线程先 global load 到 GPR，再发 local store 写入 LMEM。</p>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const root = document.getElementById("vortex-matmul-demo");
+    const unitButtons = [...root.querySelectorAll("[data-unit]")];
+    const activeFlow = document.getElementById("active-flow");
+    const packetA = document.getElementById("packet-a");
+    const packetB = document.getElementById("packet-b");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const unitData = {
+      kmu: {
+        title: "KMU / CTA 枚举",
+        badge: "设备控制",
+        description: "KMU 把 grid、blockIdx、blockDim、入口 PC、参数地址和对齐后的 local-memory 大小打成计算描述符，再送往核心。",
+        config: "1 cluster × 1 core",
+        data: "25×25 = 625 个 CTA 描述符",
+        source: "hw/rtl/VX_kmu.sv",
+        line: 340,
+        code: [
+          "kmu_compute_args_t kmu_comp;",
+          "assign kmu_comp.grid_dim   = dcr_grid_dim;",
+          "assign kmu_comp.block_idx  = block_idx_r;",
+          "assign kmu_comp.block_dim  = dcr_block_dim;",
+          "assign kmu_req.aligned_lmem_size = aligned_lmem_size_r;",
+          "assign kmu_bus_if.valid = running;"
+        ].join("\n")
+      },
+      scheduler: {
+        title: "Warp Scheduler / CTA dispatch",
+        badge: "核心控制",
+        description: "CTA dispatch 找空闲 warp 槽。当前 4×4 CTA 有 16 个线程，默认每 warp 4 lane，因此正好拆成 4 个 warp；scheduler 逐周期选择可运行 warp。",
+        config: "4 warp 槽 × 4 lanes",
+        data: "1 CTA = 4 warps = 16 threads",
+        source: "hw/rtl/core/VX_cta_dispatch.sv",
+        line: 216,
+        code: [
+          "wire [NW_WIDTH:0] cta_num_warps;",
+          "assign cta_num_warps =",
+          "    block_size_r[CTA_TID_WIDTH:NT_BITS]",
+          "  + (NW_WIDTH+1)'(|block_size_r[NT_BITS-1:0]);",
+          "assign launch_tmask = is_full_warp",
+          "  ? {`VX_CFG_NUM_THREADS{1'b1}} : partial_tmask;"
+        ].join("\n")
+      },
+      fetch: {
+        title: "Fetch + Instruction Cache",
+        badge: "前端",
+        description: "scheduler 给出 warp PC，Fetch 产生 I$ 请求；指令响应携带 wid、tmask 和 PC 进入解码。I$ 默认启用。",
+        config: "I$ enabled",
+        data: "取 sgemm2 的 load / barrier / FP / store 指令",
+        source: "hw/rtl/core/VX_fetch.sv",
+        line: 189,
+        code: [
+          "assign icache_req_valid = schedule_if.valid;",
+          "assign icache_req_addr  = schedule_if.data.PC[...] ;",
+          "assign icache_req_wid   = schedule_if.data.wid;",
+          "assign fetch_if.valid   = icache_bus_if.rsp_valid;",
+          "assign fetch_if.data.instr = icache_bus_if.rsp_data.data;"
+        ].join("\n")
+      },
+      issue: {
+        title: "Decode / Issue",
+        badge: "发射",
+        description: "指令进入 IBuffer；scoreboard 检查数据依赖，operand collector 读取 GPR，dispatcher 把指令送往 ALU、LSU、FPU 或 SFU。执行单元是并行分支，不是固定串联。",
+        config: "issue width = 1",
+        data: "按 warp 发射，4 lane 同时执行",
+        source: "hw/rtl/core/VX_issue_slice.sv",
+        line: 41,
+        code: [
+          "VX_ibuffer   ibuffer (...);",
+          "VX_scoreboard scoreboard (...);",
+          "VX_operands  operands (...);",
+          "VX_dispatcher dispatcher (...);"
+        ].join("\n")
+      },
+      alu: {
+        title: "ALU lanes",
+        badge: "整数执行",
+        description: "ALU 负责 block/thread 索引、数组地址数学、K 循环计数和分支。它和 LSU/FPU 都由 issue 分派，彼此不是流水线前后级。",
+        config: "SIMD width = 4",
+        data: "计算 g_row、g_col、k+j 与循环条件",
+        source: "hw/rtl/core/VX_alu_unit.sv",
+        line: 47,
+        code: [
+          "VX_lane_dispatch #(",
+          "  .BLOCK_SIZE (BLOCK_SIZE),",
+          "  .NUM_LANES  (NUM_LANES)",
+          ") lane_dispatch (",
+          "  .dispatch_if(dispatch_if),",
+          "  .execute_if (per_block_execute_if)",
+          ");"
+        ].join("\n")
+      },
+      lsu: {
+        title: "LSU + Memory Coalescer",
+        badge: "访存执行",
+        description: "LSU 为每个 lane 形成地址，local/global switch 根据地址选择 LMEM 或 D$。全局请求可由 coalescer 合并，再经过 adapter 接入 D$。",
+        config: "4 LSU lanes；local/global split",
+        data: "每 K 块：16 个 A load + 16 个 B load",
+        source: "hw/rtl/core/VX_mem_unit.sv",
+        line: 79,
+        code: [
+          "VX_lmem_switch lmem_switch (",
+          "  .lsu_in_if    (lsu_mem_if[i]),",
+          "  .global_out_if(lsu_dcache_if[i]),",
+          "  .local_out_if (lsu_lmem_if[i])",
+          ");",
+          "VX_mem_coalescer mem_coalescer (...);"
+        ].join("\n")
+      },
+      fpu: {
+        title: "FPU lanes",
+        badge: "浮点执行",
+        description: "默认 F 扩展启用、TCU 关闭。sgemm2 的浮点乘加在 FPU 路径执行；是否被编译为一条 FMADD.S 或 MUL+ADD 取决于最终编译结果。",
+        config: "4 FPU lanes；TCU disabled",
+        data: "1,000,000 MAC = 2,000,000 FLOP",
+        source: "hw/rtl/fpu/VX_fpu_unit.sv",
+        line: 107,
+        code: [
+          "assign fpu_req_valid =",
+          "  per_block_execute_if[block_idx].valid && ~mdata_full;",
+          "assign per_block_execute_if[block_idx].ready =",
+          "  fpu_req_ready && ~mdata_full;",
+          "// rs1, rs2 and rs3 feed the selected FPU backend"
+        ].join("\n")
+      },
+      commit: {
+        title: "Commit + GPR SRAM",
+        badge: "写回",
+        description: "Commit 在各执行单元结果之间仲裁，把有效 lane 的结果写回 banked GPR，并通知 scheduler / scoreboard 依赖已经解除。",
+        config: "1 commit slot；banked GPR",
+        data: "每个线程保留一个 sum 累加器",
+        source: "hw/rtl/core/VX_commit.sv",
+        line: 54,
+        code: [
+          "VX_stream_arb #(",
+          "  .NUM_INPUTS (NUM_EX_UNITS),",
+          "  .OUT_BUF    (1)",
+          ") commit_arb (...);",
+          "// Writeback starts at line 94"
+        ].join("\n")
+      },
+      lmem: {
+        title: "Local Memory SRAM",
+        badge: "片上存储",
+        description: "有 SRAM。VX_local_mem 是每核 banked scratchpad，本例把 A 的 4×4 tile 和 B 的 4×4 tile 暂存其中，软件显式同步后再复用。它不是 cache，也不是每个 CTA 独占一块物理 RAM。",
+        config: "LMEM enabled；默认 4 banks；bank xbar 仲裁冲突",
+        data: "每 CTA 从 per-core LMEM 取得 128-byte slice",
+        source: "hw/rtl/mem/VX_local_mem.sv",
+        line: 558,
+        code: [
+          "VX_sp_ram #(",
+          "  .DATAW    (WORD_WIDTH),",
+          "  .SIZE     (WORDS_PER_BANK),",
+          "  .OUT_REG  (1),",
+          "  .RDW_MODE (\"R\")",
+          ") lmem_store (...);"
+        ].join("\n")
+      },
+      barrier: {
+        title: "Barrier unit",
+        badge: "同步",
+        description: "__syncthreads() 最终由 barrier 指令让当前 CTA 的 4 个 warp rendezvous。所有参与 warp 到齐后，unlock mask 重新放行。",
+        config: "CTA-local barrier",
+        data: "每 K 块 2 次同步，共 50 次",
+        source: "hw/rtl/core/VX_scheduler.sv",
+        line: 381,
+        code: [
+          "VX_bar_unit bar_unit (",
+          "  .req_valid   (warp_ctl_if.bar_valid),",
+          "  .req_wid     (warp_ctl_if.wid),",
+          "  .active_warps(active_warps),",
+          "  .unlock_valid(bar_unlock_valid),",
+          "  .unlock_mask (bar_unlock_mask)",
+          ");"
+        ].join("\n")
+      },
+      dcache: {
+        title: "Socket D$ cache",
+        badge: "L1 数据缓存",
+        description: "D$ 在 socket 级共享。默认启用且为 write-back；全局 A/B load 先查 D$，最终 C store 先进入 D$。store 指令提交不等于数据已经落到 DRAM。",
+        config: "enabled；write-back；当前为 LLC",
+        data: "逻辑 global load 500,000 floats；实际外存事务由命中/合并决定",
+        source: "hw/rtl/VX_socket.sv",
+        line: 194,
+        code: [
+          "VX_cache_cluster #(",
+          "  .CACHE_SIZE   (`VX_CFG_DCACHE_SIZE),",
+          "  .NUM_BANKS    (DCACHE_NUM_BANKS),",
+          "  .WRITE_ENABLE (1),",
+          "  .WRITEBACK    (`VX_CFG_DCACHE_WRITEBACK),",
+          "  .IS_LLC       (DCACHE_IS_LLC)",
+          ") dcache (...);"
+        ].join("\n")
+      },
+      l2: {
+        title: "Cluster L2 wrapper",
+        badge: "直通节点",
+        description: "L2 wrapper 始终保留在连接拓扑中，但当前 VX_config.toml 默认关闭 L2，因此 PASSTHRU 为真：请求经过这里，不发生 L2 命中。",
+        config: "VX_CFG_L2_ENABLE = false",
+        data: "本例按 passthrough 显示",
+        source: "hw/rtl/VX_cluster.sv",
+        line: 212,
+        code: [
+          "VX_cache_wrap #(",
+          "  .CACHE_SIZE (`VX_CFG_L2_SIZE),",
+          "  .PASSTHRU   (!`VX_CFG_L2_ENABLED),",
+          "  .IS_LLC     (L2_IS_LLC)",
+          ") l2cache (...);"
+        ].join("\n")
+      },
+      l3: {
+        title: "Device L3 wrapper",
+        badge: "直通节点",
+        description: "L3 同样是固定连接层次的一部分；默认关闭时作为 passthrough wrapper，把 cluster 请求直接连接到设备外部 memory bus。",
+        config: "VX_CFG_L3_ENABLE = false",
+        data: "本例按 passthrough 显示",
+        source: "hw/rtl/Vortex.sv",
+        line: 165,
+        code: [
+          "VX_cache_wrap #(",
+          "  .CACHE_SIZE (`VX_CFG_L3_SIZE),",
+          "  .PASSTHRU   (!`VX_CFG_L3_ENABLED),",
+          "  .IS_LLC     (L3_IS_LLC)",
+          ") l3cache (",
+          "  .core_bus_if(per_cluster_mem_bus_if),",
+          "  .mem_bus_if (mem_bus_if)",
+          ");"
+        ].join("\n")
+      },
+      dram: {
+        title: "External memory / DRAM",
+        badge: "芯片外存储",
+        description: "Vortex 顶层把内部 mem_bus_if 展平为请求/响应端口。A、B、C 各为 100×100 float（40 KiB）；cache miss 和脏线排空才会形成外部事务。",
+        config: "通过顶层 memory interface 连接",
+        data: "A 40 KiB + B 40 KiB + C 40 KiB",
+        source: "hw/rtl/Vortex.sv",
+        line: 203,
+        code: [
+          "for (genvar i = 0; i < L3_MEM_PORTS; ++i) begin",
+          "  assign mem_req_valid[i]  = mem_bus_if[i].req_valid;",
+          "  assign mem_req_rw[i]     = mem_bus_if[i].req_data.rw;",
+          "  assign mem_req_addr[i]   = mem_bus_if[i].req_data.addr;",
+          "end"
+        ].join("\n")
+      },
+      fabric: {
+        title: "Arbiter / Adapter fabric",
+        badge: "固定互连",
+        description: "这里不是 CUDA/昇腾芯片常见的通用 packet-switched NoC mesh。Vortex 用 ready/valid 接口、优先级/轮询仲裁、crossbar/switch、宽度 adapter 和分层 cache 连接固定端点。",
+        config: "hierarchical point-to-point fabric",
+        data: "I$ / D$ / socket units 在端口 0 仲裁",
+        source: "hw/rtl/VX_socket.sv",
+        line: 740,
+        code: [
+          "// L2-facing memory ports. Port 0 arbitrates",
+          "// icache and dcache with socket-resident units.",
+          "VX_mem_bus_if socket_arb_in_if[SOCKET_MEM_ARB_REQS]();",
+          "VX_mem_bus_if socket_arb_out_if[1]();"
+        ].join("\n")
+      },
+      kernel: {
+        title: "sgemm2 负载映射（软件）",
+        badge: "Kernel source",
+        description: "这个负载显式把每个 K 块搬进 local_A/local_B，barrier 后让 16 个线程复用数据。它解释为什么本硬件演示会经过 LMEM SRAM；这个按钮不属于硬件拓扑。",
+        config: "tile_size = 4；chunk_k = 4",
+        data: "625 CTA；10,000 threads；25 个 K 块",
+        source: "tests/regression/sgemm2/kernel.cpp",
+        line: 29,
+        code: [
+          "for (uint32_t k = 0; k < size; k += chunk_k) {",
+          "  local_A[...] = A_ptr[...];",
+          "  local_B[...] = B_ptr[...];",
+          "  __syncthreads();",
+          "  for (uint32_t j = 0; j < chunk_k; ++j)",
+          "    sum += local_A[...] * local_B[...];",
+          "  __syncthreads();",
+          "}",
+          "C_ptr[...] = sum;"
+        ].join("\n")
+      }
+    };
+
+    const paths = {
+      dispatch: "M173 65 H247",
+      fetch: "M393 65 H472",
+      issue: "M618 65 H717",
+      alu: "M790 98 V132 H180 V190 M253 225 H802",
+      globalLoad: "M430 258 V430 Q430 450 475 450 V485 H80",
+      loadReturn: "M80 485 H475 V450 Q430 450 430 430 V225 H802",
+      lmemWrite: "M802 225 H430 V342",
+      barrier: "M790 98 C790 165 680 260 680 342 C680 285 320 290 320 98",
+      compute: "M430 342 V225 H802 C860 225 850 145 790 98 C755 145 705 175 680 190 V225 H802",
+      storeIssue: "M802 225 H503",
+      storeCache: "M430 258 V430 Q430 450 475 450 V452",
+      storeDrain: "M427 485 H80",
+      done: ""
+    };
+
+    const tileRow = 12;
+    const tileCol = 7;
+    const tileSize = 4;
+    const chunks = 25;
+
+    function makeStep(kind, title, active, path, pathNames, k = null, j = null, live = "") {
+      return { kind, title, active, path, pathNames, k, j, live };
+    }
+
+    function buildSteps() {
+      const result = [
+        makeStep("control", "CTA 分派", ["kmu", "scheduler"], "dispatch", ["KMU", "Warp Scheduler"], null, null, "KMU 正在发送 block(12, 7) 的 CTA 描述符。"),
+        makeStep("fetch", "取指", ["scheduler", "fetch"], "fetch", ["Warp Scheduler", "Fetch + I$"], null, null, "代表 warp 的 PC 正在请求 sgemm2 指令。"),
+        makeStep("issue", "解码与发射", ["fetch", "issue"], "issue", ["Fetch + I$", "Decode / Issue"], null, null, "scoreboard 检查依赖并选择可发射的执行单元。")
+      ];
+
+      for (let k = 0; k < chunks; k += 1) {
+        const base = k * tileSize;
+        result.push(makeStep("alu", "索引与地址计算", ["issue", "alu", "commit"], "alu", ["Decode / Issue", "ALU", "Commit + GPR"], k, null, `计算 A[48:51, ${base}:${base + 3}] 与 B[${base}:${base + 3}, 28:31] 的地址。`));
+        result.push(makeStep("load", "A/B 全局读请求", ["issue", "lsu", "dcache", "l2", "l3", "dram", "fabric"], "globalLoad", ["LSU", "D$", "L2 直通", "L3 直通", "DRAM"], k, null, "16 个线程各读取一个 A 和一个 B 元素；coalescer 尝试合并 lane 请求。"));
+        result.push(makeStep("load", "A/B 数据返回到 GPR", ["dram", "l3", "l2", "dcache", "lsu", "commit", "fabric"], "loadReturn", ["DRAM / D$", "LSU load response", "Commit", "GPR"], k, null, "load response 经 LSU 和 Commit 写回 GPR；若 D$ 命中，请求不会真的到 DRAM。"));
+        result.push(makeStep("lmem", "线程执行 local store", ["commit", "issue", "lsu", "lmem"], "lmemWrite", ["GPR", "Issue", "LSU local store", "LMEM SRAM"], k, null, "线程从 GPR 发出 local store，把 A/B 两个 4×4 tile 写入同一 128-byte LMEM slice；没有 cache→LMEM 直连。"));
+        result.push(makeStep("barrier", "装载后 barrier", ["issue", "barrier", "scheduler"], "barrier", ["4 warps", "Barrier unit", "Scheduler unlock"], k, null, "4 个 warp 到齐后才允许读取完整 tile。"));
+        for (let j = 0; j < tileSize; j += 1) {
+          result.push(makeStep("compute", `LMEM 读 + FP 乘加 j=${j}`, ["issue", "lmem", "lsu", "fpu", "commit"], "compute", ["LMEM SRAM", "LSU load", "GPR operands", "FPU lanes", "Commit / GPR"], k, j, `每个线程先经 LSU 从 LMEM 读取 A/B 到寄存器，再执行 sum += local_A[l_row, ${j}] × local_B[${j}, l_col]。`));
+        }
+        result.push(makeStep("barrier", "计算后 barrier", ["issue", "barrier", "scheduler"], "barrier", ["4 warps", "Barrier unit", "下一 K 块"], k, null, k === chunks - 1 ? "最后一个 K 块完成，所有 warp 同步后进入 C store。" : `K=${base}:${base + 3} 完成；同步后推进到 K=${base + 4}:${base + 7}。`));
+      }
+
+      result.push(makeStep("store", "发射 C store", ["commit", "issue", "lsu"], "storeIssue", ["GPR sum", "LSU store"], chunks - 1, null, "16 个线程把最终 sum 作为 C 的 4×4 tile 写出。"));
+      result.push(makeStep("store", "C 写入 D$", ["lsu", "dcache"], "storeCache", ["LSU", "D$ write-back"], chunks - 1, null, "store 指令可以在进入 D$ 后提交；此时不保证已写到 DRAM。"));
+      result.push(makeStep("store", "脏线排空到外存", ["dcache", "l2", "l3", "dram", "fabric"], "storeDrain", ["D$ dirty line", "L2 直通", "L3 直通", "DRAM"], chunks - 1, null, "当 D$ eviction/flush 时，C tile 才沿 memory bus 落到外部内存。"));
+      result.push(makeStep("done", "代表 CTA 完成", ["scheduler", "commit"], "done", ["CTA complete"], chunks - 1, null, "这个 4×4 C tile 已完成；其余 624 个 CTA 重复同样的数据流。"));
+      return result;
+    }
+
+    const steps = buildSteps();
+    let stepIndex = 0;
+    let playing = false;
+    let timer = null;
+    let selectedUnit = "lmem";
+    let animationStart = performance.now();
+
+    const playButton = document.getElementById("play-button");
+    const prevButton = document.getElementById("prev-button");
+    const nextButton = document.getElementById("next-button");
+    const resetButton = document.getElementById("reset-button");
+    const speedSelect = document.getElementById("speed-select");
+    const cycleValue = document.getElementById("cycle-value");
+    const phaseValue = document.getElementById("phase-value");
+    const kValue = document.getElementById("k-value");
+    const jValue = document.getElementById("j-value");
+    const progress = document.getElementById("progress");
+    const progressLabel = document.getElementById("progress-label");
+    const playState = document.getElementById("play-state");
+    const pathReadout = document.getElementById("path-readout");
+
+    const detailTitle = document.getElementById("detail-title");
+    const detailBadge = document.getElementById("detail-badge");
+    const detailDescription = document.getElementById("detail-description");
+    const liveState = document.getElementById("live-state");
+    const detailConfig = document.getElementById("detail-config");
+    const detailData = document.getElementById("detail-data");
+    const sourceLink = document.getElementById("source-link");
+    const sourceCode = document.getElementById("source-code");
+    const detailPanel = root.querySelector(".detail-panel");
+    const selectionState = document.getElementById("selection-state");
+
+    const waveLanes = [
+      { key: "clock", label: "CLK" },
+      { key: "load", label: "Global load" },
+      { key: "lmem", label: "LMEM SRAM" },
+      { key: "barrier", label: "Barrier" },
+      { key: "compute", label: "FP MAC" },
+      { key: "commit", label: "Commit / GPR" },
+      { key: "store", label: "C store" }
+    ];
+
+    function buildMatrix(id) {
+      const el = document.getElementById(id);
+      const cells = [];
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < 625; i += 1) {
+        const cell = document.createElement("span");
+        cell.className = "matrix-cell";
+        cell.setAttribute("aria-hidden", "true");
+        cells.push(cell);
+        fragment.appendChild(cell);
+      }
+      el.appendChild(fragment);
+      return cells;
+    }
+
+    const matrixCells = {
+      a: buildMatrix("matrix-a"),
+      b: buildMatrix("matrix-b"),
+      c: buildMatrix("matrix-c")
+    };
+    let previousMatrixCells = [];
+
+    function setMatrixHighlights(step) {
+      previousMatrixCells.forEach(cell => cell.classList.remove("is-active", "is-output"));
+      const k = step.k === null ? 0 : step.k;
+      const aCell = matrixCells.a[tileRow * 25 + k];
+      const bCell = matrixCells.b[k * 25 + tileCol];
+      const cCell = matrixCells.c[tileRow * 25 + tileCol];
+      aCell.classList.add("is-active");
+      bCell.classList.add("is-active");
+      cCell.classList.add("is-output");
+      previousMatrixCells = [aCell, bCell, cCell];
+      const base = k * tileSize;
+      document.getElementById("matrix-a-caption").textContent = `当前 A[48:51, ${base}:${base + 3}] → local_A`;
+      document.getElementById("matrix-b-caption").textContent = `当前 B[${base}:${base + 3}, 28:31] → local_B`;
+      document.getElementById("matrix-c-caption").textContent = step.kind === "done" ? "C[48:51, 28:31] 已完成" : `C[48:51, 28:31] · 已处理 ${step.k === null ? 0 : k + 1}/25 个 K 块`;
+    }
+
+    function laneIsOn(lane, step) {
+      if (lane === "load") return step.kind === "load";
+      if (lane === "lmem") return step.kind === "lmem" || step.kind === "compute";
+      if (lane === "barrier") return step.kind === "barrier";
+      if (lane === "compute") return step.kind === "compute";
+      if (lane === "commit") return step.kind === "alu" || step.kind === "compute" || step.kind === "store";
+      if (lane === "store") return step.kind === "store";
+      return false;
+    }
+
+    function renderWaveform() {
+      const grid = document.getElementById("wave-grid");
+      const first = Math.max(0, stepIndex - 23);
+      const visible = steps.slice(first, stepIndex + 1);
+      while (visible.length < 24) visible.unshift(null);
+      grid.replaceChildren();
+
+      waveLanes.forEach(lane => {
+        const label = document.createElement("span");
+        label.className = "wave-label";
+        label.textContent = lane.label;
+        grid.appendChild(label);
+        visible.forEach((step, column) => {
+          const cell = document.createElement("span");
+          cell.className = "wave-cell";
+          if (lane.key === "clock") {
+            const segment = document.createElement("span");
+            const absoluteCycle = first - (24 - Math.min(24, stepIndex + 1)) + column;
+            segment.className = `clock-segment ${absoluteCycle % 2 === 0 ? "high" : "low"}`;
+            cell.appendChild(segment);
+          } else if (step && laneIsOn(lane.key, step)) {
+            cell.classList.add("is-on");
+          }
+          if (column === 23) cell.classList.add("is-current");
+          grid.appendChild(cell);
+        });
+      });
+
+      const axisLabel = document.createElement("span");
+      axisLabel.className = "wave-label";
+      axisLabel.textContent = "cycle";
+      grid.appendChild(axisLabel);
+      visible.forEach((step, column) => {
+        const tick = document.createElement("span");
+        tick.className = "cycle-axis";
+        const cycle = step ? first + column - (24 - visible.filter(Boolean).length) : null;
+        tick.textContent = cycle === null || cycle < 0 ? "" : String(cycle);
+        grid.appendChild(tick);
+      });
+    }
+
+    function updateDetails() {
+      const data = unitData[selectedUnit];
+      const step = steps[stepIndex];
+      const isActive = step.active.includes(selectedUnit);
+      detailTitle.textContent = data.title;
+      detailBadge.textContent = data.badge;
+      detailDescription.textContent = data.description;
+      detailConfig.textContent = data.config;
+      detailData.textContent = data.data;
+      liveState.textContent = isActive ? `当前：${step.live}` : `当前演示周期未激活此单元。正在执行：${step.title}。`;
+      sourceLink.textContent = `${data.source}:${data.line}`;
+      sourceLink.href = `file:///C:/Users/Thomas/Desktop/project/vortex-3.0/${data.source}`;
+      sourceCode.textContent = data.code;
+      unitButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.unit === selectedUnit)));
+    }
+
+    function updatePath(step) {
+      const d = paths[step.path] || "";
+      activeFlow.setAttribute("d", d);
+      packetA.hidden = d.length === 0;
+      packetB.hidden = d.length === 0;
+      animationStart = performance.now();
+      pathReadout.replaceChildren();
+      const lead = document.createElement("span");
+      lead.textContent = "当前：";
+      pathReadout.appendChild(lead);
+      step.pathNames.forEach((name, index) => {
+        const node = document.createElement("span");
+        node.className = "path-node";
+        node.textContent = name;
+        pathReadout.appendChild(node);
+        if (index < step.pathNames.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = "path-arrow";
+          arrow.textContent = "→";
+          pathReadout.appendChild(arrow);
+        }
+      });
+    }
+
+    function render() {
+      const step = steps[stepIndex];
+      playButton.textContent = playing ? "暂停" : (stepIndex === steps.length - 1 ? "重播" : "播放");
+      playButton.setAttribute("aria-pressed", String(playing));
+      cycleValue.textContent = String(stepIndex);
+      phaseValue.textContent = step.title;
+      kValue.textContent = step.k === null ? "—" : `${step.k + 1}/25`;
+      jValue.textContent = step.j === null ? "—" : `${step.j + 1}/4`;
+      progress.max = steps.length - 1;
+      progress.value = stepIndex;
+      progressLabel.textContent = `${stepIndex} / ${steps.length - 1}`;
+      prevButton.disabled = stepIndex === 0;
+      nextButton.disabled = stepIndex === steps.length - 1;
+      unitButtons.forEach(button => button.classList.toggle("is-active", step.active.includes(button.dataset.unit)));
+      setMatrixHighlights(step);
+      renderWaveform();
+      updatePath(step);
+      updateDetails();
+    }
+
+    function pause(announcement = "已暂停") {
+      playing = false;
+      if (timer !== null) window.clearTimeout(timer);
+      timer = null;
+      playButton.textContent = stepIndex === steps.length - 1 ? "重播" : "播放";
+      playButton.setAttribute("aria-pressed", "false");
+      playState.textContent = announcement;
+    }
+
+    function scheduleNext() {
+      if (!playing) return;
+      timer = window.setTimeout(() => {
+        if (stepIndex >= steps.length - 1) {
+          pause("演示完成");
+          return;
+        }
+        stepIndex += 1;
+        render();
+        if (stepIndex >= steps.length - 1) pause("演示完成");
+        else scheduleNext();
+      }, Number(speedSelect.value));
+    }
+
+    function play() {
+      if (stepIndex >= steps.length - 1) stepIndex = 0;
+      playing = true;
+      playButton.textContent = "暂停";
+      playButton.setAttribute("aria-pressed", "true");
+      playState.textContent = "正在播放";
+      render();
+      scheduleNext();
+    }
+
+    playButton.addEventListener("click", () => playing ? pause() : play());
+    prevButton.addEventListener("click", () => {
+      pause();
+      stepIndex = Math.max(0, stepIndex - 1);
+      render();
+    });
+    nextButton.addEventListener("click", () => {
+      pause();
+      stepIndex = Math.min(steps.length - 1, stepIndex + 1);
+      render();
+    });
+    resetButton.addEventListener("click", () => {
+      pause("已复位");
+      stepIndex = 0;
+      render();
+    });
+    speedSelect.addEventListener("change", () => {
+      if (playing) {
+        if (timer !== null) window.clearTimeout(timer);
+        scheduleNext();
+      }
+      playState.textContent = `速度已设为 ${speedSelect.options[speedSelect.selectedIndex].text}`;
+    });
+
+    unitButtons.forEach(button => button.addEventListener("click", () => {
+      selectedUnit = button.dataset.unit;
+      updateDetails();
+      selectionState.textContent = `已选择 ${unitData[selectedUnit].title}，代码详情已更新。`;
+      if (window.matchMedia("(max-width: 760px)").matches) {
+        detailPanel.scrollIntoView({ behavior: prefersReducedMotion.matches ? "auto" : "smooth", block: "start" });
+      }
+    }));
+    document.getElementById("kernel-button").addEventListener("click", () => {
+      selectedUnit = "kernel";
+      updateDetails();
+      selectionState.textContent = "已选择 sgemm2 负载映射，代码详情已更新。";
+    });
+
+    function animatePackets(now) {
+      if (!packetA.hidden && !prefersReducedMotion.matches) {
+        const length = activeFlow.getTotalLength();
+        if (length > 0) {
+          const elapsed = (now - animationStart) / 1150;
+          const p1 = activeFlow.getPointAtLength((elapsed % 1) * length);
+          const p2 = activeFlow.getPointAtLength(((elapsed + 0.42) % 1) * length);
+          packetA.setAttribute("cx", p1.x);
+          packetA.setAttribute("cy", p1.y);
+          packetB.setAttribute("cx", p2.x);
+          packetB.setAttribute("cy", p2.y);
+        }
+      }
+      window.requestAnimationFrame(animatePackets);
+    }
+
+    render();
+    window.requestAnimationFrame(animatePackets);
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vortex 100×100 矩阵乘法计算过程 · V2</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: Canvas;
+      --fg: CanvasText;
+      --muted-fg: color-mix(in srgb, CanvasText 62%, Canvas 38%);
+      --surface: color-mix(in srgb, Canvas 94%, Highlight 6%);
+      --surface-2: color-mix(in srgb, Canvas 88%, Highlight 12%);
+      --border: color-mix(in srgb, CanvasText 20%, Canvas 80%);
+      --quiet: color-mix(in srgb, CanvasText 8%, Canvas 92%);
+      --active: Highlight;
+      --active-fg: HighlightText;
+      --a-color: LinkText;
+      --b-color: ActiveText;
+      --c-color: VisitedText;
+      --radius: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 320px; background: var(--bg); color: var(--fg); }
+    button, select { font: inherit; color: inherit; }
+    button:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 3px solid Highlight;
+      outline-offset: 3px;
+    }
+    code, pre { font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(1.55rem, 3vw, 2.45rem); line-height: 1.14; font-weight: 500; }
+    h2 { margin-bottom: 0; font-size: 1.08rem; font-weight: 500; }
+    h3 { margin-bottom: 0; font-size: 0.94rem; font-weight: 500; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    #vortex-matmul-v2 {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: clamp(14px, 2.2vw, 30px);
+    }
+
+    .hero { padding-right: 100px; }
+    .eyebrow { margin-bottom: 5px; color: var(--muted-fg); font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .hero-copy { max-width: 1040px; margin-bottom: 12px; color: var(--muted-fg); }
+    .fact-strip { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .fact-chip, .version-link {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg);
+      font-size: 0.84rem;
+      text-decoration: none;
+    }
+    .fact-chip strong { font-weight: 500; }
+    .fact-chip--important { background: color-mix(in srgb, Highlight 12%, Canvas 88%); border-color: color-mix(in srgb, Highlight 38%, Canvas 62%); }
+    .version-link { color: LinkText; }
+
+    .control-deck {
+      margin: 18px 0;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      display: grid;
+      gap: 10px;
+    }
+    .controls, .live-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .btn, .select {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: Canvas;
+      color: CanvasText;
+    }
+    .btn { padding: 8px 13px; }
+    .btn-primary { min-width: 92px; background: Highlight; color: HighlightText; border-color: Highlight; }
+    .btn:disabled { opacity: 0.45; }
+    .speed-label { margin-left: auto; color: var(--muted-fg); font-size: 0.85rem; }
+    .select { padding: 7px 30px 7px 10px; }
+    .live-status { color: var(--muted-fg); font-size: 0.84rem; }
+    .status-item { display: inline-flex; gap: 5px; align-items: baseline; }
+    .status-item strong { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .status-item--scene { flex: 1 1 260px; }
+    .progress-line { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    progress { width: 100%; height: 8px; accent-color: Highlight; }
+    .progress-text { color: var(--muted-fg); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
+
+    .section { min-width: 0; margin-top: 20px; }
+    .section-head { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; align-items: baseline; margin-bottom: 9px; }
+    .section-note { margin: 0; color: var(--muted-fg); font-size: 0.82rem; }
+
+    .story-grid { display: grid; grid-template-columns: minmax(270px, 0.7fr) minmax(430px, 1.3fr); gap: 16px; align-items: stretch; }
+    .story-copy, .warp-panel, .source-panel {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .story-copy { padding: 16px; display: grid; align-content: start; gap: 12px; }
+    .scene-index { color: var(--muted-fg); font-size: 0.77rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .scene-title { font-size: 1.25rem; font-weight: 500; line-height: 1.2; }
+    .scene-description { margin: 0; color: var(--muted-fg); }
+    .scene-equation {
+      margin: 0;
+      padding: 10px 11px;
+      border-inline-start: 3px solid Highlight;
+      background: color-mix(in srgb, Highlight 9%, Canvas 91%);
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.84rem;
+      overflow-wrap: anywhere;
+    }
+    .metric-list { display: grid; gap: 7px; margin: 0; }
+    .metric { display: grid; grid-template-columns: 118px 1fr; gap: 8px; font-size: 0.82rem; }
+    .metric dt { color: var(--muted-fg); }
+    .metric dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+    .warp-panel { padding: 15px; display: grid; gap: 11px; }
+    .warp-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+    .warp-head span { color: var(--muted-fg); font-size: 0.78rem; }
+    .warp-map { display: grid; gap: 7px; }
+    .warp-columns, .warp-row {
+      display: grid;
+      grid-template-columns: 70px repeat(4, minmax(50px, 1fr));
+      gap: 6px;
+      align-items: center;
+    }
+    .warp-columns { min-height: 28px; padding: 0 5px; }
+    .warp-column-head { color: var(--muted-fg); font-size: 0.7rem; text-align: center; }
+    .warp-column-head strong { display: block; color: var(--fg); font-weight: 500; }
+    .warp-row {
+      min-height: 54px;
+      padding: 5px;
+      border-radius: 9px;
+      background: color-mix(in srgb, CanvasText 5%, Canvas 95%);
+      transition: background-color 120ms ease;
+    }
+    .warp-name { font-weight: 500; font-size: 0.84rem; }
+    .lane {
+      min-height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: Canvas;
+      font-size: 0.74rem;
+      text-align: center;
+      line-height: 1.15;
+    }
+    .lane.is-active { border-color: Highlight; background: color-mix(in srgb, Highlight 16%, Canvas 84%); color: CanvasText; }
+    .warp-column-head.is-active { color: Highlight; }
+    .lane strong { display: block; font-weight: 500; }
+    .parallel-note { margin: 0; color: var(--muted-fg); font-size: 0.8rem; }
+
+    .chunk-budget {
+      margin-top: 11px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .budget-item {
+      min-width: 0;
+      padding: 8px 9px;
+      border-inline-start: 3px solid var(--border);
+      background: var(--surface);
+      color: var(--muted-fg);
+      font-size: 0.75rem;
+    }
+    .budget-item strong { display: block; color: var(--fg); font-size: 0.86rem; font-weight: 500; }
+
+    .staging-route {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding-top: 3px;
+    }
+    .route-node {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--fg);
+      font-size: 0.78rem;
+    }
+    .route-arrow { position: relative; min-width: 25px; text-align: center; color: Highlight; overflow: hidden; }
+    .route-arrow::after {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: Highlight;
+      animation: route-token 850ms linear infinite;
+    }
+    @keyframes route-token { from { transform: translateX(0); } to { transform: translateX(22px); } }
+
+    .matrix-layout { display: grid; grid-template-columns: minmax(190px, 0.42fr) minmax(0, 1.58fr); gap: 18px; align-items: start; }
+    .global-map-wrap { min-width: 0; }
+    .global-map-title { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 7px; font-size: 0.82rem; }
+    .global-map-title span { color: var(--muted-fg); }
+    .global-map {
+      width: min(100%, 330px);
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(25, 1fr);
+      gap: 1px;
+      padding: 3px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--quiet);
+    }
+    .global-cell { min-width: 0; min-height: 0; background: color-mix(in srgb, CanvasText 8%, Canvas 92%); }
+    .global-cell.is-selected { background: Highlight; }
+    .global-caption { margin: 7px 0 0; color: var(--muted-fg); font-size: 0.8rem; }
+
+    .tile-equation { display: grid; grid-template-columns: minmax(150px, 1fr) auto minmax(150px, 1fr) auto minmax(150px, 1fr); gap: 10px; align-items: center; }
+    .tile-figure { min-width: 0; }
+    .tile-title { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 6px; font-size: 0.8rem; }
+    .tile-title span { color: var(--muted-fg); }
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      aspect-ratio: 1;
+      gap: 3px;
+    }
+    .tile-cell {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 1px;
+      padding: 3px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: Canvas;
+      color: var(--muted-fg);
+      font-size: clamp(0.69rem, 1.15vw, 0.76rem);
+      line-height: 1.1;
+      text-align: center;
+      transition: background-color 120ms ease, color 120ms ease;
+    }
+    .tile-cell small { color: inherit; font-size: 0.69rem; }
+    .tile-cell.is-a { background: color-mix(in srgb, LinkText 15%, Canvas 85%); color: CanvasText; border-color: LinkText; }
+    .tile-cell.is-b { background: color-mix(in srgb, ActiveText 14%, Canvas 86%); color: CanvasText; border-color: ActiveText; }
+    .tile-cell.is-c { background: color-mix(in srgb, VisitedText 15%, Canvas 85%); color: CanvasText; border-color: VisitedText; }
+    .operator { color: var(--muted-fg); font-size: 1.3rem; text-align: center; }
+    .thread-formulas {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+    }
+    .formula-line {
+      min-height: 54px;
+      padding: 8px;
+      border-inline-start: 3px solid var(--border);
+      background: var(--surface);
+      color: var(--muted-fg);
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.72rem;
+      overflow-wrap: anywhere;
+    }
+    .formula-line.is-active { border-color: Highlight; color: var(--fg); background: color-mix(in srgb, Highlight 9%, Canvas 91%); }
+
+    .schedule-shell { width: 100%; max-width: 100%; overflow-x: auto; padding-bottom: 4px; }
+    .issue-schedule { min-width: 820px; display: grid; grid-template-columns: 105px repeat(16, minmax(40px, 1fr)); gap: 3px; }
+    .schedule-label { color: var(--muted-fg); font-size: 0.75rem; display: flex; align-items: center; }
+    .schedule-group { text-align: center; color: var(--muted-fg); font-size: 0.7rem; padding: 3px 0; border-bottom: 1px solid var(--border); }
+    .schedule-cell {
+      min-height: 48px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 3px;
+      border-radius: 6px;
+      background: var(--quiet);
+      color: var(--muted-fg);
+      font-size: 0.69rem;
+    }
+    .schedule-cell.is-done { background: color-mix(in srgb, Highlight 9%, Canvas 91%); color: var(--fg); }
+    .schedule-cell.is-current { background: Highlight; color: HighlightText; }
+    .lane-dots { display: flex; gap: 2px; }
+    .lane-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .schedule-foot { margin: 7px 0 0; color: var(--muted-fg); font-size: 0.78rem; }
+
+    .timing-detail {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: minmax(300px, 0.8fr) minmax(520px, 1.2fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    .timing-panel {
+      min-width: 0;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .timing-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
+    .timing-head span { color: var(--muted-fg); font-size: 0.75rem; }
+    .pipeline-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+    .pipeline-stage {
+      min-height: 52px;
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      border-radius: 7px;
+      background: var(--quiet);
+      color: var(--muted-fg);
+      text-align: center;
+      font-size: 0.72rem;
+      transition: background-color 120ms ease, color 120ms ease;
+    }
+    .pipeline-stage.is-active { background: color-mix(in srgb, Highlight 18%, Canvas 82%); color: var(--fg); }
+    .exec-rails { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin-top: 6px; }
+    .exec-rail {
+      min-height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 5px;
+      border-bottom: 3px solid var(--border);
+      color: var(--muted-fg);
+      font-size: 0.72rem;
+      text-align: center;
+    }
+    .exec-rail.is-active { border-color: Highlight; color: var(--fg); background: color-mix(in srgb, Highlight 8%, Canvas 92%); }
+    .pipeline-note, .bank-note { margin: 8px 0 0; color: var(--muted-fg); font-size: 0.76rem; }
+
+    .bank-requests { display: grid; gap: 6px; }
+    .bank-request { display: grid; grid-template-columns: 86px repeat(4, minmax(0, 1fr)); gap: 4px; align-items: stretch; }
+    .bank-request-label { display: grid; align-content: center; color: var(--muted-fg); font-size: 0.7rem; }
+    .bank-token {
+      min-width: 0;
+      min-height: 40px;
+      display: grid;
+      place-items: center;
+      padding: 4px;
+      border-radius: 6px;
+      background: Canvas;
+      color: var(--muted-fg);
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 0.69rem;
+      line-height: 1.15;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+    .bank-token.is-a { background: color-mix(in srgb, LinkText 13%, Canvas 87%); color: CanvasText; }
+    .bank-token.is-b { background: color-mix(in srgb, ActiveText 12%, Canvas 88%); color: CanvasText; }
+    .bank-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+    .bank-cell {
+      min-height: 45px;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 2px;
+      padding: 5px;
+      border-bottom: 3px solid var(--border);
+      background: var(--quiet);
+      color: var(--muted-fg);
+      font-size: 0.7rem;
+      text-align: center;
+    }
+    .bank-cell strong { color: var(--fg); font-weight: 500; }
+    .bank-cell.is-a-target { border-color: LinkText; background: color-mix(in srgb, LinkText 11%, Canvas 89%); }
+    .bank-cell.is-b-target { border-color: ActiveText; background: color-mix(in srgb, ActiveText 10%, Canvas 90%); }
+    .bank-cell.is-both { border-color: Highlight; background: color-mix(in srgb, Highlight 17%, Canvas 83%); }
+    .bank-cell.is-summary { border-color: Highlight; }
+
+    .hardware-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr); gap: 16px; align-items: start; }
+    .hardware-main { min-width: 0; }
+    .hardware-groups { display: grid; gap: 10px; }
+    .hardware-group { display: grid; grid-template-columns: 78px repeat(4, minmax(120px, 1fr)); gap: 7px; align-items: center; }
+    .group-label { color: var(--muted-fg); font-size: 0.75rem; }
+    .unit-banner {
+      position: relative;
+      min-height: 62px;
+      padding: 8px 9px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: Canvas;
+      color: CanvasText;
+      text-align: left;
+      display: grid;
+      align-content: center;
+      gap: 2px;
+    }
+    .unit-banner[aria-pressed="true"] { border-color: LinkText; box-shadow: 0 0 0 2px color-mix(in srgb, LinkText 38%, transparent); }
+    .unit-banner.is-active { background: color-mix(in srgb, Highlight 17%, Canvas 83%); border-color: Highlight; }
+    .unit-banner::after { content: ""; position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+    .unit-banner.is-active::after { background: Highlight; }
+    .unit-title { font-size: 0.82rem; font-weight: 500; line-height: 1.15; }
+    .unit-sub { color: var(--muted-fg); font-size: 0.69rem; line-height: 1.15; }
+
+    .current-path { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 10px; color: var(--muted-fg); font-size: 0.78rem; }
+    .current-path-node { padding: 4px 7px; border-radius: 999px; background: var(--surface-2); color: var(--fg); }
+    .current-path-arrow { color: Highlight; }
+
+    .source-panel { overflow: hidden; }
+    .source-head { padding: 14px; border-bottom: 1px solid var(--border); }
+    .source-kicker { margin: 0 0 4px; color: var(--muted-fg); font-size: 0.73rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .source-title-row { display: flex; justify-content: space-between; gap: 8px; align-items: start; }
+    .source-badge { flex: none; padding: 3px 7px; border-radius: 999px; background: var(--surface-2); font-size: 0.7rem; }
+    .source-body { padding: 14px; display: grid; gap: 11px; }
+    .source-description, .source-live { margin: 0; }
+    .source-description { color: var(--muted-fg); font-size: 0.87rem; }
+    .source-live { padding: 9px 10px; border-inline-start: 3px solid Highlight; background: color-mix(in srgb, Highlight 9%, Canvas 91%); font-size: 0.8rem; }
+    .source-link { color: LinkText; font-size: 0.8rem; overflow-wrap: anywhere; text-underline-offset: 3px; }
+    pre { margin: 0; max-width: 100%; overflow: auto; padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: Canvas; color: CanvasText; font-size: 0.72rem; line-height: 1.52; }
+    .kernel-button { min-height: 42px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: Canvas; text-align: left; }
+
+    .footnote { margin: 18px 0 0; color: var(--muted-fg); font-size: 0.79rem; }
+
+    @media (max-width: 1080px) {
+      .story-grid, .hardware-layout { grid-template-columns: 1fr; }
+      .source-panel { display: grid; grid-template-columns: minmax(230px, 0.55fr) minmax(0, 1fr); }
+      .source-head { border-bottom: 0; border-inline-end: 1px solid var(--border); }
+      .matrix-layout { grid-template-columns: 190px minmax(0, 1fr); }
+      .timing-detail { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 780px) {
+      .hero { padding-right: 0; }
+      .speed-label { margin-left: 0; }
+      .story-grid { grid-template-columns: 1fr; }
+      .matrix-layout { grid-template-columns: 1fr; }
+      .global-map { max-width: 260px; }
+      .tile-equation { grid-template-columns: 1fr; }
+      .operator { min-height: 28px; }
+      .thread-formulas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chunk-budget { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hardware-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .group-label { grid-column: 1 / -1; }
+      .source-panel { display: block; }
+      .source-head { border-inline-end: 0; border-bottom: 1px solid var(--border); }
+    }
+
+    @media (max-width: 480px) {
+      #vortex-matmul-v2 { padding: 12px; }
+      .btn { flex: 1 1 auto; }
+      .speed-label { width: 100%; }
+      .select { flex: 1 1 auto; }
+      .warp-columns, .warp-row { grid-template-columns: 58px repeat(4, minmax(0, 1fr)); gap: 4px; }
+      .lane { min-height: 46px; font-size: 0.69rem; }
+      .thread-formulas { grid-template-columns: 1fr; }
+      .chunk-budget { grid-template-columns: 1fr; }
+      .pipeline-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bank-request { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bank-request-label { grid-column: 1 / -1; }
+      .bank-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hardware-group { grid-template-columns: 1fr; }
+      .metric { grid-template-columns: 104px 1fr; }
+    }
+
+    @media (pointer: coarse) {
+      .btn, .select, .kernel-button { min-height: 44px; }
+      .unit-banner { min-height: 64px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+      .route-arrow::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main id="vortex-matmul-v2">
+    <header class="hero">
+      <p class="eyebrow">Vortex GPGPU · matrix computation explainer · V2</p>
+      <h1>一个 4×4 CTA，怎样算出 C 的 16 个元素</h1>
+      <p class="hero-copy">这版从矩阵算法出发：先把 100×100 输出切成 625 个 tile，再跟踪 block(12,7) 的 16 个线程如何协作搬运 A/B、使用 128-byte LMEM、按 4-lane warp 执行乘加，最后写回 C。</p>
+      <div class="fact-strip" aria-label="计算概要">
+        <span class="fact-chip"><strong>分块</strong>&nbsp;25×25 CTA，每块 4×4</span>
+        <span class="fact-chip"><strong>并行</strong>&nbsp;1 warp = 4 lanes</span>
+        <span class="fact-chip"><strong>时间复用</strong>&nbsp;issue width = 1</span>
+        <span class="fact-chip"><strong>总计算</strong>&nbsp;1,000,000 MAC ≈ 2 MFLOP</span>
+        <span class="fact-chip fact-chip--important"><strong>不是脉动阵列</strong>&nbsp;默认 TCU 关闭，走 LSU/FPU</span>
+        <a class="version-link" href="vortex-matmul-dataflow.html" target="_blank" rel="noopener">打开上一版硬件拓扑</a>
+      </div>
+    </header>
+
+    <section class="control-deck" aria-label="动画控制">
+      <div class="controls">
+        <button class="btn btn-primary" id="play-button" type="button" aria-pressed="false">播放</button>
+        <button class="btn" id="prev-button" type="button">上一步</button>
+        <button class="btn" id="next-button" type="button">下一步</button>
+        <button class="btn" id="reset-button" type="button">复位</button>
+        <label class="speed-label" for="speed-select">速度</label>
+        <select class="select" id="speed-select">
+          <option value="900">0.5×</option>
+          <option value="500" selected>1×</option>
+          <option value="250">2×</option>
+          <option value="120">4×</option>
+        </select>
+      </div>
+      <div class="live-status">
+        <span class="status-item">演示步 <strong id="step-value">0</strong></span>
+        <span class="status-item status-item--scene">阶段 <strong id="phase-value">矩阵分块</strong></span>
+        <span class="status-item">K chunk <strong id="chunk-value">—</strong></span>
+        <span class="status-item">j <strong id="j-value">—</strong></span>
+        <span class="status-item">发射 warp <strong id="warp-value">—</strong></span>
+      </div>
+      <div class="progress-line">
+        <progress id="progress" max="100" value="0" aria-label="计算讲解进度"></progress>
+        <span class="progress-text" id="progress-text">0 / 54</span>
+      </div>
+      <span class="sr-only" id="play-state" aria-live="polite">已暂停</span>
+    </section>
+
+    <section class="section" aria-labelledby="story-heading">
+      <div class="section-head">
+        <h2 id="story-heading">当前分镜：算法与 4 warp × 4 lane</h2>
+        <p class="section-note">4 lanes 空间并行；1 个发射口动态选择 ready warp</p>
+      </div>
+      <div class="story-grid">
+        <article class="story-copy">
+          <span class="scene-index" id="scene-index">Scene 1 · overview</span>
+          <h3 class="scene-title" id="scene-title">把 C 切成 625 个 4×4 tile</h3>
+          <p class="scene-description" id="scene-description"></p>
+          <p class="scene-equation" id="scene-equation"></p>
+          <dl class="metric-list">
+            <div class="metric"><dt>当前 CTA</dt><dd>block(12,7) → C[48:51, 28:31]</dd></div>
+            <div class="metric"><dt>CTA MAC 进度</dt><dd id="mac-progress">0 / 1,600</dd></div>
+            <div class="metric"><dt>已装入 LMEM</dt><dd id="lmem-progress">0 / 128 bytes</dd></div>
+            <div class="metric"><dt>当前并行度</dt><dd id="parallel-value">尚未进入 warp 执行</dd></div>
+          </dl>
+          <div class="staging-route" id="staging-route" aria-label="当前数据流"></div>
+        </article>
+
+        <article class="warp-panel">
+          <div class="warp-head">
+            <h3>CTA 内线程映射</h3>
+            <span>Warp 固定列；Lane 固定行</span>
+          </div>
+          <div class="warp-map" id="warp-map" role="img" aria-label="4 个 warp 与 16 个线程的映射"></div>
+          <p class="parallel-note" id="parallel-note">一个 warp 的 4 个 lane 同时工作；四个逻辑 warp rank 固定输出列，但物理 wid 可以被后续 CTA 复用。</p>
+        </article>
+      </div>
+      <div class="chunk-budget" aria-label="单个 K chunk 的工作量">
+        <div class="budget-item"><strong>32 global load</strong>16 个 A + 16 个 B</div>
+        <div class="budget-item"><strong>32 LMEM store</strong>GPR 再写入 128 B tile</div>
+        <div class="budget-item"><strong>2 × barrier</strong>装载后一次，复用前一次</div>
+        <div class="budget-item"><strong>128 LMEM read</strong>16 threads × 4j × A/B</div>
+        <div class="budget-item"><strong>64 MAC</strong>16 threads × 4 次乘加</div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="matrix-heading">
+      <div class="section-head">
+        <h2 id="matrix-heading">从 100×100 全局矩阵放大到一个 4×4 乘法块</h2>
+        <p class="section-note">A 的 4 行沿 K 向右移动；B 的 4 列沿 K 向下移动；C 原地累加</p>
+      </div>
+      <div class="matrix-layout">
+        <div class="global-map-wrap">
+          <div class="global-map-title"><strong>C 的 25×25 CTA 网格</strong><span>625 tiles</span></div>
+          <div class="global-map" id="global-map" role="img" aria-label="C 矩阵被切成 25 乘 25 个 4 乘 4 tile，当前选择第 12 行第 7 列"></div>
+          <p class="global-caption">蓝色 tile：block(12,7)，覆盖输出行 48–51、列 28–31。625 是逻辑 CTA 数，并不表示 625 个 CTA 同时驻留。</p>
+        </div>
+
+        <div>
+          <div class="tile-equation">
+            <div class="tile-figure">
+              <div class="tile-title"><strong>A tile</strong><span id="a-range">rows 48–51 · K 0–3</span></div>
+              <div class="tile-grid" id="tile-a" role="img" aria-label="当前 A 的 4 乘 4 tile"></div>
+            </div>
+            <div class="operator" aria-hidden="true">×</div>
+            <div class="tile-figure">
+              <div class="tile-title"><strong>B tile</strong><span id="b-range">K 0–3 · cols 28–31</span></div>
+              <div class="tile-grid" id="tile-b" role="img" aria-label="当前 B 的 4 乘 4 tile"></div>
+            </div>
+            <div class="operator" aria-hidden="true">→</div>
+            <div class="tile-figure">
+              <div class="tile-title"><strong>C / accumulator</strong><span>rows 48–51 · cols 28–31</span></div>
+              <div class="tile-grid" id="tile-c" role="img" aria-label="CTA 的 16 个线程和输出元素"></div>
+            </div>
+          </div>
+          <div class="thread-formulas" id="thread-formulas" aria-label="当前 warp 四个 lane 的乘加公式"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="clock-heading">
+      <div class="section-head">
+        <h2 id="clock-heading">发射机会：为什么既并行又串行</h2>
+        <p class="section-note">每格是“操作数 ready 且无 stall 时”的逻辑机会，不是承诺的真实时钟格</p>
+      </div>
+      <div class="schedule-shell">
+        <div class="issue-schedule" id="issue-schedule" role="img" aria-label="四个 j 阶段中四个 warp 的单发射槽示意"></div>
+      </div>
+      <p class="schedule-foot">每格内 4 个点表示同一 warp 的 4 条 lane 空间并行。W0→W3 只是把 16 个逻辑发射机会排开；真实 scoreboard 会跳过 blocked warp，greedy 仲裁也可能让同一 warp 连续发射，所以它不是固定轮转或固定周期数。</p>
+      <div class="timing-detail">
+        <article class="timing-panel" aria-labelledby="pipeline-title">
+          <div class="timing-head">
+            <h3 id="pipeline-title">单发射，但后端可以有多条指令在途</h3>
+            <span id="issue-state">尚未进入执行</span>
+          </div>
+          <div class="pipeline-flow" aria-label="前端到提交的动态状态">
+            <span class="pipeline-stage" data-pipe="scheduler">Fetch<br>选 PC</span>
+            <span class="pipeline-stage" data-pipe="issue">IBuffer / Issue<br>最多新发 1 warp 指令</span>
+            <span class="pipeline-stage" data-pipe="execute">Execute<br>ALU · LSU · FPU</span>
+            <span class="pipeline-stage" data-pipe="commit">Commit<br>单槽仲裁写回</span>
+          </div>
+          <div class="exec-rails" aria-label="并行执行分支">
+            <span class="exec-rail" data-rail="alu">ALU rail</span>
+            <span class="exec-rail" data-rail="lsu">LSU rail</span>
+            <span class="exec-rail" data-rail="fpu">FPU rail</span>
+          </div>
+          <p class="pipeline-note" id="pipeline-note">Fetch 选择和 Issue 选择是两级仲裁；取到 W0 的指令，不代表本周期一定执行 W0。</p>
+        </article>
+
+        <article class="timing-panel" aria-labelledby="bank-title">
+          <div class="timing-head">
+            <h3 id="bank-title">LMEM 4-bank 放大镜：4 lanes 为什么也会等</h3>
+            <span id="bank-mode">当前无 LMEM 请求</span>
+          </div>
+          <div class="bank-requests">
+            <div class="bank-request" id="bank-a-request" aria-label="A 操作数的四个 lane 请求"></div>
+            <div class="bank-request" id="bank-b-request" aria-label="B 操作数的四个 lane 请求"></div>
+          </div>
+          <div class="bank-grid" id="bank-grid" aria-label="四个 LMEM bank"></div>
+          <p class="bank-note" id="bank-note">Bank = word index mod 4。同一 warp 的请求如果落到同一 bank，会由 crossbar 仲裁排队。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="hardware-heading">
+      <div class="section-head">
+        <h2 id="hardware-heading">这一步调用了哪些硬件单元</h2>
+        <p class="section-note">点击 Banner 查看职责与仓库源码；高亮表示当前分镜参与</p>
+      </div>
+      <div class="hardware-layout">
+        <div class="hardware-main">
+          <div class="hardware-groups">
+            <div class="hardware-group">
+              <span class="group-label">控制前端</span>
+              <button class="unit-banner" type="button" data-unit="kmu" aria-pressed="false"><span class="unit-title">KMU / CTA</span><span class="unit-sub">grid 与 block 描述符</span></button>
+              <button class="unit-banner" type="button" data-unit="dispatch" aria-pressed="false"><span class="unit-title">CTA Dispatcher</span><span class="unit-sub">16 threads → 4 warp contexts</span></button>
+              <button class="unit-banner" type="button" data-unit="scheduler" aria-pressed="false"><span class="unit-title">Warp Scheduler</span><span class="unit-sub">Fetch 仲裁，不等于 Issue</span></button>
+              <button class="unit-banner" type="button" data-unit="issue" aria-pressed="false"><span class="unit-title">Issue / Scoreboard</span><span class="unit-sub">从 ready warp 中单发射</span></button>
+              <button class="unit-banner" type="button" data-unit="alu" aria-pressed="false"><span class="unit-title">ALU</span><span class="unit-sub">索引、地址、循环</span></button>
+            </div>
+            <div class="hardware-group">
+              <span class="group-label">数据通路</span>
+              <button class="unit-banner" type="button" data-unit="lsu" aria-pressed="false"><span class="unit-title">LSU</span><span class="unit-sub">global/local 地址路径</span></button>
+              <button class="unit-banner" type="button" data-unit="dcache" aria-pressed="false"><span class="unit-title">D$ + Memory</span><span class="unit-sub">D$，L2/L3 passthrough，DRAM</span></button>
+              <button class="unit-banner" type="button" data-unit="gpr" aria-pressed="false"><span class="unit-title">GPR banks</span><span class="unit-sub">load 数据与 sum 累加器</span></button>
+              <button class="unit-banner" type="button" data-unit="lmem" aria-pressed="true"><span class="unit-title">LMEM SRAM</span><span class="unit-sub">per-core 4-bank scratchpad</span></button>
+            </div>
+            <div class="hardware-group">
+              <span class="group-label">同步计算</span>
+              <button class="unit-banner" type="button" data-unit="barrier" aria-pressed="false"><span class="unit-title">Barrier unit</span><span class="unit-sub">4 warp rendezvous</span></button>
+              <button class="unit-banner" type="button" data-unit="fpu" aria-pressed="false"><span class="unit-title">4-lane FPU</span><span class="unit-sub">FP multiply-accumulate</span></button>
+              <button class="unit-banner" type="button" data-unit="commit" aria-pressed="false"><span class="unit-title">Commit</span><span class="unit-sub">结果仲裁与写回</span></button>
+            </div>
+          </div>
+          <div class="current-path" id="current-path" aria-label="当前硬件路径"></div>
+        </div>
+
+        <aside class="source-panel" aria-labelledby="source-title">
+          <span class="sr-only" id="selection-state" aria-live="polite"></span>
+          <div class="source-head">
+            <p class="source-kicker">选中单元</p>
+            <div class="source-title-row">
+              <h3 id="source-title">LMEM SRAM</h3>
+              <span class="source-badge" id="source-badge">片上存储</span>
+            </div>
+          </div>
+          <div class="source-body">
+            <p class="source-description" id="source-description"></p>
+            <p class="source-live" id="source-live"></p>
+            <a class="source-link" id="source-link" href="#" target="_blank" rel="noopener"></a>
+            <pre><code id="source-code"></code></pre>
+            <button class="kernel-button" id="kernel-button" type="button">查看 sgemm2 kernel：Load → Barrier → MAC → Barrier → Store</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <p class="footnote">V2 的前一个 K chunk 展开到 j 与 warp 发射粒度；其余 24 个 chunk 每块压缩成一步。这样能看清算法，又不会把数百个重复事件伪装成精确 RTL 周期。真实周期需要从 rtlsim/Verilator trace 获取。</p>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const root = document.getElementById("vortex-matmul-v2");
+    const tileRow = 12;
+    const tileCol = 7;
+    const tileSize = 4;
+    const totalChunks = 25;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const units = {
+      kmu: {
+        title: "KMU / CTA 枚举", badge: "设备控制",
+        description: "把 25×25 grid、blockIdx、4×4 blockDim、入口 PC、参数地址和 128-byte CTA LMEM slice 信息送往核心。",
+        source: "hw/rtl/VX_kmu.sv", line: 340,
+        code: ["kmu_compute_args_t kmu_comp;", "assign kmu_comp.grid_dim  = dcr_grid_dim;", "assign kmu_comp.block_idx = block_idx_r;", "assign kmu_comp.block_dim = dcr_block_dim;", "assign kmu_req.aligned_lmem_size = aligned_lmem_size_r;"].join("\n")
+      },
+      dispatch: {
+        title: "CTA Dispatcher", badge: "线程到 warp 映射",
+        description: "按 lane 沿 threadIdx.x 展开、warp rank 沿 threadIdx.y 推进，把 4×4 CTA 建成四个满 warp；四者共享同一个 CTA LMEM base。图中的 W0…W3 是逻辑 rank，物理 wid 可以复用。",
+        source: "hw/rtl/core/VX_cta_dispatch.sv", line: 639,
+        code: ["wire [2:0][CTA_TID_WIDTH-1:0] cta_base_tid = thread_idx_r;", "tidp_tid0[0] = cta_base_tid;", "nx = {1'b0, prev[0]} + 1;", "tid_next[0] = wx ? nx - bd_x : nx;", "tid_next[1] = wy ? ny - bd_y : ny;"].join("\n")
+      },
+      scheduler: {
+        title: "Warp Scheduler / Fetch", badge: "取指控制",
+        description: "从 active、未 stalled 且 IBuffer 未满的 warp 中选择 PC 去取指。Fetch 和真正的 Issue 是解耦的两级仲裁：本周期 fetch W0，不等于本周期执行 W0。",
+        source: "hw/rtl/core/VX_scheduler.sv", line: 421,
+        code: ["wire ready_warps = active_warps & ~stalled_warps;", "wire preferred_warps = ready_warps & ~ibuf_full;", "wire schedule_warps =", "  all_ibuf_full ? ready_warps : preferred_warps;"].join("\n")
+      },
+      issue: {
+        title: "Issue / Scoreboard", badge: "单发射前端",
+        description: "Scoreboard 同时检查数据依赖、执行单元容量和 FU lock，再从 ready warp 中动态选一个。默认 ISSUE_WIDTH=1，表示每个理想周期最多新发一条 4-lane warp 指令。",
+        source: "hw/rtl/core/VX_scoreboard.sv", line: 270,
+        code: ["arb_valid_in[w] = staging_if[w].valid", "  && operands_ready[w] && fu_locked[w];", "VX_generic_arbiter #(", "  .TYPE ((PER_ISSUE_WARPS > 8) ? \"M\" : \"R\"),", "  .STICKY (1) // Greedy", ") out_arb (...);"].join("\n")
+      },
+      alu: {
+        title: "ALU lanes", badge: "整数执行",
+        description: "计算 g_row、g_col、k+j、数组偏移和循环分支。ALU 与 LSU/FPU 是 issue 后的并行分支，不是固定串联。",
+        source: "hw/rtl/core/VX_alu_unit.sv", line: 47,
+        code: ["VX_lane_dispatch #(", "  .BLOCK_SIZE (BLOCK_SIZE),", "  .NUM_LANES  (NUM_LANES)", ") lane_dispatch (...);"].join("\n")
+      },
+      lsu: {
+        title: "LSU / local-global switch", badge: "访存执行",
+        description: "线程先执行 global load，把 A/B 数据写回 GPR；随后再发 local store 写 LMEM。计算时又从 LMEM load 到 GPR。cache 与 LMEM 没有直连搬运。",
+        source: "hw/rtl/core/VX_mem_unit.sv", line: 79,
+        code: ["VX_lmem_switch lmem_switch (", "  .lsu_in_if    (lsu_mem_if[i]),", "  .global_out_if(lsu_dcache_if[i]),", "  .local_out_if (lsu_lmem_if[i])", ");"].join("\n")
+      },
+      dcache: {
+        title: "D$ / L2-L3 wrapper / DRAM", badge: "全局存储层次",
+        description: "全局请求先访问 D$。当前默认 L2/L3 wrapper 为 passthrough；D$ miss 才到外部 memory。逻辑 load 数不等于 DRAM transaction 数。",
+        source: "hw/rtl/VX_socket.sv", line: 194,
+        code: ["VX_cache_cluster #(", "  .CACHE_SIZE (`VX_CFG_DCACHE_SIZE),", "  .WRITEBACK  (`VX_CFG_DCACHE_WRITEBACK),", "  .IS_LLC     (DCACHE_IS_LLC)", ") dcache (...);"].join("\n")
+      },
+      gpr: {
+        title: "Banked GPR", badge: "寄存器存储",
+        description: "global/LMEM load 的返回值先写入 GPR；每个线程的 sum 也保存在寄存器中。下一条依赖指令要等 scoreboard 看见写回。",
+        source: "hw/rtl/core/VX_opc_unit.sv", line: 284,
+        code: ["VX_dp_ram #(", "  .DATAW (BANK_DATA_WIDTH),", "  .SIZE  (BANK_SIZE),", "  .OUT_REG (1)", ") gpr_ram (...);"].join("\n")
+      },
+      lmem: {
+        title: "Local Memory SRAM", badge: "片上 scratchpad",
+        description: "per-core、软件管理、4-bank SRAM。CTA 获得其中一个 128-byte slice：local_A 64 B + local_B 64 B。bank 由 word index 低两位选择；同 bank 的 lane 请求进入 crossbar 仲裁。",
+        source: "hw/rtl/mem/VX_local_mem.sv", line: 86,
+        code: ["// bank selection", "assign req_bank_idx[i] =", "  lsu_bus_if[i].req_data.addr[0 +: BANK_SEL_BITS];", "VX_stream_xbar #(", "  .NUM_INPUTS  (NUM_REQS),", "  .NUM_OUTPUTS (NUM_BANKS)", ") req_xbar (...);"].join("\n")
+      },
+      barrier: {
+        title: "CTA Barrier unit", badge: "同步",
+        description: "第一个 barrier 确保两个 tile 全部装好；第二个 barrier 防止快 warp 提前覆盖仍被慢 warp 使用的同一 128-byte buffer。",
+        source: "hw/rtl/core/VX_scheduler.sv", line: 381,
+        code: ["VX_bar_unit bar_unit (", "  .req_valid   (warp_ctl_if.bar_valid),", "  .req_wid     (warp_ctl_if.wid),", "  .active_warps(active_warps),", "  .unlock_mask (bar_unlock_mask)", ");"].join("\n")
+      },
+      fpu: {
+        title: "4-lane FPU", badge: "浮点执行",
+        description: "一个 warp 指令驱动 4 条 lane，为 4 个线程并行执行标量 FP 运算。是否形成 FMADD.S 或 MUL+ADD 取决于编译结果；本页统一称 FP MAC。",
+        source: "hw/rtl/fpu/VX_fpu_unit.sv", line: 107,
+        code: ["assign fpu_req_valid =", "  per_block_execute_if[block_idx].valid && ~mdata_full;", "assign per_block_execute_if[block_idx].ready =", "  fpu_req_ready && ~mdata_full;"].join("\n")
+      },
+      commit: {
+        title: "Commit / writeback", badge: "提交与写回",
+        description: "在 ALU、LSU、FPU 等执行结果间仲裁，按 lane 写回 GPR，并解除 scoreboard 依赖。最终 store 的提交不等于脏数据已经落到 DRAM。",
+        source: "hw/rtl/core/VX_commit.sv", line: 54,
+        code: ["VX_stream_arb #(", "  .NUM_INPUTS (NUM_EX_UNITS),", "  .OUT_BUF    (1)", ") commit_arb (...);", "// writeback follows the arbitration"].join("\n")
+      },
+      kernel: {
+        title: "sgemm2 kernel", badge: "软件映射",
+        description: "每线程负责一个 C 元素；每个 K chunk 协作装入 local_A/local_B，barrier 后做 4 次乘加，再 barrier，重复 25 次后 store C。",
+        source: "tests/regression/sgemm2/kernel.cpp", line: 29,
+        code: ["for (uint32_t k = 0; k < size; k += chunk_k) {", "  local_A[...] = A_ptr[...];", "  local_B[...] = B_ptr[...];", "  __syncthreads();", "  for (uint32_t j = 0; j < chunk_k; ++j)", "    sum += local_A[...] * local_B[...];", "  __syncthreads();", "}", "C_ptr[...] = sum;"].join("\n")
+      }
+    };
+
+    function event(kind, title, description, equation, unitsActive, route, options = {}) {
+      return { kind, title, description, equation, units: unitsActive, route, k: options.k ?? null, j: options.j ?? null, warp: options.warp ?? null, macDone: options.macDone ?? 0, lmemBytes: options.lmemBytes ?? 0, scene: options.scene ?? "compute" };
+    }
+
+    function buildEvents() {
+      const e = [];
+      e.push(event("overview", "把 C 切成 625 个 4×4 tile", "100×100 能被 4 整除，所以 C 被精确切成 25×25 个 tile。每个逻辑 CTA 负责其中 16 个输出。", "C tile(12,7) = C[48:51, 28:31]", ["kmu"], ["100×100 C", "25×25 CTA", "选择 block(12,7)"], { scene: "tiling" }));
+      e.push(event("mapping", "16 个线程一一绑定 16 个 C 元素", "threadIdx.x 是 tile 内行，threadIdx.y 是列。默认 lane 沿 x 展开，因此每个逻辑 warp 固定一列，4 条 lane 覆盖四行。", "T(r,c) = Warp-rank c / Lane r → C[48+r, 28+c]", ["kmu", "dispatch"], ["CTA 4×4", "CTA Dispatcher", "4 warps", "4 lanes / warp"], { scene: "mapping" }));
+      e.push(event("dispatch", "CTA 进入核心，建立四个 warp context", "默认核心有四个 warp 槽，这个 CTA 正好全部占满。Fetch 先把各 warp 指令送入 IBuffer，Issue 再从 ready 指令中动态选择；两次选择不是同一件事。", "4 warp contexts share one 128-byte LMEM slice", ["kmu", "dispatch", "scheduler", "issue"], ["KMU", "CTA Dispatcher", "Warp contexts", "Fetch → IBuffer → Issue"], { scene: "mapping" }));
+      e.push(event("address", "ALU 计算第一个 K chunk 的地址", "K chunk 0 覆盖 k=0…3。A 取固定输出行 48…51，B 取固定输出列 28…31。", "A[48+r, 0+c] and B[0+r, 28+c]", ["issue", "alu", "commit", "gpr"], ["Issue", "ALU address", "Commit", "GPR"], { k: 0, scene: "load" }));
+      e.push(event("global-load", "16 个线程协作读取 A/B tile", "每个线程读一个 A 和一个 B 元素：共 32 个逻辑 global load。一个 warp 内四个 lane 跨 4 个矩阵行，地址相隔 100 floats，因此是 strided gather，不是一次完美连续 burst。", "32 floats × 4 B = 128 B logical payload", ["issue", "lsu", "dcache", "commit", "gpr"], ["Issue", "LSU / coalescer", "D$ / memory", "Commit", "GPR"], { k: 0, scene: "load" }));
+      e.push(event("local-store", "线程把 GPR 数据写入 LMEM SRAM", "没有 cache→LMEM 直连。global load 先写 GPR，再由线程发 local store。每个 warp 的四个 lane 在 A store 与 B store 中都会落到同一个 LMEM bank，因此要经过 bank 仲裁。", "GPR → LSU local store → LMEM[local_A 64 B | local_B 64 B]", ["issue", "gpr", "lsu", "lmem"], ["GPR", "Issue", "LSU local store", "4-bank LMEM"], { k: 0, lmemBytes: 128, scene: "load" }));
+      e.push(event("barrier", "Barrier #1：等待两个 tile 全部就绪", "四个 warp 到齐后才进入计算，避免某个 warp 读到尚未被其他 warp 写完的 LMEM。", "4 warp arrivals → unlock all four warps", ["issue", "barrier", "scheduler", "lmem"], ["W0…W3", "Barrier unit", "Scheduler unlock"], { k: 0, lmemBytes: 128, scene: "sync" }));
+
+      for (let j = 0; j < 4; j += 1) {
+        e.push(event("operands", `j=${j}：从 LMEM 取 A/B 操作数`, "A load 的四个 lane 读取不同地址，但都落到 bank j；B load 的四个 lane 读取同一地址并落到 bank=warp-rank。当前 RTL 没有 duplicate-address broadcast，仍按 lane 进入 bank 仲裁。", `sum[r,c] += local_A[r,${j}] × local_B[${j},c]`, ["issue", "lsu", "lmem", "commit", "gpr"], ["Issue", "4-bank LMEM", "LSU response", "Commit", "GPR operands"], { k: 0, j, macDone: j * 16, lmemBytes: 128, scene: "compute" }));
+        for (let warp = 0; warp < 4; warp += 1) {
+          const done = (j * 4 + warp + 1) * 4;
+          e.push(event("warp-mac", `j=${j}：Issue 选择 W${warp}，4 lanes 并行乘加`, "本帧只表示一个新的 warp 指令占用单发射口；该 warp 的四个 lane 空间并行。与此同时，较早发出的 LSU/ALU/FPU 指令可以仍在后端流水中。结果经 Commit 单槽仲裁后写回 sum。", `W${warp}: L0…L3 → C rows 48…51, column ${28 + warp}`, ["scheduler", "issue", "lmem", "lsu", "gpr", "fpu", "commit"], ["GPR operands ready", "Issue W" + warp, `4 FPU lanes`, "Commit arbiter", "sum GPR"], { k: 0, j, warp, macDone: done, lmemBytes: 128, scene: "compute" }));
+        }
+      }
+
+      e.push(event("barrier", "Barrier #2：确认所有 warp 用完当前 tile", "第二个 barrier 防止较快 warp 提前覆盖 LMEM，而较慢 warp 还在读取同一 local_A/local_B。", "all reads complete → the 128-byte slice is reusable", ["issue", "barrier", "scheduler", "lmem"], ["W0…W3", "Barrier unit", "reuse LMEM slice"], { k: 0, macDone: 64, lmemBytes: 128, scene: "sync" }));
+
+      for (let k = 1; k < totalChunks; k += 1) {
+        const base = k * 4;
+        e.push(event("compressed", `K chunk ${k + 1}/25：压缩展示完整装载与 64 MAC`, `A tile 移到列 ${base}…${base + 3}，B tile 移到行 ${base}…${base + 3}。这一帧压缩了 global load、local store、两次 barrier 和 16 次 warp-MAC 发射。`, `partial sum += A[:,${base}:${base + 3}] × B[${base}:${base + 3},:]`, ["alu", "lsu", "dcache", "gpr", "lmem", "barrier", "fpu", "commit", "scheduler", "issue"], ["A/B global", "GPR", "LMEM + barriers", "4-lane FPU × 16 issue slots", "sum GPR"], { k, macDone: (k + 1) * 64, lmemBytes: 128, scene: "repeat" }));
+      }
+
+      e.push(event("store", "25 个 K chunk 完成：发射 16 个 C store", "每个线程已经累计 100 次 MAC。16 个 sum 从 GPR 经 LSU 写入 C 的 4×4 输出 tile。", "C[48+r,28+c] = sum[r,c]", ["gpr", "issue", "lsu", "dcache", "commit"], ["sum GPR", "LSU store", "D$ write-back", "C tile"], { k: 24, macDone: 1600, lmemBytes: 128, scene: "store" }));
+      e.push(event("drain", "C 先进入 D$，之后才可能落到 DRAM", "store 指令 commit 不等于数据已经写到外存。默认 write-back D$ 的脏线在 eviction/flush 时才经 L2/L3 passthrough 排空。", "Commit(store) ≠ DRAM complete", ["lsu", "dcache", "commit"], ["LSU", "D$ dirty line", "L2/L3 passthrough", "DRAM"], { k: 24, macDone: 1600, lmemBytes: 128, scene: "store" }));
+      e.push(event("done", "一个 CTA 完成；其余 624 个 CTA 执行相同算法", "当前默认一核、四个 warp 槽，因此这个 16-thread CTA 占满一个 core；625 个 CTA 是逻辑工作量，不会同时驻留。增加 core/cluster 后，多个 CTA 才能分发到更多核心并行。", "625 CTA × 1,600 MAC = 1,000,000 MAC", ["dispatch", "scheduler", "commit"], ["CTA complete", "dispatcher selects next CTA"], { k: 24, macDone: 1600, lmemBytes: 128, scene: "done" }));
+      return e;
+    }
+
+    const events = buildEvents();
+    let index = 0;
+    let playing = false;
+    let timer = null;
+    let selectedUnit = "lmem";
+
+    const playButton = document.getElementById("play-button");
+    const prevButton = document.getElementById("prev-button");
+    const nextButton = document.getElementById("next-button");
+    const resetButton = document.getElementById("reset-button");
+    const speedSelect = document.getElementById("speed-select");
+    const unitButtons = [...root.querySelectorAll("[data-unit]")];
+    const sourcePanel = root.querySelector(".source-panel");
+
+    const fullCells = [];
+    const fullMap = document.getElementById("global-map");
+    for (let i = 0; i < 625; i += 1) {
+      const cell = document.createElement("span");
+      cell.className = "global-cell";
+      cell.setAttribute("aria-hidden", "true");
+      if (i === tileRow * 25 + tileCol) cell.classList.add("is-selected");
+      fullCells.push(cell);
+      fullMap.appendChild(cell);
+    }
+
+    function buildTile(id) {
+      const el = document.getElementById(id);
+      const cells = [];
+      for (let i = 0; i < 16; i += 1) {
+        const cell = document.createElement("span");
+        cell.className = "tile-cell";
+        cells.push(cell);
+        el.appendChild(cell);
+      }
+      return cells;
+    }
+    const aCells = buildTile("tile-a");
+    const bCells = buildTile("tile-b");
+    const cCells = buildTile("tile-c");
+
+    const warpMap = document.getElementById("warp-map");
+    const warpColumns = document.createElement("div");
+    warpColumns.className = "warp-columns";
+    const corner = document.createElement("span");
+    corner.className = "warp-column-head";
+    corner.textContent = "lane ↓ / warp →";
+    warpColumns.appendChild(corner);
+    for (let w = 0; w < 4; w += 1) {
+      const heading = document.createElement("span");
+      heading.className = "warp-column-head";
+      heading.dataset.warp = String(w);
+      const strong = document.createElement("strong");
+      strong.textContent = `W${w}`;
+      heading.append(strong, document.createTextNode(`col ${28 + w}`));
+      warpColumns.appendChild(heading);
+    }
+    warpMap.appendChild(warpColumns);
+
+    for (let lane = 0; lane < 4; lane += 1) {
+      const row = document.createElement("div");
+      row.className = "warp-row";
+      row.dataset.lane = String(lane);
+      const name = document.createElement("span");
+      name.className = "warp-name";
+      name.textContent = `Lane ${lane}`;
+      row.appendChild(name);
+      for (let w = 0; w < 4; w += 1) {
+        const laneEl = document.createElement("span");
+        laneEl.className = "lane";
+        laneEl.dataset.warp = String(w);
+        laneEl.innerHTML = `<strong>W${w}·L${lane}</strong>C[${48 + lane},${28 + w}]`;
+        row.appendChild(laneEl);
+      }
+      warpMap.appendChild(row);
+    }
+
+    const issueSchedule = document.getElementById("issue-schedule");
+    function buildSchedule() {
+      const headerLabel = document.createElement("span");
+      headerLabel.className = "schedule-label";
+      headerLabel.textContent = "K chunk 内";
+      issueSchedule.appendChild(headerLabel);
+      for (let j = 0; j < 4; j += 1) {
+        for (let w = 0; w < 4; w += 1) {
+          const group = document.createElement("span");
+          group.className = "schedule-group";
+          group.textContent = w === 0 ? `j=${j}` : "";
+          issueSchedule.appendChild(group);
+        }
+      }
+      const issueLabel = document.createElement("span");
+      issueLabel.className = "schedule-label";
+      issueLabel.textContent = "Issue width = 1";
+      issueSchedule.appendChild(issueLabel);
+      for (let j = 0; j < 4; j += 1) {
+        for (let w = 0; w < 4; w += 1) {
+          const cell = document.createElement("span");
+          cell.className = "schedule-cell";
+          cell.dataset.slot = String(j * 4 + w);
+          const dots = document.createElement("span");
+          dots.className = "lane-dots";
+          for (let lane = 0; lane < 4; lane += 1) {
+            const dot = document.createElement("span");
+            dot.className = "lane-dot";
+            dots.appendChild(dot);
+          }
+          const label = document.createElement("span");
+          label.textContent = `W${w}`;
+          cell.append(dots, label);
+          issueSchedule.appendChild(cell);
+        }
+      }
+    }
+    buildSchedule();
+
+    const bankCells = [];
+    const bankGrid = document.getElementById("bank-grid");
+    for (let bank = 0; bank < 4; bank += 1) {
+      const cell = document.createElement("span");
+      cell.className = "bank-cell";
+      cell.dataset.bank = String(bank);
+      const title = document.createElement("strong");
+      title.textContent = `Bank ${bank}`;
+      const state = document.createElement("span");
+      state.textContent = "idle";
+      cell.append(title, state);
+      bankCells.push(cell);
+      bankGrid.appendChild(cell);
+    }
+
+    function fillBankRequest(id, labelText, indices, targetBank, className) {
+      const row = document.getElementById(id);
+      row.replaceChildren();
+      const label = document.createElement("span");
+      label.className = "bank-request-label";
+      label.textContent = labelText;
+      row.appendChild(label);
+      for (let lane = 0; lane < 4; lane += 1) {
+        const token = document.createElement("span");
+        token.className = `bank-token ${className}`;
+        token.textContent = indices[lane] === null ? `L${lane} · —` : `L${lane} · i${indices[lane]} → B${targetBank}`;
+        row.appendChild(token);
+      }
+    }
+
+    function updateTiming(ev) {
+      const activeUnits = new Set(ev.units);
+      root.querySelectorAll("[data-pipe]").forEach(stage => {
+        const name = stage.dataset.pipe;
+        const active = name === "execute"
+          ? ["alu", "lsu", "lmem", "fpu"].some(unit => activeUnits.has(unit))
+          : activeUnits.has(name);
+        stage.classList.toggle("is-active", active);
+      });
+      root.querySelectorAll("[data-rail]").forEach(rail => {
+        const unit = rail.dataset.rail;
+        rail.classList.toggle("is-active", activeUnits.has(unit) || (unit === "lsu" && activeUnits.has("lmem")));
+      });
+
+      const issueState = document.getElementById("issue-state");
+      const pipelineNote = document.getElementById("pipeline-note");
+      if (ev.kind === "warp-mac") {
+        issueState.textContent = `新发：W${ev.warp} 的 4-lane FP 指令`;
+        pipelineNote.textContent = "单发射限制的是“本拍新进入后端”的 warp 指令数；早先发出的 LSU、ALU、FPU 工作仍可重叠推进。Commit 也只有一个仲裁输出槽。";
+      } else if (ev.kind === "global-load" || ev.kind === "local-store" || ev.kind === "operands") {
+        issueState.textContent = "访存指令按 ready 状态逐条发射";
+        pipelineNote.textContent = "Load 的目标寄存器未写回、FU queue 接近满或 LMEM bank 回压时，该 warp 会被跳过；Issue 可以改选另一个 ready warp。";
+      } else if (ev.kind === "barrier") {
+        issueState.textContent = "到达 barrier 的 warp 暂停发射";
+        pipelineNote.textContent = "Barrier 是明确的 CTA 阶段边界；四个 warp 全部到齐后才一起解锁。Barrier 之前各 warp 的访存仍可动态交错。";
+      } else {
+        issueState.textContent = activeUnits.has("issue") ? "动态选择一个 ready warp" : "当前无具体发射槽示意";
+        pipelineNote.textContent = "Fetch 选择和 Issue 选择是两级仲裁；取到 W0 的指令，不代表本周期一定执行 W0。";
+      }
+
+      bankCells.forEach(cell => {
+        cell.className = "bank-cell";
+        cell.lastElementChild.textContent = "idle";
+      });
+
+      const bankMode = document.getElementById("bank-mode");
+      const bankNote = document.getElementById("bank-note");
+      const empty = [null, null, null, null];
+      if (ev.kind === "local-store") {
+        const w = 0;
+        const aIndices = Array.from({ length: 4 }, (_, lane) => 4 * lane + w);
+        const bIndices = Array.from({ length: 4 }, (_, lane) => 16 + 4 * lane + w);
+        fillBankRequest("bank-a-request", "A store · W0 示例", aIndices, w, "is-a");
+        fillBankRequest("bank-b-request", "B store · W0 示例", bIndices, w, "is-b");
+        bankCells[w].classList.add("is-both");
+        bankCells[w].lastElementChild.textContent = "A×4 / B×4 排队";
+        bankMode.textContent = "store：bank = warp-rank";
+        bankNote.textContent = "Wc 的 A/B local store 都满足 index mod 4 = c。图中以 W0 为例；每条 store 指令的 4 lane 同 bank、不同地址，经 crossbar 串行仲裁。";
+      } else if (ev.kind === "operands" || ev.kind === "warp-mac") {
+        const j = ev.j ?? 0;
+        const w = ev.warp ?? 0;
+        const aIndices = Array.from({ length: 4 }, (_, lane) => 4 * lane + j);
+        const bIndex = 16 + 4 * j + w;
+        const bIndices = Array(4).fill(bIndex);
+        fillBankRequest("bank-a-request", `A read · j${j}`, aIndices, j, "is-a");
+        fillBankRequest("bank-b-request", `B read · ${ev.warp === null ? "W0 示例" : `W${w}`}`, bIndices, w, "is-b");
+        if (j === w) {
+          bankCells[j].classList.add("is-both");
+          bankCells[j].lastElementChild.textContent = "A×4 / B×4 排队";
+        } else {
+          bankCells[j].classList.add("is-a-target");
+          bankCells[j].lastElementChild.textContent = "A×4 排队";
+          bankCells[w].classList.add("is-b-target");
+          bankCells[w].lastElementChild.textContent = "B×4 排队";
+        }
+        bankMode.textContent = `前置 load：A→Bank ${j}，B→Bank ${w}`;
+        bankNote.textContent = "A 的 4 lane 是同 bank 的不同地址；B 的 4 lane 是同 bank 的同一地址。它们是 FPU 指令之前的两条独立 load，当前 RTL 不做 duplicate-address broadcast，仍逐 lane 仲裁。";
+      } else if (ev.kind === "compressed") {
+        fillBankRequest("bank-a-request", "A read/store", empty, null, "is-a");
+        fillBankRequest("bank-b-request", "B read/store", empty, null, "is-b");
+        bankCells.forEach(cell => {
+          cell.classList.add("is-summary");
+          cell.lastElementChild.textContent = "压缩帧";
+        });
+        bankMode.textContent = "24 个 chunk 的 bank 事务已压缩";
+        bankNote.textContent = "这一帧只推进算法进度，不伪造逐周期 bank 动画；回到第一个 K chunk 的 local-store / j 分镜可查看具体地址与冲突。";
+      } else {
+        fillBankRequest("bank-a-request", "A request", empty, null, "is-a");
+        fillBankRequest("bank-b-request", "B request", empty, null, "is-b");
+        bankMode.textContent = "当前分镜无 LMEM bank 请求";
+        bankNote.textContent = "Bank = word index mod 4。只有 local load/store 进入这里；global load 走 D$，barrier 本身也不读写 LMEM bank。";
+      }
+    }
+
+    function computeSlot(ev) {
+      if (ev.kind === "warp-mac") return ev.j * 4 + ev.warp;
+      if (["compressed", "store", "drain", "done"].includes(ev.kind)) return 15;
+      if (ev.kind === "barrier" && ev.macDone >= 64) return 15;
+      if (ev.kind === "operands") return ev.j * 4 - 1;
+      return -1;
+    }
+
+    function updateTiles(ev) {
+      const k = ev.k === null ? 0 : ev.k;
+      const base = k * 4;
+      document.getElementById("a-range").textContent = `rows 48–51 · K ${base}–${base + 3}`;
+      document.getElementById("b-range").textContent = `K ${base}–${base + 3} · cols 28–31`;
+
+      for (let r = 0; r < 4; r += 1) {
+        for (let c = 0; c < 4; c += 1) {
+          const n = r * 4 + c;
+          aCells[n].className = "tile-cell";
+          bCells[n].className = "tile-cell";
+          cCells[n].className = "tile-cell";
+          aCells[n].innerHTML = `A<small>${48 + r},${base + c}</small>`;
+          bCells[n].innerHTML = `B<small>${base + r},${28 + c}</small>`;
+          cCells[n].innerHTML = `W${c}·L${r}<small>C${48 + r},${28 + c}</small>`;
+
+          const showAllInputs = ["global-load", "local-store", "barrier", "compressed"].includes(ev.kind);
+          if (showAllInputs) {
+            aCells[n].classList.add("is-a");
+            bCells[n].classList.add("is-b");
+          }
+          if (["store", "drain", "done", "compressed"].includes(ev.kind)) cCells[n].classList.add("is-c");
+        }
+      }
+
+      if ((ev.kind === "operands" || ev.kind === "warp-mac") && ev.j !== null) {
+        for (let r = 0; r < 4; r += 1) aCells[r * 4 + ev.j].classList.add("is-a");
+        if (ev.warp === null) {
+          for (let c = 0; c < 4; c += 1) bCells[ev.j * 4 + c].classList.add("is-b");
+        } else {
+          bCells[ev.j * 4 + ev.warp].classList.add("is-b");
+          for (let r = 0; r < 4; r += 1) cCells[r * 4 + ev.warp].classList.add("is-c");
+        }
+      }
+    }
+
+    function updateWarpMap(ev) {
+      root.querySelectorAll(".lane[data-warp]").forEach(cell => {
+        const w = Number(cell.dataset.warp);
+        const active = ev.warp === w || (["mapping", "dispatch", "global-load", "local-store", "barrier", "compressed", "store"].includes(ev.kind) && ev.warp === null);
+        cell.classList.toggle("is-active", active);
+      });
+      root.querySelectorAll(".warp-column-head[data-warp]").forEach(heading => {
+        const w = Number(heading.dataset.warp);
+        const active = ev.warp === w || (["mapping", "dispatch", "global-load", "local-store", "barrier", "compressed", "store"].includes(ev.kind) && ev.warp === null);
+        heading.classList.toggle("is-active", active);
+      });
+      const parallel = document.getElementById("parallel-value");
+      if (ev.kind === "warp-mac") parallel.textContent = `W${ev.warp}：4 lanes 同时；其他 warp 等待/流水重叠`;
+      else if (["compressed", "global-load", "local-store"].includes(ev.kind)) parallel.textContent = "4 lanes/warp；4 warps 分时发射";
+      else if (ev.kind === "operands") parallel.textContent = "4 lane 同时请求；同 bank 时由 crossbar 排队";
+      else if (["mapping", "dispatch"].includes(ev.kind)) parallel.textContent = "4 warp contexts；每次最多新发射 1 条 warp 指令";
+      else parallel.textContent = "由 scheduler / scoreboard 决定 ready warp";
+    }
+
+    function updateFormulas(ev) {
+      const holder = document.getElementById("thread-formulas");
+      holder.replaceChildren();
+      const k = ev.k === null ? 0 : ev.k;
+      const base = k * 4;
+      for (let lane = 0; lane < 4; lane += 1) {
+        const line = document.createElement("div");
+        line.className = "formula-line";
+        if (ev.kind === "warp-mac") {
+          line.classList.add("is-active");
+          line.textContent = `L${lane}: C[${48 + lane},${28 + ev.warp}] += A[${48 + lane},${base + ev.j}] × B[${base + ev.j},${28 + ev.warp}]`;
+        } else if (ev.kind === "operands") {
+          line.classList.add("is-active");
+          line.textContent = `L${lane}: A[${48 + lane},${base + ev.j}]；B 地址由待发射 warp 的列决定`;
+        } else {
+          line.textContent = `T(${lane},c): sum += dot(A row ${48 + lane}, B column 28+c)`;
+        }
+        holder.appendChild(line);
+      }
+    }
+
+    function updateSchedule(ev) {
+      const current = computeSlot(ev);
+      root.querySelectorAll(".schedule-cell").forEach(cell => {
+        const slot = Number(cell.dataset.slot);
+        cell.classList.toggle("is-current", ev.kind === "warp-mac" && slot === current);
+        cell.classList.toggle("is-done", slot <= current && !(ev.kind === "warp-mac" && slot === current));
+      });
+    }
+
+    function routeInto(container, route, nodeClass, arrowClass) {
+      container.replaceChildren();
+      route.forEach((name, i) => {
+        const node = document.createElement("span");
+        node.className = nodeClass;
+        node.textContent = name;
+        container.appendChild(node);
+        if (i < route.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = arrowClass;
+          arrow.textContent = "→";
+          container.appendChild(arrow);
+        }
+      });
+    }
+
+    function updateUnitDetails() {
+      const ev = events[index];
+      const data = units[selectedUnit];
+      document.getElementById("source-title").textContent = data.title;
+      document.getElementById("source-badge").textContent = data.badge;
+      document.getElementById("source-description").textContent = data.description;
+      document.getElementById("source-live").textContent = ev.units.includes(selectedUnit) ? `当前参与：${ev.title}` : `当前分镜未激活此单元；正在执行：${ev.title}`;
+      const link = document.getElementById("source-link");
+      link.textContent = `${data.source}:${data.line}`;
+      link.href = `file:///C:/Users/Thomas/Desktop/project/vortex-3.0/${data.source}`;
+      document.getElementById("source-code").textContent = data.code;
+      unitButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.unit === selectedUnit)));
+    }
+
+    function render() {
+      const ev = events[index];
+      playButton.textContent = playing ? "暂停" : (index === events.length - 1 ? "重播" : "播放");
+      playButton.setAttribute("aria-pressed", String(playing));
+      prevButton.disabled = index === 0;
+      nextButton.disabled = index === events.length - 1;
+      document.getElementById("step-value").textContent = String(index);
+      document.getElementById("phase-value").textContent = ev.title;
+      document.getElementById("chunk-value").textContent = ev.k === null ? "—" : `${ev.k + 1}/25`;
+      document.getElementById("j-value").textContent = ev.j === null ? "—" : `${ev.j}/3`;
+      document.getElementById("warp-value").textContent = ev.warp === null ? "—" : `W${ev.warp}`;
+      const progress = document.getElementById("progress");
+      progress.max = events.length - 1;
+      progress.value = index;
+      document.getElementById("progress-text").textContent = `${index} / ${events.length - 1}`;
+
+      document.getElementById("scene-index").textContent = `Scene ${index + 1} / ${events.length} · ${ev.scene}`;
+      document.getElementById("scene-title").textContent = ev.title;
+      document.getElementById("scene-description").textContent = ev.description;
+      document.getElementById("scene-equation").textContent = ev.equation;
+      document.getElementById("mac-progress").textContent = `${ev.macDone.toLocaleString()} / 1,600`;
+      document.getElementById("lmem-progress").textContent = `${ev.lmemBytes} / 128 bytes`;
+      routeInto(document.getElementById("staging-route"), ev.route, "route-node", "route-arrow");
+      routeInto(document.getElementById("current-path"), ev.route, "current-path-node", "current-path-arrow");
+
+      updateTiles(ev);
+      updateWarpMap(ev);
+      updateFormulas(ev);
+      updateSchedule(ev);
+      updateTiming(ev);
+      unitButtons.forEach(button => button.classList.toggle("is-active", ev.units.includes(button.dataset.unit)));
+      updateUnitDetails();
+    }
+
+    function pause(message = "已暂停") {
+      playing = false;
+      if (timer !== null) window.clearTimeout(timer);
+      timer = null;
+      document.getElementById("play-state").textContent = message;
+      render();
+    }
+
+    function scheduleNext() {
+      if (!playing) return;
+      timer = window.setTimeout(() => {
+        if (index >= events.length - 1) {
+          pause("演示完成");
+          return;
+        }
+        index += 1;
+        render();
+        if (index >= events.length - 1) pause("演示完成");
+        else scheduleNext();
+      }, Number(speedSelect.value));
+    }
+
+    function play() {
+      if (index >= events.length - 1) index = 0;
+      playing = true;
+      document.getElementById("play-state").textContent = "正在播放";
+      render();
+      scheduleNext();
+    }
+
+    playButton.addEventListener("click", () => playing ? pause() : play());
+    prevButton.addEventListener("click", () => { pause(); index = Math.max(0, index - 1); render(); });
+    nextButton.addEventListener("click", () => { pause(); index = Math.min(events.length - 1, index + 1); render(); });
+    resetButton.addEventListener("click", () => { pause("已复位"); index = 0; render(); });
+    speedSelect.addEventListener("change", () => {
+      if (playing) {
+        if (timer !== null) window.clearTimeout(timer);
+        scheduleNext();
+      }
+      document.getElementById("play-state").textContent = `速度已设为 ${speedSelect.options[speedSelect.selectedIndex].text}`;
+    });
+
+    unitButtons.forEach(button => button.addEventListener("click", () => {
+      selectedUnit = button.dataset.unit;
+      updateUnitDetails();
+      document.getElementById("selection-state").textContent = `已选择 ${units[selectedUnit].title}，源码详情已更新。`;
+      if (window.matchMedia("(max-width: 780px)").matches) sourcePanel.scrollIntoView({ behavior: prefersReducedMotion.matches ? "auto" : "smooth", block: "start" });
+    }));
+    document.getElementById("kernel-button").addEventListener("click", () => {
+      selectedUnit = "kernel";
+      updateUnitDetails();
+      document.getElementById("selection-state").textContent = "已选择 sgemm2 kernel，源码详情已更新。";
+    });
+
+    render();
+  })();
+  </script>
+</body>
+</html>

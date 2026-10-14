@@ -66,6 +66,19 @@ Direct MLIR 现支持 `--matmul-schedule dxa-double-buffer`：FC1/FC2 按 M/N/K 
 
 2026-10-14 的 SimX 验证覆盖尾部 Tile、多 warp 和 Stage 复用。在合成生产宽度 `[1,8,256] → 512 → 256` 上，`4×4×128` Tile 的总周期比同输入 scalar 少 **17.5%**，最大绝对误差 `1.43051147e-6`；小尺寸双缓冲也可能更慢。这是一个静态 FFN 的模拟器结果，不代表完整 BEVFormer 或 FPGA/ASIC 延迟，见[原始对照记录](docs/validation/vortex/buffered-mlir-2026-10-14/README.md)。
 
+Vortex 的交互式 HTML 说明统一放在本仓库 `docs/`。建议从 V6 开始，逐模块查看编译器代码；V1–V5 保留不同阶段的说明。
+
+| 版本 | 内容 |
+| --- | --- |
+| [V1：矩阵数据流](docs/vortex-matmul-dataflow.html) | 数据搬运与硬件数据流 |
+| [V2：矩阵计算](docs/vortex-matmul-compute-v2.html) | 分块计算与执行过程 |
+| [V3：端到端搬运](docs/vortex-matmul-end-to-end-v3.html) | DDR → LMEM Buffer → 累加寄存器 → DDR |
+| [V4：代码映射](docs/vortex-matmul-code-map-v4.html) | 数据流步骤对应编译器与 RTL 源码 |
+| [V5：编译器全流程](docs/vortex-matmul-end-to-end-v5.html) | 模型导入、优化、计算模板、后端调度与精度 |
+| [V6：逐模块源码](docs/vortex-matmul-end-to-end-v6.html) | 模型导入到 Runtime 的源码摘录、解释与链接 |
+
+下载仓库后用浏览器打开 HTML 即可交互。GAC 源码和文档链接使用仓库内相对路径；Vortex/LLVM 源码链接仍指向页面标注的独立本地 checkout。V4/V6 的源码摘录保留原始版本与 SHA，V6 的 GAC 摘录同时提供固定 commit 的 GitHub 链接。
+
 ## MLIR / `mlir-opt` 文件在哪里？
 
 **`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它：CUDA 路径把 GPU Dialect MLIR 降到 NVVM/SM86 PTX；Vortex direct 路径由固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect，再用同一工具树的 `mlir-translate` 生成 LLVM IR。部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。

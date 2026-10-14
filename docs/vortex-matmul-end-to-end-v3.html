@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Vortex MatMul：DDR Tile 到 SRAM Buffer</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: Canvas;
+      --fg: CanvasText;
+      --muted: color-mix(in srgb, CanvasText 62%, Canvas 38%);
+      --line: color-mix(in srgb, CanvasText 22%, Canvas 78%);
+      --quiet: color-mix(in srgb, CanvasText 7%, Canvas 93%);
+      --surface: color-mix(in srgb, Canvas 94%, Highlight 6%);
+      --surface-2: color-mix(in srgb, Canvas 88%, Highlight 12%);
+      --active: Highlight;
+      --active-fg: HighlightText;
+      --current: LinkText;
+      --next: ActiveText;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 320px; background: var(--bg); color: var(--fg); }
+    body { padding: clamp(12px, 2vw, 26px); }
+    button { font: inherit; color: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--active); outline-offset: 3px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 7px; font-size: clamp(1.45rem, 3vw, 2.15rem); line-height: 1.18; }
+    h2 { margin-bottom: 9px; font-size: 1rem; }
+    h3 { margin-bottom: 5px; font-size: .88rem; }
+    code { font-family: "Cascadia Code", Consolas, monospace; }
+
+    main { width: min(1160px, 100%); margin: 0 auto; }
+    header { padding-right: 88px; }
+    header p { margin-bottom: 10px; color: var(--muted); max-width: 940px; }
+
+    .axioms {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .axiom { padding: 10px 12px; border-left: 4px solid var(--active); background: var(--surface); }
+    .axiom strong { display: block; margin-bottom: 2px; }
+    .axiom span { color: var(--muted); font-size: .84rem; }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0 9px;
+    }
+    .controls .spacer { flex: 1 1 20px; }
+    .btn {
+      min-height: 38px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--bg);
+    }
+    .btn-primary { background: var(--active); color: var(--active-fg); border-color: var(--active); }
+    .btn:disabled { opacity: .4; }
+
+    .step-nav {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .step-btn {
+      min-height: 45px;
+      padding: 5px 4px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: transparent;
+      font-size: .74rem;
+      line-height: 1.2;
+    }
+    .step-btn.is-done { background: var(--quiet); }
+    .step-btn.is-active { background: var(--active); color: var(--active-fg); border-color: var(--active); }
+
+    .transition {
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+    }
+    .transition-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .transition-head h2 { margin: 0; }
+    .transition-head span { color: var(--muted); font-size: .78rem; }
+    .transition-grid { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1.15fr) 28px minmax(0, 1fr); align-items: stretch; }
+    .state-box { padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+    .state-box.action { border-color: var(--active); }
+    .state-label { margin-bottom: 4px; color: var(--muted); font-size: .72rem; letter-spacing: .06em; }
+    .state-box p { margin: 0; font-size: .87rem; }
+    .state-arrow { display: grid; place-items: center; color: var(--muted); font-size: 1.1rem; }
+    .formula { margin: 9px 0 0; color: var(--muted); font-size: .8rem; overflow-wrap: anywhere; }
+    .formula strong { color: var(--fg); }
+
+    .section {
+      margin-top: 11px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+    .section-head h2 { margin: 0; }
+    .section-head span { color: var(--muted); font-size: .78rem; }
+
+    .prereq-flow, .data-flow { display: grid; align-items: stretch; gap: 18px; }
+    .prereq-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+    .data-flow { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .flow-node {
+      position: relative;
+      min-height: 70px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-align: center;
+      background: var(--bg);
+    }
+    .flow-node:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -15px;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+    .flow-node strong { font-size: .84rem; }
+    .flow-node small { margin-top: 3px; color: var(--muted); font-size: .71rem; }
+    .flow-node.is-active { border: 2px solid var(--active); background: var(--surface-2); }
+    .flow-node.is-active:not(:last-child)::after { color: var(--active); }
+
+    .board { display: grid; grid-template-columns: minmax(290px, 1.15fr) minmax(310px, 1fr) minmax(220px, .72fr); gap: 10px; align-items: stretch; }
+    .panel { min-width: 0; padding: 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+    .ddr-panel { grid-column: 1; grid-row: 2; border: 2px solid var(--fg); }
+    .sram-panel { grid-column: 2; grid-row: 2; border: 2px solid var(--fg); }
+    .core-panel { grid-column: 3; grid-row: 2; border-top: 4px solid var(--active); background: var(--bg); }
+    .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+    .panel-head h3 { margin: 0; }
+    .panel-head span { color: var(--muted); font-size: .73rem; }
+
+    .matrix-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .matrix-title { display: flex; justify-content: space-between; gap: 5px; margin-bottom: 4px; font-size: .75rem; }
+    .matrix-title span { color: var(--muted); }
+    .matrix-grid { display: grid; grid-template-columns: repeat(4, minmax(28px, 1fr)); gap: 3px; }
+    .matrix-cell {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      border-radius: 3px;
+      background: var(--quiet);
+      color: var(--muted);
+      font-size: .72rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .matrix-cell.is-current { background: color-mix(in srgb, LinkText 20%, Canvas 80%); color: var(--fg); box-shadow: inset 0 0 0 2px var(--current); }
+    .matrix-cell.is-next { background: color-mix(in srgb, ActiveText 18%, Canvas 82%); color: var(--fg); box-shadow: inset 0 0 0 1px var(--next); }
+    .matrix-cell.is-output { background: color-mix(in srgb, Highlight 18%, Canvas 82%); color: var(--fg); box-shadow: inset 0 0 0 2px var(--active); }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 7px; color: var(--muted); font-size: .73rem; }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: -1px; }
+    .legend .cur { background: color-mix(in srgb, LinkText 45%, Canvas 55%); }
+    .legend .nxt { background: color-mix(in srgb, ActiveText 42%, Canvas 58%); }
+    .c-memory { margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--line); }
+    .c-memory .matrix-grid { width: min(170px, 100%); }
+
+    .descriptor {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: minmax(180px, .42fr) minmax(0, 1.4fr) minmax(250px, .75fr);
+      gap: 12px;
+      align-items: center;
+      border-style: dashed;
+      background: transparent;
+    }
+    .descriptor .panel-head { margin: 0; }
+    .descriptor-box { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 9px 10px; border-left: 3px solid var(--active); background: var(--surface); }
+    .descriptor-box p { margin: 0 0 6px; font-size: .8rem; }
+    .descriptor-box p:last-child { margin-bottom: 0; }
+    .descriptor-box code { font-size: .76rem; }
+    .no-copy { margin: 8px 0 0; color: var(--muted); font-size: .75rem; }
+
+    .sram-shell { padding: 9px; border: 2px solid var(--fg); border-radius: 8px; background: var(--bg); }
+    .sram-title { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 7px; font-size: .77rem; }
+    .stages { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .stage { padding: 7px; border: 1px solid var(--line); border-radius: 6px; opacity: .42; }
+    .stage.is-allocated { opacity: 1; }
+    .stage.is-loading { opacity: 1; border-style: dashed; border-color: var(--active); }
+    .stage.is-ready, .stage.is-current { opacity: 1; border: 2px solid var(--active); background: var(--surface-2); }
+    .stage.is-free { opacity: .58; }
+    .stage-head { display: flex; justify-content: space-between; gap: 4px; margin-bottom: 5px; font-size: .72rem; }
+    .stage-status { color: var(--muted); }
+    .tile-line { display: grid; grid-template-columns: 35px 1fr; gap: 5px; align-items: center; margin-top: 4px; }
+    .tile-name { font-size: .7rem; }
+    .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .mini-cell { min-height: 21px; display: grid; place-items: center; background: var(--quiet); font-size: .68rem; font-variant-numeric: tabular-nums; }
+    .stage.is-ready .mini-cell, .stage.is-current .mini-cell { background: color-mix(in srgb, Highlight 15%, Canvas 85%); }
+    .sram-note { margin: 7px 0 0; color: var(--muted); font-size: .72rem; }
+
+    .core-chain { display: grid; gap: 6px; }
+    .core-stage { padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); text-align: center; }
+    .core-stage strong { display: block; font-size: .78rem; }
+    .core-stage span { color: var(--muted); font-size: .7rem; }
+    .core-arrow { text-align: center; color: var(--muted); }
+    .acc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; margin-top: 6px; }
+    .acc-cell { min-height: 32px; display: grid; place-items: center; background: var(--quiet); font-size: .74rem; font-variant-numeric: tabular-nums; }
+    .acc-cell.is-value { background: color-mix(in srgb, Highlight 18%, Canvas 82%); box-shadow: inset 0 0 0 1px var(--active); }
+    .core-note { margin: 8px 0 0; color: var(--muted); font-size: .72rem; }
+    .writeback-strip {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--muted);
+      background: var(--quiet);
+      font-size: .76rem;
+      text-align: center;
+      opacity: .55;
+    }
+    .writeback-strip strong { color: var(--fg); text-align: left; }
+    .writeback-strip.is-active { opacity: 1; border: 2px solid var(--active); background: var(--surface-2); color: var(--fg); }
+
+    .timeline-grid { display: grid; grid-template-columns: 70px repeat(5, minmax(75px, 1fr)); gap: 3px; }
+    .timeline-label { display: flex; align-items: center; color: var(--muted); font-size: .74rem; }
+    .slot { min-height: 34px; display: grid; place-items: center; padding: 4px; text-align: center; border-radius: 4px; background: var(--quiet); color: var(--muted); font-size: .7rem; }
+    .slot.is-active { box-shadow: inset 0 0 0 2px var(--active); color: var(--fg); }
+
+    .ownership { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .owner { padding: 9px 10px; border-top: 3px solid var(--line); background: var(--surface); }
+    .owner.is-active { border-top-color: var(--active); background: var(--surface-2); }
+    .owner h3 { margin-bottom: 3px; }
+    .owner p { margin: 0; color: var(--muted); font-size: .77rem; }
+
+    .bottom-note { margin: 11px 0 0; color: var(--muted); font-size: .78rem; }
+    .bottom-note strong { color: var(--fg); }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 7px; font-size: .75rem; }
+    .links a { color: LinkText; }
+
+    .tile-first { margin: 14px 0 20px; }
+    .tile-first h2 { margin-bottom: 6px; }
+    .tile-first p { margin-bottom: 8px; }
+    .partition-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 12px 0; }
+    .partition-title { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+    .partition-title span { color: var(--muted); }
+    .partition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .partition-block { padding: 7px; border: 2px solid var(--line); background: var(--quiet); }
+    .partition-block.is-needed { border-color: var(--fg); }
+    .partition-block.is-chosen { border-color: var(--active); background: var(--surface-2); }
+    .partition-label { display: block; margin-bottom: 5px; }
+    .partition-values { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; text-align: center; font-variant-numeric: tabular-nums; }
+    .partition-values span { padding: 5px 2px; background: var(--bg); }
+    .tile-controls { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 10px; }
+    .tile-controls .is-selected { background: var(--active); color: var(--active-fg); }
+    .tile-current { padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .tile-current h3 { margin: 0 0 8px; font-size: 1rem; }
+    .tile-equation { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 10px; max-width: 690px; margin: 10px 0; }
+    .tile-equation-unit strong { display: block; margin-bottom: 5px; }
+    .tile-equation-unit .partition-values { border: 1px solid var(--line); padding: 5px; }
+    .tile-equation-unit.is-sram .partition-values { background: var(--surface-2); }
+    .tile-step-label { color: var(--muted); }
+    .tile-element { margin: 10px 0 0; padding-left: 10px; border-left: 3px solid var(--active); overflow-wrap: anywhere; }
+    .machine-details { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+    .machine-details summary { font-weight: 600; padding: 8px 0; }
+    .matrix-grid { position: relative; }
+    .matrix-grid::before, .matrix-grid::after { content: ""; position: absolute; background: var(--fg); pointer-events: none; z-index: 1; }
+    .matrix-grid::before { width: 2px; top: 0; bottom: 0; left: calc(50% - 1px); }
+    .matrix-grid::after { height: 2px; left: 0; right: 0; top: calc(50% - 1px); }
+    @media (max-width: 760px) { .partition-row { grid-template-columns: 1fr; gap: 16px; } }
+    @media (max-width: 420px) { .tile-equation { gap: 5px; } .tile-equation-unit strong { font-size: .85rem; } }
+
+    @media (max-width: 900px) {
+      header { padding-right: 0; }
+      .step-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .data-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 18px; }
+      .data-flow .flow-node:nth-child(3)::after { display: none; }
+      .board { grid-template-columns: 1fr 1fr; }
+      .descriptor { grid-column: 1 / -1; grid-row: auto; grid-template-columns: 1fr; }
+      .ddr-panel { grid-column: 1 / -1; grid-row: auto; }
+      .sram-panel { grid-column: 1; grid-row: auto; }
+      .core-panel { grid-column: 2; grid-row: auto; }
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 10px; }
+      .axioms, .transition-grid, .prereq-flow, .data-flow, .board, .ownership { grid-template-columns: 1fr; }
+      .state-arrow { min-height: 24px; transform: rotate(90deg); }
+      .flow-node:not(:last-child)::after { content: "↓"; top: auto; right: auto; bottom: -17px; left: 50%; transform: translateX(-50%); }
+      .data-flow .flow-node:nth-child(3)::after { display: block; }
+      .board .ddr-panel { grid-column: auto; }
+      .descriptor, .ddr-panel, .sram-panel, .core-panel { grid-column: auto; grid-row: auto; }
+      .matrix-grid { max-width: 300px; }
+      .writeback-strip { grid-template-columns: 1fr; }
+      .timeline-grid { grid-template-columns: 55px repeat(5, minmax(62px, 1fr)); overflow-x: auto; }
+      .controls .spacer { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main id="matmul-flow">
+    <header>
+      <h1>先看分块，再看搬运和计算</h1>
+      <p>A、B 都是 4×4；每块是 2×2。这里逐轮算出 C 的左上角块 C00，再把这一块写回 DDR。</p>
+    </header>
+
+    <section class="tile-first" aria-labelledby="tile-heading">
+      <h2 id="tile-heading">① 分块：每个框里的 4 个数字就是一个 2×2 Tile</h2>
+      <p>以下框线标出 DDR 中的行列范围；完整矩阵仍按原来的行步长存放。粗边框标出计算 C00 需要的块。</p>
+      <div class="partition-row">
+        <div><div class="partition-title"><strong>DDR 中的 A · 4×4</strong><span>行 M ↓，列 K →</span></div><div class="partition-grid" id="tile-a"></div></div>
+        <div><div class="partition-title"><strong>DDR 中的 B · 4×4</strong><span>行 K ↓，列 N →</span></div><div class="partition-grid" id="tile-b"></div></div>
+        <div><div class="partition-title"><strong>DDR 中的 C · 4×4</strong><span>行 M ↓，列 N →</span></div><div class="partition-grid" id="tile-c"></div></div>
+      </div>
+      <p><strong>C00 = A00 × B00 + A01 × B10。</strong>A 取上面一行块，B 取左边一列块，沿共同的 K 轴分两轮相乘、累加。C00 是一个 2×2 块；C[0,0] 才是块里的一个元素。</p>
+      <div class="tile-controls" aria-label="分块计算步骤">
+        <button type="button" class="btn is-selected" data-tile-step="0" aria-pressed="true">1. 选出所需的块</button>
+        <button type="button" class="btn" data-tile-step="1" aria-pressed="false">2. 算第一轮</button>
+        <button type="button" class="btn" data-tile-step="2" aria-pressed="false">3. 算第二轮并累加</button>
+        <button type="button" class="btn" data-tile-step="3" aria-pressed="false">4. 写回 C00</button>
+      </div>
+      <div class="tile-current" aria-live="polite">
+        <h3 id="tile-step-title"></h3>
+        <p id="tile-step-path"></p>
+        <div class="tile-equation" id="tile-equation"></div>
+        <p id="tile-accumulation"></p>
+        <p class="tile-step-label" id="tile-buffer-state"></p>
+        <p class="tile-element" id="tile-element-proof"></p>
+      </div>
+      <p class="bottom-note">本图只演示 C00。C01、C10、C11 分别用对应的 A 块行和 B 块列，重复同样的两轮计算，才能得到完整 C。</p>
+    </section>
+
+    <details class="machine-details">
+      <summary>展开：Vortex 编译器、DDR、LMEM 双缓冲与硬件指令的完整步骤</summary>
+    <section class="axioms" aria-label="两个基本事实">
+      <div class="axiom"><strong>① Tiling 是地址选择</strong><span>DDR 中仍是一张完整矩阵；编译器生成 tile 的行列范围、步长和地址公式，并不会先在 DDR 复制一份小矩阵。</span></div>
+      <div class="axiom"><strong>② Buffer 是 SRAM 内部区域</strong><span>数据不是“先进入 Buffer 再进入 SRAM”；写入 LMEM SRAM 中划定的地址范围，本身就是进入 Buffer 0 或 Buffer 1。</span></div>
+    </section>
+
+    <section class="controls" aria-label="步骤控制">
+      <button class="btn btn-primary" id="play" type="button" aria-pressed="false">从当前步骤播放</button>
+      <div class="spacer"></div>
+      <button class="btn" id="prev" type="button">上一步</button>
+      <button class="btn" id="next" type="button">下一步</button>
+      <button class="btn" id="reset" type="button">回到第 0 步</button>
+    </section>
+
+    <nav class="step-nav" id="step-nav" aria-label="执行步骤"></nav>
+
+    <section class="transition" aria-live="polite">
+      <div class="transition-head"><h2 id="step-title"></h2><span id="step-owner"></span></div>
+      <div class="transition-grid">
+        <div class="state-box"><div class="state-label">已有状态</div><p id="step-input"></p></div>
+        <div class="state-arrow">→</div>
+        <div class="state-box action"><div class="state-label">本步只做这一件事</div><p id="step-action"></p></div>
+        <div class="state-arrow">→</div>
+        <div class="state-box"><div class="state-label">得到状态 · 下一步输入</div><p id="step-output"></p></div>
+      </div>
+      <p class="formula"><strong>本步公式：</strong><code id="step-formula"></code></p>
+    </section>
+
+    <section class="section" aria-labelledby="overview-heading">
+      <div class="section-head"><h2 id="overview-heading">严格顺序：先产生执行条件，再沿单向数据路径运行</h2><span>高亮项表示当前步骤涉及的部分</span></div>
+      <div class="prereq-flow" aria-label="执行前置条件">
+        <div class="flow-node" data-node="compiler"><strong>编译器执行合同</strong><small>tile · layout · 指令顺序</small></div>
+        <div class="flow-node" data-node="runtime"><strong>Runtime 启动</strong><small>DDR 基址 · grid/block · lmem_size</small></div>
+        <div class="flow-node" data-node="kmu"><strong>KMU 分配 LMEM</strong><small>CTA 获得 SRAM base</small></div>
+      </div>
+      <div class="data-flow" aria-label="运行时数据路径">
+        <div class="flow-node" data-node="ddr"><strong>DDR 中完整 A/B</strong><small>Device Global Memory</small></div>
+        <div class="flow-node" data-node="window"><strong>DDR Tile 地址窗口</strong><small>只产生描述符，不复制</small></div>
+        <div class="flow-node" data-node="dxa"><strong>L2 → DXA</strong><small>按地址搬运 tile</small></div>
+        <div class="flow-node" data-node="sram"><strong>LMEM SRAM</strong><small>内部含 Buffer 0/1</small></div>
+        <div class="flow-node" data-node="compute"><strong>GPR → FPU/FMA</strong><small>C 部分和留在寄存器</small></div>
+        <div class="flow-node" data-node="writeback"><strong>LSU/L1/L2 → DDR C</strong><small>最终结果写回</small></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="state-heading">
+      <div class="section-head"><h2 id="state-heading">当前步骤的数据状态</h2><span id="board-caption"></span></div>
+      <div class="board">
+        <div class="panel ddr-panel">
+          <div class="panel-head"><h3>Device DDR / Global Memory</h3><span id="ddr-status"></span></div>
+          <div class="matrix-pair">
+            <div>
+              <div class="matrix-title"><strong>A[4×4]</strong><span>row-major</span></div>
+              <div class="matrix-grid" id="matrix-a" aria-label="DDR中的A矩阵"></div>
+            </div>
+            <div>
+              <div class="matrix-title"><strong>B[4×4]</strong><span>row-major</span></div>
+              <div class="matrix-grid" id="matrix-b" aria-label="DDR中的B矩阵"></div>
+            </div>
+          </div>
+          <div class="legend"><span><i class="cur"></i>当前 K tile</span><span><i class="nxt"></i>下一 K tile</span></div>
+          <div class="c-memory">
+            <div class="matrix-title"><strong>C[4×4] · 同一块 Device DDR</strong><span id="c-status">尚未写入</span></div>
+            <div class="matrix-grid" id="matrix-c" aria-label="DDR中的C矩阵"></div>
+          </div>
+        </div>
+
+        <div class="panel descriptor">
+          <div class="panel-head"><h3>控制元数据 · Tile 地址描述符</h3><span id="descriptor-status"></span></div>
+          <div class="descriptor-box" id="descriptor-box"></div>
+          <p class="no-copy">虚线框表示控制信息，不承载矩阵数据。只有执行 DXA/Load 后，数值才真正离开 DDR。</p>
+        </div>
+
+        <div class="panel sram-panel">
+          <div class="panel-head"><h3>LMEM 物理 SRAM</h3><span>本 CTA：64 B</span></div>
+          <div class="sram-shell">
+            <div class="sram-title"><strong>同一块 banked SRAM</strong><span id="sram-status">尚未分配</span></div>
+            <div class="stages">
+              <div class="stage" id="buffer-0">
+                <div class="stage-head"><strong>Stage 0 / Buffer 0 · +0…31 B</strong><span class="stage-status" id="buffer-0-status"></span></div>
+                <div class="tile-line"><span class="tile-name">A00<br>+0…15</span><div class="mini-grid" id="a0-grid"></div></div>
+                <div class="tile-line"><span class="tile-name">B00<br>+16…31</span><div class="mini-grid" id="b0-grid"></div></div>
+              </div>
+              <div class="stage" id="buffer-1">
+                <div class="stage-head"><strong>Stage 1 / Buffer 1 · +32…63 B</strong><span class="stage-status" id="buffer-1-status"></span></div>
+                <div class="tile-line"><span class="tile-name">A01<br>+32…47</span><div class="mini-grid" id="a1-grid"></div></div>
+                <div class="tile-line"><span class="tile-name">B10<br>+48…63</span><div class="mini-grid" id="b1-grid"></div></div>
+              </div>
+            </div>
+            <p class="sram-note"><code>1 Stage = A buffer 16 B + B buffer 16 B = 32 B；双 Stage = 64 B</code></p>
+          </div>
+        </div>
+
+        <div class="panel core-panel">
+          <div class="panel-head"><h3>Core 寄存器与计算单元</h3><span>不属于 LMEM</span></div>
+          <div class="core-chain">
+            <div class="core-stage"><strong>A/B operand GPR</strong><span>从当前 LMEM Buffer local-load</span></div>
+            <div class="core-arrow">↓</div>
+            <div class="core-stage"><strong>FPU / FMA</strong><span>乘加当前 K chunk</span></div>
+            <div class="core-arrow">↓</div>
+            <div class="core-stage">
+              <div class="matrix-title"><strong>C accumulator · GPR</strong><span id="acc-status"></span></div>
+              <div class="acc-grid" id="acc-grid"></div>
+            </div>
+          </div>
+          <p class="core-note">C 部分和始终在 GPR；它不进入 A/B 的 LMEM Buffer。</p>
+        </div>
+
+        <div class="writeback-strip" id="writeback-strip">
+          <strong>第 8 步写回路径</strong>
+          <span>Core Cacc GPR</span><span>→</span>
+          <span>LSU → L1 D$ → L2</span><span>→</span>
+          <span>左侧 Device DDR 的 C[0:2,0:2]</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="timeline-heading">
+      <div class="section-head"><h2 id="timeline-heading">双缓冲只做一件事：让下一次搬运与当前计算重叠</h2><span>逻辑阶段，不是精确时钟周期</span></div>
+      <div class="timeline-grid" id="timeline"></div>
+    </section>
+
+    <section class="ownership" aria-label="当前步骤的实现层">
+      <div class="owner" data-owner="compiler"><h3>编译器 / VOLT</h3><p>决定 tile、地址公式、stage 布局、指令与同步顺序。</p></div>
+      <div class="owner" data-owner="runtime"><h3>Runtime / KMU</h3><p>提供 DDR 基址，启动 CTA，并为 CTA 分配 LMEM SRAM 地址。</p></div>
+      <div class="owner" data-owner="rtl"><h3>RTL 数据通路</h3><p>DXA、Cache、LMEM banks、Barrier、LSU、GPR 与 FPU 执行这些指令。</p></div>
+    </section>
+
+    <p class="bottom-note"><strong>实现边界：</strong>当前 <code>sgemm2_dxa</code> 用 C++ 手工写出 tile、双 Buffer 和调度；GAC/MLIR 的目标是自动产生同一份执行合同。Vortex RTL 提供通用外部存储接口，板卡可连接 DDR、GDDR 或 HBM。</p>
+    <div class="links">
+      <a href="file:///C:/Users/Thomas/Desktop/project/vortex-3.0/tests/regression/sgemm2_dxa/kernel.cpp">DXA 双缓冲 Kernel</a>
+      <a href="file:///C:/Users/Thomas/Desktop/project/vortex-3.0/tests/regression/sgemm2_dxa/main.cpp">Runtime 与 lmem_size</a>
+      <a href="file:///C:/Users/Thomas/Desktop/project/vortex-3.0/hw/rtl/dxa/VX_dxa_worker.sv">DXA RTL</a>
+      <a href="file:///C:/Users/Thomas/Desktop/project/vortex-3.0/hw/rtl/mem/VX_local_mem.sv">LMEM SRAM RTL</a>
+      <a href="file:///C:/Users/Thomas/Desktop/project/vortex-3.0/hw/rtl/core/VX_cta_dispatch.sv">CTA LMEM 分配 RTL</a>
+    </div>
+    </details>
+  </main>
+
+  <script>
+    (() => {
+      const root = document.getElementById("matmul-flow");
+      const A = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]
+      ];
+      const B = [
+        [1, 0, 2, 1],
+        [0, 1, 1, 2],
+        [1, 1, 0, 1],
+        [2, 0, 1, 1]
+      ];
+      const A0 = [[1, 2], [5, 6]];
+      const B0 = [[1, 0], [0, 1]];
+      const A1 = [[3, 4], [7, 8]];
+      const B1 = [[1, 1], [2, 0]];
+      const P0 = [[1, 2], [5, 6]];
+      const FINAL = [[12, 5], [28, 13]];
+
+      function valuesMarkup(values) {
+        return `<div class="partition-values">${values.flat().map(value => `<span>${value}</span>`).join("")}</div>`;
+      }
+
+      function createPartitions(id, name, values) {
+        const box = document.getElementById(id);
+        for (let r = 0; r < 2; ++r) {
+          for (let c = 0; c < 2; ++c) {
+            const block = document.createElement("div");
+            block.className = "partition-block";
+            block.dataset.block = `${name}${r}${c}`;
+            const tile = values.slice(r * 2, r * 2 + 2).map(row => row.slice(c * 2, c * 2 + 2));
+            block.innerHTML = `<strong class="partition-label">${name}${r}${c}</strong>${valuesMarkup(tile)}`;
+            box.appendChild(block);
+          }
+        }
+      }
+
+      function equationUnit(label, values, sram = false) {
+        return `<div class="tile-equation-unit${sram ? " is-sram" : ""}"><strong>${label}</strong>${valuesMarkup(values)}</div>`;
+      }
+
+      function renderTileLesson(phase) {
+        const titles = ["② 选块：C00 需要两对输入块", "③ 第一轮：K = 0、1", "③ 第二轮：K = 2、3，累加到同一个 C00", "④ 写回：把完成的 C00 放回 DDR 左上角"];
+        const paths = [
+          "第一对 A00、B00 将搬入 SRAM 的 Buffer 0；第二对 A01、B10 将搬入同一 SRAM 的 Buffer 1。",
+          "DDR 的 A00、B00 → LMEM SRAM 的 Buffer 0 → 操作数寄存器 → FPU。",
+          "DDR 的 A01、B10 → LMEM SRAM 的 Buffer 1 → 操作数寄存器 → FPU；把本轮结果加到已有部分和。",
+          "C00 累加寄存器 → 全局 store → DDR 的 C00 地址范围。"
+        ];
+        const equations = [
+          equationUnit("P0 = A00 × B00", P0) + "<span>+</span>" + equationUnit("P1 = A01 × B10", [[11, 3], [23, 7]]) + "<span>=</span>" + equationUnit("C00", FINAL),
+          equationUnit("SRAM：A00", A0, true) + "<span>×</span>" + equationUnit("SRAM：B00", B0, true) + "<span>=</span>" + equationUnit("部分积 P0", P0),
+          equationUnit("SRAM：A01", A1, true) + "<span>×</span>" + equationUnit("SRAM：B10", B1, true) + "<span>=</span>" + equationUnit("部分积 P1", [[11, 3], [23, 7]]),
+          equationUnit("寄存器 C00", FINAL) + "<span>→</span>" + equationUnit("DDR C00", FINAL)
+        ];
+        const accumulations = [
+          "两次 2×2 矩阵乘法产生的是同一个输出块的两份部分积；两份相加才得到完整 C00。",
+          "寄存器里的 C00：[[0,0],[0,0]] + P0 = [[1,2],[5,6]]。此时只完成 K 的前一半。",
+          "寄存器里的 C00：P0 + P1 = [[1,2],[5,6]] + [[11,3],[23,7]] = [[12,5],[28,13]]。",
+          "DDR 中只有 C00 更新；其他三个 C 块尚未在这次演示中计算。"
+        ];
+        const buffers = [
+          "Buffer 0 和 Buffer 1 各占 32 B（A 块 16 B + B 块 16 B），都位于 LMEM SRAM 内。",
+          "双缓冲：计算 Buffer 0 时预取 A01、B10 到 Buffer 1；读取任何 Buffer 前都要等待搬运完成。",
+          "第二轮读取 Buffer 1；Buffer 0 读者结束后可复用。两轮都累加到同一组 C 寄存器。",
+          "最终 C00 从寄存器写回 DDR；本例的 LMEM 两组 Buffer 保存输入块。"
+        ];
+        const proofs = [
+          "例如左上角一个元素：C[0,0] = (1×1 + 2×0) + (3×1 + 4×2) = 1 + 11 = 12。",
+          "例如 C[0,0] 本轮的部分和：1×1 + 2×0 = 1。",
+          "例如 C[0,0] 本轮新增：3×1 + 4×2 = 11；累加：1 + 11 = 12。",
+          "写回的位置：C 的第 0、1 行，第 0、1 列。结果为 [[12,5],[28,13]]。"
+        ];
+        document.getElementById("tile-step-title").textContent = titles[phase];
+        document.getElementById("tile-step-path").textContent = paths[phase];
+        document.getElementById("tile-equation").innerHTML = equations[phase];
+        document.getElementById("tile-equation").style.gridTemplateColumns = phase === 3 ? "minmax(0, 1fr) auto minmax(0, 1fr)" : "";
+        document.getElementById("tile-accumulation").textContent = accumulations[phase];
+        document.getElementById("tile-buffer-state").textContent = buffers[phase];
+        document.getElementById("tile-element-proof").textContent = proofs[phase];
+        const needed = ["A00", "A01", "B00", "B10", "C00"];
+        const chosen = phase === 1 ? ["A00", "B00", "C00"] : phase === 2 ? ["A01", "B10", "C00"] : ["C00"];
+        root.querySelectorAll("[data-block]").forEach(block => {
+          block.classList.toggle("is-needed", needed.includes(block.dataset.block));
+          block.classList.toggle("is-chosen", chosen.includes(block.dataset.block));
+          if (block.dataset.block.startsWith("C")) {
+            const output = block.dataset.block === "C00" && phase === 3;
+            block.querySelector(".partition-values").outerHTML = valuesMarkup(output ? FINAL : [["·", "·"], ["·", "·"]]);
+          }
+        });
+        root.querySelectorAll("[data-tile-step]").forEach(button => {
+          const selected = Number(button.dataset.tileStep) === phase;
+          button.classList.toggle("is-selected", selected);
+          button.setAttribute("aria-pressed", String(selected));
+        });
+      }
+
+      createPartitions("tile-a", "A", A);
+      createPartitions("tile-b", "B", B);
+      createPartitions("tile-c", "C", Array.from({length: 4}, () => Array(4).fill("·")));
+      root.querySelectorAll("[data-tile-step]").forEach(button => button.addEventListener("click", () => renderTileLesson(Number(button.dataset.tileStep))));
+      renderTileLesson(0);
+
+      const steps = [
+        {
+          short: "编译合同", title: "第 0 步 · 编译器先生成执行合同", owner: "编译期 · GAC/MLIR → LLVM IR → VOLT",
+          input: "MatMul(A[4×4], B[4×4])、FP32 数据类型和 Vortex 资源约束。",
+          action: "选择 BM=BN=BK=2，规定每 CTA 算一个 2×2 C tile，并规划两个 32 B LMEM Buffer。",
+          output: "合同 S：tile=2×2×2、4 threads、2 stages、lmem_size=64 B，以及地址和同步顺序。",
+          formula: "S = {BM=2, BN=2, BK=2, threads=4, stages=2, lmem=64 B}",
+          nodes: ["compiler"], owners: ["compiler"], phase: 0, timeline: -1
+        },
+        {
+          short: "DDR 就位", title: "第 1 步 · 完整 A、B 进入设备 DDR", owner: "运行时 · CP DMA / Device Global Memory",
+          input: "合同 S、Host 中的完整 A/B，以及设备 DDR 的 A/B/C 基地址。",
+          action: "Runtime 上传完整 A/B，配置 DXA 的二维 shape/stride 描述符，再提交 grid、block 和 lmem_size。",
+          output: "状态 D = S + 完整 DDR A/B + base/shape/stride + DXA 二维描述符。",
+          formula: "D = S + {A_base, B_base, C_base, shape=[4,4], stride=[4,1]}",
+          nodes: ["runtime", "ddr"], owners: ["runtime", "rtl"], phase: 1, timeline: -1
+        },
+        {
+          short: "分配 SRAM", title: "第 2 步 · KMU 为 CTA 划出 64 B LMEM SRAM", owner: "硬件启动 · KMU / CTA Dispatcher",
+          input: "状态 D：数据与启动参数已经齐备，待运行 CTA(0,0)。",
+          action: "KMU 从每核 LMEM 中划出连续 64 B，并通过 CSR 把基地址交给这个 CTA。",
+          output: "状态 L = D + lmem_base；Buffer0=base+0，Buffer1=base+32，二者都还是空的。",
+          formula: "Buffer0=[base+0, base+32)；Buffer1=[base+32, base+64)",
+          nodes: ["runtime", "kmu", "sram"], owners: ["runtime", "rtl"], phase: 2, timeline: -1
+        },
+        {
+          short: "DDR 切片", title: "第 3 步 · 在 DDR 中选择 tile 地址窗口", owner: "Kernel 地址计算 · 整数 ALU / DXA Address Generator",
+          input: "状态 L：完整 DDR 数据、tile 合同和 LMEM 目标地址均已知。",
+          action: "按 base、stride 和 tile 坐标计算 A00/B00、A01/B10 的地址描述符；DDR 数据保持原位。",
+          output: "状态 T = L + 两个 K chunk 的 DDR 地址窗口；完整 DDR 矩阵保持不变。",
+          formula: "addrA(i,k)=A_base+((m0+i)×K+k)×4；addrB(k,j)=B_base+(k×N+n0+j)×4",
+          nodes: ["ddr", "window"], owners: ["compiler", "rtl"], phase: 3, timeline: -1
+        },
+        {
+          short: "发起搬 Buf0", title: "第 4 步 · DXA 发起第一个 tile 到 Buffer 0", owner: "硬件搬运 · L2 / DXA / Transaction Barrier",
+          input: "状态 T：A00/B00 的 DDR 地址窗口和 Buffer0 的 SRAM 目标地址均已知。",
+          action: "DXA 从 DDR/L2 读取 A00、B00，并直接写入 LMEM SRAM 的 Buffer0 地址区。",
+          output: "状态 X0 = T + Buffer0 传输事务；它可能仍在 FILLING，下一步必须 wait(tx0) 后才能读取。",
+          formula: "issue DDR{A00,B00} → L2 → DXA → LMEM[base+0…31]",
+          nodes: ["window", "dxa", "sram"], owners: ["compiler", "rtl"], phase: 4, timeline: 0
+        },
+        {
+          short: "载1 / 算0", title: "第 5 步 · 先预取 Buffer 1，再等待并计算 Buffer 0", owner: "稳态流水 · DXA 与 LMEM / GPR / FPU 重叠",
+          input: "状态 X0：Buffer0 在传输，且状态 T 中仍保留 A01/B10 的 DDR 地址窗口。",
+          action: "先 issue A01/B10→Buffer1；再 wait(tx0)，确认 Buffer0 ready 后计算它。Buffer1 的搬运与计算重叠。",
+          output: "状态 R1 = X0 + Cacc=P0=[[1,2],[5,6]] + Buffer1 事务；Buffer0 已读完，Buffer1 可能仍在途。",
+          formula: "issue Buffer1 → wait(tx0) → compute Buffer0  ||  transfer Buffer1",
+          nodes: ["window", "dxa", "sram", "compute"], owners: ["compiler", "rtl"], phase: 5, timeline: 1
+        },
+        {
+          short: "等待 / 换索引", title: "第 6 步 · 等待完成后只切换 Buffer 索引", owner: "同步 · Transaction Barrier + CTA Barrier",
+          input: "状态 R1：第一次计算完成，Buffer0 已无读者；Buffer1 可能仍在搬运。",
+          action: "CTA Barrier 确认没有线程再读 Buffer0，然后执行 cur=1；不等待 Buffer1，也不复制数据。",
+          output: "状态 S1 = R1 的新角色映射：Buffer1=current，Buffer0=free，Cacc=P0；读取前仍须 wait(tx1)。",
+          formula: "cta_barrier(readers Buffer0)；cur = cur XOR 1",
+          nodes: ["sram"], owners: ["compiler", "rtl"], phase: 6, timeline: 2
+        },
+        {
+          short: "完成累加", title: "第 7 步 · 使用 Buffer 1 完成 K 轴归约", owner: "计算 · LMEM Load / GPR / FPU",
+          input: "状态 S1：Buffer1 是 current 角色，GPR 中已有 P0，但 Buffer1 事务可能尚未结束。",
+          action: "先 wait(tx1) 确认 Buffer1 ready，再读取 A01/B10 做第二次乘加并累加到原 Cacc。",
+          output: "状态 F = S1 + 完成的 K 轴归约：Cacc=[[12,5],[28,13]]，即最终 C tile。",
+          formula: "wait(tx1) → Cacc = P0 + A01×B10 = [[12,5],[28,13]]",
+          nodes: ["sram", "compute"], owners: ["rtl"], phase: 7, timeline: 3
+        },
+        {
+          short: "写回 DDR", title: "第 8 步 · 把最终 C tile 写回设备 DDR", owner: "写回 · LSU / L1 D$ / L2 / Device Memory",
+          input: "状态 F：最终 C tile 仍在每个线程的 Cacc GPR 中。",
+          action: "每线程执行 global store，将自己的 C 元素经 LSU、Cache 层级写入 DDR C 对应地址。",
+          output: "状态 W = F + 已更新的 DDR C[0:2,0:2]；需要时 Runtime 再将 C 读回 Host。",
+          formula: "GPR Cacc → LSU → L1 D$ → L2 → DDR C[0:2,0:2]",
+          nodes: ["compute", "writeback"], owners: ["runtime", "rtl"], phase: 8, timeline: 4
+        }
+      ];
+
+      let index = 0;
+      let timer = null;
+
+      function createMatrix(id, values) {
+        const box = document.getElementById(id);
+        values.flat().forEach((value, i) => {
+          const cell = document.createElement("span");
+          cell.className = "matrix-cell";
+          cell.dataset.r = String(Math.floor(i / 4));
+          cell.dataset.c = String(i % 4);
+          cell.dataset.value = String(value);
+          cell.textContent = "·";
+          box.appendChild(cell);
+        });
+      }
+
+      function createMini(id, values) {
+        const box = document.getElementById(id);
+        values.flat().forEach(value => {
+          const cell = document.createElement("span");
+          cell.className = "mini-cell";
+          cell.dataset.value = String(value);
+          cell.textContent = "·";
+          box.appendChild(cell);
+        });
+      }
+
+      createMatrix("matrix-a", A);
+      createMatrix("matrix-b", B);
+      createMatrix("matrix-c", Array.from({length: 4}, () => Array(4).fill(0)));
+      createMini("a0-grid", A0);
+      createMini("b0-grid", B0);
+      createMini("a1-grid", A1);
+      createMini("b1-grid", B1);
+
+      const accCells = [];
+      for (let i = 0; i < 4; ++i) {
+        const acc = document.createElement("span");
+        acc.className = "acc-cell";
+        acc.textContent = "0";
+        document.getElementById("acc-grid").appendChild(acc);
+        accCells.push(acc);
+      }
+      const cCells = [...document.querySelectorAll("#matrix-c .matrix-cell")];
+
+      function buildSteps() {
+        const nav = document.getElementById("step-nav");
+        steps.forEach((step, i) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "step-btn";
+          button.textContent = `${i}. ${step.short}`;
+          button.addEventListener("click", () => { pause(); index = i; render(); });
+          nav.appendChild(button);
+        });
+      }
+
+      function buildTimeline() {
+        const timeline = document.getElementById("timeline");
+        const rows = {
+          搬运: ["issue Buf0", "issue Buf1", "Buf1 可仍在途", "wait Buf1", "写回 C"],
+          计算: ["空闲", "wait0 → 算Buf0", "读完 → 换索引", "算 Buf1", "空闲"]
+        };
+        Object.entries(rows).forEach(([label, slots]) => {
+          const head = document.createElement("div");
+          head.className = "timeline-label";
+          head.textContent = label;
+          timeline.appendChild(head);
+          slots.forEach((text, slot) => {
+            const cell = document.createElement("div");
+            cell.className = "slot";
+            cell.dataset.slot = String(slot);
+            cell.textContent = text;
+            timeline.appendChild(cell);
+          });
+        });
+      }
+
+      function setMatrixState(step) {
+        const hasDDR = step.phase >= 1;
+        const hasWindow = step.phase >= 3;
+        const showNext = step.phase === 3 || step.phase === 5;
+        root.querySelectorAll("#matrix-a .matrix-cell").forEach(cell => {
+          const r = Number(cell.dataset.r), c = Number(cell.dataset.c);
+          cell.className = "matrix-cell";
+          cell.textContent = hasDDR ? cell.dataset.value : "·";
+          if (hasWindow && r < 2 && c < 2 && step.phase <= 5) cell.classList.add("is-current");
+          if (hasWindow && r < 2 && c >= 2 && (showNext || (step.phase >= 6 && step.phase <= 7))) cell.classList.add(step.phase >= 6 ? "is-current" : "is-next");
+        });
+        root.querySelectorAll("#matrix-b .matrix-cell").forEach(cell => {
+          const r = Number(cell.dataset.r), c = Number(cell.dataset.c);
+          cell.className = "matrix-cell";
+          cell.textContent = hasDDR ? cell.dataset.value : "·";
+          if (hasWindow && r < 2 && c < 2 && step.phase <= 5) cell.classList.add("is-current");
+          if (hasWindow && r >= 2 && c < 2 && (showNext || (step.phase >= 6 && step.phase <= 7))) cell.classList.add(step.phase >= 6 ? "is-current" : "is-next");
+        });
+        document.getElementById("ddr-status").textContent = hasDDR ? "完整矩阵已驻留" : "尚未上传";
+      }
+
+      function setDescriptorState(step) {
+        const box = document.getElementById("descriptor-box");
+        if (step.phase < 3) {
+          document.getElementById("descriptor-status").textContent = "尚未生成";
+          box.innerHTML = "<p>等待 DDR base、stride、blockIdx 和 tile 合同。</p>";
+          return;
+        }
+        document.getElementById("descriptor-status").textContent = step.phase >= 8 ? "已消费" : "地址窗口有效";
+        box.innerHTML = [
+          "<p><strong>第一轮 K=0、1</strong><br><code>A00: rows 0…1, K 0…1</code><br><code>B00: K 0…1, cols 0…1</code></p>",
+          "<p><strong>第二轮 K=2、3</strong><br><code>A01: rows 0…1, K 2…3</code><br><code>B10: K 2…3, cols 0…1</code></p>",
+          "<p><code>src DDR address + dst LMEM address + 2D stride</code></p>"
+        ].join("");
+      }
+
+      function fillMini(id, visible) {
+        document.querySelectorAll(`#${id} .mini-cell`).forEach(cell => {
+          cell.textContent = visible ? cell.dataset.value : "·";
+        });
+      }
+
+      function setStage(element, statusElement, className, status) {
+        element.className = `stage ${className}`.trim();
+        statusElement.textContent = status;
+      }
+
+      function setSramState(step) {
+        const b0 = document.getElementById("buffer-0");
+        const b1 = document.getElementById("buffer-1");
+        const b0s = document.getElementById("buffer-0-status");
+        const b1s = document.getElementById("buffer-1-status");
+        let c0 = "", c1 = "", s0 = "未分配", s1 = "未分配";
+        let show0 = false, show1 = false;
+        if (step.phase >= 2) { c0 = "is-allocated"; c1 = "is-allocated"; s0 = "空"; s1 = "空"; }
+        if (step.phase === 4) { c0 = "is-loading"; s0 = "FILLING"; }
+        if (step.phase === 5) { c0 = "is-current"; c1 = "is-loading"; s0 = "wait 后计算"; s1 = "FILLING / READY"; show0 = true; }
+        if (step.phase === 6) { c0 = "is-free"; c1 = "is-loading"; s0 = "free"; s1 = "cur=1，待读取"; show0 = true; }
+        if (step.phase === 7) { c0 = "is-free"; c1 = "is-current"; s0 = "free"; s1 = "计算中"; show0 = true; show1 = true; }
+        if (step.phase >= 8) { c0 = "is-free"; c1 = "is-free"; s0 = "可复用"; s1 = "可复用"; show0 = true; show1 = true; }
+        setStage(b0, b0s, c0, s0);
+        setStage(b1, b1s, c1, s1);
+        fillMini("a0-grid", show0);
+        fillMini("b0-grid", show0);
+        fillMini("a1-grid", show1);
+        fillMini("b1-grid", show1);
+        document.getElementById("sram-status").textContent = step.phase < 2 ? "尚未分配" : step.phase < 4 ? "已分配，尚为空" : "已分配";
+      }
+
+      function setResultState(step) {
+        let values = [[0, 0], [0, 0]];
+        let accStatus = "尚未计算";
+        if (step.phase >= 5 && step.phase < 7) { values = P0; accStatus = "部分和 P0"; }
+        if (step.phase >= 7) { values = FINAL; accStatus = "最终 C tile"; }
+        accCells.forEach((cell, i) => {
+          const value = values[Math.floor(i / 2)][i % 2];
+          cell.textContent = String(value);
+          cell.classList.toggle("is-value", value !== 0);
+        });
+        cCells.forEach(cell => {
+          const written = step.phase >= 8;
+          const r = Number(cell.dataset.r), c = Number(cell.dataset.c);
+          const isTile = written && r < 2 && c < 2;
+          cell.className = "matrix-cell";
+          cell.textContent = isTile ? String(FINAL[r][c]) : "·";
+          cell.classList.toggle("is-output", isTile);
+        });
+        document.getElementById("acc-status").textContent = accStatus;
+        document.getElementById("c-status").textContent = step.phase >= 8 ? "已写入 C[0:2,0:2]" : "尚未写入";
+        document.getElementById("writeback-strip").classList.toggle("is-active", step.phase >= 8);
+      }
+
+      function render() {
+        index = Math.max(0, Math.min(index, steps.length - 1));
+        const step = steps[index];
+        document.getElementById("step-title").textContent = step.title;
+        document.getElementById("step-owner").textContent = step.owner;
+        document.getElementById("step-input").textContent = step.input;
+        document.getElementById("step-action").textContent = step.action;
+        document.getElementById("step-output").textContent = step.output;
+        document.getElementById("step-formula").textContent = step.formula;
+        document.getElementById("board-caption").textContent = `状态 ${index} / ${steps.length - 1}`;
+
+        root.querySelectorAll(".step-btn").forEach((button, i) => {
+          button.classList.toggle("is-active", i === index);
+          button.classList.toggle("is-done", i < index);
+          button.setAttribute("aria-current", i === index ? "step" : "false");
+        });
+        root.querySelectorAll("[data-node]").forEach(node => node.classList.toggle("is-active", step.nodes.includes(node.dataset.node)));
+        root.querySelectorAll("[data-owner]").forEach(owner => owner.classList.toggle("is-active", step.owners.includes(owner.dataset.owner)));
+        root.querySelectorAll("[data-slot]").forEach(slot => slot.classList.toggle("is-active", Number(slot.dataset.slot) === step.timeline));
+
+        setMatrixState(step);
+        setDescriptorState(step);
+        setSramState(step);
+        setResultState(step);
+        document.getElementById("prev").disabled = index === 0;
+        document.getElementById("next").disabled = index === steps.length - 1;
+      }
+
+      function pause() {
+        if (timer !== null) window.clearTimeout(timer);
+        timer = null;
+        const play = document.getElementById("play");
+        play.textContent = "从当前步骤播放";
+        play.setAttribute("aria-pressed", "false");
+      }
+
+      function tick() {
+        if (index >= steps.length - 1) { pause(); return; }
+        index += 1;
+        render();
+        timer = window.setTimeout(tick, 1450);
+      }
+
+      document.getElementById("play").addEventListener("click", () => {
+        if (timer !== null) { pause(); return; }
+        if (index >= steps.length - 1) index = 0;
+        document.getElementById("play").textContent = "暂停";
+        document.getElementById("play").setAttribute("aria-pressed", "true");
+        render();
+        timer = window.setTimeout(tick, 1450);
+      });
+      document.getElementById("prev").addEventListener("click", () => { pause(); index -= 1; render(); });
+      document.getElementById("next").addEventListener("click", () => { pause(); index += 1; render(); });
+      document.getElementById("reset").addEventListener("click", () => { pause(); index = 0; render(); });
+
+      buildSteps();
+      buildTimeline();
+      render();
+    })();
+  </script>
+</body>
+</html>
