@@ -17,6 +17,7 @@ from ..backends.vortex import (
     compile_vortex_direct,
     write_vortex_artifact,
 )
+from ..backends.vortex_buffered_mlir import VortexBufferPlan
 from ..bevformer_ffn import (
     BEVFormerFFNConfig,
     build_bevformer_ffn_graph,
@@ -76,6 +77,15 @@ def _parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--wsl-distribution")
     parser.add_argument("--timeout", type=float, default=DEFAULT_TIMEOUT_SECONDS)
+    parser.add_argument(
+        "--matmul-schedule",
+        choices=("scalar", "dxa-double-buffer"),
+        default="scalar",
+        help="direct-mlir MatMul schedule: scalar baseline or tiled LMEM/DXA pipeline",
+    )
+    parser.add_argument("--tile-m", type=int, default=2, help="buffered MatMul output tile rows")
+    parser.add_argument("--tile-n", type=int, default=2, help="buffered MatMul output tile columns")
+    parser.add_argument("--tile-k", type=int, default=16, help="buffered MatMul reduction chunk")
     parser.add_argument("--seed", type=int, default=3070)
     parser.add_argument(
         "--layer",
@@ -162,6 +172,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.wsl_distribution and not args.wsl:
             raise ValueError("--wsl-distribution requires --wsl")
+        if args.matmul_schedule != "scalar" and args.device_lowering != DIRECT_MLIR_LOWERING:
+            raise ValueError("--matmul-schedule dxa-double-buffer requires --device-lowering direct-mlir")
+        if args.matmul_schedule == "scalar" and (args.tile_m, args.tile_n, args.tile_k) != (2, 2, 16):
+            raise ValueError("custom --tile-* parameters require --matmul-schedule dxa-double-buffer")
         _validate_output_paths(args)
         if args.model:
             graph = load_graph(args.model)
@@ -212,12 +226,16 @@ def main(argv: list[str] | None = None) -> int:
             if args.device_lowering == DIRECT_MLIR_LOWERING
             else compile_vortex
         )
+        schedule_args = {}
+        if args.matmul_schedule == "dxa-double-buffer":
+            schedule_args["buffer_plan"] = VortexBufferPlan(args.tile_m, args.tile_n, args.tile_k)
         program = compiler(
             graph,
             mlir_opt=args.mlir_opt,
             use_wsl=args.wsl,
             wsl_distribution=args.wsl_distribution,
             timeout=args.timeout,
+            **schedule_args,
         )
         report = write_vortex_artifact(args.output, program)
         report["weights_provenance"] = graph.metadata.get("weights_provenance", "model")

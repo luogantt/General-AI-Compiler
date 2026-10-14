@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "backend": "vortex-v3",
+  "driver": "simx",
+  "shape": [1, 8, 32],
+  "hidden": 64,
+  "warmup": 1,
+  "repeat": 3,
+  "h2d_mean_ms": 0.062057,
+  "kernel_host_wall_mean_ms": 694.663181,
+  "kernel_device_profile_mean_ms": 694.526385,
+  "d2h_mean_ms": 0.066296,
+  "end_to_end_mean_ms": 694.795710,
+  "max_abs_error": 4.76837158e-07,
+  "tolerance": 0.001,
+  "finite": true,
+  "verified": true,
+  "optimized_mlir_sha256": "b54d948cc2e75b4c1d0a898a549f67436f0e57d7f1f598412fa76ae176170a97",
+  "vortex_call_plan_mlir_sha256": "dd1033a448b8ceb0570a4515d8d9eb0c6cd3fb2d80fe9582cb80d67f892765e8"
+}
+PERF: instrs=556760, cycles=1524585, IPC=0.365

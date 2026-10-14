@@ -172,6 +172,10 @@ D2H、端到端均值和正确性结果。
 编译链、ABI 和数值正确性的基线，还没有使用 Vortex shared-memory tiling、tensor
 core、向量化、双缓冲或 autotuning，不能视为性能完成版。
 
+现在可选 `--device-lowering direct-mlir --matmul-schedule dxa-double-buffer`，
+为两个 MatMul 生成真实 DXA/LMEM 双 Stage 和同步，不改变上述参数 ABI 与三 Kernel
+调用关系。Tile、硬件要求和数值/周期对照见[双缓冲设计](designs/vortex_buffered_mlir.md)。
+
 ## 生成 artifact
 
 Linux 上可以先生成最小正确性 workload：

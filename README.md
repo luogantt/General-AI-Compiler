@@ -62,6 +62,10 @@ compatibility C++ bridge 已用官方 BEVFormer-tiny checkpoint 第 0 层真实�
 如果要从输入模型开始逐层理解每一份 MLIR、Vortex Kernel ABI、VOLT 链接与 Runtime
 调度，请阅读 [BEVFormer Direct-MLIR → Vortex 编译器分层架构](docs/bevformer_vortex_direct_mlir_architecture.md)。
 
+Direct MLIR 现支持 `--matmul-schedule dxa-double-buffer`：FC1/FC2 按 M/N/K 分块，DXA 将 A/B Tile 搬到 LMEM 的两组 Stage，每线程在寄存器中累加，完成后写回 Global Memory。`--tile-m`、`--tile-n`、`--tile-k` 明确指定分块；Host 检查 occupancy、使用物理地址描述符并设置 `lmem_size`。默认仍保留 scalar 对照。分层实现与代码映射见[双缓冲设计](docs/designs/vortex_buffered_mlir.md)和[可点击源码图](docs/bevformer-vortex-buffered-code-map.html)。
+
+2026-10-14 的 SimX 验证覆盖尾部 Tile、多 warp 和 Stage 复用。在合成生产宽度 `[1,8,256] → 512 → 256` 上，`4×4×128` Tile 的总周期比同输入 scalar 少 **17.5%**，最大绝对误差 `1.43051147e-6`；小尺寸双缓冲也可能更慢。这是一个静态 FFN 的模拟器结果，不代表完整 BEVFormer 或 FPGA/ASIC 延迟，见[原始对照记录](docs/validation/vortex/buffered-mlir-2026-10-14/README.md)。
+
 ## MLIR / `mlir-opt` 文件在哪里？
 
 **`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它：CUDA 路径把 GPU Dialect MLIR 降到 NVVM/SM86 PTX；Vortex direct 路径由固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect，再用同一工具树的 `mlir-translate` 生成 LLVM IR。部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
@@ -518,6 +522,7 @@ src/gac/backends/mlir_ptx.py         严格生产 FFN 到 GPU Dialect/NVVM/PTX a
 src/gac/backends/mlir_cublas_ptx.py  2×cuBLAS + 2×MLIR PTX 的严格四调用计划
 src/gac/backends/vortex.py           两级 MLIR 审计、Vortex Runtime plan、direct-MLIR/compatibility artifact 与 host 生成
 src/gac/backends/vortex_device_mlir.py 面向 Vortex/VOLT 的 RV32 LLVM Dialect device Kernel emitter
+src/gac/backends/vortex_buffered_mlir.py M/N/K 分块、DXA/LMEM 双 Stage 与 FP32 累加的直接 MLIR lowering
 src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
 src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
 src/gac/mlir_ptx_runtime.py          校验并加载 MLIR 生成 PTX 的 SM86 Runtime

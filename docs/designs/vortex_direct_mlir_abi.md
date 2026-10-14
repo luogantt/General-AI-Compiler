@@ -479,3 +479,8 @@ shared-memory tiling, vector lowering, double buffering, WMMA/WGMMA, TCU
 support, autotuning, or the complete BEVFormer operator set.  Removing
 `kernel.cpp` proves the compiler path and does not by itself improve latency;
 performance work starts after scalar numerical parity is established.
+
+The optional `dxa-double-buffer` schedule added on 2026-10-14 preserves this
+argument ABI and supplies a tiled DXA/LMEM implementation for FC1/FC2.
+See [buffered lowering](vortex_buffered_mlir.md) for the additional LMEM,
+physical-address descriptor, collective and cache-visibility contracts.

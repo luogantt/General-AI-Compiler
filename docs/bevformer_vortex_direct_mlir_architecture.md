@@ -8,6 +8,11 @@
 本文以代码提交 `a7110bb` 为实现基线；分支本身会继续向前移动，验证结论对应的
 工具链、产物摘要和日期以第 15 节链接的验证记录为准。
 
+2026-10-14 新增可选的 `dxa-double-buffer` MatMul 调度，沿用本文 ABI 和编译链，
+将 FC1/FC2 改为 LMEM 分块、DXA 预取与跨 Tile 累加。首版 scalar 的实现说明保留，
+新增路径见[双缓冲设计](designs/vortex_buffered_mlir.md)、[源码对应图](bevformer-vortex-buffered-code-map.html)
+与[本轮数值/周期对照](validation/vortex/buffered-mlir-2026-10-14/README.md)。
+
 这条路径的核心结论是：**设备端不再生成或编译 C++ Kernel；GAC 直接生成 LLVM
 Dialect MLIR，VOLT 继续负责最终的 Vortex 指令选择、寄存器分配、发散控制和 ELF
 生成。** 主机端 `main.cpp`、Vortex 启动代码、链接脚本和 `vortex2` Runtime 仍然保留，

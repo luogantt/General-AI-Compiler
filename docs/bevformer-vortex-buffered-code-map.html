@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BEVFormer FFN 双缓冲：编译链与源码</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#fff,#17191c);--fg:light-dark(#202327,#eceef1);--soft:light-dark(#f4f5f7,#24282e);--line:light-dark(#cdd2d8,#50565f);--active:light-dark(#174d82,#b4d8ff);--picked:light-dark(#e8f2fc,#18354f);--quiet:light-dark(#565d65,#b8bec6)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1200px;margin:auto;padding:24px}h1{font-size:26px;margin:0 0 8px}h2{font-size:19px;margin:22px 0 10px}h3{font-size:17px;margin:0 0 8px}p{margin:8px 0}.muted{color:var(--quiet)}.small{font-size:14px}.chain{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.execution{grid-template-columns:repeat(5,minmax(0,1fr))}button{font:inherit;color:inherit;min-width:0;min-height:76px;text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:12px}button strong,button span{display:block}button strong{font-weight:600}button span{font-size:14px;color:var(--quiet);margin-top:5px}button[aria-pressed="true"]{background:var(--picked);border-color:var(--active)}button:hover{border-color:var(--active)}.stages{display:grid;gap:5px;margin-top:8px}.stage{border:1px solid var(--line);padding:3px 6px;font:13px/1.5 ui-monospace,Consolas,monospace}.sequence{padding:10px 0;border-bottom:1px solid var(--line)}#details{padding:18px 0}.sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.source{min-width:0}.source label{display:block;color:var(--quiet);font-size:14px}a{color:var(--active);overflow-wrap:anywhere}pre{background:var(--soft);padding:12px;margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 ui-monospace,Consolas,monospace;border-radius:4px}code{font-family:ui-monospace,Consolas,monospace}.ref{overflow-wrap:anywhere}.note{border-top:1px solid var(--line);padding-top:12px}ul{padding-left:22px;margin:6px 0}footer{border-top:1px solid var(--line);padding-top:12px;color:var(--quiet)}@media(max-width:900px){.execution{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:600px){main{padding:16px}h1{font-size:22px}.chain,.execution{grid-template-columns:repeat(2,minmax(0,1fr))}.sources{grid-template-columns:1fr}}@media(max-width:380px){.chain,.execution{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main id="buffered-code-map">
+<h1>BEVFormer FFN · 双缓冲源码图</h1>
+<p class="muted">点击一个模块，查看负责它的代码与硬件入口。对应 <code>lg/bevformer-vortex-direct-mlir</code> 分支。</p>
+<p class="small">范围：FP32 / RV32 / FC1、FC2 分块，LayerNorm 保留标量实现。MLIR → VOLT → SimX 已通过尾块、多 warp 和 Stage 复用验证。生产宽度 [1,8,256] → 512 → 256 的 4×4×128 Tile 模拟周期减少 17.5%，最大误差 1.43×10⁻⁶；小尺寸也可能变慢。<a href="validation/vortex/buffered-mlir-2026-10-14/README.md">原始对照</a></p>
+<h2>编译时：模型逐层变成机器码</h2>
+<div class="chain" aria-label="编译链">
+<button type="button" data-key="graph" aria-pressed="false"><strong>① 模型 → Linalg</strong><span>矩阵乘的语义与 Shape</span></button>
+<button type="button" data-key="lower" aria-pressed="false"><strong>② LLVM dialect</strong><span>生成线程、LMEM、DXA 和循环</span></button>
+<button type="button" data-key="native" aria-pressed="false"><strong>③ 原生 MLIR 工具</strong><span>验证 MLIR → 翻译为 LLVM IR</span></button>
+<button type="button" data-key="volt" aria-pressed="false"><strong>④ VOLT → 机器码</strong><span>指令选择 / 寄存器分配 / ELF</span></button>
+</div>
+<h2>运行时：输入进入 SRAM，结果从寄存器写回 DDR</h2>
+<div class="chain execution" aria-label="执行与数据位置">
+<button type="button" data-key="descriptor" aria-pressed="false"><strong>① DDR / 描述符</strong><span>A/B 完整矩阵在 DDR；描述符指向一个 Tile</span></button>
+<button type="button" data-key="stages" aria-pressed="true"><strong>② LMEM 物理 SRAM</strong><span>两个 Stage 都位于 SRAM 内</span><div class="stages"><div class="stage">Stage 0：A Buffer | B Buffer</div><div class="stage">Stage 1：A Buffer | B Buffer</div></div></button>
+<button type="button" data-key="barriers" aria-pressed="false"><strong>③ 等待与复用</strong><span>等当前搬运完成；读完才允许覆盖</span></button>
+<button type="button" data-key="compute" aria-pressed="false"><strong>④ 寄存器 / FPU</strong><span>A、B 取数 → 乘加 → C 部分和</span></button>
+<button type="button" data-key="store" aria-pressed="false"><strong>⑤ 写回 DDR</strong><span>C 最终值 → LSU / cache → DDR</span></button>
+</div>
+<p class="sequence small">时序：预取下一 Stage → 等当前 Stage → 计算当前 Tile → 全 CTA 同步 → 切换 Stage → 累加下一 K Tile。C 部分和贯穿 K 循环。</p>
+<section id="details" aria-live="polite" aria-label="选中模块的源码对应"></section>
+<footer class="small">源码片段是本次实现的短摘录；文件继续修改时以函数名定位。GAC 由 Python 做受限 lowering，真实的 MLIR 原生工具验证和翻译。<a href="designs/vortex_buffered_mlir.md">设计说明</a></footer>
+</main>
+<script>
+const root=document.getElementById('buffered-code-map');
+const repo='../src/gac/';
+const vortex='file:///C:/Users/Thomas/Desktop/project/vortex-3.0/';
+const llvm='file:///C:/Users/Thomas/Desktop/universal_ai_compile/llvm-project/';
+const source=(path,symbol,code,tree='gac')=>({path,symbol,code,tree});
+const entries={
+graph:{title:'模型 → Linalg：先明确计算什么',summary:'A[M,K] × B[K,N] → C[M,N]。M/N 是输出行列，K 是累加轴。前端生成标准 linalg.matmul，后端检查两个 MatMul 的 Shape 与权重。',sources:[source('backends/mlir.py','emit_matmul_values()',String.raw`self.line(
+    f"{matrix_result} = linalg.matmul "
+    f"ins({matrix_lhs}, {rhs} : {_tensor_type(matrix_lhs_shape)}, "
+    f"{_tensor_type(rhs_spec)}) "
+    f"outs({init} : {_tensor_type(matrix_output_shape)}) "
+    f"-> {_tensor_type(matrix_output_shape)} {_location(node, suffix + '.matmul')}",
+    4,
+)`)],refs:[],note:'FC1：(M,N,K)=(rows,hidden,channels)；FC2：(rows,channels,hidden)。DDR 切分是选地址范围，原矩阵仍完整。'},
+lower:{title:'LLVM dialect：把 Tile、线程和双缓冲变成 Device IR',summary:'compile_vortex_direct() 根据 buffer_plan 选择双缓冲 emitter，再用原生 mlir-opt 验证产物。没有设备端 C++ Kernel。',sources:[source('backends/vortex.py','compile_vortex_direct()',String.raw`if buffer_plan is not None:
+    if not isinstance(buffer_plan, VortexBufferPlan):
+        raise BackendError(f"{TARGET}: buffer_plan must be a VortexBufferPlan")
+    emitter = emit_bevformer_ffn_buffered_device_mlir
+    auditor = audit_bevformer_ffn_buffered_device_mlir
+    schedule_args["buffer_plan"] = buffer_plan`),source('backends/vortex_buffered_mlir.py','_matmul_kernel() · thread mapping',String.raw`%local_row = llvm.udiv %thread, %bn : i32
+%local_col = llvm.urem %thread, %bn : i32
+%row = llvm.add %row_base, %local_row : i32
+%column = llvm.add %col_base, %local_col : i32`)],refs:[],note:'当前 lowering 是 Python 受限生成器，标准方言原生验证；没有自定义 Vortex dialect 或通用 C++ conversion pass。'},
+native:{title:'原生 MLIR 工具：验证与翻译',summary:'同一个 LLVM 20.1.8 / VOLT revision 提供 mlir-opt、mlir-translate、clang 和 lld，避免跨版本 IR 不兼容。',sources:[source('backends/vortex.py','_direct_makefile()',String.raw`kernel.opt.mlir: kernel.mlir | verify-artifact verify-toolchain
+    $(MLIR_OPT) --verify-each --canonicalize --cse $< -o $@
+
+kernel.ll: kernel.opt.mlir
+    $(MLIR_TRANSLATE) --mlir-to-llvmir $< -o $@`)],refs:[['llvm','mlir/lib/Target/LLVMIR/ModuleTranslation.cpp','translateModuleToLLVMIR()：MLIR → LLVM IR'],['llvm','mlir/lib/Dialect/LLVMIR/IR/LLVMDialect.cpp','LLVM dialect 原生定义、解析和验证']],note:'kernel.mlir 是 MLIR 文本；kernel.ll 是 LLVM IR。两者由原生工具转换。'},
+volt:{title:'VOLT：LLVM IR → Vortex 机器指令',summary:'VOLT RISC-V/Vortex 后端处理 Kernel ABI、指令选择、寄存器分配和分支发散。链接为 ELF 后打包成 vxbin。',sources:[source('llvm/lib/Target/RISCV/RISCVVortexKEntry.cpp','Vortex Kernel entry alias',String.raw`std::string AliasName = ("__vx_kentry_" + F->getName()).str();
+if (M.getNamedValue(AliasName))
+  continue; // already emitted
+
+GlobalAlias::create(F->getValueType(), F->getAddressSpace(),
+                    GlobalValue::ExternalLinkage, AliasName, F, &M);`,'llvm')],refs:[['llvm','llvm/lib/Target/RISCV/RISCVInstrInfoVX.td','Vortex 指令定义'],['llvm','llvm/lib/Target/RISCV/RISCVRegisterInfo.cpp','目标寄存器约束'],['vortex','hw/rtl/core/VX_decode.sv','机器指令进入 RTL decoder']],note:'DXA 的专用指令用 inline_asm .insn 编码。WGATHER 与 DXA 必须连续，x31 作为协议寄存器由 -ffixed-x31 保护。'},
+descriptor:{title:'DDR / 描述符：定位 Tile，发起二维搬运',summary:'描述符记录源地址、整矩阵行 stride 和 Tile 尺寸，数据仍在 DDR。slot0/1 对应 FC1，slot2/3 对应 FC2；它们不是 Stage0/1。',sources:[source('backends/vortex.py','_buffered_host_source() · program_tiles()',String.raw`descriptor(0, address(buffers.query), kChannels, kRows, kTileK, kTileM);
+descriptor(1, address(buffers.w1), kHidden, kChannels, kTileN, kTileK);
+descriptor(2, address(buffers.activation), kHidden, kRows, kTileK, kTileM);
+descriptor(3, address(buffers.w2), kChannels, kHidden, kTileN, kTileK);`),source('backends/vortex_buffered_mlir.py','_copy() · 生成的首轮 DXA 摘录',String.raw`llvm.call @__gac_dxa_expect_two(%cta) {convergent} : (i32) -> ()
+llvm.call @__gac_dxa_issue_2d(%prime_a_addr, %cta, %prime_slot_a, %zero, %row_base) {convergent} : (i32, i32, i32, i32, i32) -> ()
+llvm.call @__gac_dxa_issue_2d(%prime_b_addr, %cta, %prime_slot_b, %col_base, %zero) {convergent} : (i32, i32, i32, i32, i32) -> ()`)],refs:[['vortex','sw/runtime/include/dxa.h','program_2d()：编程描述符'],['vortex','hw/rtl/dxa/VX_dxa_desc_table.sv','RTL 描述符表'],['vortex','hw/rtl/dxa/VX_dxa_addr_gen.sv','二维源地址生成'],['vortex','hw/rtl/dxa/VX_dxa_gmem_req.sv','Global Memory 请求']],note:'DXA 使用物理源地址，所以 Host 分配加 VX_MEM_PHYS。一次 Stage 装载包含 A、B 两次搬运，至少需要 4 个 CTA 线程和硬件 lane。'},
+stages:{title:'LMEM SRAM：Buffer 位于 SRAM 内部',summary:'默认 Tile BM=2、BN=2、BK=16：A Buffer 128 B + B Buffer 128 B = Stage 256 B；两组 Stage 共 512 B / CTA。',sources:[source('backends/vortex_buffered_mlir.py','VortexBufferPlan',String.raw`@property
+def stage_elements(self) -> int:
+    return self.tile_k * (self.tile_m + self.tile_n)
+
+@property
+def lmem_bytes(self) -> int:
+    return 2 * self.stage_elements * 4`),source('hw/rtl/mem/VX_local_mem.sv','SRAM bank selection',String.raw`for (genvar i = 0; i < NUM_REQS; ++i) begin : g_req_bank_idxs
+    assign req_bank_idx[i] = lsu_bus_if[i].req_data.addr[0 +: BANK_SEL_BITS];
+end`,'vortex')],refs:[['gac','backends/vortex.py','_buffered_host_source()：vx_check_occupancy()、lmem_size'],['vortex','hw/rtl/dxa/VX_dxa_smem_wr.sv','DXA → LMEM DMA 写口'],['vortex','hw/rtl/mem/VX_local_mem.sv','物理 banked SRAM、LSU 与 DMA 端口']],note:'Stage0：LMEM+0…255；Stage1：LMEM+256…511。每组 A/B 是两个地址区间；不是 SRAM 外面再串一个 Buffer。'},
+barriers:{title:'两次同步：能读与能覆盖，是两个条件',summary:'计算当前 Stage 前等待 DXA 完成；计算结束后等待所有 CTA 线程读完。下一轮切换 Stage，保持一组计算、一组搬运。',sources:[source('backends/vortex_buffered_mlir.py','_matmul_kernel() · wait / reuse',String.raw`^ready:
+  {_barrier("cur_bar")}
+  ...
+^tile_done(%tile_acc: f32):
+  {_barrier("cur_bar")}
+  llvm.cond_br %has_next, ^tile_loop(%next_k, %nxt, %tile_acc : i32, i32, f32), ^finished(%tile_acc : f32)`),source('hw/rtl/dxa/VX_dxa_completion.sv','DXA completion after last SRAM write',String.raw`wire is_last = bank_wr_attr[ATTR_WIDTH-1];
+wire any_dxa_wr = |bank_wr_fire;
+
+wire done_fire = any_dxa_wr && is_last;
+wire [BAR_ADDR_W-1:0] done_fire_bar = bank_wr_attr[BAR_ADDR_W-1:0];`,'vortex')],refs:[['gac','backends/vortex_buffered_mlir.py','_collective_helpers()：convergent + noinline + optnone'],['vortex','hw/rtl/core/VX_scheduler.sv','线程组 barrier 阻塞 / 释放']],note:'越界输出线程也参加所有 barrier，只在最终 store 处检查边界。提前 return 会使其余线程永远等待。'},
+compute:{title:'Cacc：K 循环中的 FP32 部分和',summary:'LMEM 读取 A/B，操作数进入线程寄存器，FPU 执行乘加。每个线程维护一个输出元素；实际 FFN 从 bias 开始累加。',sources:[source('backends/vortex_buffered_mlir.py','_matmul_kernel() · dot_body',String.raw`%a_value = llvm.load %a_element : !llvm.ptr -> f32
+%b_value = llvm.load %b_element : !llvm.ptr -> f32
+%product = llvm.fmul %a_value, %b_value : f32
+%next_partial = llvm.fadd %partial, %product : f32
+%next_j = llvm.add %j, %one : i32
+llvm.br ^dot_loop(%next_j, %next_partial : i32, f32)`)],refs:[['vortex','hw/rtl/core/VX_lsu_unit.sv','LMEM load → 操作数'],['vortex','hw/rtl/core/VX_operands.sv','寄存器读取与回写'],['vortex','hw/rtl/core/VX_opc_unit.sv','线程寄存器与 operand collector'],['vortex','hw/rtl/fpu/VX_fpu_unit.sv','浮点计算单元']],note:'Cacc 是图中的解释名称；代码是 %partial / %acc 等 SSA FP32 值。VOLT 分配普通线程寄存器，不存在专门命名为 Cacc 的硬件存储模块。'},
+store:{title:'最终 C：有效线程写回 Global Memory',summary:'完成所有 K Tile 后，FC1 做 ReLU，FC2 加 residual，最终值通过 LSU 写回 DDR。C 结果不存进 A/B Stage。',sources:[source('backends/vortex_buffered_mlir.py','_matmul_kernel() · finished / store',String.raw`^finished(%final_acc: f32):
+  llvm.cond_br %valid, ^store, ^exit
+^store:
+  %row_index = llvm.mul %row, %{n} : i32
+  %index = llvm.add %row_index, %column : i32
+  {finish}
+  %out_element = llvm.getelementptr %output[%index] : (!llvm.ptr, i32) -> !llvm.ptr, f32
+  llvm.store %result, %out_element : f32, !llvm.ptr`),source('sw/runtime/common/device.cpp','Device::cp_submit_launch() · cache visibility',String.raw`// Cache coherence: post an explicit cache flush right after the launch
+// (ACQUIRE_MEM model) so the host observes coherent kernel results.
+r = cp_submit_cache_flush();
+if (r != VX_SUCCESS) return r;`,'vortex')],refs:[['vortex','hw/rtl/core/VX_lsu_unit.sv','store 指令执行'],['vortex','hw/rtl/cache/VX_cache_data.sv','数据 cache 存储'],['vortex','sw/runtime/common/queue.cpp','vx_enqueue_launch() → cp_submit_launch()']],note:'FC1 event → FC2 event → LayerNorm event。每次 launch 后的 CP cache flush 保证 dirty 数据可供 FC2 DXA 读取；CTA barrier 无法替代跨 Kernel 缓存可见性。'}
+};
+const prefixes={gac:repo,vortex,llvm};
+function link(path,tree){const a=document.createElement('a');a.href=prefixes[tree]+path;a.textContent=(tree==='gac'?'src/gac/':tree==='vortex'?'Vortex/':'LLVM/')+path;return a;}
+function text(tag,value,cls){const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;}
+function select(key){
+  const entry=entries[key];if(!entry)return;
+  root.querySelectorAll('button[data-key]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.key===key)));
+  const panel=root.querySelector('#details');panel.replaceChildren(text('h2',entry.title),text('p',entry.summary));
+  const sources=text('div','','sources');
+  entry.sources.forEach(item=>{const article=text('article','','source');article.append(text('label',item.symbol),link(item.path,item.tree));const pre=document.createElement('pre');pre.append(text('code',item.code));article.append(pre);sources.append(article);});
+  panel.append(sources);
+  if(entry.refs.length){panel.append(text('h3','源码与硬件入口'));const list=document.createElement('ul');entry.refs.forEach(([tree,path,label])=>{const li=text('li','','ref');li.append(text('span',label+'：'),link(path,tree));list.append(li);});panel.append(list);}
+  panel.append(text('p',entry.note,'note'));
+}
+root.querySelectorAll('button[data-key]').forEach(button=>button.addEventListener('click',()=>select(button.dataset.key)));
+select('stages');
+</script>
+</body>
+</html>

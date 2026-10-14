@@ -1,0 +1,61 @@
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=31 target=32 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000000800
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=56 target=57 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000000e40
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=108 target=109 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000001b40
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=133 target=134 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000002180
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=185 target=186 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000002e80
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=210 target=211 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x00000000000034c0
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=262 target=263 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x00000000000041c0
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+[VXDRV] Warning: CP has not retired a command in 10s.
+[VXDRV]   Q_SEQNUM=287 target=288 CP_CTRL=0x00000001 CP_STATUS=0x00000001 Q_ERROR=0x00000000
+[VXDRV]   RING_BASE=0x000062a0790bfb80 HEAD_ADDR=0x000062a0790cfc00 CMPL_ADDR=0x000062a0790cfd00
+[VXDRV]   RING_SIZE_LOG2=16 Q_CONTROL=0x00000001 Q_TAIL=0x0000000000004800
+[VXDRV]   The ring was accepted but nothing is executing. Set VORTEX_CP_POLL_TIMEOUT_S=<sec> to abort instead of spinning.
+{
+  "schema_version": 1,
+  "backend": "vortex-v3",
+  "driver": "simx",
+  "shape": [1, 8, 256],
+  "hidden": 512,
+  "warmup": 1,
+  "repeat": 3,
+  "h2d_mean_ms": 0.062962,
+  "kernel_host_wall_mean_ms": 23698.754456,
+  "kernel_device_profile_mean_ms": 23698.656481,
+  "d2h_mean_ms": 0.076837,
+  "end_to_end_mean_ms": 23698.897775,
+  "max_abs_error": 1.43051147e-06,
+  "tolerance": 0.001,
+  "finite": true,
+  "verified": true,
+  "optimized_mlir_sha256": "c68befb998875fe7f08cc903fa1ce1d2c4e432d9e6379ac9faa56d7166be88a5",
+  "vortex_call_plan_mlir_sha256": "39b15d5f953f521686108d8336975792d7f6a135cceea8d311ea1282121c4f2e"
+}
+PERF: instrs=23372504, cycles=74031533, IPC=0.316

@@ -1,3 +1,5 @@
 * text=auto eol=lf
 docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.binary.mlir -whitespace
+# Preserve the native MLIR printer output in the validation evidence.
+docs/validation/vortex/buffered-mlir-2026-10-14/smoke-kernel.opt.mlir -whitespace
 

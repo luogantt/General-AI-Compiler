@@ -1,0 +1,3 @@
+/home/thomas/vortex-gac-buffered-build32/tests/regression/gac_buffer_final-2x2x2-20261014/main.cpp:4:35: error: static assertion failed: buffered MLIR requires two independent transaction barrier slots
+    4 | static_assert(VX_CFG_NUM_BARRIERS >= 2,
+/home/thomas/vortex-gac-buffered-build32/tests/regression/gac_buffer_final-2x2x2-20261014/main.cpp:4:35: note: the comparison reduces to ‘(1 >= 2)’

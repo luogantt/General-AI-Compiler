@@ -38,6 +38,11 @@ from ..mlir_toolchain import (
 )
 from ..runtime import reference_run
 from .mlir import MlirProgram, compile_mlir
+from .vortex_buffered_mlir import (
+    VortexBufferPlan,
+    audit_bevformer_ffn_buffered_device_mlir,
+    emit_bevformer_ffn_buffered_device_mlir,
+)
 
 
 TARGET = "vortex-v3"
@@ -175,6 +180,7 @@ class VortexProgram:
     verifier_source: str
     device_lowering: str = LEGACY_CPP_LOWERING
     device_mlir: str | None = None
+    buffer_plan: VortexBufferPlan | None = None
 
     @property
     def source(self) -> str:
@@ -226,6 +232,8 @@ class VortexProgram:
             lowering["device_kernel_mlir_sha256"] = _sha256_text(self.device_mlir)
             lowering["volt_llvm_revision_expected"] = VOLT_LLVM_REVISION
             lowering["device_argument_abi"] = _direct_argument_abi()
+            if self.buffer_plan is not None:
+                lowering["buffer_plan"] = self.buffer_plan.to_dict()
         return {
             "schema_version": ARTIFACT_SCHEMA_VERSION,
             "compiler_backend": TARGET,
@@ -1058,8 +1066,8 @@ static constexpr const char* kVortexMlirSha256 = "{vortex_mlir_sha256}";
 '''
 
 
-def _host_source() -> str:
-    return r'''#include <vortex2.h>
+def _host_source(buffer_plan: VortexBufferPlan | None = None) -> str:
+    source = r'''#include <vortex2.h>
 
 #include "common.h"
 #include "model_config.h"
@@ -1427,6 +1435,71 @@ int main(int argc, char** argv) {
   }
 }
 '''
+    if buffer_plan is None:
+        return source
+    return _buffered_host_source(source, buffer_plan)
+
+
+def _buffered_host_source(source: str, plan: VortexBufferPlan) -> str:
+    source = source.replace("#include <vortex2.h>", '''#include <vortex2.h>
+#include <dxa.h>
+#include <VX_config.h>
+static_assert(VX_CFG_NUM_BARRIERS >= 2,
+              "buffered MLIR requires two independent transaction barrier slots");''')
+    constants = f'''static constexpr uint32_t kTileM = {plan.tile_m}u;
+static constexpr uint32_t kTileN = {plan.tile_n}u;
+static constexpr uint32_t kTileK = {plan.tile_k}u;
+static constexpr uint32_t kTileThreads = {plan.threads}u;
+static constexpr uint32_t kTileLmemBytes = {plan.lmem_bytes}u;
+'''
+    source = source.replace("namespace {\n", "namespace {\n\n" + constants, 1)
+    launch = '''vx_launch_info_t tiled_launch_info(vx_device_h device, vx_kernel_h kernel,
+                                   const void* args, size_t args_size,
+                                   uint32_t rows, uint32_t columns) {
+  if (vx_check_occupancy(device, kTileThreads, kTileLmemBytes) != VX_SUCCESS)
+    throw std::runtime_error("tile threads or LMEM exceed device occupancy limits");
+  vx_launch_info_t info = {};
+  info.struct_size = sizeof(info);
+  info.kernel = kernel;
+  info.args_host = args;
+  info.args_size = args_size;
+  info.ndim = 1;
+  info.grid_dim[0] = ((rows + kTileM - 1) / kTileM)
+                   * ((columns + kTileN - 1) / kTileN);
+  info.block_dim[0] = kTileThreads;
+  info.lmem_size = kTileLmemBytes;
+  return info;
+}
+
+void program_tiles(vx_device_h device, const DeviceBuffers& buffers) {
+  uint64_t isa = 0, threads = 0;
+  CHECK(vx_device_query(device, VX_CAPS_ISA_FLAGS, &isa));
+  CHECK(vx_device_query(device, VX_CAPS_NUM_THREADS, &threads));
+  if ((isa & VX_ISA_EXT_DXA) == 0 || (isa & VX_ISA_EXT_LMEM) == 0 || threads < 4)
+    throw std::runtime_error("buffered MLIR requires DXA, LMEM and at least four lanes");
+  auto descriptor = [&](uint32_t slot, uint64_t base, uint32_t columns,
+                        uint32_t rows, uint32_t tile_columns, uint32_t tile_rows) {
+    if (vortex::dxa::program_2d(device, slot, base, columns, rows,
+                              columns * sizeof(float), tile_columns, tile_rows,
+                              sizeof(float)) != VX_SUCCESS)
+      throw std::runtime_error("cannot program physical DXA tile descriptor");
+  };
+  descriptor(0, address(buffers.query), kChannels, kRows, kTileK, kTileM);
+  descriptor(1, address(buffers.w1), kHidden, kChannels, kTileN, kTileK);
+  descriptor(2, address(buffers.activation), kHidden, kRows, kTileK, kTileM);
+  descriptor(3, address(buffers.w2), kChannels, kHidden, kTileN, kTileK);
+}
+
+'''
+    source = source.replace("double profile_ms(vx_event_h event)", launch + "double profile_ms(vx_event_h event)", 1)
+    for kernel, dimension in (("fc1", "kHidden"), ("fc2", "kChannels")):
+        old = f"launch_info(\n      device, {kernel}_kernel, &{kernel}, sizeof({kernel}), kRows * {dimension})"
+        new = f"tiled_launch_info(\n      device, {kernel}_kernel, &{kernel}, sizeof({kernel}), kRows, {dimension})"
+        source = source.replace(old, new, 1)
+    # DXA bypasses per-core address translation, so its source addresses must be physical.
+    for flags in ("VX_MEM_READ_WRITE", "VX_MEM_READ", "VX_MEM_WRITE"):
+        source = source.replace(f"{flags}, &buffers.", f"{flags} | VX_MEM_PHYS, &buffers.")
+    return source.replace("    upload(buffers.norm_bias, norm_bias);", "    upload(buffers.norm_bias, norm_bias);\n    program_tiles(device, buffers);", 1)
 
 
 def _makefile() -> str:
@@ -1545,6 +1618,7 @@ def _artifact_verifier_source(
     *,
     device_file: str = "kernel.cpp",
     bind_device_mlir: bool = False,
+    buffer_plan: VortexBufferPlan | None = None,
 ) -> str:
     source = r'''#!/usr/bin/env python3
 """Verify the generated source artifact before VOLT consumes it."""
@@ -1683,6 +1757,9 @@ if __name__ == "__main__":
             "device_kernel_mlir_sha256"
         ):
             raise ValueError("device kernel MLIR hash is not bound to lowering metadata")'''
+    if buffer_plan is not None:
+        hash_check += f'''\n        if lowering.get("buffer_plan") != {buffer_plan.to_dict()!r}:
+            raise ValueError("buffer plan does not match the generated host and device")'''
     return source.replace("__GAC_DEVICE_FILE__", device_file).replace(
         "__GAC_DEVICE_HASH_CHECK__", hash_check
     )
@@ -1793,6 +1870,7 @@ def compile_vortex_direct(
     use_wsl: bool = False,
     wsl_distribution: str | None = None,
     timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    buffer_plan: VortexBufferPlan | None = None,
 ) -> VortexProgram:
     """Compile the supported BEVFormer FFN to device LLVM-dialect MLIR.
 
@@ -1820,13 +1898,23 @@ def compile_vortex_direct(
 
     optimized_hash = _sha256_text(program.optimized_mlir)
     call_plan_hash = _sha256_text(program.vortex_mlir)
-    device_input = emit_bevformer_ffn_device_mlir(
+    emitter = emit_bevformer_ffn_device_mlir
+    auditor = audit_bevformer_ffn_device_mlir
+    schedule_args: dict[str, Any] = {}
+    if buffer_plan is not None:
+        if not isinstance(buffer_plan, VortexBufferPlan):
+            raise BackendError(f"{TARGET}: buffer_plan must be a VortexBufferPlan")
+        emitter = emit_bevformer_ffn_buffered_device_mlir
+        auditor = audit_bevformer_ffn_buffered_device_mlir
+        schedule_args["buffer_plan"] = buffer_plan
+    device_input = emitter(
         rows=program.plan.rows,
         channels=program.plan.channels,
         hidden=program.plan.hidden,
         epsilon=program.plan.epsilon,
         optimized_mlir_sha256=optimized_hash,
         call_plan_mlir_sha256=call_plan_hash,
+        **schedule_args,
     )
     device_mlir = verify_mlir(
         device_input,
@@ -1835,7 +1923,7 @@ def compile_vortex_direct(
         wsl_distribution=wsl_distribution,
         timeout=timeout,
     )
-    audit_bevformer_ffn_device_mlir(
+    auditor(
         device_mlir,
         kernels=program.plan.kernels,
         rows=program.plan.rows,
@@ -1844,17 +1932,24 @@ def compile_vortex_direct(
         epsilon=program.plan.epsilon,
         optimized_mlir_sha256=optimized_hash,
         call_plan_mlir_sha256=call_plan_hash,
+        **schedule_args,
     )
     return replace(
         program,
         kernel_source="",
-        makefile=_direct_makefile(),
+        makefile=(
+            _direct_makefile() + "\nVX_CFLAGS += -ffixed-x31\n"
+            if buffer_plan is not None else _direct_makefile()
+        ),
         verifier_source=_artifact_verifier_source(
             device_file="kernel.mlir",
             bind_device_mlir=True,
+            buffer_plan=buffer_plan,
         ),
         device_lowering=DIRECT_MLIR_LOWERING,
         device_mlir=device_mlir,
+        host_source=_host_source(buffer_plan),
+        buffer_plan=buffer_plan,
     )
 
 
