@@ -135,6 +135,57 @@ class OnnxFrontendTests(unittest.TestCase):
         self.assertEqual(graph.nodes[0].attrs["shape"], [3, 2])
         self.assertEqual(graph.constants["shape"].dtype, np.dtype("int64"))
 
+    def test_scalar_initializers_and_constants_preserve_rank_and_roundtrip(self):
+        from onnx import TensorProto, helper, numpy_helper
+        from gac.core.ir import Graph
+        from gac.frontends.onnx_frontend import import_onnx_model
+
+        # Each encoding occurs in framework exports. A scalar is shape (),
+        # distinct from a one-element vector even when both hold one number.
+        for dtype, onnx_type, value_attribute in (
+            (np.float32, TensorProto.FLOAT, "value_float"),
+            (np.int64, TensorProto.INT64, "value_int"),
+        ):
+            for encoding in ("initializer", "tensor_attribute", "scalar_attribute"):
+                with self.subTest(dtype=dtype, encoding=encoding):
+                    value = np.asarray(3, dtype=dtype)
+                    tensor = numpy_helper.from_array(value, name="scalar")
+                    initializers = [tensor] if encoding == "initializer" else []
+                    nodes = []
+                    if encoding != "initializer":
+                        attributes = (
+                            {"value": tensor} if encoding == "tensor_attribute"
+                            else {value_attribute: value.item()}
+                        )
+                        nodes.append(helper.make_node("Constant", [], ["scalar"], name="constant", **attributes))
+                    nodes.append(helper.make_node("Add", ["x", "scalar"], ["y"], name="add"))
+                    model = helper.make_model(
+                        helper.make_graph(
+                            nodes, "scalar_add",
+                            [helper.make_tensor_value_info("x", onnx_type, [])],
+                            [helper.make_tensor_value_info("y", onnx_type, [])],
+                            initializers,
+                        ),
+                        opset_imports=[helper.make_opsetid("", 18)],
+                    )
+                    graph = import_onnx_model(model)
+                    self.assertEqual(graph.constants["scalar"].shape, ())
+                    self.assertEqual(graph.value_specs["scalar"].shape, ())
+                    self.assertEqual(graph.value_specs["y"].shape, ())
+                    self.assertEqual(graph.constants["scalar"].dtype, np.dtype(dtype))
+                    inline = Graph.from_json(graph.to_json())
+                    with tempfile.TemporaryDirectory() as directory:
+                        archive = Path(directory) / "constants.npz"
+                        np.savez(archive, **graph.constants)
+                        with np.load(archive, allow_pickle=False) as arrays:
+                            restored = Graph.from_dict(graph.to_dict(include_constant_data=False), external_constants=arrays)
+                    for result in (inline, restored):
+                        self.assertEqual(result.constants["scalar"].shape, ())
+                        result.validate()
+                        actual = reference_run(result, {"x": np.asarray(2, dtype=dtype)})["y"]
+                        self.assertEqual(actual.shape, ())
+                        np.testing.assert_array_equal(actual, np.asarray(5, dtype=dtype))
+
     def test_reshape_zero_copies_matching_input_axis_across_rank_change(self):
         from onnx import TensorProto, helper, numpy_helper
         from gac.frontends.onnx_frontend import import_onnx_model
@@ -499,6 +550,148 @@ class OnnxFrontendTests(unittest.TestCase):
             graph.metadata["import"]["unsupported_nodes"],
             [{"node": "upsample", "op": "ai.onnx::Resize"}],
         )
+
+    def test_inspection_keeps_shape_program_and_unlowered_reshape_edges(self):
+        from onnx import TensorProto, helper
+        from gac.frontends.onnx_frontend import OnnxFrontendError, import_onnx_model
+
+        for batch in (2, "batch"):
+            with self.subTest(batch=batch):
+                model = helper.make_model(
+                    helper.make_graph(
+                        [
+                            helper.make_node("Shape", ["x"], ["shape"], name="shape"),
+                            helper.make_node("Reshape", ["x", "shape"], ["y"], name="reshape"),
+                        ],
+                        "shape_program",
+                        [helper.make_tensor_value_info("x", TensorProto.FLOAT, [batch, 3])],
+                        [helper.make_tensor_value_info("y", TensorProto.FLOAT, [batch, 3])],
+                    ),
+                    opset_imports=[helper.make_opsetid("", 18)],
+                )
+                with self.assertRaisesRegex(OnnxFrontendError, "compile-time constant"):
+                    import_onnx_model(model)
+                graph = import_onnx_model(model, strict=False)
+                self.assertEqual([node.op for node in graph.nodes], ["ai.onnx::Shape", "ai.onnx::Reshape"])
+                self.assertEqual(graph.nodes[1].inputs, ("x", "shape"))
+                self.assertEqual(graph.nodes[1].source_nodes, ("reshape",))
+                self.assertNotIn("shape", graph.constants)
+                self.assertIn("compile-time constant", graph.metadata["import"]["unsupported_nodes"][1]["reason"])
+                graph.validate()
+
+    def test_inspection_preserves_known_but_unmodeled_reshape_semantics(self):
+        from onnx import TensorProto, helper, numpy_helper
+        from gac.frontends.onnx_frontend import OnnxFrontendError, import_onnx_model
+
+        model = helper.make_model(
+            helper.make_graph(
+                [helper.make_node("Reshape", ["x", "shape"], ["y"], name="reshape", allowzero=1)],
+                "allowzero",
+                [helper.make_tensor_value_info("x", TensorProto.FLOAT, [2, 3])],
+                [helper.make_tensor_value_info("y", TensorProto.FLOAT, [3, 2])],
+                [numpy_helper.from_array(np.asarray([3, 2], dtype=np.int64), name="shape")],
+            ),
+            opset_imports=[helper.make_opsetid("", 18)],
+        )
+        with self.assertRaisesRegex(OnnxFrontendError, "allowzero=1"):
+            import_onnx_model(model)
+        graph = import_onnx_model(model, strict=False)
+        self.assertEqual(graph.nodes[0].op, "ai.onnx::Reshape")
+        self.assertEqual(graph.nodes[0].attrs, {"allowzero": 1})
+        self.assertEqual(graph.nodes[0].inputs, ("x", "shape"))
+        self.assertIn("allowzero=1", graph.metadata["import"]["unsupported_nodes"][0]["reason"])
+
+    def test_inspection_keeps_optional_slots_for_runtime_clip_bound(self):
+        from onnx import TensorProto, helper
+        from gac.frontends.onnx_frontend import import_onnx_model
+
+        model = helper.make_model(
+            helper.make_graph(
+                [helper.make_node("Clip", ["x", "", "maximum"], ["y"], name="clip")],
+                "runtime_clip",
+                [
+                    helper.make_tensor_value_info("x", TensorProto.FLOAT, [2, 3]),
+                    helper.make_tensor_value_info("maximum", TensorProto.FLOAT, []),
+                ],
+                [helper.make_tensor_value_info("y", TensorProto.FLOAT, [2, 3])],
+            ),
+            opset_imports=[helper.make_opsetid("", 18)],
+        )
+        graph = import_onnx_model(model, strict=False)
+        self.assertEqual(graph.nodes[0].op, "ai.onnx::Clip")
+        self.assertEqual(graph.nodes[0].inputs, ("x", "maximum"))
+        self.assertEqual(graph.metadata["import"]["unsupported_nodes"][0]["input_slots"], ["x", "", "maximum"])
+
+    def test_inspection_rolls_back_a_rejected_partial_decomposition(self):
+        import gac.frontends.onnx_frontend as frontend
+        from onnx import TensorProto, helper, numpy_helper
+
+        original_translate = frontend._translate_node
+
+        def reject_after_decomposition(proto, **kwargs):
+            result = original_translate(proto, **kwargs)
+            if proto.op_type == "Gemm":
+                raise frontend._UnsupportedOnnxSemantics("target cannot represent this Gemm variant")
+            return result
+
+        # This source Gemm transposes its weight and allocates a temporary
+        # MatMul value before the hypothetical late legality check rejects it.
+        model = helper.make_model(
+            helper.make_graph(
+                [helper.make_node("Gemm", ["x", "weight", "bias"], ["y"], name="linear", transB=1)],
+                "gemm",
+                [helper.make_tensor_value_info("x", TensorProto.FLOAT, [2, 4])],
+                [helper.make_tensor_value_info("y", TensorProto.FLOAT, [2, 3])],
+                [
+                    numpy_helper.from_array(np.ones((3, 4), dtype=np.float32), name="weight"),
+                    numpy_helper.from_array(np.ones(3, dtype=np.float32), name="bias"),
+                ],
+            ),
+            opset_imports=[helper.make_opsetid("", 18)],
+        )
+        with patch.object(frontend, "_translate_node", side_effect=reject_after_decomposition):
+            graph = frontend.import_onnx_model(model, strict=False)
+        self.assertEqual(graph.nodes[0].op, "ai.onnx::Gemm")
+        self.assertEqual(graph.nodes[0].id, model.graph.node[0].name)
+        self.assertEqual(set(graph.constants), {value.name for value in model.graph.initializer})
+        self.assertEqual(graph.nodes[0].inputs, tuple(model.graph.node[0].input))
+        self.assertEqual(graph.nodes[0].attrs["transB"], 1)
+        graph.validate()
+
+    def test_inspection_does_not_hide_invalid_nodes_or_nested_control_flow(self):
+        from onnx import TensorProto, helper
+        from gac.frontends.onnx_frontend import OnnxFrontendError, import_onnx_model
+
+        x = helper.make_tensor_value_info("x", TensorProto.FLOAT, [2, 3])
+        y = helper.make_tensor_value_info("y", TensorProto.FLOAT, [2, 3])
+        invalid = helper.make_model(
+            helper.make_graph([helper.make_node("Reshape", ["x"], ["y"])], "invalid", [x], [y]),
+            opset_imports=[helper.make_opsetid("", 18)],
+        )
+        with self.assertRaisesRegex(OnnxFrontendError, "invalid ONNX model"):
+            import_onnx_model(invalid, strict=False)
+        with self.assertRaisesRegex(OnnxFrontendError, "needs data and shape"):
+            import_onnx_model(invalid, strict=False, check_model=False, infer_shapes=False)
+        branch = helper.make_graph(
+            [helper.make_node("Identity", ["x"], ["branch_output"])], "branch", [],
+            [helper.make_tensor_value_info("branch_output", TensorProto.FLOAT, [2, 3])],
+        )
+        nested = helper.make_model(
+            helper.make_graph(
+                [helper.make_node("If", ["condition"], ["y"], then_branch=branch, else_branch=branch)],
+                "nested", [x, helper.make_tensor_value_info("condition", TensorProto.BOOL, [])], [y],
+            ),
+            opset_imports=[helper.make_opsetid("", 18)],
+        )
+        with self.assertRaisesRegex(OnnxFrontendError, "nested graph"):
+            import_onnx_model(nested, strict=False)
+
+    def test_inspection_does_not_swallow_unexpected_translator_errors(self):
+        from gac.frontends.onnx_frontend import import_onnx_model
+
+        with patch("gac.frontends.onnx_frontend._translate_node", side_effect=RuntimeError("translator bug")):
+            with self.assertRaisesRegex(RuntimeError, "translator bug"):
+                import_onnx_model(self._mlp_model(), strict=False)
 
     def test_cli_import_writes_canonical_json_and_report(self):
         import onnx

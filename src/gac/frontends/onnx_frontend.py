@@ -38,6 +38,14 @@ class OnnxFrontendError(ValueError):
     """Raised when an ONNX model cannot be represented faithfully."""
 
 
+class _UnsupportedOnnxSemantics(OnnxFrontendError):
+    """A valid source operation needs a lowering the canonical IR lacks.
+
+    Unlike malformed ONNX, this can be retained verbatim for inspection when
+    ``strict=False``. It never makes the operation executable.
+    """
+
+
 # 可以保持语义不变、直接改名进入 GAC Canonical Graph 的算子。
 # 其余算子需要在 _translate_node() 中显式处理属性、opset 差异，或者
 # 拆成多个规范算子，避免“名字相同但语义不同”的静默错误。
@@ -92,6 +100,18 @@ def _decode(value: Any) -> Any:
     if isinstance(value, list):
         return [_decode(item) for item in value]
     return value
+
+
+def _contiguous_tensor(value: Any) -> np.ndarray:
+    """Keep the ONNX tensor rank while ensuring contiguous storage.
+
+    ``np.ascontiguousarray`` promotes scalar tensors from shape ``()`` to
+    ``(1,)``. Scalars are already contiguous, so return them without changing
+    the rank used by broadcasting, shape programs, and serialized TensorSpecs.
+    """
+
+    array = np.asarray(value)
+    return array if array.flags.c_contiguous else np.ascontiguousarray(array)
 
 
 def _unique(base: str, occupied: set[str]) -> str:
@@ -162,7 +182,7 @@ def _attributes(proto: Any, onnx: Any) -> dict[str, Any]:
                 "ONNX control flow is not supported yet"
             )
         if hasattr(value, "dims") and hasattr(value, "data_type"):
-            result[str(attribute.name)] = np.ascontiguousarray(
+            result[str(attribute.name)] = _contiguous_tensor(
                 onnx.numpy_helper.to_array(value)
             )
         else:
@@ -179,7 +199,7 @@ def _constant_vector(
     """读取必须在编译期已知的整数 shape/axes 等一维参数。"""
 
     if name not in constants:
-        raise OnnxFrontendError(
+        raise _UnsupportedOnnxSemantics(
             f"node {node!r} requires compile-time constant input {name!r}"
         )
     value = np.asarray(constants[name])
@@ -201,7 +221,7 @@ def _constant_scalar(
     if not name:
         return None
     if name not in constants:
-        raise OnnxFrontendError(
+        raise _UnsupportedOnnxSemantics(
             f"node {node!r} requires compile-time constant input {name!r}"
         )
     value = np.asarray(constants[name])
@@ -224,7 +244,7 @@ def _constant_bool(
     """读取 Dropout training_mode 等编译期布尔开关。"""
 
     if name not in constants:
-        raise OnnxFrontendError(
+        raise _UnsupportedOnnxSemantics(
             f"node {node!r} requires compile-time constant input {name!r}"
         )
     value = np.asarray(constants[name])
@@ -244,7 +264,7 @@ def _pairs(value: Any, default: Sequence[int]) -> list[int]:
 def _require_default_auto_pad(attrs: Mapping[str, Any], node_id: str) -> None:
     auto_pad = str(attrs.get("auto_pad", "NOTSET"))
     if auto_pad not in {"NOTSET", ""}:
-        raise OnnxFrontendError(
+        raise _UnsupportedOnnxSemantics(
             f"node {node_id!r} auto_pad={auto_pad!r} must be legalized to explicit pads"
         )
 
@@ -312,7 +332,7 @@ def _translate_node(
             raise OnnxFrontendError(
                 f"Constant node {source_id!r} uses an unsupported value encoding"
             )
-        constants[outputs[0]] = np.ascontiguousarray(value)
+        constants[outputs[0]] = _contiguous_tensor(value)
         occupied_values.add(outputs[0])
         return [], None
 
@@ -327,7 +347,7 @@ def _translate_node(
         canonical_attrs: dict[str, Any] = {}
         if proto.op_type in {"Add", "Sub", "Mul", "Div"} and onnx_opset <= 6:
             if int(attrs.get("broadcast", 0)) != 0 or "axis" in attrs:
-                raise OnnxFrontendError(
+                raise _UnsupportedOnnxSemantics(
                     f"node {source_id!r} uses legacy ONNX axis-aligned broadcasting; "
                     "convert the model to opset 7 or newer before import"
                 )
@@ -347,7 +367,7 @@ def _translate_node(
             else:
                 input_spec = value_specs.get(inputs[0]) if inputs else None
                 if input_spec is None:
-                    raise OnnxFrontendError(
+                    raise _UnsupportedOnnxSemantics(
                         f"Transpose node {source_id!r} needs an inferred input rank "
                         "when perm is omitted"
                     )
@@ -361,13 +381,13 @@ def _translate_node(
             if onnx_opset < 13:
                 input_spec = value_specs.get(inputs[0]) if inputs else None
                 if input_spec is None:
-                    raise OnnxFrontendError(
+                    raise _UnsupportedOnnxSemantics(
                         f"Softmax node {source_id!r} needs an inferred input rank for "
                         f"ONNX opset {onnx_opset} semantics"
                     )
                 normalized_axis = axis + input_spec.rank if axis < 0 else axis
                 if normalized_axis != input_spec.rank - 1:
-                    raise OnnxFrontendError(
+                    raise _UnsupportedOnnxSemantics(
                         f"Softmax node {source_id!r} uses pre-opset-13 flatten-from-axis "
                         f"semantics at axis {axis}; canonical Softmax only reduces one axis"
                     )
@@ -377,7 +397,7 @@ def _translate_node(
     if proto.op_type == "Gelu":
         approximation = str(attrs.get("approximate", "none")).lower()
         if approximation not in {"tanh"}:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Gelu node {source_id!r} uses approximation={approximation!r}; "
                 "the current GAC GELU contract is tanh"
             )
@@ -385,17 +405,17 @@ def _translate_node(
 
     if proto.op_type == "LayerNormalization":
         if len(outputs) != 1:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"LayerNormalization node {source_id!r} exposes training/statistic outputs"
             )
         input_spec = value_specs.get(inputs[0]) if inputs else None
         if input_spec is None or input_spec.dtype != "float32":
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"LayerNormalization node {source_id!r} requires float32 input until "
                 "the Canonical LayerNorm records ONNX stash/accumulator precision"
             )
         if int(attrs.get("stash_type", 1)) != 1:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"LayerNormalization node {source_id!r} uses unsupported "
                 f"stash_type={attrs['stash_type']!r}"
             )
@@ -420,7 +440,7 @@ def _translate_node(
         if len(inputs) != 2:
             raise OnnxFrontendError(f"Reshape node {source_id!r} needs data and shape")
         if int(attrs.get("allowzero", 0)) != 0:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Reshape node {source_id!r} uses allowzero=1, which GAC does not support"
             )
         # ONNX 把目标 shape 表示成第二个输入；GAC 将其固化为节点属性，
@@ -429,7 +449,7 @@ def _translate_node(
         if 0 in shape:
             input_spec = value_specs.get(inputs[0])
             if input_spec is None:
-                raise OnnxFrontendError(
+                raise _UnsupportedOnnxSemantics(
                     f"Reshape node {source_id!r} needs input shape information to resolve zero dimensions"
                 )
             resolved_shape: list[int | str | None] = []
@@ -445,7 +465,7 @@ def _translate_node(
                 resolved_shape.append(input_spec.shape[axis])
             shape = resolved_shape
             if not all(isinstance(dim, int) for dim in shape):
-                raise OnnxFrontendError(
+                raise _UnsupportedOnnxSemantics(
                     f"Reshape node {source_id!r} has a zero dimension referring to a dynamic input"
                 )
         return [Node(node_id, "Reshape", (inputs[0],), outputs, {"shape": shape}, (source_id,))], None
@@ -480,7 +500,7 @@ def _translate_node(
         if axes:
             canonical["axes"] = axes
         if int(attrs.get("noop_with_empty_axes", 0)) != 0:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"node {source_id!r} uses noop_with_empty_axes=1"
             )
         op = "ReduceSum" if proto.op_type == "ReduceSum" else "ReduceMean"
@@ -504,7 +524,7 @@ def _translate_node(
         _require_default_auto_pad(attrs, source_id)
         kernel = attrs.get("kernel_shape")
         if kernel is not None and len(kernel) != 2:
-            raise OnnxFrontendError(f"Conv node {source_id!r} is not two-dimensional")
+            raise _UnsupportedOnnxSemantics(f"Conv node {source_id!r} is not two-dimensional")
         canonical = {
             "strides": _pairs(attrs.get("strides"), (1, 1)),
             "dilations": _pairs(attrs.get("dilations"), (1, 1)),
@@ -518,7 +538,7 @@ def _translate_node(
         modern_training = int(attrs.get("training_mode", 0)) != 0
         legacy_nonspatial = onnx_opset <= 7 and int(attrs.get("spatial", 1)) != 1
         if len(outputs) != 1 or legacy_training or modern_training or legacy_nonspatial:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"BatchNormalization node {source_id!r} must be inference-only with one output"
             )
         return [
@@ -535,12 +555,12 @@ def _translate_node(
     if proto.op_type == "MaxPool":
         _require_default_auto_pad(attrs, source_id)
         if len(outputs) != 1:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"MaxPool node {source_id!r} index output is not supported"
             )
         kernel = _pairs(attrs.get("kernel_shape"), ())
         if len(kernel) != 2:
-            raise OnnxFrontendError(f"MaxPool node {source_id!r} is not two-dimensional")
+            raise _UnsupportedOnnxSemantics(f"MaxPool node {source_id!r} is not two-dimensional")
         canonical = {
             "kernel_shape": kernel,
             "strides": _pairs(attrs.get("strides"), (1, 1)),
@@ -549,7 +569,7 @@ def _translate_node(
             "ceil_mode": bool(int(attrs.get("ceil_mode", 0))),
         }
         if int(attrs.get("storage_order", 0)) != 0:
-            raise OnnxFrontendError(f"MaxPool node {source_id!r} uses storage_order=1")
+            raise _UnsupportedOnnxSemantics(f"MaxPool node {source_id!r} uses storage_order=1")
         return [Node(node_id, "MaxPool2D", inputs, outputs, canonical, (source_id,))], None
 
     if proto.op_type == "GridSample":
@@ -565,18 +585,18 @@ def _translate_node(
 
     if proto.op_type == "Dropout":
         if len(outputs) != 1:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Dropout node {source_id!r} mask output is not supported"
             )
         if onnx_opset <= 6 and int(attrs.get("is_test", 0)) == 0:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Dropout node {source_id!r} uses training semantics in ONNX "
                 f"opset {onnx_opset}"
             )
         if onnx_opset >= 12 and len(raw_inputs) >= 3 and raw_inputs[2]:
             training = _constant_bool(raw_inputs[2], constants, node=source_id)
             if training:
-                raise OnnxFrontendError(
+                raise _UnsupportedOnnxSemantics(
                     f"Dropout node {source_id!r} is in training mode"
                 )
         return [Node(node_id, "Identity", (inputs[0],), outputs, {}, (source_id,))], None
@@ -584,7 +604,7 @@ def _translate_node(
     if proto.op_type == "Flatten":
         input_spec = value_specs.get(inputs[0])
         if input_spec is None or not input_spec.is_static:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Flatten node {source_id!r} requires a static input shape"
             )
         axis = int(attrs.get("axis", 1))
@@ -597,7 +617,11 @@ def _translate_node(
 
     if proto.op_type == "GlobalAveragePool":
         input_spec = value_specs.get(inputs[0])
-        if input_spec is None or input_spec.rank < 3:
+        if input_spec is None:
+            raise _UnsupportedOnnxSemantics(
+                f"GlobalAveragePool node {source_id!r} needs an inferred input rank"
+            )
+        if input_spec.rank < 3:
             raise OnnxFrontendError(
                 f"GlobalAveragePool node {source_id!r} requires rank >= 3"
             )
@@ -616,7 +640,7 @@ def _translate_node(
     if proto.op_type in {"Squeeze", "Unsqueeze"}:
         output_spec = value_specs.get(outputs[0])
         if output_spec is None or not output_spec.is_static:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"{proto.op_type} node {source_id!r} requires a static inferred output shape"
             )
         return [
@@ -637,7 +661,7 @@ def _translate_node(
         alpha = float(attrs.get("alpha", 1.0))
         beta = float(attrs.get("beta", 1.0))
         if alpha != 1.0 or beta != 1.0 or int(attrs.get("transA", 0)) != 0:
-            raise OnnxFrontendError(
+            raise _UnsupportedOnnxSemantics(
                 f"Gemm node {source_id!r} requires alpha=beta=1 and transA=0"
             )
         if len(inputs) not in {2, 3}:
@@ -696,8 +720,11 @@ def import_onnx_model(
     """Translate an in-memory ONNX ``ModelProto`` to a GAC graph.
 
     ``strict=False`` retains unsupported nodes with qualified ONNX operation
-    names.  Such a graph is useful for support analysis but is not compilable
-    until those nodes are legalized.
+    names, including recognized operations whose parameters cannot yet be
+    lowered. Their source edges and attributes remain intact; the import
+    report records the lowering constraint. Such a graph is useful for support
+    analysis but is not compilable until those nodes are legalized. Invalid
+    models and unsupported nested control flow still raise an error.
 
     该函数完成五个阶段：
 
@@ -741,7 +768,7 @@ def import_onnx_model(
             raise OnnxFrontendError(
                 f"cannot decode initializer {initializer.name!r}: {exc}"
             ) from exc
-        constants[str(initializer.name)] = np.ascontiguousarray(value)
+        constants[str(initializer.name)] = _contiguous_tensor(value)
 
     declared_input_names = {str(value.name) for value in graph_proto.input if value.name}
     overrideable_initializers = sorted(declared_input_names & set(constants))
@@ -787,7 +814,7 @@ def import_onnx_model(
     occupied_ids: set[str] = set()
     # 阶段 4：nodes 保存拓扑顺序和张量名引用，不保存任何张量 payload。
     nodes: list[Node] = []
-    unsupported_nodes: list[dict[str, str]] = []
+    unsupported_nodes: list[dict[str, Any]] = []
     source_counts: Counter[str] = Counter()
     canonical_counts: Counter[str] = Counter()
     opsets = {
@@ -799,26 +826,65 @@ def import_onnx_model(
         raise OnnxFrontendError("ONNX model has no ai.onnx opset import")
     for index, proto in enumerate(graph_proto.node):
         source_counts[_unsupported_name(proto)] += 1
-        lowered, unsupported = _translate_node(
-            proto,
-            index=index,
-            constants=constants,
-            value_specs=value_specs,
-            occupied_values=occupied_values,
-            occupied_ids=occupied_ids,
-            onnx_opset=onnx_opset,
-            onnx=onnx,
+        # Inspection must not lose a valid node merely because its shape/axes
+        # input is a runtime value. Snapshot names, not weight payloads, so a
+        # rejected decomposition cannot leak temporary constants or SSA names.
+        snapshot = (
+            (set(constants), occupied_values.copy(), occupied_ids.copy())
+            if not strict else None
         )
+        reason: str | None = None
+        try:
+            lowered, unsupported = _translate_node(
+                proto,
+                index=index,
+                constants=constants,
+                value_specs=value_specs,
+                occupied_values=occupied_values,
+                occupied_ids=occupied_ids,
+                onnx_opset=onnx_opset,
+                onnx=onnx,
+            )
+        except _UnsupportedOnnxSemantics as exc:
+            if strict:
+                raise
+            assert snapshot is not None
+            previous_constants, previous_values, previous_ids = snapshot
+            for name in set(constants) - previous_constants:
+                del constants[name]
+            occupied_values.intersection_update(previous_values)
+            occupied_ids.intersection_update(previous_ids)
+            source_id = str(proto.name or f"{proto.op_type}_{index}")
+            unsupported = _unsupported_name(proto)
+            lowered = [
+                Node(
+                    _unique(source_id, occupied_ids),
+                    unsupported,
+                    tuple(str(name) for name in proto.input if name),
+                    tuple(str(name) for name in proto.output if name),
+                    _attributes(proto, onnx),
+                    (source_id,),
+                )
+            ]
+            reason = str(exc)
         # 一个 ONNX 节点可能产生多个规范节点；Constant 则产生零个节点。
         nodes.extend(lowered)
         canonical_counts.update(node.op for node in lowered)
         if unsupported is not None:
-            unsupported_nodes.append(
-                {
-                    "node": str(proto.name or f"{proto.op_type}_{index}"),
-                    "op": unsupported,
-                }
-            )
+            diagnostic: dict[str, Any] = {
+                "node": str(proto.name or f"{proto.op_type}_{index}"),
+                "op": unsupported,
+            }
+            if reason is not None:
+                diagnostic["reason"] = reason
+            # Node.inputs only contains actual SSA edges. Preserve omitted
+            # optional slots separately so Clip(x, "", max) remains readable
+            # as the original ONNX operation rather than Clip(x, min).
+            if any(not name for name in proto.input):
+                diagnostic["input_slots"] = [str(name) for name in proto.input]
+            if any(not name for name in proto.output):
+                diagnostic["output_slots"] = [str(name) for name in proto.output]
+            unsupported_nodes.append(diagnostic)
 
     if strict and unsupported_nodes:
         # 完整扫描后一次列出所有不支持算子，比遇到第一个就停止更利于

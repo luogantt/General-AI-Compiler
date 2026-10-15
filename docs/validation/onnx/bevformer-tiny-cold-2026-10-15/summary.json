@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "source": "original upstream PyTorch modules, not GAC Graph reconstruction",
+  "scope": "BEVFormer-tiny complete cold raw-head path; fixed calibration/CAN-bus; no box decoding",
+  "metadata": "synthetic fixed all-visible projection; zero CAN-bus; not a dataset accuracy fixture",
+  "checkpoint": {
+    "state_tensors": 643,
+    "strict_load": true,
+    "sha256": "7305046dbaa4fe8b1fa6d6acb9e0e3d605a70a3c473f763e936103428d2b2f12"
+  },
+  "input": {
+    "images": [
+      1,
+      6,
+      3,
+      480,
+      800
+    ]
+  },
+  "outputs": {
+    "bev_embed": [
+      2500,
+      1,
+      256
+    ],
+    "all_cls_scores": [
+      6,
+      1,
+      900,
+      10
+    ],
+    "all_bbox_preds": [
+      6,
+      1,
+      900,
+      10
+    ]
+  },
+  "onnx": {
+    "file": "bevformer-tiny-cold.onnx",
+    "sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070",
+    "nodes": 9129,
+    "initializers": 454,
+    "checker_full_check": true
+  },
+  "export_compatibility": [
+    {
+      "attribute": "pts_bbox_head.transformer.use_can_bus",
+      "before": true,
+      "after": 1,
+      "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+    },
+    {
+      "attribute": "pts_bbox_head.transformer.use_shift",
+      "before": true,
+      "after": 1,
+      "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+    },
+    {
+      "attribute": "pts_bbox_head.transformer.encoder.get_reference_points",
+      "reason": "Make requested dtype explicit after original linspace/meshgrid construction",
+      "before": "original reference-point algorithm",
+      "after": "same algorithm plus dtype-preserving .to(dtype)"
+    }
+  ],
+  "compatibility_eager_max_abs": {
+    "bev_embed": 0.0,
+    "all_cls_scores": 0.0,
+    "all_bbox_preds": 0.0
+  },
+  "import": {
+    "success": true,
+    "source_node_count": 9129,
+    "canonical_node_count": 5511,
+    "constant_count": 4088,
+    "constant_bytes": 200403776,
+    "source_operator_counts": {
+      "ai.onnx::Add": 311,
+      "ai.onnx::And": 4,
+      "ai.onnx::Cast": 32,
+      "ai.onnx::Clip": 57,
+      "ai.onnx::Concat": 319,
+      "ai.onnx::Constant": 3626,
+      "ai.onnx::ConstantOfShape": 384,
+      "ai.onnx::Conv": 55,
+      "ai.onnx::Div": 44,
+      "ai.onnx::Equal": 376,
+      "ai.onnx::Expand": 495,
+      "ai.onnx::Gather": 216,
+      "ai.onnx::Gemm": 8,
+      "ai.onnx::Greater": 6,
+      "ai.onnx::GridSample": 12,
+      "ai.onnx::Identity": 18,
+      "ai.onnx::LayerNormalization": 40,
+      "ai.onnx::Less": 2,
+      "ai.onnx::Log": 18,
+      "ai.onnx::MatMul": 152,
+      "ai.onnx::Max": 1,
+      "ai.onnx::MaxPool": 1,
+      "ai.onnx::Mul": 433,
+      "ai.onnx::NonZero": 18,
+      "ai.onnx::ReduceMean": 3,
+      "ai.onnx::ReduceSum": 36,
+      "ai.onnx::Relu": 96,
+      "ai.onnx::Reshape": 313,
+      "ai.onnx::ScatterND": 127,
+      "ai.onnx::Shape": 301,
+      "ai.onnx::Sigmoid": 19,
+      "ai.onnx::Slice": 363,
+      "ai.onnx::Softmax": 18,
+      "ai.onnx::Split": 55,
+      "ai.onnx::Squeeze": 128,
+      "ai.onnx::Sub": 30,
+      "ai.onnx::Tile": 8,
+      "ai.onnx::Transpose": 132,
+      "ai.onnx::Unsqueeze": 496,
+      "ai.onnx::Where": 376
+    },
+    "canonical_operator_counts": {
+      "Add": 319,
+      "Cast": 32,
+      "Clamp": 57,
+      "Concat": 319,
+      "Conv2D": 55,
+      "Div": 44,
+      "Expand": 14,
+      "GridSample2D": 12,
+      "Identity": 18,
+      "LayerNorm": 40,
+      "Log": 18,
+      "MatMul": 160,
+      "MaxPool2D": 1,
+      "Mul": 433,
+      "ReLU": 96,
+      "ReduceMean": 3,
+      "ReduceSum": 36,
+      "Reshape": 308,
+      "Sigmoid": 19,
+      "Slice": 351,
+      "Softmax": 18,
+      "Sub": 30,
+      "Transpose": 132,
+      "ai.onnx::And": 4,
+      "ai.onnx::ConstantOfShape": 384,
+      "ai.onnx::Equal": 376,
+      "ai.onnx::Expand": 481,
+      "ai.onnx::Gather": 216,
+      "ai.onnx::Greater": 6,
+      "ai.onnx::Less": 2,
+      "ai.onnx::Max": 1,
+      "ai.onnx::NonZero": 18,
+      "ai.onnx::Reshape": 165,
+      "ai.onnx::ScatterND": 127,
+      "ai.onnx::Shape": 301,
+      "ai.onnx::Slice": 12,
+      "ai.onnx::Split": 55,
+      "ai.onnx::Squeeze": 56,
+      "ai.onnx::Tile": 8,
+      "ai.onnx::Unsqueeze": 408,
+      "ai.onnx::Where": 376
+    },
+    "graph_roundtrip": {
+      "success": true,
+      "node_count": 5511,
+      "constant_count": 4088
+    }
+  },
+  "unlowered_count": 2996,
+  "unlowered_operator_counts": {
+    "ai.onnx::ConstantOfShape": 384,
+    "ai.onnx::Expand": 481,
+    "ai.onnx::Tile": 8,
+    "ai.onnx::Shape": 301,
+    "ai.onnx::Reshape": 165,
+    "ai.onnx::Unsqueeze": 408,
+    "ai.onnx::Equal": 376,
+    "ai.onnx::Where": 376,
+    "ai.onnx::ScatterND": 127,
+    "ai.onnx::Squeeze": 56,
+    "ai.onnx::Greater": 6,
+    "ai.onnx::Max": 1,
+    "ai.onnx::Gather": 216,
+    "ai.onnx::And": 4,
+    "ai.onnx::Less": 2,
+    "ai.onnx::Split": 55,
+    "ai.onnx::Slice": 12,
+    "ai.onnx::NonZero": 18
+  },
+  "strict_import": {
+    "strict": true,
+    "success": false,
+    "attempted": true,
+    "error_type": "_UnsupportedOnnxSemantics",
+    "error": "node '/pts_bbox_head/positional_encoding/Expand' requires compile-time constant input '/pts_bbox_head/positional_encoding/ConstantOfShape_output_0'"
+  },
+  "values_without_inferred_types": [
+    "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.0/Gemm__matmul",
+    "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.2/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.0/attentions.0/attn/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.1/attentions.0/attn/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.2/attentions.0/attn/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.3/attentions.0/attn/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.4/attentions.0/attn/Gemm__matmul",
+    "/pts_bbox_head/transformer/decoder/layers.5/attentions.0/attn/Gemm__matmul"
+  ],
+  "example_node": {
+    "id": "/img_backbone/conv1/Conv",
+    "op": "Conv2D",
+    "inputs": [
+      "/Reshape_output_0",
+      "onnx::Conv_12489",
+      "onnx::Conv_12490"
+    ],
+    "outputs": [
+      "/img_backbone/conv1/Conv_output_0"
+    ],
+    "attrs": {
+      "strides": [
+        2,
+        2
+      ],
+      "dilations": [
+        1,
+        1
+      ],
+      "pads": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "groups": 1
+    },
+    "source_nodes": [
+      "/img_backbone/conv1/Conv"
+    ]
+  },
+  "correctness": {
+    "success": true,
+    "model_sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070",
+    "onnxruntime": "1.23.2",
+    "rtol": 0.001,
+    "atol": 0.0001,
+    "scope": "Single seeded image fixture, fixed calibration/CAN-bus, cold raw heads; no dataset accuracy or performance claim.",
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "outputs": {
+      "bev_embed": {
+        "shape": [
+          2500,
+          1,
+          256
+        ],
+        "expected_shape": [
+          2500,
+          1,
+          256
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 3.2782554626464844e-06,
+        "mean_abs_error": 2.568235579417433e-07
+      },
+      "all_cls_scores": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "expected_shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 1.049041748046875e-05,
+        "mean_abs_error": 6.839964124891493e-07
+      },
+      "all_bbox_preds": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "expected_shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 5.340576171875e-05,
+        "mean_abs_error": 1.8787348347241613e-06
+      }
+    }
+  },
+  "local_artifacts": "build/bevformer-onnx-inspect/",
+  "checks": {
+    "frontend_inspector_architecture_and_graph_tests": 55,
+    "headless_edge_viewer": true
+  }
+}
