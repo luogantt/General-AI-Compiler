@@ -28,6 +28,7 @@ cuda12 = [
 [project.scripts]
 gac = "gac.cli:main"
 gac-bevformer = "gac.tools.build_bevformer:main"
+gac-bevformer-plan = "gac.tools.plan_bevformer:main"
 gac-bevformer-export-checkpoint = "gac.tools.export_bevformer_checkpoint:main"
 gac-bevformer-vortex = "gac.tools.build_bevformer_vortex:main"
 gac-uniad-export-ffn = "gac.tools.uniad_export_ffn:main"

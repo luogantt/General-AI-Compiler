@@ -49,6 +49,14 @@ JSON graph / BEVFormer config + checkpoint
 
 冻结的 BEVFormer-tiny Profile 为 6 相机、`480×800` 图像、`50×50` BEV、256 embedding。统一 step 输入为 `images`、`lidar2img`、`can_bus_delta`、`prev_bev`、`has_prev_bev`，输出最后一层 `cls_logits`、raw `bbox_regression` 和 FP16 `next_bev`。公开图像与状态存储边界使用 FP16，Transformer/MSDA 等主要计算仍以 FP32 为基线。
 
+## BEVFormer 全模型 Dispatch 规划
+
+完整 Canonical Graph 现在可以先做算子支持分析，再按 CNN、Attention、FFN 和 utility 语义区域自动切分，生成带真实 SSA 数据依赖的 Dispatch DAG。Runtime 规划同时保存两份互补的静态内存结果：完整源图的 `MemoryPlan` 是所有 value allocation 的语义权威；按 Dispatch 折叠后的 global-boundary `MemoryPlan` 只保留公共 ABI、常量和跨 Dispatch value，并给出 Runtime schedule 坐标下的 Buffer lifetime。冻结 Profile 中预期的 3 个 Encoder FFN 与 6 个 Decoder FFN，只有在满足严格静态 FP32 pattern 和边界契约时才是 `vortex-v3` Direct-MLIR 候选；CNN、Attention、geometry、detection、state 和其他 utility 仍使用 `cuda-sm86`。
+
+[`bevformer_compiler.py`](src/gac/bevformer_compiler.py) 是这条全模型规划链的总控入口。当前 Runtime 计划已经生成 `setup`/`invoke` 两个 phase 的 `RuntimeStep`：常量上传属于 `setup`，输入、跨 target value、最终输出的逻辑搬运及 Dispatch 提交属于 `invoke`。这些 transfer 只描述必须发生的数据移动，并要求跨 target Runtime Adapter；物理 CUDA↔Vortex 统一 Session、DMA/host staging、事件同步和 zero-copy 尚未集成，因此这份离线计划不代表完整 BEVFormer 已经在 Vortex 上执行。分层设计、全局 Buffer 语义、Dispatch DAG 和验收条件见 [BEVFormer 全模型异构编译与 Dispatch 架构](docs/bevformer_full_model_dispatch_architecture.md)。
+
+对已经生成并校验过的完整 streaming-step HXP，可以执行 `gac-bevformer-plan step.hxp -o plan.json --lowered-source-dir build/dispatches`，生成确定性的异构计划 JSON，并按 Dispatch 输出可审查的 CUDA C 或 Tensor/Linalg MLIR 源码。这个命令只做离线规划和源码生成，不会启动物理 CUDA/Vortex Runtime。
+
 ## Vortex 3.0 FFN 垂直切片
 
 `vortex-v3` 后端已接通一条独立于 CUDA/PTX 的 BEVFormer FFN 路径。两种设备 lowering 共用 Canonical Graph → 标准 Tensor/Linalg MLIR → 第一次外部 `mlir-opt --verify-each --canonicalize --cse` → `optimized.mlir` 严格解析 → 确定性 lowering 到标准 `func.call` Runtime ABI → 第二次 `mlir-opt` → `vortex.mlir` 严格解析。`cpp-template` compatibility 模式随后生成固定 Vortex C++ Kernel；`direct-mlir` 模式则直接生成 LLVM Dialect MLIR，经同一棵 VOLT LLVM 20.1.8 工具树生成机器码。`vortex.mlir` 使用静态 FP32 memref，保存三次调用的顺序与类型、launch size、LayerNorm epsilon 和六个外部权重 SHA-256；两种设备实现都由这份已经验证的 call plan 驱动生成。
