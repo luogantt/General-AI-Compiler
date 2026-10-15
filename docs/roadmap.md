@@ -73,7 +73,7 @@
 | HXP 与静态 arena | 生产 step 包已在 RTX 3080 按 `705,177,100` bytes Tensor 计划完成执行；另加 cuDNN 8 MiB 后计划预算/准入值 `713,565,708` bytes | 桌面 RTX 3070 实际峰值与压力测试 |
 | MHA、CNN、Conv+BN | 已实现并进入官方 checkpoint 全图 HXP 验收；生产 FP32 Conv/MatMul 已接入 cuDNN/cuBLAS | FP16/Tensor Core、更多融合与 Shape 策略 |
 | ResNet50 + 单层 FPN | 规范图、严格导入合同、generated 基线和 FP32 cuDNN 真机路径已验证 | 混合精度与更细的性能归因 |
-| 导出、官方权重映射、golden、时序状态合同 | 官方 checkpoint 映射、golden、cold/warm 状态执行已验收 | ONNX/`torch.export` 捕获仍待完成 |
+| 导出、官方权重映射、golden、时序状态合同 | 官方 checkpoint 映射、golden、cold/warm 状态执行已验收；通用 ONNX/`torch.export` → Canonical Graph 入口已实现 | 旧版 PyTorch/MMCV BEVFormer 的真实 ONNX/`torch.export` 捕获、自定义算子注册与逐层产物对齐仍待完成 |
 | Feature-prep 与 learned encoder inputs | 已实现并进入官方 checkpoint 全图 HXP 验收 | 保持逐层回归 |
 | BEV geometry、Spatial/Temporal Attention、tiny FFN | 完整三层 Encoder 已进入 cold/warm CUDA/HXP 真机验收；生产形状 FFN 有全 PTX 基线、cuBLAS+MLIR PTX 四调用生产候选和单缓冲 tiled 三 dispatch 完整 Session；三个 FFN 候选已在固定提交完成正式 autotune；真实输入 MMA 与双缓冲 MatMul 固定尺寸功能候选也已真机验证 | 双缓冲生产 FFN、生产 Tensor Core/cuBLASLt、通用 lowering；保持全图逐层回归 |
 | Cold image-to-BEV Encoder pipeline | cold 最终 raw 输出与 `next_bev` 已对齐官方 golden | 真实 nuScenes cold 样例 |

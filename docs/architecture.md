@@ -107,7 +107,7 @@ has_prev_bev
 
 Frontend 读取 `inputs`、`constants`、`nodes` 和 `outputs`。常量可以用 `random_normal`、`zeros` 或 `ones` 描述；`random_normal` 的 `seed`、`mean` 和 `std` 使权重生成可重复。
 
-Frontend 的边界是“模型语义”，不包含 CUDA block、GPU shared memory 或 NPU DMA 描述。未来的 ONNX、`torch.export` 和 StableHLO 导入器都应落到相同的 Canonical Graph，而不是让每个硬件后端分别解析框架格式。
+Frontend 的边界是“模型语义”，不包含 CUDA block、GPU shared memory 或 NPU DMA 描述。当前 JSON、ONNX 和 `torch.export` 导入器都落到相同的 Canonical Graph，而不是让每个硬件后端分别解析框架格式；StableHLO 仍是后续入口。ONNX/ATen 只有在语义能够由现有 Canonical Op 忠实表达时才合法化，未知算子会显式诊断，也可保留为来源域节点做支持度分析。`.pth`/`state_dict` 只作为权重来源，不作为通用计算图。
 
 ### 3.2 Canonical Graph 与公共分析
 

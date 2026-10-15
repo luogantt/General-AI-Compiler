@@ -5,7 +5,7 @@
 GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有五条边界不同的路径：`mlir-linalg` 生成标准 Tensor/Linalg MLIR；`mlir-cuda-sm86` 用两次 cuBLAS MatMul 和两个 NVRTC 融合 Kernel 执行固定 FFN；`mlir-ptx-sm86` 把同一生产形状 FFN 的三个 `gpu.func` 经官方 LLVM 24 `mlir-opt` 降到 SM86 PTX；`mlir-cublas-ptx-sm86` 保留两次 CuPy/cuBLAS MatMul，并把两个融合阶段改为 MLIR PTX；`mlir-tiled-ffn-sm86` 用两个单缓冲 tiled MatMul Kernel 和一个最终融合 PTX Kernel 执行三个 dispatch。
 
 ```text
-JSON graph / BEVFormer config + checkpoint
+JSON graph / ONNX / torch.export / BEVFormer config + checkpoint
                     │
                     ▼
       Frontend → Canonical Graph
@@ -26,15 +26,53 @@ JSON graph / BEVFormer config + checkpoint
 
 当前 GPU 路径不会在 CUDA 缺失时静默改用 CPU。HXP 中的 `implementation_candidates` 供 Session 建立时选择；vendor 调用执行中失败不会逐节点自动切回 generated CUDA。NumPy 是显式选择的参考后端。
 
-`mlir-cuda-sm86`、`mlir-ptx-sm86`、`mlir-cublas-ptx-sm86` 和 `mlir-tiled-ffn-sm86` 都不会静默回退到 NumPy 或旧 CUDA 图后端。它们当前直接从 JSON graph 建立计划；HXP v1 不保存这类产物，因此不能把 `.hxp` 作为输入。
+## 通用模型导入
+
+GAC 现在提供统一、延迟加载的模型入口：`.json` 直接读取 Canonical Graph，`.onnx` 通过 ONNX checker、Shape Inference 和算子合法化进入同一张图；内存中的 `torch.export.ExportedProgram` 通过 FX/Graph Signature 区分用户输入、参数、Buffer 和常量，再把 ATen 节点合法化。ONNX 和 PyTorch 都是可选依赖，普通 `import gac`、JSON 编译和 CLI 帮助不会加载它们。
+
+ONNX 导入覆盖当前 Canonical Op 能忠实表达的 MatMul/Gemm、逐元素计算、Conv2D、推理 BatchNorm、MaxPool2D、LayerNorm、Softmax、Reshape、Transpose、Concat、Expand、Slice、Reduce、GridSample 等路径。结构参数必须是编译期常量；LayerNorm 暂时严格限定为 FP32，避免在 IR 尚未记录 accumulator/stash precision 时改变 FP16 数值语义。未知算子在严格模式下一次性报告，也可以通过 `--allow-unsupported` 保留为带来源域的节点，用于支持度分析。导入成功表示模型语义已经进入 Canonical Graph；能否编译还取决于所选后端的算子、DType、Shape 和 Layout 能力。
+
+```powershell
+# ONNX → 可审查的 Canonical Graph JSON
+python -m pip install -e ".[onnx]"
+gac import model.onnx -o build/model.gac.json --report build/model.import.json
+
+# 支持的 ONNX 图也可以直接进入现有编译入口
+gac compile model.onnx -o build/model.hxp
+
+# 未支持算子保留为 onnx domain 节点，只用于覆盖率/切分分析
+gac import model.onnx -o build/model.analysis.json --allow-unsupported
+```
+
+`.pt2` 是序列化的 `torch.export` 产物，文件加载属于可信模型边界。CLI 要求显式 `--trusted-model`，并可在导入 PyTorch 前验证 SHA-256：
+
+```powershell
+python -m pip install -e ".[torch-export]"
+gac import model.pt2 -o build/model.gac.json `
+  --trusted-model `
+  --sha256 <64位摘要> `
+  --report build/model.import.json
+```
+
+Python 中已经持有 `ExportedProgram` 时无需再次反序列化：
+
+```python
+from gac.frontends.torch_export_frontend import import_exported_program
+
+graph = import_exported_program(exported_program)
+```
+
+普通 `.pth`/`state_dict` 只有权重，不包含足以恢复任意模型的完整计算图，因此不作为通用模型输入。当前旧版 PyTorch/MMCV BEVFormer 也尚未直接导出为 ONNX/`torch.export`：它仍需要状态输入规范化、MMCV Deformable Attention 自定义算子注册和真实产物逐层对齐，所以 BEVFormer 的专用静态构图路径继续保留。
+
+`mlir-cuda-sm86`、`mlir-ptx-sm86`、`mlir-cublas-ptx-sm86` 和 `mlir-tiled-ffn-sm86` 都不会静默回退到 NumPy 或旧 CUDA 图后端。它们从导入后的 Canonical Graph 建立计划；HXP v1 不保存这类产物，因此不能把 `.hxp` 作为输入。模型来源可以是 JSON 或已完全合法化的 ONNX，但后端仍只接受各自明确支持的 FFN pattern。
 
 ## 当前已完成
 
-截至 2026-10-11，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成 tensor IR emitter 和外部 verifier；生产形状 BEVFormer FFN 已完成首版 GPU Dialect→NVVM→PTX 的真机正确性与性能基线。本轮又完成 `mlir-cublas-ptx-sm86`、单缓冲三 dispatch 的 `mlir-tiled-ffn-sm86`、真实输入 FP16/TF32 MMA、真实 `cp.async` 双缓冲 MatMul 功能候选，以及三候选 autotuning；三个完整 FFN Session 已在固定提交 `5794d2c` 上完成正式双顺序报告。完整 BEVFormer 仍未全部进入 MLIR 路径。
+截至 2026-10-15，GAC 已跑通单 GPU 的模型导入、图优化、静态内存规划、CUDA 代码生成、vendor library 选择、HXP 打包和真机执行闭环。MLIR M0/M1 已完成 tensor IR emitter 和外部 verifier；生产形状 BEVFormer FFN 已完成首版 GPU Dialect→NVVM→PTX 的真机正确性与性能基线。本轮又完成 `mlir-cublas-ptx-sm86`、单缓冲三 dispatch 的 `mlir-tiled-ffn-sm86`、真实输入 FP16/TF32 MMA、真实 `cp.async` 双缓冲 MatMul 功能候选，以及三候选 autotuning；三个完整 FFN Session 已在固定提交 `5794d2c` 上完成正式双顺序报告。完整 BEVFormer 仍未全部进入 MLIR 路径。
 
 | 层次 | 已完成能力 |
 | --- | --- |
-| 编译器核心 | Canonical Graph、Shape/DType 推导、静态连续布局检查、常量折叠、死代码消除、MatMul/Add/GELU 融合、安全 Add+ReLU 融合 |
+| 编译器核心 | JSON/ONNX/`torch.export` 统一导入、Canonical Graph、Shape/DType 推导、静态连续布局检查、常量折叠、死代码消除、MatMul/Add/GELU 融合、安全 Add+ReLU 融合 |
 | MLIR M0/M1 | 确定性 textual MLIR、标准注册方言、外部 `mlir-opt` verifier 接口；覆盖手工构造的 BEVFormer-like tiny FFN JSON smoke 所需的 MatMul、广播 Add、ReLU、LayerNorm，以及 GELU、Identity 和融合 AddReLU/MatMulBiasGELU |
 | MLIR CUDA FFN 切片 | `mlir-cuda-sm86` 严格匹配一个静态 FP32 BEVFormer FFN：两次 CuPy/cuBLAS MatMul、`Bias+ReLU` 融合 Kernel、`Bias+Residual+LayerNorm` 融合 Kernel；生成显式 runtime-call plan 并在 Compute Capability 8.6 上执行 |
 | MLIR PTX FFN 切片 | `mlir-ptx-sm86` 严格匹配生产形状 `[1,2500,256]→512→256` FP32 FFN；生成三个 GPU Dialect kernel，调用官方 `mlir-opt` 降到 NVVM/PTX 7.1，校验产物后由 Runtime 直接加载 PTX；没有 cuBLAS/NVRTC fallback |
@@ -110,7 +148,7 @@ $mlirOpt = (wsl -d Ubuntu-24.04 -- bash -lc 'realpath "$HOME/.cache/gac-mlir/cur
 
 ## MLIR 编译路径（M0/M1）
 
-MLIR 后端复用 Canonical Graph 数据结构和图 Pass；当前接入的是普通 JSON graph。`examples/bevformer_tiny_ffn.json` 是一个手工构造的小尺寸 BEVFormer-like FFN smoke，用于检查 FFN 结构、广播和 LayerNorm lowering。它不读取官方 BEVFormer 代码或 checkpoint，也不是完整 BEVFormer importer。当前链路如下：
+MLIR 后端复用 Canonical Graph 数据结构和图 Pass；JSON 和已合法化的 ONNX 都进入这层。`examples/bevformer_tiny_ffn.json` 是一个手工构造的小尺寸 BEVFormer-like FFN smoke，用于检查 FFN 结构、广播和 LayerNorm lowering。它不读取官方 BEVFormer 代码或 checkpoint，也不是完整 BEVFormer importer。当前链路如下：
 
 ```text
 JSON graph / hand-written BEVFormer-like tiny FFN smoke

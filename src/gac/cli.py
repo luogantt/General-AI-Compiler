@@ -22,7 +22,8 @@ from .backends.mlir_cublas_ptx import (
 from .backends.mlir_cuda import TARGET as MLIR_CUDA_TARGET, compile_mlir_cuda
 from .backends.mlir_ptx import TARGET as MLIR_PTX_TARGET, compile_mlir_ptx
 from .errors import GACError
-from .frontends.json_frontend import JsonFrontendError, load_graph
+from .frontends import load_graph
+from .frontends.json_frontend import JsonFrontendError
 from .mlir_toolchain import (
     DEFAULT_TIMEOUT_SECONDS,
     discover_mlir_opt,
@@ -66,6 +67,16 @@ def _write_text_atomic(path: str | Path, value: str) -> None:
             temporary_path.unlink()
 
 
+def _sha256_file(path: str | Path, *, chunk_size: int = 1024 * 1024) -> str:
+    """Hash a model artifact without loading the complete file into memory."""
+
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        while block := stream.read(chunk_size):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def _write_json(path: str | Path, value: dict) -> None:
     serialized = json.dumps(
         value,
@@ -87,9 +98,35 @@ def _parser() -> argparse.ArgumentParser:
     compile_cmd.add_argument("-o", "--output", required=True, help="output .cu or .hxp file")
     compile_cmd.add_argument("--target", choices=[TARGET], default=TARGET)
     compile_cmd.add_argument("--no-fuse", action="store_true")
+    import_cmd = sub.add_parser(
+        "import",
+        help="import JSON, ONNX, or a trusted torch.export archive to Canonical Graph JSON",
+    )
+    import_cmd.add_argument("model", help="source .json, .onnx, or .pt2 model")
+    import_cmd.add_argument("-o", "--output", required=True, help="output Canonical Graph .json")
+    import_cmd.add_argument(
+        "--format",
+        choices=["json", "onnx", "torch-export"],
+        help="override source format detection",
+    )
+    import_cmd.add_argument(
+        "--allow-unsupported",
+        action="store_true",
+        help="retain qualified source operators for support analysis; output is not compilable yet",
+    )
+    import_cmd.add_argument(
+        "--trusted-model",
+        action="store_true",
+        help="allow PyTorch to deserialize a trusted .pt2 archive",
+    )
+    import_cmd.add_argument(
+        "--sha256",
+        help="expected SHA-256 for a .pt2 archive, checked before importing PyTorch",
+    )
+    import_cmd.add_argument("--report", help="save the import report as JSON")
     mlir_compile = sub.add_parser(
         "mlir-compile",
-        help="lower a JSON model to standard MLIR and verify it with mlir-opt",
+        help="lower a JSON or ONNX model to standard MLIR and verify it with mlir-opt",
     )
     mlir_compile.add_argument("model")
     mlir_compile.add_argument(
@@ -144,7 +181,7 @@ def _parser() -> argparse.ArgumentParser:
     )
     mlir_ptx_compile.add_argument("--wsl-distribution")
     mlir_ptx_compile.add_argument("--report", help="save the compilation report as JSON")
-    run = sub.add_parser("run", help="compile a JSON model in memory and execute it")
+    run = sub.add_parser("run", help="compile a JSON or ONNX model in memory and execute it")
     run.add_argument("model")
     run.add_argument(
         "--backend",
@@ -493,7 +530,7 @@ def _run(args) -> dict:
         }:
             raise ValueError(
                 "HXP v1 packages do not carry an MLIR execution artifact; "
-                f"run {args.backend} from a JSON graph"
+                f"run {args.backend} from a JSON or ONNX source graph"
             )
         if args.no_fuse:
             raise ValueError("--no-fuse cannot change an already compiled .hxp package")
@@ -580,7 +617,11 @@ def _run(args) -> dict:
         elif args.backend in mlir_to_ptx_backends:
             preparation = "official-mlir-offline-compilation"
         else:
-            preparation = "json-source-generation"
+            preparation = (
+                "onnx-source-generation"
+                if Path(args.model).suffix.lower() == ".onnx"
+                else "json-source-generation"
+            )
     preparation_ms = (time.perf_counter() - started) * 1000
     input_source = args.inputs or "seeded normal"
     if args.inputs:
@@ -611,7 +652,9 @@ def _run(args) -> dict:
     report = {"schema_version": 1, "backend": args.backend, "model": program.graph.name,
               "source_sha256": hashlib.sha256(program.source.encode()).hexdigest(),
               "program_preparation": preparation, "program_preparation_ms": preparation_ms,
-              "source_generation_ms": preparation_ms if preparation == "json-source-generation" else 0.0,
+              "source_generation_ms": preparation_ms if preparation in {
+                  "json-source-generation", "onnx-source-generation"
+              } else 0.0,
               "warmup": args.warmup, "repeat": args.repeat,
               "seed": args.seed, "input_source": input_source,
               "verification": "requested" if args.verify else "not requested",
@@ -783,6 +826,64 @@ def _inspect_package(path: str | Path) -> dict:
     }
 
 
+def _import_model_command(args) -> dict:
+    """Materialize one framework model as reviewable Canonical Graph JSON."""
+
+    source = Path(args.model)
+    destination = Path(args.output)
+    report_destination = Path(args.report) if args.report else None
+    if destination.suffix.lower() != ".json":
+        raise ValueError("import output must end in .json")
+    if _paths_alias(source, destination):
+        raise ValueError("import output must not overwrite the source model")
+    if report_destination is not None:
+        if _paths_alias(source, report_destination):
+            raise ValueError("import --report must not overwrite the source model")
+        if _paths_alias(destination, report_destination):
+            raise ValueError("import --output and --report must name different files")
+
+    graph = load_graph(
+        source,
+        format=args.format,
+        strict=not args.allow_unsupported,
+        trusted=args.trusted_model,
+        expected_sha256=args.sha256,
+    )
+    serialized = graph.to_json(include_constant_data=True, indent=2) + "\n"
+    _write_text_atomic(destination, serialized)
+    operator_counts: dict[str, int] = {}
+    for node in graph.nodes:
+        operator_counts[node.op] = operator_counts.get(node.op, 0) + 1
+    import_metadata = graph.metadata.get("import", {})
+    unsupported = (
+        import_metadata.get("unsupported_nodes", [])
+        if isinstance(import_metadata, dict)
+        else []
+    )
+    return {
+        "schema_version": 1,
+        "artifact": "gac-canonical-graph-json",
+        "graph": graph.name,
+        "source_file": str(source.resolve(strict=False)),
+        "source_sha256": _sha256_file(source),
+        "source_format": (
+            import_metadata.get("format")
+            if isinstance(import_metadata, dict)
+            else args.format or source.suffix.lower().lstrip(".")
+        ),
+        "output_file": str(destination.resolve(strict=False)),
+        "output_sha256": hashlib.sha256(serialized.encode("utf-8")).hexdigest(),
+        "strict": not args.allow_unsupported,
+        "node_count": len(graph.nodes),
+        "operator_counts": dict(sorted(operator_counts.items())),
+        "input_count": len(graph.inputs),
+        "output_count": len(graph.outputs),
+        "constant_count": len(graph.constants),
+        "constant_bytes": sum(value.nbytes for value in graph.constants.values()),
+        "unsupported_nodes": unsupported,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
@@ -811,6 +912,8 @@ def main(argv: list[str] | None = None) -> int:
                 report["package_sha256"] = hashlib.sha256(destination.read_bytes()).hexdigest()
             else:
                 raise ValueError("compile output must end in .cu or .hxp")
+        elif args.command == "import":
+            report = _import_model_command(args)
         elif args.command == "mlir-compile":
             report = _compile_mlir_command(args)
         elif args.command == "mlir-ptx-compile":

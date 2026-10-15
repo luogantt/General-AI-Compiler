@@ -19,6 +19,12 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+onnx = ["onnx>=1.21,<2"]
+torch-export = ["torch>=2.4,<3"]
+model-import = [
+  "onnx>=1.21,<2",
+  "torch>=2.4,<3",
+]
 cuda12 = [
   "cupy-cuda12x>=13.4,<14",
   "nvidia-cuda-nvrtc-cu12>=12.6,<13",
