@@ -4,6 +4,20 @@ The frontend keeps ONNX as an optional dependency and translates framework
 semantics into the small, device-independent IR in :mod:`gac.ir`.  Operators
 whose semantics do not yet have a faithful GAC representation are reported
 together instead of being silently approximated.
+
+阅读这份前端时，可以把数据流理解为：
+
+``ModelProto -> initializer/NodeProto -> NumPy/Node -> Graph``
+
+* initializer 中的真实权重转为 ``numpy.ndarray``，最终保存在
+  ``Graph.constants[张量名]`` 中；
+* ``Node.inputs`` 只保存张量名，通过名字引用输入、权重和中间结果；
+* ``TensorSpec`` 只描述 shape、dtype 和 layout，不保存张量数据；
+* 本文件不分配 Device DDR、LMEM 或双 Buffer。设备内存规划由后端和
+  Runtime 在 Graph 之后完成。
+
+MLIR 后端接收这里返回的 ``Graph``，再把常量和节点分别变成 MLIR SSA
+值与算子。因此 ONNX 前端不直接调用 ``mlir-opt``。
 """
 
 from __future__ import annotations
@@ -24,6 +38,9 @@ class OnnxFrontendError(ValueError):
     """Raised when an ONNX model cannot be represented faithfully."""
 
 
+# 可以保持语义不变、直接改名进入 GAC Canonical Graph 的算子。
+# 其余算子需要在 _translate_node() 中显式处理属性、opset 差异，或者
+# 拆成多个规范算子，避免“名字相同但语义不同”的静默错误。
 _DIRECT_OPS = {
     "MatMul": "MatMul",
     "Add": "Add",
@@ -43,6 +60,8 @@ _DIRECT_OPS = {
 
 
 def _onnx_module() -> Any:
+    """延迟导入可选 ONNX 依赖，并在解析任何模型前检查安全版本下限。"""
+
     try:
         onnx = importlib.import_module("onnx")
     except (ImportError, OSError) as exc:
@@ -60,6 +79,8 @@ def _onnx_module() -> Any:
 
 
 def _decode(value: Any) -> Any:
+    """把 ONNX 属性值转换为 Graph 元数据可以保存的 Python 值。"""
+
     if isinstance(value, bytes):
         return value.decode("utf-8")
     if isinstance(value, np.ndarray):
@@ -74,6 +95,8 @@ def _decode(value: Any) -> Any:
 
 
 def _unique(base: str, occupied: set[str]) -> str:
+    """生成不重复的 Node id 或张量名，维持 Graph 的 SSA 式命名规则。"""
+
     candidate = base or "value"
     if candidate not in occupied:
         occupied.add(candidate)
@@ -87,6 +110,8 @@ def _unique(base: str, occupied: set[str]) -> str:
 
 
 def _tensor_spec(value_info: Any, onnx: Any) -> TensorSpec:
+    """将 ONNX ValueInfoProto 转为只含类型信息的 TensorSpec。"""
+
     tensor_type = value_info.type.tensor_type
     if not tensor_type.elem_type:
         raise OnnxFrontendError(f"tensor {value_info.name!r} has no element type")
@@ -126,6 +151,8 @@ def _tensor_spec(value_info: Any, onnx: Any) -> TensorSpec:
 
 
 def _attributes(proto: Any, onnx: Any) -> dict[str, Any]:
+    """读取一个 NodeProto 的属性；Tensor 属性在编译器侧保存为数组。"""
+
     result: dict[str, Any] = {}
     for attribute in proto.attribute:
         value = onnx.helper.get_attribute_value(attribute)
@@ -149,6 +176,8 @@ def _constant_vector(
     *,
     node: str,
 ) -> list[int]:
+    """读取必须在编译期已知的整数 shape/axes 等一维参数。"""
+
     if name not in constants:
         raise OnnxFrontendError(
             f"node {node!r} requires compile-time constant input {name!r}"
@@ -167,6 +196,8 @@ def _constant_scalar(
     *,
     node: str,
 ) -> int | float | None:
+    """读取 Clip 等算子要求在编译期已知的标量输入。"""
+
     if not name:
         return None
     if name not in constants:
@@ -190,6 +221,8 @@ def _constant_bool(
     *,
     node: str,
 ) -> bool:
+    """读取 Dropout training_mode 等编译期布尔开关。"""
+
     if name not in constants:
         raise OnnxFrontendError(
             f"node {node!r} requires compile-time constant input {name!r}"
@@ -217,6 +250,8 @@ def _require_default_auto_pad(attrs: Mapping[str, Any], node_id: str) -> None:
 
 
 def _unsupported_name(proto: Any) -> str:
+    """保留 domain，避免不同 ONNX 扩展域中的同名算子发生冲突。"""
+
     domain = str(proto.domain or "ai.onnx")
     return f"{domain}::{proto.op_type}"
 
@@ -232,6 +267,13 @@ def _translate_node(
     onnx_opset: int,
     onnx: Any,
 ) -> tuple[list[Node], str | None]:
+    """将一个 ONNX 节点合法化为零个、一个或多个 GAC 节点。
+
+    返回值中的节点列表可能为空（例如 Constant 被吸收到 constants），
+    也可能包含多个节点（例如 Gemm 被拆成 MatMul + Add）。第二个返回值
+    记录无法忠实转换的源算子；strict 模式会在扫描完整张图后统一报错。
+    """
+
     source_id = str(proto.name or f"{proto.op_type}_{index}")
     node_id = _unique(source_id, occupied_ids)
     # ONNX uses an empty string to preserve the position of an omitted optional
@@ -252,6 +294,8 @@ def _translate_node(
         raise OnnxFrontendError(f"ONNX node {source_id!r} has no named output")
 
     if proto.op_type == "Constant":
+        # Constant 是图中的常量生产者。这里直接把真实数据放进
+        # constants[输出名]，因此 Canonical Graph 不再需要一个运行时节点。
         if len(outputs) != 1:
             raise OnnxFrontendError(f"Constant node {source_id!r} must have one output")
         if "value" in attrs:
@@ -274,6 +318,7 @@ def _translate_node(
 
     direct = _DIRECT_OPS.get(str(proto.op_type))
     if direct is not None:
+        # 即使是“直接映射”，也必须先修正 opset 默认值和历史语义差异。
         if len(outputs) != 1:
             raise OnnxFrontendError(
                 f"node {source_id!r} has {len(outputs)} outputs; canonical {direct} "
@@ -378,6 +423,8 @@ def _translate_node(
             raise OnnxFrontendError(
                 f"Reshape node {source_id!r} uses allowzero=1, which GAC does not support"
             )
+        # ONNX 把目标 shape 表示成第二个输入；GAC 将其固化为节点属性，
+        # 所以后端只看到数据输入，不需要为 shape 张量分配运行时 Buffer。
         shape = _constant_vector(inputs[1], constants, node=source_id)
         if 0 in shape:
             input_spec = value_specs.get(inputs[0])
@@ -410,6 +457,8 @@ def _translate_node(
         return [Node(node_id, "Expand", (inputs[0],), outputs, {"shape": shape}, (source_id,))], None
 
     if proto.op_type == "Slice":
+        # starts/ends/axes/steps 同样在前端读取并写入 attrs；保留 raw_inputs
+        # 是为了不丢失 ONNX 用空字符串表达的可选输入位置。
         if len(raw_inputs) < 3 or not raw_inputs[0] or not raw_inputs[1] or not raw_inputs[2]:
             raise OnnxFrontendError(f"Slice node {source_id!r} needs starts and ends")
         canonical = {
@@ -582,6 +631,9 @@ def _translate_node(
         ], None
 
     if proto.op_type == "Gemm":
+        # GAC 没有独立 Gemm：A*B 转为 MatMul，有 C 时再追加 Add。
+        # transB 若作用于常量权重，就在编译期生成一份连续的转置数组；
+        # 若 B 是运行时值，则显式插入 Transpose 节点。
         alpha = float(attrs.get("alpha", 1.0))
         beta = float(attrs.get("beta", 1.0))
         if alpha != 1.0 or beta != 1.0 or int(attrs.get("transA", 0)) != 0:
@@ -628,6 +680,8 @@ def _translate_node(
         return lowered, None
 
     unsupported = _unsupported_name(proto)
+    # 非 strict 模式保留源算子，供支持率统计和子图切分使用；它还不能
+    # 直接进入要求全部算子合法化的设备后端。
     return [Node(node_id, unsupported, inputs, outputs, attrs, (source_id,))], unsupported
 
 
@@ -644,9 +698,19 @@ def import_onnx_model(
     ``strict=False`` retains unsupported nodes with qualified ONNX operation
     names.  Such a graph is useful for support analysis but is not compilable
     until those nodes are legalized.
+
+    该函数完成五个阶段：
+
+    1. 校验 ONNX 并执行 ONNX shape inference；
+    2. 将 initializer 解码到 ``constants``；遍历节点时再合并 Constant；
+    3. 建立每个值的 ``TensorSpec``；
+    4. 按拓扑顺序把 NodeProto 合法化为 GAC ``Node``；
+    5. 组装并验证一个与设备无关的 ``Graph``。
     """
 
     onnx = _onnx_module()
+    # 阶段 1：先让 ONNX 官方 checker 和 shape inference 处理格式与类型。
+    # 后面的合法化依赖这里补出的 value_info；失败时不应猜测形状。
     try:
         if check_model:
             onnx.checker.check_model(model)
@@ -661,6 +725,14 @@ def import_onnx_model(
     if graph_proto.sparse_initializer:
         raise OnnxFrontendError("ONNX sparse initializers are not supported yet")
     base_dir = str(Path(source_path).resolve().parent) if source_path is not None else ""
+
+    # 阶段 2：权重、bias、shape、axes 等常量张量保存在这个字典中。
+    #
+    # key   = ONNX 张量名，例如 "encoder.ffn.weight"
+    # value = C-contiguous NumPy ndarray，例如 shape=(256, 1024), dtype=float32
+    #
+    # Node 不复制矩阵，只在 inputs 中保存 key；Graph 构造时该字典成为
+    # graph.constants，MLIR 后端再通过同一个 key 查找权重。
     constants: dict[str, np.ndarray[Any, Any]] = {}
     for initializer in graph_proto.initializer:
         try:
@@ -686,6 +758,8 @@ def import_onnx_model(
             + ", ".join(repr(name) for name in overrideable_initializers[:12])
         )
 
+    # 阶段 3：value_specs 是“类型表”，只含 shape/dtype/layout，不含数据。
+    # 输入、权重、中间结果和输出都使用同一名字空间，便于后端建立 SSA 映射。
     value_specs: dict[str, TensorSpec] = {}
     required_spec_names = {
         str(value.name) for value in (*graph_proto.input, *graph_proto.output) if value.name
@@ -699,8 +773,10 @@ def import_onnx_model(
             if str(value_info.name) in required_spec_names:
                 raise
     for name, value in constants.items():
+        # initializer 可能不在 value_info 中，因此用真实 ndarray 补齐类型。
         value_specs[name] = TensorSpec(tuple(value.shape), value.dtype)
 
+    # initializer 不是模型调用者提供的输入；这里只留下真正的运行时输入。
     inputs = {
         str(value.name): value_specs[str(value.name)]
         for value in graph_proto.input
@@ -709,6 +785,7 @@ def import_onnx_model(
     occupied_values = set(inputs) | set(constants)
     occupied_values.update(str(output) for node in graph_proto.node for output in node.output if output)
     occupied_ids: set[str] = set()
+    # 阶段 4：nodes 保存拓扑顺序和张量名引用，不保存任何张量 payload。
     nodes: list[Node] = []
     unsupported_nodes: list[dict[str, str]] = []
     source_counts: Counter[str] = Counter()
@@ -732,6 +809,7 @@ def import_onnx_model(
             onnx_opset=onnx_opset,
             onnx=onnx,
         )
+        # 一个 ONNX 节点可能产生多个规范节点；Constant 则产生零个节点。
         nodes.extend(lowered)
         canonical_counts.update(node.op for node in lowered)
         if unsupported is not None:
@@ -743,6 +821,8 @@ def import_onnx_model(
             )
 
     if strict and unsupported_nodes:
+        # 完整扫描后一次列出所有不支持算子，比遇到第一个就停止更利于
+        # 判断子图覆盖率和安排后续 Lowering。
         descriptions = ", ".join(
             f"{item['node']} ({item['op']})" for item in unsupported_nodes[:12]
         )
@@ -769,6 +849,10 @@ def import_onnx_model(
             "strict": bool(strict),
         }
     }
+    # 阶段 5：这是 ONNX 前端交给优化 Pass、子图切分和 MLIR 后端的唯一对象。
+    # 其中 graph.constants 持有权重 ndarray，graph.nodes 通过字符串名字引用它们。
+    # 本文件到此只生成 Graph；compile_mlir() 负责生成 MLIR 文本，
+    # mlir_toolchain.py 再负责调用外部 mlir-opt。
     graph = Graph(
         name=str(graph_proto.name or (Path(source_path).stem if source_path else "onnx_model")),
         inputs=inputs,
@@ -781,6 +865,8 @@ def import_onnx_model(
     try:
         graph.validate()
         if strict:
+            # GAC 自己再做一次 shape inference，确认规范算子的类型关系成立，
+            # 而不是只相信源 ONNX 中可能不完整的 value_info。
             ShapeInferencePass().run(graph)
             graph.validate()
     except Exception as exc:
@@ -795,7 +881,11 @@ def load_onnx(
     infer_shapes: bool = True,
     strict: bool = True,
 ) -> Graph:
-    """Load an ONNX file, including external tensor data, and import it."""
+    """Load an ONNX file, including external tensor data, and import it.
+
+    ``onnx.load`` 负责读取 protobuf 和外置权重文件；此函数随后把内存中的
+    ModelProto 交给 ``import_onnx_model``，最终返回一个 ``Graph``。
+    """
 
     onnx = _onnx_module()
     model_path = Path(path)
