@@ -115,7 +115,7 @@ gac-bevformer-plan complete-step.hxp \
 | Runtime 规划 | DAG + 全图 MemoryPlan | 投影各 Dispatch binding；构造折叠的 global-boundary MemoryPlan；显式生成逻辑 transfer | setup/invoke `RuntimeStep`、Buffer lifetime | [`dispatch_runtime.py`](../src/gac/dispatch_runtime.py) |
 | BEVFormer 总控 | 完整源图 | 串起分析、切分、策略、MemoryPlan 和 Runtime 计划 | `BevFormerWholeModelPlan` | [`bevformer_compiler.py`](../src/gac/bevformer_compiler.py) |
 | 离线计划工具 | 完整 streaming-step HXP | 校验包、生成计划 JSON、可选逐 Dispatch 导出源码 | 原子写入的计划和 `.cu`/`.mlir` 清单 | [`plan_bevformer.py`](../src/gac/tools/plan_bevformer.py) |
-| Vortex FFN 后端 | 一个规范化 FFN Graph | Tensor/Linalg MLIR → LLVM Dialect → VOLT → ELF/vxbin | 三个静态 FFN Kernel artifact | [`vortex.py`](../src/gac/backends/vortex.py)、[`vortex_device_mlir.py`](../src/gac/backends/vortex_device_mlir.py) |
+| Vortex FFN 后端 | 一个规范化 FFN Graph | Tensor/Linalg MLIR → LLVM Dialect → VOLT → ELF/vxbin | 后端可生成三个静态 FFN Kernel artifact；全模型 planner 本身只发出离线计划，按需停在 Tensor/Linalg MLIR 源码 | [`vortex.py`](../src/gac/backends/vortex.py)、[`vortex_device_mlir.py`](../src/gac/backends/vortex_device_mlir.py) |
 
 ### 3.1 支持分析不是只看算子名称
 
@@ -250,6 +250,7 @@ host staging 或转换 opaque device handle；缺少 Adapter 时执行会明确�
 - 一份权威全图静态 `MemoryPlan`，以及一份折叠后的 global-boundary `MemoryPlan`；
 - `setup`/`invoke` phase 的 `RuntimeStep`、逻辑 transfer 和全局 Buffer lifetime；
 - 严格 FFN 子图可规范化到现有 Vortex Direct-MLIR ABI；
+- coverage 中分别记录可用的后端流水线和本次 planner 实际停留阶段；生成计划不会被表述为已经产出 `vxbin`；
 - CUDA 保留完整静态图的后端覆盖。
 
 当前物理边界：

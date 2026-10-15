@@ -254,6 +254,88 @@ class BevFormerPartitionTests(unittest.TestCase):
         self.assertEqual(exposed_report.regions, ())
         self.assertIn("graph outputs", exposed_report.rejected_ffn_candidates[0][1])
 
+    def test_illegal_layer_norm_contract_falls_back_to_cuda_with_reason(self):
+        cases = (
+            ({"axis": 1, "epsilon": 1e-5}, "last normalization axis"),
+            ({"axis": -1, "epsilon": 0.0}, "finite and positive"),
+            (
+                {"axis": -1, "epsilon": 1e-5, "unsupported": True},
+                "unsupported attributes",
+            ),
+        )
+        for attrs, expected_reason in cases:
+            with self.subTest(attrs=attrs):
+                graph = _ffn_graph().clone()
+                graph.nodes[-1] = replace(graph.nodes[-1], attrs=attrs)
+                ShapeInferencePass().run(graph)
+                graph.validate()
+
+                report = analyze_bevformer_partitions(graph)
+                self.assertEqual(report.regions, ())
+                self.assertIn(expected_reason, report.rejected_ffn_candidates[0][1])
+                ffn_placements = [
+                    placement
+                    for placement in report.placements
+                    if placement.kind == "ffn"
+                ]
+                self.assertTrue(ffn_placements)
+                self.assertTrue(
+                    all(
+                        placement.target == BEVFORMER_CUDA_TARGET
+                        and placement.reason
+                        for placement in ffn_placements
+                    )
+                )
+                self.assertTrue(
+                    any(
+                        expected_reason in placement.reason
+                        for placement in ffn_placements
+                    )
+                )
+
+    def test_rv32_oversized_extent_falls_back_to_cuda_with_reason(self):
+        graph = _ffn_graph().clone()
+        graph.inputs["query"] = TensorSpec((1, 268_435_456, 4), "float32")
+        ShapeInferencePass().run(graph)
+        graph.validate()
+
+        report = analyze_bevformer_partitions(graph)
+        self.assertEqual(report.regions, ())
+        reason = report.rejected_ffn_candidates[0][1]
+        self.assertIn("RV32", reason)
+        self.assertIn("byte size", reason)
+        ffn_placements = [
+            placement for placement in report.placements if placement.kind == "ffn"
+        ]
+        self.assertTrue(ffn_placements)
+        self.assertTrue(
+            all(
+                placement.target == BEVFORMER_CUDA_TARGET
+                and placement.reason
+                for placement in ffn_placements
+            )
+        )
+        self.assertTrue(
+            any(placement.reason == reason for placement in ffn_placements)
+        )
+
+    def test_nonfinite_constant_falls_back_before_mlir_lowering(self):
+        graph = _ffn_graph().clone()
+        graph.constants["fc1_bias"][0] = np.nan
+
+        report = analyze_bevformer_partitions(graph)
+
+        self.assertEqual(report.regions, ())
+        reason = report.rejected_ffn_candidates[0][1]
+        self.assertIn("finite float32 values", reason)
+        self.assertTrue(
+            all(
+                placement.target == BEVFORMER_CUDA_TARGET
+                for placement in report.placements
+                if placement.kind == "ffn"
+            )
+        )
+
     def test_classifier_prioritizes_ffn_inside_transformer_scope(self):
         ffn = Node(
             "decoder.transformer.attention.ffn.fc1",

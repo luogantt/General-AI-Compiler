@@ -9,12 +9,13 @@ today: a Transformer FFN in either its seven-node pre-fusion form or six-node
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 import re
 from typing import Any, Literal
 
 import numpy as np
 
-from .errors import ValidationError
+from .errors import BackendError, ValidationError
 from .ir import Graph, Node, TensorSpec
 from .passes import ShapeInferencePass
 
@@ -398,6 +399,31 @@ def _match_ffn_region(
                 f"FFN constant {name!r} must have shape {expected}, got "
                 f"{graph.value_specs[name].shape}"
             )
+        if not np.all(np.isfinite(graph.constants[name])):
+            raise ValidationError(
+                f"Vortex backend contract rejected FFN: constant {name!r} "
+                "must contain only finite float32 values"
+            )
+
+    # Capability analysis must enforce the same legality rules as the actual
+    # lowering path.  Reuse MLIR's node checker for attributes (notably the
+    # last-axis/finite-positive LayerNorm contract), then apply the RV32 index
+    # and byte-size limits used by the Vortex device emitter.  Keeping this in
+    # discovery prevents an apparently supported FFN from failing only after
+    # it has already been assigned to Vortex.
+    from .backends.mlir import _check_node as _check_mlir_node
+    from .backends.vortex_device_mlir import (
+        validate_bevformer_ffn_rv32_extents,
+    )
+
+    try:
+        for node in nodes:
+            _check_mlir_node(node, graph.value_specs)
+        validate_bevformer_ffn_rv32_extents(
+            math.prod(query_spec.shape[:-1]), channels, hidden[1]
+        )
+    except BackendError as exc:
+        raise ValidationError(f"Vortex backend contract rejected FFN: {exc}") from exc
 
     return BevFormerFFNRegion(
         region_id=_region_id(graph, fc1),

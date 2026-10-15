@@ -51,7 +51,7 @@ JSON graph / BEVFormer config + checkpoint
 
 ## BEVFormer 全模型 Dispatch 规划
 
-完整 Canonical Graph 现在可以先做算子支持分析，再按 CNN、Attention、FFN 和 utility 语义区域自动切分，生成带真实 SSA 数据依赖的 Dispatch DAG。Runtime 规划同时保存两份互补的静态内存结果：完整源图的 `MemoryPlan` 是所有 value allocation 的语义权威；按 Dispatch 折叠后的 global-boundary `MemoryPlan` 只保留公共 ABI、常量和跨 Dispatch value，并给出 Runtime schedule 坐标下的 Buffer lifetime。冻结 Profile 中预期的 3 个 Encoder FFN 与 6 个 Decoder FFN，只有在满足严格静态 FP32 pattern 和边界契约时才是 `vortex-v3` Direct-MLIR 候选；CNN、Attention、geometry、detection、state 和其他 utility 仍使用 `cuda-sm86`。
+完整 Canonical Graph（包括从完整 HXP 恢复的图）现在可以先做算子支持分析，再按 CNN、Attention、FFN 和 utility 语义区域自动切分，生成带真实 SSA 数据依赖的 Dispatch DAG。Runtime 规划同时保存两份互补的静态内存结果：完整源图的 `MemoryPlan` 是所有 value allocation 的语义权威；按 Dispatch 折叠后的 global-boundary `MemoryPlan` 只保留公共 ABI、常量和跨 Dispatch value，并给出 Runtime schedule 坐标下的 Buffer lifetime。冻结 Profile 中预期的 3 个 Encoder FFN 与 6 个 Decoder FFN，只有在满足严格静态 FP32 pattern 和边界契约时才是 `vortex-v3` Direct-MLIR 候选；CNN、Attention、geometry、detection、state 和其他 utility 仍使用 `cuda-sm86`。
 
 [`bevformer_compiler.py`](src/gac/bevformer_compiler.py) 是这条全模型规划链的总控入口。当前 Runtime 计划已经生成 `setup`/`invoke` 两个 phase 的 `RuntimeStep`：常量上传属于 `setup`，输入、跨 target value、最终输出的逻辑搬运及 Dispatch 提交属于 `invoke`。这些 transfer 只描述必须发生的数据移动，并要求跨 target Runtime Adapter；物理 CUDA↔Vortex 统一 Session、DMA/host staging、事件同步和 zero-copy 尚未集成，因此这份离线计划不代表完整 BEVFormer 已经在 Vortex 上执行。分层设计、全局 Buffer 语义、Dispatch DAG 和验收条件见 [BEVFormer 全模型异构编译与 Dispatch 架构](docs/bevformer_full_model_dispatch_architecture.md)。
 
@@ -589,7 +589,7 @@ docs/                                架构、设计、后端约定、路线图�
 - 正确性输入是冻结的合成、已归一化并 padding 的六相机 tensor 与固定几何输入；尚未完成真实 nuScenes 数据集的 mAP/NDS 验收。
 - 完整 BEVFormer 只在 RTX 3080 SM86 上验收；桌面 RTX 3070 的延迟、峰值显存和稳定性仍待实测。
 - 通用 `mlir-linalg` 路径仍只生成 tensor-level textual MLIR，并提供外部 verifier 接口。`mlir-ptx-sm86` 已完成一个生产形状 FFN 的 GPU/NVVM/PTX 闭环；`mlir-cublas-ptx-sm86` 只完成固定四调用生产候选。两者都不是通用 bufferization/GPU mapping，也没有完整 BEVFormer 或 RTX 3070 性能数据。
-- MLIR 的 BEVFormer 相关输入仍是手写的 tiny FFN JSON smoke，真机 benchmark 使用相同构图器生成生产尺寸 FFN；尚无官方 checkpoint 导入、真实 BEVFormer 子图导出或 checkpoint-to-MLIR 路径。
+- MLIR 的通用 smoke 仍包含手写 tiny FFN JSON；此外，完整 HXP 已可经过严格 FFN 识别导出逐子图 Tensor/Linalg MLIR。该导出尚不等于完整模型统一 MLIR lowering 或物理异构执行。
 - 完整 BEVFormer 尚未由 MLIR lowering 覆盖；MSDeformableAttention、GridSample、CNN 和状态执行仍使用现有 CUDA/HXP 路径。
 - Vortex 3.0 路径当前只覆盖一个静态 FP32 BEVFormer FFN；SimX 用于 ISA/ABI/数值 smoke，其耗时不是 FPGA/ASIC 延时，也不能与 RTX 3070 数据直接比较。
 - UniAD 编译覆盖当前只包含一个 stage2 BEV encoder FFN；tracking、mapping、motion、occupancy、planning 和 attention 尚未接入 HXP/MLIR。完整 UniAD 报告是外部 checkout 的 native PyTorch 基线，不是编译后整网数据。
@@ -599,7 +599,7 @@ docs/                                架构、设计、后端约定、路线图�
 - 当前使用单 CUDA stream，调用同步返回；设备侧跨帧状态驻留、多 stream、I/O 预绑定、CUDA Graph、批量 dispatch 和 DLPack 仍待实现。
 - `713,565,708` bytes 只是已计划 Tensor 与 cuDNN workspace 的预算/准入值，不能当作 `nvidia-smi` 进程峰值。
 - 当前 HXP 与本版 codegen 绑定，尚无预编译 cubin、多 target variant、签名认证或通用异构 Host Execution Plan。
-- 通用后端注册、代价驱动划分、CPU/GPU 自动回退、跨设备 alloc/copy/event/free 计划和 NPU 后端尚未实现。
+- 已实现 BEVFormer 专用语义切分、逻辑跨设备 transfer 与全局 Buffer lifetime 计划；物理 CUDA/Vortex 统一 Session、设备 alloc/free、DMA/copy、event 同步、代价驱动通用划分和 NPU 后端尚未实现。
 - Session 建立时选择 cuDNN、CuPy/cuBLAS 或 generated CUDA；vendor 调用执行中失败会报错，不会逐节点自动换实现。
 
 ## 验收证据

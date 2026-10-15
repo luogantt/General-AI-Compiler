@@ -95,6 +95,13 @@ class BevFormerPlanCliTests(unittest.TestCase):
             report = json.loads(first)
             self.assertEqual(report["kind"], "bevformer-whole-model-heterogeneous-offline-plan")
             self.assertEqual(report["dispatches_by_target"], {"cuda-sm86": 1})
+            self.assertEqual(
+                report["capability_analysis"]["target_counts"], {"cuda-sm86": 1}
+            )
+            self.assertEqual(
+                {item["target"] for item in report["capability_analysis"]["placements"]},
+                {"cuda-sm86"},
+            )
             self.assertFalse(report["cuda_fallback_verified"])
             self.assertEqual(report["runtime_plan"]["global_memory_plan"]["alignment"], 64)
             self.assertTrue(report["input_package"]["integrity_verified"])

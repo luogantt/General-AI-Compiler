@@ -28,6 +28,7 @@ from .backends.vortex_buffered_mlir import VortexBufferPlan
 from .bevformer_partition import (
     BEVFORMER_CUDA_TARGET,
     BEVFORMER_VORTEX_TARGET,
+    BevFormerNodePlacement,
     BevFormerPartitionReport,
     analyze_bevformer_partitions,
     extract_bevformer_ffn_region,
@@ -184,9 +185,15 @@ class BevFormerWholeModelPlan:
         }
         for dispatch in self.dispatch_dag.dispatches:
             kinds = {placements[node_id].kind for node_id in dispatch.node_ids}
+            targets = {placements[node_id].target for node_id in dispatch.node_ids}
             if len(kinds) != 1:
                 raise ValidationError(
                     f"dispatch {dispatch.id!r} mixes semantic kinds {sorted(kinds)}"
+                )
+            if targets != {dispatch.target}:
+                raise ValidationError(
+                    f"dispatch {dispatch.id!r} target {dispatch.target!r} disagrees "
+                    f"with capability placements {sorted(targets)}"
                 )
             if dispatch.target == BEVFORMER_VORTEX_TARGET:
                 region_ids = {
@@ -269,10 +276,12 @@ class BevFormerWholeModelPlan:
                     for dispatch in self.dispatch_dag.dispatches
                 ),
                 "node_count": vortex_nodes,
-                "lowering": (
+                "available_backend_pipeline": (
                     "Tensor/Linalg MLIR -> LLVM Dialect device MLIR -> "
                     "VOLT -> RV32 Vortex vxbin"
                 ),
+                "emitted_stage": "offline-dispatch-plan-only",
+                "executable_binary_emitted": False,
                 "not_supported_yet": [
                     "ResNet/FPN CNN",
                     "temporal and spatial Attention",
@@ -354,6 +363,22 @@ def plan_bevformer_graph(
         # does not import a CUDA Runtime, invoke NVRTC, or execute on a GPU.
         compile_cuda(graph)
     report = analyze_bevformer_partitions(graph)
+    if not enable_vortex_ffn:
+        report = BevFormerPartitionReport(
+            report.graph_name,
+            report.regions,
+            tuple(
+                BevFormerNodePlacement(
+                    item.node_id,
+                    item.kind,
+                    BEVFORMER_CUDA_TARGET,
+                    item.region_id,
+                    item.reason,
+                )
+                for item in report.placements
+            ),
+            report.rejected_ffn_candidates,
+        )
     placement: dict[str, NodePlacement] = {}
     for item in report.placements:
         target = item.target if enable_vortex_ffn else BEVFORMER_CUDA_TARGET

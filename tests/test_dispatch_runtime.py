@@ -12,7 +12,7 @@ from gac.dispatch_runtime import (
 )
 from gac.errors import ValidationError
 from gac.ir import Graph, Node, TensorSpec
-from gac.partition import partition_graph
+from gac.partition import NodePlacement, partition_graph
 
 
 def _branched_graph() -> Graph:
@@ -84,6 +84,40 @@ def _returning_target_plan():
     dag = partition_graph(
         graph,
         {"first": "target-a", "middle": "target-b", "last": "target-a"},
+    )
+    return build_dispatch_runtime_plan(dag, alignment=64)
+
+
+def _same_target_fanout_plan():
+    spec = TensorSpec((2,), "float32")
+    graph = Graph(
+        name="same_target_fanout",
+        inputs={"x": spec},
+        outputs=("y",),
+        nodes=[
+            Node("produce", "Identity", ("x",), ("shared",)),
+            Node("left", "Add", ("shared", "bias"), ("left_out",)),
+            Node("right", "Relu", ("shared",), ("right_out",)),
+            Node("merge", "Add", ("left_out", "right_out"), ("y",)),
+        ],
+        constants={"bias": np.array([10.0, 10.0], dtype=np.float32)},
+        value_specs={
+            "x": spec,
+            "bias": spec,
+            "shared": spec,
+            "left_out": spec,
+            "right_out": spec,
+            "y": spec,
+        },
+    )
+    dag = partition_graph(
+        graph,
+        {
+            "produce": NodePlacement("target-a", "producer"),
+            "left": NodePlacement("target-b", "left"),
+            "right": NodePlacement("target-b", "right"),
+            "merge": NodePlacement("target-a", "merge"),
+        },
     )
     return build_dispatch_runtime_plan(dag, alignment=64)
 
@@ -335,6 +369,56 @@ class DispatchRuntimePlanTests(unittest.TestCase):
         )
         self.assertEqual(result.records[1].adapted_inputs, ("stem",))
         self.assertEqual(result.records[2].adapted_inputs, ("right_value",))
+
+    def test_host_scheduler_reuses_one_transfer_for_same_target_fanout(self):
+        plan = _same_target_fanout_plan()
+        shared_transfers = [
+            step
+            for step in plan.transfer_steps
+            if step.value == "shared" and step.target == "target-b"
+        ]
+        self.assertEqual(len(shared_transfers), 1)
+
+        adapter_calls: list[tuple[str, str, str, str]] = []
+
+        def adapter(value, edge, producer, consumer):
+            adapter_calls.append(
+                (edge.value, producer.target, consumer.target, consumer.id)
+            )
+            return value.copy()
+
+        result = execute_dispatch_plan(
+            plan,
+            {"x": np.array([1.0, 2.0], dtype=np.float32)},
+            {
+                "dispatch_0000": lambda dispatch, inputs, constants: {
+                    "shared": inputs["x"] + np.float32(1.0)
+                },
+                "dispatch_0001": lambda dispatch, inputs, constants: {
+                    "left_out": inputs["shared"] + constants["bias"]
+                },
+                "dispatch_0002": lambda dispatch, inputs, constants: {
+                    "right_out": inputs["shared"] * np.float32(2.0)
+                },
+                "dispatch_0003": lambda dispatch, inputs, constants: {
+                    "y": inputs["left_out"] + inputs["right_out"]
+                },
+            },
+            transfer_adapters={
+                ("target-a", "target-b"): adapter,
+                ("target-b", "target-a"): adapter,
+            },
+        )
+
+        self.assertEqual(
+            [call for call in adapter_calls if call[0] == "shared"],
+            [("shared", "target-a", "target-b", "dispatch_0001")],
+        )
+        self.assertEqual(result.records[1].adapted_inputs, ("shared",))
+        self.assertEqual(result.records[2].adapted_inputs, ())
+        np.testing.assert_array_equal(
+            result.outputs["y"], np.array([16.0, 19.0], dtype=np.float32)
+        )
 
     def test_executor_output_contract_is_checked(self):
         plan = _runtime_plan()

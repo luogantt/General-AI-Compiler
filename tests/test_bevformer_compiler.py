@@ -98,6 +98,21 @@ class BevFormerWholeModelCompilerTests(unittest.TestCase):
             [dispatch.group.split(":", 1)[0] for dispatch in plan.dispatch_dag.dispatches],
             ["cnn", "ffn", "utility"],
         )
+        self.assertEqual(
+            {item.target for item in plan.capability_report.placements},
+            {"cuda-sm86"},
+        )
+        manifest = plan.to_dict()
+        self.assertEqual(
+            manifest["capability_analysis"]["target_counts"], {"cuda-sm86": 9}
+        )
+        self.assertEqual(
+            manifest["coverage"]["vortex"]["emitted_stage"],
+            "offline-dispatch-plan-only",
+        )
+        self.assertFalse(
+            manifest["coverage"]["vortex"]["executable_binary_emitted"]
+        )
 
     def test_lowers_every_dispatch_to_reviewable_source(self):
         plan = plan_bevformer_graph(_mixed_graph())

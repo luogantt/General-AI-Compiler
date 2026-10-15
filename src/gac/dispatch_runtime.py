@@ -928,6 +928,11 @@ def execute_dispatch_plan(
         (consumer.id, edge.value): (edge, producer, consumer)
         for edge, producer, consumer in cross_target
     }
+    # A runtime transfer establishes residency for a value on a target, not
+    # merely for one consumer dispatch.  Keep the adapter result under the
+    # same (value, target) key used by ``_build_runtime_steps`` so fan-out to
+    # multiple dispatches on that target reuses the single logical copy.
+    transferred_residency: dict[tuple[str, str], Any] = {}
 
     values: dict[str, Any] = dict(plan.dag.source_graph.constants)
     values.update(bound_inputs)
@@ -952,10 +957,15 @@ def execute_dispatch_plan(
             transfer = transfer_by_consumer_value.get((dispatch.id, value))
             if transfer is not None:
                 edge, producer, consumer = transfer
-                runtime_value = adapter_map[(producer.target, consumer.target)](
-                    runtime_value, edge, producer, consumer
-                )
-                adapted.append(value)
+                residency_key = (value, consumer.target)
+                if residency_key in transferred_residency:
+                    runtime_value = transferred_residency[residency_key]
+                else:
+                    runtime_value = adapter_map[(producer.target, consumer.target)](
+                        runtime_value, edge, producer, consumer
+                    )
+                    transferred_residency[residency_key] = runtime_value
+                    adapted.append(value)
             dispatch_inputs[value] = runtime_value
         constants = {
             value: values[value] for value in dispatch.graph.constants
@@ -979,6 +989,9 @@ def execute_dispatch_plan(
         for value in step.release_after:
             if value in values:
                 del values[value]
+            for residency_key in tuple(transferred_residency):
+                if residency_key[0] == value:
+                    del transferred_residency[residency_key]
         records.append(
             DispatchExecutionRecord(
                 dispatch_id=dispatch.id,
