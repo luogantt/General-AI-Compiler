@@ -84,6 +84,7 @@ Vortex 的交互式 HTML 说明统一放在本仓库 `docs/`。建议从 V6 开�
 | [V4：代码映射](docs/vortex-matmul-code-map-v4.html) | 数据流步骤对应编译器与 RTL 源码 |
 | [V5：编译器全流程](docs/vortex-matmul-end-to-end-v5.html) | 模型导入、优化、计算模板、后端调度与精度 |
 | [V6：逐模块源码](docs/vortex-matmul-end-to-end-v6.html) | 模型导入到 Runtime 的源码摘录、解释与链接 |
+| [V7：BEVFormer 全模型异构架构](docs/bevformer-compiler-architecture.html) | 模型导入、Canonical Graph、自动切分、后端 Lowering、全局 Buffer 与 Runtime 边界 |
 
 下载仓库后用浏览器打开 HTML 即可交互。GAC 源码和文档链接使用仓库内相对路径；Vortex/LLVM 源码链接仍指向页面标注的独立本地 checkout。V4/V6 的源码摘录保留原始版本与 SHA，V6 的 GAC 摘录同时提供固定 commit 的 GitHub 链接。
 
