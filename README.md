@@ -110,8 +110,8 @@ compatibility C++ bridge 已用官方 BEVFormer-tiny checkpoint 第 0 层真实�
 
 Direct MLIR 现支持 `--matmul-schedule dxa-double-buffer`：FC1/FC2 按 M/N/K 分块，DXA 将 A/B Tile 搬到 LMEM 的两组 Stage，每线程在寄存器中累加，完成后写回 Global Memory。`--tile-m`、`--tile-n`、`--tile-k` 明确指定分块；Host 检查 occupancy、使用物理地址描述符并设置 `lmem_size`。默认仍保留 scalar 对照。分层实现与代码映射见[双缓冲设计](docs/designs/vortex_buffered_mlir.md)和[可点击源码图](docs/bevformer-vortex-buffered-code-map.html)。
 
-关于 `BM/BN/BK` 如何从算子索引关系、LMEM、寄存器、线程组织、MMA 粒度和 Autotune 中确定，
-以及常见回答中需要修正的概念边界，见 [AI 编译器中的 Tiling Shape 推导](docs/tiling_shape_derivation.md)。
+关于 Tile 如何从算子索引关系、边界条件、片上存储、寄存器、线程组织、指令粒度和 Autotune 中
+推导与选择，见 [AI 编译器中的 Tiling Shape 推导与选择](docs/tiling_shape_derivation.md)。
 
 2026-10-14 的 SimX 验证覆盖尾部 Tile、多 warp 和 Stage 复用。在合成生产宽度 `[1,8,256] → 512 → 256` 上，`4×4×128` Tile 的总周期比同输入 scalar 少 **17.5%**，最大绝对误差 `1.43051147e-6`；小尺寸双缓冲也可能更慢。这是一个静态 FFN 的模拟器结果，不代表完整 BEVFormer 或 FPGA/ASIC 延迟，见[原始对照记录](docs/validation/vortex/buffered-mlir-2026-10-14/README.md)。
 
