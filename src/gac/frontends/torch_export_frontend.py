@@ -5,6 +5,20 @@ In-memory importing is implemented against the public ExportedProgram/FX
 protocol so the core compiler remains usable without a Torch installation.
 """
 
+# 阅读主线：
+#   导出的 .pt2 文件 → load_exported_program() → ExportedProgram
+#   → _Importer.run() 遍历 FX 图 → GAC 的 Graph / Node / TensorSpec。
+# ExportedProgram 包含计算图、输入/输出签名及模型状态；仅有 state_dict 的
+# .pth 权重文件并不包含这里所需的完整计算图，应先在 PyTorch 侧完成 export。
+#
+# 区分两类信息：
+#   1. node.meta['val']：提供 shape/dtype，常为 FakeTensor，不作为真实矩阵读取。
+#   2. state_dict / constants：包含真实权重，复制成 NumPy 后存入 graph.constants。
+# 本文件建立模型语义与数据依赖；后续编译阶段规划 Buffer、目标后端生成 MLIR，
+# Runtime 再分配真实设备内存并执行。
+# 建议按 load_exported_program → import_exported_program → _Importer.run
+# → _placeholder_inputs / _translate 的顺序阅读。
+
 from __future__ import annotations
 
 from collections import Counter
@@ -25,6 +39,8 @@ class TorchExportFrontendError(ValueError):
     """Raised when ExportedProgram semantics cannot be represented faithfully."""
 
 
+# PyTorch 的类型别名 → GAC 规范类型名。前端可表达某种类型，
+# 不代表每个目标后端都支持该类型；目标合法化还会继续检查。
 _DTYPES = {
     "float16": "float16",
     "half": "float16",
@@ -43,6 +59,8 @@ _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def _torch_module() -> Any:
+    # 延迟导入：只有读取 PyTorch 导出归档时才需要安装 Torch。
+    # 单独 import 本模块、或按 ExportedProgram/FX 协议导入内存对象时不触发它。
     try:
         return importlib.import_module("torch")
     except (ImportError, OSError) as exc:
@@ -53,6 +71,7 @@ def _torch_module() -> Any:
 
 
 def _kind_name(kind: Any) -> str:
+    # 兼容枚举对象和字符串表示，如 InputKind.PARAMETER → parameter。
     return str(getattr(kind, "name", kind)).split(".")[-1].lower()
 
 
@@ -62,6 +81,7 @@ def _argument_name(argument: Any) -> str | None:
 
 
 def _is_fx_node(value: Any) -> bool:
+    # 按 FX 节点协议识别，不直接依赖 torch.fx.Node 的具体 Python 类型。
     return all(hasattr(value, field) for field in ("op", "name", "args", "kwargs"))
 
 
@@ -77,6 +97,7 @@ def _dtype_name(dtype: Any, *, where: str) -> str:
 
 
 def _dimension(value: Any) -> int | str:
+    # 静态维度保留整数；符号维度保留名字。保留符号不等于后端已支持动态形状。
     if isinstance(value, (int, np.integer)) and not isinstance(value, bool):
         result = int(value)
         if result < 0:
@@ -89,6 +110,7 @@ def _dimension(value: Any) -> int | str:
 
 
 def _tensor_spec(value: Any, *, where: str) -> TensorSpec:
+    # TensorSpec 只记录规格，不保存数值、设备指针或 SRAM 分配结果。
     shape = getattr(value, "shape", None)
     dtype = getattr(value, "dtype", None)
     if shape is None or dtype is None:
@@ -99,6 +121,8 @@ def _tensor_spec(value: Any, *, where: str) -> TensorSpec:
 
 
 def _node_spec(node: Any) -> TensorSpec:
+    # 从 export 已推导的元数据取得输出规格，不运行这个算子。
+    # 当前一个 FX 算子只接受单 Tensor 输出；多输出算子需要另外合法化。
     metadata = getattr(node, "meta", None)
     if not isinstance(metadata, Mapping) or "val" not in metadata:
         raise TorchExportFrontendError(
@@ -114,6 +138,7 @@ def _node_spec(node: Any) -> TensorSpec:
 
 
 def _numpy_tensor(value: Any, *, where: str) -> np.ndarray[Any, Any]:
+    # 这里才读取真实权重：脱离 autograd，必要时从设备复制到 CPU，整理连续布局。
     try:
         tensor = value.detach() if hasattr(value, "detach") else value
         tensor = tensor.cpu() if hasattr(tensor, "cpu") else tensor
@@ -126,10 +151,12 @@ def _numpy_tensor(value: Any, *, where: str) -> np.ndarray[Any, Any]:
         result = np.asarray(array, dtype=dtype)
     except (TypeError, ValueError) as exc:
         raise TorchExportFrontendError(f"cannot convert {where} to NumPy: {exc}") from exc
+    # 独立复制，避免导入后原始模型修改权重时连带改变 GAC 的常量。
     return np.ascontiguousarray(result.copy())
 
 
 def _target_name(target: Any) -> str:
+    # 同时处理 ATen OpOverload 和普通 callable；保留 overload，便于区分语义。
     text = str(target)
     if text and not text.startswith("<"):
         return text.replace("::", ".")
@@ -149,6 +176,7 @@ def _normalize_target(target: Any) -> str:
 
 
 def _unique(base: str, occupied: set[str]) -> str:
+    # 一个源算子可能拆成多个节点/中间值，新增名字不能覆盖已有值。
     if base not in occupied:
         occupied.add(base)
         return base
@@ -161,6 +189,7 @@ def _unique(base: str, occupied: set[str]) -> str:
 
 
 def _literal_ints(value: Any, *, where: str) -> list[int]:
+    # 形状、轴和步长等属性要求编译期可知；不把运行时 Tensor 当作整数列表。
     if isinstance(value, (int, np.integer)) and not isinstance(value, bool):
         return [int(value)]
     if not isinstance(value, (tuple, list)) or any(
@@ -189,6 +218,7 @@ def _optional_tensor_name(value: Any, *, where: str) -> str | None:
 
 
 def _json_value(value: Any) -> Any:
+    # 为诊断模式保存原始参数；FX 节点转成“值名字引用”，而不是序列化节点对象。
     if _is_fx_node(value):
         return {"value": str(value.name)}
     if isinstance(value, Mapping):
@@ -201,14 +231,17 @@ def _json_value(value: Any) -> Any:
 
 
 class _Importer:
+    # 一次导入的上下文。所有字典以张量/值的名字连接，尚未分配设备内存。
     def __init__(self, program: Any, *, strict: bool) -> None:
         self.program = program
         self.strict = strict
-        self.constants: dict[str, np.ndarray[Any, Any]] = {}
-        self.inputs: dict[str, TensorSpec] = {}
+        self.constants: dict[str, np.ndarray[Any, Any]] = {}  # 真实权重及字面量数值。
+        self.inputs: dict[str, TensorSpec] = {}  # 调用者每次推理需要提供的输入规格。
+        # value_specs 会被规范图的 Shape 推导更新；source_value_specs 保存
+        # FX 原始输出规格，用于在最后检查转换前后是否一致。
         self.value_specs: dict[str, TensorSpec] = {}
         self.source_value_specs: dict[str, TensorSpec] = {}
-        self.nodes: list[Node] = []
+        self.nodes: list[Node] = []  # 规范算子序列；输入/输出通过字符串名字相连。
         self.occupied_values: set[str] = set()
         self.occupied_ids: set[str] = set()
         self.unsupported: list[dict[str, str]] = []
@@ -217,6 +250,7 @@ class _Importer:
 
     @property
     def graph_nodes(self) -> list[Any]:
+        # 按 FX 图自身的节点顺序读取；导出的数据依赖在此顺序中展开。
         graph_module = getattr(self.program, "graph_module", None)
         graph = getattr(graph_module, "graph", None)
         nodes = getattr(graph, "nodes", None)
@@ -225,6 +259,7 @@ class _Importer:
         return list(nodes)
 
     def _add_constant(self, base: str, value: Any, *, where: str) -> str:
+        # 数值进入 constants，规格进入 value_specs，算子只持有返回的名字。
         name = _unique(base, self.occupied_values)
         array = _numpy_tensor(value, where=where)
         self.constants[name] = array
@@ -232,6 +267,7 @@ class _Importer:
         return name
 
     def _scalar(self, value: Any, *, node: Any) -> str:
+        # 把 x + 1 之类的字面量提升为零维常量 Tensor，使二元算子统一按值名连边。
         if (
             isinstance(value, bool)
             or not isinstance(value, (int, float, np.number))
@@ -240,6 +276,8 @@ class _Importer:
             raise TorchExportFrontendError(
                 f"FX node {node.name!r} expected a tensor or numeric scalar, got {value!r}"
             )
+        # 使用源输出 dtype 构造标量；这并非完整的 ATen 类型提升实现，
+        # 末尾还会对比规范图推导结果，拒绝已发现的 shape/dtype 语义差异。
         spec = _node_spec(node)
         name = _unique(f"{node.name}__scalar", self.occupied_values)
         self.constants[name] = np.asarray(value, dtype=spec.dtype)
@@ -247,6 +285,7 @@ class _Importer:
         return name
 
     def _value(self, value: Any, *, node: Any) -> str:
+        # Tensor 参数引用其 FX 名字；数字参数则先转成可被图引用的常量。
         return str(value.name) if _is_fx_node(value) else self._scalar(value, node=node)
 
     def _emit(
@@ -259,6 +298,8 @@ class _Importer:
         output: str | None = None,
         suffix: str | None = None,
     ) -> str:
+        # 创建 GAC Node，不计算输出。attrs 记录轴、shape、epsilon 等语义属性；
+        # source_nodes 保留来源，供错误定位、图检查和后续性能分析使用。
         output_name = output or str(node.name)
         node_id = _unique(
             str(node.name) if suffix is None else f"{node.name}__{suffix}",
@@ -279,11 +320,14 @@ class _Importer:
         return output_name
 
     def _placeholder_inputs(self, placeholders: Mapping[str, Any]) -> None:
+        # export 会把参数、注册 buffer 和用户输入都提升为 FX placeholder。
+        # graph_signature 才说明各 placeholder 是运行时输入还是模型常量。
         signature = getattr(self.program, "graph_signature", None)
         input_specs = list(getattr(signature, "input_specs", ()))
         state = dict(getattr(self.program, "state_dict", {}) or {})
         constants = dict(getattr(self.program, "constants", {}) or {})
         if not input_specs:
+            # 没有签名时，只能按协议把全部 placeholder 视为用户输入；不猜测权重。
             for name, node in placeholders.items():
                 spec = _node_spec(node)
                 self.inputs[name] = spec
@@ -303,12 +347,16 @@ class _Importer:
             target = getattr(input_spec, "target", None)
             target_name = str(target) if target is not None else name
             if kind == "user_input":
+                # 输入只登记 shape/dtype，真实输入数值由 Runtime 的调用者提供。
                 spec = _node_spec(placeholders[name])
                 self.inputs[name] = spec
                 self.value_specs[name] = spec
                 self.occupied_values.add(name)
                 continue
             if kind in {"parameter", "buffer", "constant_tensor"}:
+                # 这里的 buffer 指 PyTorch 注册状态，如 BatchNorm 的 running_mean；
+                # 它不是后端 LMEM/SRAM 的 Buffer。推理导入时与参数一起作为常量保存。
+                # target_name 通常是模块状态名；图内部仍按 placeholder 的 name 引用。
                 source = state.get(target_name)
                 if source is None:
                     source = constants.get(target_name)
@@ -319,7 +367,7 @@ class _Importer:
                         f"lifted {kind} {target_name!r} for placeholder {name!r} is missing"
                     )
                 array = _numpy_tensor(source, where=f"lifted {kind} {target_name!r}")
-                self.constants[name] = array
+                self.constants[name] = array  # 最终原样交给 Graph.constants。
                 self.value_specs[name] = TensorSpec(tuple(array.shape), array.dtype)
                 self.occupied_values.add(name)
                 continue
@@ -334,18 +382,22 @@ class _Importer:
             )
 
     def _linear(self, node: Any) -> None:
+        # ATen Linear：X @ W.T + bias，W 按 [out_features, in_features] 保存。
+        # 规范 MatMul 的右输入要求 [in_features, out_features]。
         if len(node.args) < 2:
             raise TorchExportFrontendError(f"linear node {node.name!r} has invalid arity")
         value = self._value(node.args[0], node=node)
         weight = self._value(node.args[1], node=node)
         bias = node.args[2] if len(node.args) >= 3 else None
         if weight in self.constants:
+            # 常量权重在导入时完成转置并复制，图中无需再执行该 Transpose。
             transposed = self._add_constant(
                 f"{weight}__{node.name}_t",
                 self.constants[weight].T,
                 where=f"linear weight {weight!r}",
             )
         else:
+            # 非常量权重的数值到运行时才确定，必须显式插入 Transpose 节点。
             spec = self.value_specs.get(weight)
             if spec is None or spec.rank != 2:
                 raise TorchExportFrontendError(
@@ -363,6 +415,7 @@ class _Importer:
         if bias is None:
             self._emit(node, "MatMul", (value, transposed))
         else:
+            # 有 bias 时将一个 Linear 拆为 MatMul + Add，后续 Pass 可再决定融合。
             product = _unique(f"{node.name}__matmul", self.occupied_values)
             self._emit(
                 node,
@@ -374,6 +427,7 @@ class _Importer:
             self._emit(node, "Add", (product, self._value(bias, node=node)))
 
     def _binary(self, node: Any, op: str) -> None:
+        # Add/Sub 的 alpha 和 Div 的 rounding_mode 会改变数值语义，不能忽略。
         if len(node.args) < 2:
             raise TorchExportFrontendError(f"{op} node {node.name!r} has invalid arity")
         if op in {"Add", "Sub"}:
@@ -393,6 +447,8 @@ class _Importer:
         )
 
     def _conv2d(self, node: Any, *, convolution: bool) -> None:
+        # 两种 ATen 卷积签名的参数位置不同；统一为规范 Conv2D 属性。
+        # 当前表达普通 2D 卷积，转置卷积和非零 output_padding 明确拒绝。
         args = list(node.args)
         if len(args) < 2:
             raise TorchExportFrontendError(f"Conv node {node.name!r} has invalid arity")
@@ -416,6 +472,7 @@ class _Importer:
             dilation = args[5] if len(args) > 5 else [1, 1]
             groups = int(args[6]) if len(args) > 6 else 1
         pad = _pair(padding, where=f"Conv node {node.name!r} padding")
+        # ATen 的两个对称 padding 值展开为 [top, left, bottom, right]。
         inputs = [value, weight]
         bias_name = _optional_tensor_name(bias, where=f"Conv node {node.name!r} bias")
         if bias_name is not None:
@@ -433,6 +490,8 @@ class _Importer:
         )
 
     def _translate(self, node: Any) -> None:
+        # 算子合法化分发表：依据完整 ATen target/overload，而不只看 Python 函数名。
+        # 一个分支可发出一个规范算子，也可像 Linear 一样拆成多个规范算子。
         target = _normalize_target(node.target)
         self.source_counts[target] += 1
         args = list(node.args)
@@ -463,6 +522,7 @@ class _Importer:
             self._emit(node, unary, (self._value(args[0], node=node),))
             return
         if target == "aten.gelu.default":
+            # 当前规范 GELU 使用 tanh 近似；不能把精确 erf 版本悄悄换成近似版本。
             approximation = node.kwargs.get("approximate", args[1] if len(args) > 1 else "none")
             if str(approximation) != "tanh":
                 raise TorchExportFrontendError(
@@ -475,6 +535,7 @@ class _Importer:
             self._linear(node)
             return
         if target in {"aten.view.default", "aten.reshape.default", "aten._unsafe_view.default"}:
+            # 记录形状变换语义；是否可零拷贝由后续布局/内存分析决定。
             shape = _literal_ints(args[1], where=f"Reshape node {node.name!r} shape")
             self._emit(node, "Reshape", (self._value(args[0], node=node),), attrs={"shape": shape})
             return
@@ -484,6 +545,7 @@ class _Importer:
             "aten.squeeze.dims",
             "aten.unsqueeze.default",
         }:
+            # 这些操作只改变形状，直接使用 FX 输出元数据构造静态 Reshape。
             output_spec = _node_spec(node)
             if not output_spec.is_static or any(
                 not isinstance(dim, int) or dim <= 0 for dim in output_spec.shape
@@ -499,6 +561,7 @@ class _Importer:
             )
             return
         if target == "aten.permute.default":
+            # 保存轴排列，前端不在这里搬运输入矩阵的数据。
             perm = _literal_ints(args[1], where=f"Transpose node {node.name!r} permutation")
             self._emit(node, "Transpose", (self._value(args[0], node=node),), attrs={"perm": perm})
             return
@@ -530,6 +593,7 @@ class _Importer:
             self._emit(node, "Concat", (self._value(item, node=node) for item in tensors), attrs={"axis": axis})
             return
         if target == "aten.expand.default":
+            # Expand 中的 -1 表示保留对应输入维度，先解析成明确的目标 shape。
             value_name = self._value(args[0], node=node)
             shape = _literal_ints(args[1], where=f"Expand node {node.name!r} shape")
             spec = self.value_specs.get(value_name)
@@ -547,6 +611,7 @@ class _Importer:
             self._emit(node, "Expand", (value_name,), attrs={"shape": resolved})
             return
         if target == "aten.slice.tensor":
+            # starts/ends/axes/steps 显式保留，不能把 Slice 误当成任意连续视图。
             axis = int(args[1] if len(args) > 1 else 0)
             start = int(args[2] if len(args) > 2 and args[2] is not None else 0)
             end = int(args[3] if len(args) > 3 and args[3] is not None else 2**63 - 1)
@@ -559,6 +624,8 @@ class _Importer:
             )
             return
         if target in {"aten.sum.dim_intlist", "aten.mean.dim"}:
+            # 归约轴和 keepdims 影响输出形状；dtype override 还影响累加精度。
+            # 当前没有替这种 override 插入 Cast，所以遇到它就报错。
             axes = _literal_ints(args[1], where=f"Reduction node {node.name!r} axes")
             keepdims = bool(args[2] if len(args) > 2 else node.kwargs.get("keepdim", False))
             dtype = node.kwargs.get("dtype", args[3] if len(args) > 3 else None)
@@ -571,6 +638,7 @@ class _Importer:
             self._emit(node, op, (self._value(args[0], node=node),), attrs={"axes": axes, "keepdims": keepdims})
             return
         if target in {"aten.softmax.int", "aten._softmax.default"}:
+            # 保留 Softmax 的轴，拒绝当前规范算子未表达的输入/计算精度转换。
             if target == "aten._softmax.default" and len(args) > 2 and bool(args[2]):
                 raise TorchExportFrontendError(
                     f"Softmax node {node.name!r} requests half_to_float"
@@ -585,6 +653,8 @@ class _Importer:
             self._emit(node, "Softmax", (self._value(args[0], node=node),), attrs={"axis": int(args[1])})
             return
         if target == "aten.layer_norm.default":
+            # normalized_shape 的长度确定尾部归约从哪一轴开始。
+            # 当前仅接收 FP32，避免丢失 ATen 的低精度存储/累加精度约定。
             value_name = self._value(args[0], node=node)
             normalized = _literal_ints(args[1], where=f"LayerNorm node {node.name!r} normalized_shape")
             spec = self.value_specs.get(value_name)
@@ -607,6 +677,7 @@ class _Importer:
             self._emit(node, "LayerNorm", inputs, attrs={"axis": spec.rank - len(normalized), "epsilon": epsilon})
             return
         if target in {"aten._to_copy.default", "aten.to.dtype"}:
+            # dtype 转换成为显式 Cast 节点，后端才能看到它的精度和存储影响。
             dtype = node.kwargs.get("dtype", args[1] if len(args) > 1 else None)
             if dtype is None:
                 raise TorchExportFrontendError(f"Cast node {node.name!r} has no dtype")
@@ -643,6 +714,7 @@ class _Importer:
             )
             return
         if target == "aten.clamp.default":
+            # 当前 Clamp 只接收字面量数值边界，不把 Tensor 边界当作静态属性。
             minimum = args[1] if len(args) > 1 else node.kwargs.get("min")
             maximum = args[2] if len(args) > 2 else node.kwargs.get("max")
             attrs = {
@@ -663,9 +735,13 @@ class _Importer:
             "aten.detach.default",
             "aten.contiguous.default",
         }:
+            # 函数式推理图中保留数值依赖；不在规范图里模拟 autograd 或存储别名。
             self._emit(node, "Identity", (self._value(args[0], node=node),))
             return
 
+        # 未覆盖的算子仍记录其原始限定名。strict=True 稍后汇总报错；
+        # strict=False 保存 torch::... 节点用于诊断，不代表后端可以执行或自动回退。
+        # 非严格模式也不会跳过前面已识别算子的属性、精度等语义检查。
         tensor_inputs: list[str] = []
         stack = list(args) + list(node.kwargs.values())
         while stack:
@@ -686,14 +762,17 @@ class _Importer:
         )
 
     def run(self, *, name: str | None) -> Graph:
+        # 第一步：先处理所有 placeholder，区分真实输入与提升后的模型权重。
         graph_nodes = self.graph_nodes
         placeholders = {str(node.name): node for node in graph_nodes if node.op == "placeholder"}
         self._placeholder_inputs(placeholders)
         output_node: Any | None = None
+        # 第二步：按 FX 顺序转换算子。这里只生成图，不执行一次 PyTorch forward。
         for node in graph_nodes:
             if node.op == "placeholder":
                 continue
             if node.op == "call_function":
+                # 先留存源输出规格，再生成规范节点，最后进行独立 Shape 推导对齐。
                 source_spec = _node_spec(node)
                 self.source_value_specs[str(node.name)] = source_spec
                 self.value_specs[str(node.name)] = source_spec
@@ -706,6 +785,7 @@ class _Importer:
                     "contain only placeholders, call_function nodes, and output"
                 )
 
+        # 收齐未知算子后一次报告，便于定位模型还有哪些语义缺口。
         if self.strict and self.unsupported:
             detail = ", ".join(
                 f"{item['node']} ({item['op']})" for item in self.unsupported[:12]
@@ -719,6 +799,7 @@ class _Importer:
         if output_node is None:
             raise TorchExportFrontendError("ExportedProgram FX graph has no output node")
 
+        # 第三步：确定公开输出。签名里的状态修改、梯度等不能混作推理 Tensor 输出。
         signature = getattr(self.program, "graph_signature", None)
         output_specs = list(getattr(signature, "output_specs", ()))
         outputs: list[str] = []
@@ -735,6 +816,7 @@ class _Importer:
                     raise TorchExportFrontendError("user output is not a tensor argument")
                 outputs.append(output_name)
         else:
+            # 协议对象缺少输出签名时，按容器顺序展平 Tensor 叶子；不保留原 Python 容器。
             def flatten(value: Any) -> None:
                 if _is_fx_node(value):
                     outputs.append(str(value.name))
@@ -753,6 +835,7 @@ class _Importer:
         if not outputs:
             raise TorchExportFrontendError("ExportedProgram has no user tensor outputs")
 
+        # 符号维度的范围仅写入来源元数据；这里没有生成动态分配或运行时守卫。
         range_constraints = {
             str(symbol): str(constraint)
             for symbol, constraint in dict(
@@ -770,6 +853,8 @@ class _Importer:
             }
         }
         graph_module = getattr(self.program, "graph_module", None)
+        # 第四步：把导入上下文交付为统一 Graph。
+        # 数值在 constants，规格在 inputs/value_specs，依赖在 nodes 的输入/输出名字中。
         graph = Graph(
             name=name or type(graph_module).__name__ or "exported_program",
             inputs=self.inputs,
@@ -782,6 +867,8 @@ class _Importer:
         try:
             graph.validate()
             if self.strict:
+                # 按 GAC 算子语义重新推导，并逐值比较 FX 原始 shape/dtype。
+                # 此检查验证规格一致性，不等同于逐元素数值正确性验证。
                 ShapeInferencePass().run(graph)
                 mismatches: list[str] = []
                 for value_name, source_spec in self.source_value_specs.items():
@@ -820,6 +907,7 @@ def import_exported_program(
 ) -> Graph:
     """Import an in-memory, inference-only ExportedProgram."""
 
+    # 内存入口：已持有 ExportedProgram 的调用者直接使用，无需再读写 .pt2 文件。
     return _Importer(program, strict=strict).run(name=name)
 
 
@@ -839,12 +927,15 @@ def load_exported_program(
 
     model_path = Path(path)
     verified_archive: Any | None = None
+    # 文件入口：按当前顺序先做可选 SHA-256 校验，再检查 trusted，最后才加载 Torch。
     if expected_sha256 is not None:
         if _SHA256_RE.fullmatch(expected_sha256) is None:
             raise TorchExportFrontendError(
                 "expected_sha256 must contain exactly 64 hexadecimal characters"
             )
         digest_builder = hashlib.sha256()
+        # 同一份字节既用于哈希也交给 torch.export.load，避免校验后重读路径时内容改变。
+        # 小归档暂存在内存，超过 64 MiB 后由 SpooledTemporaryFile 转存临时文件。
         verified_archive = tempfile.SpooledTemporaryFile(max_size=64 * 1024 * 1024)
         try:
             with model_path.open("rb") as stream:
@@ -866,6 +957,7 @@ def load_exported_program(
             )
         verified_archive.seek(0)
     if not trusted:
+        # 摘要匹配确认内容一致，不能替代调用方显式声明来源可信。
         if verified_archive is not None:
             verified_archive.close()
         raise TorchExportFrontendError(
@@ -873,6 +965,7 @@ def load_exported_program(
             "archive source or provide --trusted-model at the CLI boundary"
         )
     try:
+        # 只有文件反序列化需要真正导入 PyTorch；它不参与后面的设备 Codegen。
         torch = _torch_module()
     except Exception:
         if verified_archive is not None:
@@ -889,4 +982,5 @@ def load_exported_program(
     finally:
         if verified_archive is not None:
             verified_archive.close()
+    # 归档加载完成后，与内存入口共用同一条 FX → Graph 转换流程。
     return import_exported_program(program, name=model_path.stem, strict=strict)
