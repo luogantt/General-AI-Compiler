@@ -3,6 +3,7 @@
 源码现已重构为 `core / compiler / frontends / models / targets / execution` 等职责包。
 当前目录、十阶段函数位置及模型扩展接口见[源码分层说明](code_layout.md)；
 下文历史核对中的旧 Python 模块名仍通过兼容映射可用。
+交互图从[架构图目录](index.html)进入，[V8](vortex-matmul-end-to-end-v8.html)对应本次重构后的实际实现。
 
 ## 1. 范围
 

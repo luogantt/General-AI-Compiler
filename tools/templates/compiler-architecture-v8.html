@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>General AI Compiler · V8 源码架构图</title>
+  <style>
+    :root { --bg:#f5f6f8; --surface:#fff; --ink:#17232e; --muted:#586774; --line:#ced6dd; --accent:#0968b5; --tint:#eaf4fc; --code:#f4f6f8; --warm:#fff7e7; --radius:8px; }
+    @media (prefers-color-scheme:dark) { :root { --bg:#12191f; --surface:#19242d; --ink:#e5edf4; --muted:#aebdc9; --line:#3b4b58; --accent:#80c5ff; --tint:#1c3448; --code:#101b24; --warm:#332d20; } }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    button,select { font:inherit; }
+    button { color:inherit; cursor:pointer; }
+    button:focus-visible,a:focus-visible,select:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    button:hover { border-color:var(--accent); }
+    h1,h2,h3,p { margin:0; }
+    h1 { font-size:clamp(24px,3.2vw,35px); line-height:1.35; letter-spacing:-.03em; }
+    h2 { font-size:22px; line-height:1.45; }
+    h3 { font-size:17px; }
+    code { font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; font-size:.92em; }
+    [hidden] { display:none !important; }
+    .shell { width:min(1380px,100%); margin:0 auto; padding:30px 24px 48px; }
+    .breadcrumb { display:flex; flex-wrap:wrap; gap:8px 20px; font-size:13px; margin-bottom:22px; }
+    .eyebrow { color:var(--accent); font-size:12px; letter-spacing:.12em; font-weight:700; margin-bottom:7px; }
+    .intro { max-width:1000px; color:var(--muted); margin-top:12px; }
+    .snapshot { display:flex; flex-wrap:wrap; gap:8px 24px; font-size:12px; margin-top:15px; color:var(--muted); }
+    .snapshot code { color:var(--ink); word-break:break-all; }
+    .scope { margin:24px 0; padding:14px 18px; background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:var(--radius); }
+    .scope p+p { margin-top:5px; }
+    .scope small { color:var(--muted); }
+    .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+    .tab { border:1px solid var(--line); background:var(--surface); padding:10px 17px; border-radius:var(--radius); font-weight:650; }
+    .tab[aria-selected="true"] { border-color:var(--accent); color:var(--accent); background:var(--tint); }
+    .panel { border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); padding:23px; }
+    .section-intro { margin-top:6px; color:var(--muted); max-width:1030px; }
+    .pipeline { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:0; margin:22px 0; list-style:none; counter-reset:stages; }
+    .stage { display:flex; align-items:flex-start; width:100%; min-height:88px; text-align:left; gap:11px; padding:13px; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius); }
+    .stage[aria-pressed="true"] { background:var(--tint); border-color:var(--accent); }
+    .stage-no { flex:0 0 25px; height:25px; border:1px solid var(--line); border-radius:50%; text-align:center; line-height:23px; font-size:12px; }
+    .stage[aria-pressed="true"] .stage-no { border-color:var(--accent); color:var(--accent); }
+    .stage-title { display:block; font-weight:650; line-height:1.45; }
+    .stage-id { display:block; color:var(--muted); font:10px/1.5 ui-monospace,Consolas,monospace; margin-top:5px; overflow-wrap:anywhere; }
+    .step-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:12px; }
+    .step-nav { display:flex; gap:6px; }
+    .small-button { border:1px solid var(--line); background:var(--surface); border-radius:5px; padding:4px 10px; font-size:13px; }
+    .small-button:disabled { opacity:.4; cursor:default; }
+    .contract { display:grid; grid-template-columns:1fr 34px 1.3fr 34px 1fr; gap:0; align-items:stretch; }
+    .contract-box { padding:17px; background:var(--code); border:1px solid var(--line); border-radius:6px; }
+    .contract-box.action { background:var(--tint); }
+    .label { display:block; color:var(--muted); font-size:12px; font-weight:650; margin-bottom:8px; }
+    .arrow { display:flex; justify-content:center; align-items:center; color:var(--muted); font-size:23px; }
+    .boundary { margin-top:13px; font-size:13px; }
+    .artifact { display:inline-block; margin-top:10px; padding:3px 8px; border:1px solid var(--line); border-radius:4px; color:var(--muted); font-size:12px; overflow-wrap:anywhere; }
+    .sources { display:flex; flex-wrap:wrap; gap:7px; margin-top:17px; }
+    .source-choice { text-align:left; border:1px solid var(--line); background:var(--surface); border-radius:5px; padding:7px 10px; font-size:12px; line-height:1.5; }
+    .source-choice[aria-pressed="true"] { border-color:var(--accent); background:var(--tint); }
+    .source-choice code { display:block; color:var(--muted); overflow-wrap:anywhere; }
+    .table-wrap { overflow:auto; margin-top:20px; }
+    table { border-collapse:collapse; width:100%; text-align:left; font-size:13px; }
+    th,td { padding:11px 13px; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { background:var(--code); font-weight:650; }
+    td code { white-space:nowrap; }
+    .model-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:15px; }
+    .model-card { border:1px solid var(--line); border-radius:6px; padding:16px; }
+    .model-card p { color:var(--muted); font-size:13px; margin-top:7px; }
+    .model-card .sources { margin-top:12px; }
+    .subsection { padding-top:24px; margin-top:25px; border-top:1px solid var(--line); }
+    .flow { display:flex; align-items:stretch; gap:0; margin:20px 0; }
+    .flow-box { flex:1 1 0; min-width:0; background:var(--code); border:1px solid var(--line); border-radius:6px; padding:16px; }
+    .flow-box.emphasis { background:var(--tint); border-color:var(--accent); }
+    .flow-box h3 { font-size:15px; }
+    .flow-box p { margin-top:7px; font-size:13px; color:var(--muted); }
+    .flow>.arrow { flex:0 0 33px; }
+    .flow.compact .flow-box { padding:13px; }
+    .flow.compact .flow-box h3 { font-size:13px; }
+    .note { background:var(--warm); border:1px solid var(--line); border-radius:6px; padding:13px 16px; font-size:13px; }
+    .plain-list { padding-left:22px; margin:13px 0 0; font-size:13px; }
+    .plain-list li+li { margin-top:8px; }
+    .facts { display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+    .fact { font-size:12px; border:1px solid var(--line); padding:4px 9px; border-radius:4px; }
+    details { margin-top:22px; border:1px solid var(--line); border-radius:6px; padding:13px 16px; }
+    summary { cursor:pointer; font-weight:650; }
+    details>p { font-size:13px; margin-top:10px; color:var(--muted); }
+    .inspector { margin-top:22px; border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; background:var(--surface); }
+    .inspector-head { padding:17px 20px 14px; }
+    .inspector-title { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .inspector-title h2 { font-size:18px; }
+    .source-path { display:block; margin-top:9px; font-size:13px; overflow-wrap:anywhere; }
+    .source-role { color:var(--muted); font-size:13px; margin-top:5px; }
+    .source-links { display:flex; flex-wrap:wrap; gap:6px 19px; font-size:12px; margin-top:10px; }
+    .hash { color:var(--muted); font:11px/1.7 ui-monospace,Consolas,monospace; overflow-wrap:anywhere; margin-top:9px; }
+    .code-body { margin:0; padding:16px 18px 16px 0; background:var(--code); overflow:auto; max-height:610px; tab-size:4; font:12px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .code-line { display:block; min-height:1.75em; width:max-content; min-width:100%; }
+    .code-line::before { content:attr(data-line); display:inline-block; width:64px; padding-right:16px; text-align:right; color:var(--muted); opacity:.75; user-select:none; }
+    .footnote { padding:12px 20px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+    .footer { margin-top:24px; font-size:12px; color:var(--muted); }
+    .load-error { color:#b33434; padding:20px; border:1px solid currentColor; margin:20px 0; }
+    @media (max-width:1000px) { .pipeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .flow.compact { flex-wrap:wrap; gap:10px; } .flow.compact .flow-box { flex-basis:27%; } .flow.compact>.arrow { display:none; } .model-grid { grid-template-columns:1fr; } }
+    @media (max-width:650px) { .shell { padding:20px 13px 32px; } .panel { padding:17px 13px; } .tabs { gap:6px; } .tab { padding:8px 11px; font-size:13px; } .pipeline { gap:7px; } .stage { padding:10px; gap:7px; min-height:90px; } .contract { grid-template-columns:1fr; } .contract>.arrow { height:25px; transform:rotate(90deg); } .flow { flex-direction:column; } .flow>.arrow { flex-basis:27px; transform:rotate(90deg); } .flow.compact .flow-box { flex-basis:auto; } .step-heading { align-items:flex-start; } .step-nav { white-space:nowrap; } .code-body { font-size:11px; } .code-line::before { width:48px; padding-right:10px; } }
+    @media print { .shell { width:100%; padding:0; } body { background:white; color:black; } .panel { display:block !important; margin-bottom:18px; break-inside:avoid; } .tabs,.step-nav,.source-links,.breadcrumb { display:none; } .inspector { break-before:page; } .code-body { max-height:none; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="breadcrumb" aria-label="文档导航">
+      <a href="index.html">← 架构图与文档目录</a>
+      <a href="code_layout.md">源码分层说明</a>
+      <a href="vortex-matmul-end-to-end-v6.html">V6 固定 FFN 架构图（历史）</a>
+      <a href="bevformer-compiler-architecture.html">V7 异构架构图（历史）</a>
+    </nav>
+    <header>
+      <p class="eyebrow">GENERAL AI COMPILER / SOURCE MAP V8</p>
+      <h1>从模型到 Vortex：每一层都能找到代码</h1>
+      <p class="intro">沿十个阶段查看输入、处理动作和输出，再打开该步骤的真实源码。目录层次、Buffer 计划、设备执行分别展开，避免把编译计划与硬件存储混在一起。</p>
+      <div class="snapshot" id="snapshot" aria-label="源码快照信息"></div>
+    </header>
+    <div class="scope">
+      <p><strong>本页主线：单 Vortex 设备，全图软件 SIMT 路径。</strong> 当前通过全局内存 Buffer、逐输出线程与寄存器归约执行已合法化算子。</p>
+      <p><small>LMEM / DXA 双缓冲优化 FFN 是另一条已有路径，下方单独标出。通用模型接口不等于所有新模型都已支持。</small></p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="选择架构视图">
+      <button class="tab" id="tab-pipeline" role="tab" aria-controls="panel-pipeline" aria-selected="true" data-panel="pipeline">1 · 十阶段与代码</button>
+      <button class="tab" id="tab-layers" role="tab" aria-controls="panel-layers" aria-selected="false" tabindex="-1" data-panel="layers">2 · 分层与模型扩展</button>
+      <button class="tab" id="tab-buffers" role="tab" aria-controls="panel-buffers" aria-selected="false" tabindex="-1" data-panel="buffers">3 · Buffer 与数据流</button>
+      <button class="tab" id="tab-backend" role="tab" aria-controls="panel-backend" aria-selected="false" tabindex="-1" data-panel="backend">4 · 机器码与 Runtime</button>
+    </nav>
+    <main>
+      <div id="load-error" class="load-error" role="alert" hidden></div>
+      <section class="panel" id="panel-pipeline" role="tabpanel" aria-labelledby="tab-pipeline">
+        <h2>十步是执行顺序，也是一组可检查的边界</h2>
+        <p class="section-intro">导入得到 Python Graph；目标后端随后生成 MLIR。按 1 → 10 阅读，每一步输出构成后一步的输入。选择卡片可查看实现与阶段产物。</p>
+        <ol class="pipeline" id="pipeline-list" aria-label="编译阶段顺序"></ol>
+        <div id="stage-detail" aria-live="polite">
+          <div class="step-heading">
+            <h3 id="stage-heading"></h3>
+            <div class="step-nav"><button class="small-button" id="previous-stage" aria-label="上一个编译阶段">← 上一步</button><button class="small-button" id="next-stage" aria-label="下一个编译阶段">下一步 →</button></div>
+          </div>
+          <div class="contract">
+            <div class="contract-box"><span class="label">输入 / 已知什么</span><p id="stage-input"></p></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="contract-box action"><span class="label">处理 / 本步改变什么</span><p id="stage-action"></p></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="contract-box"><span class="label">输出 / 交给下一步</span><p id="stage-output"></p></div>
+          </div>
+          <p class="boundary"><strong>实现边界：</strong><span id="stage-boundary"></span></p>
+          <p class="artifact">可检查产物：<code id="stage-artifact"></code></p>
+          <div id="stage-sources" class="sources" aria-label="当前阶段的源码"></div>
+        </div>
+      </section>
+      <section class="panel" id="panel-layers" role="tabpanel" aria-labelledby="tab-layers" hidden>
+        <h2>模型负责构图，目标后端负责实现，底层不认识具体模型</h2>
+        <p class="section-intro">BEVFormer、UniAD 适配器与 ONNX / torch.export 导入器汇合到同一个 Graph。一次编译选择一个目标；图中的多个后端目录表示可选实现。</p>
+        <div class="flow" aria-label="主要依赖边界">
+          <div class="flow-box"><h3>模型 / 通用前端</h3><p>models/ · frontends/<br>结构、权重、输入输出契约</p></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box emphasis"><h3>通用图与编译分析</h3><p>core/ · compiler/<br>Graph、Pass、生命周期分析</p></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box"><h3>所选目标与执行</h3><p>targets/ · toolchains/<br>目标实现、设备代码、Host 调用</p></div>
+        </div>
+        <p class="note"><strong>依赖规则：</strong>core 不依赖上层；compiler 不选择具体模型；models 不导入 targets 或 execution；targets 接收 Graph。需要跨模型和目标决策的逻辑放在 workflows。</p>
+        <div class="table-wrap"><table><thead><tr><th scope="col">源码目录</th><th scope="col">这一层做什么</th><th scope="col">依赖边界</th></tr></thead><tbody id="layer-table"></tbody></table></div>
+        <div class="subsection">
+          <h3>共享接口已经建立，模型覆盖范围分别声明</h3>
+          <p class="section-intro">ModelAdapter.load / build → Graph → 同一目标编译器。models/common/ffn.py 复用的是模型构图；targets/vortex/scalar_ops.py 等模块才选择目标计算模板。两者职责不同。</p>
+          <div id="model-grid" class="model-grid"></div>
+        </div>
+      </section>
+      <section class="panel" id="panel-buffers" role="tabpanel" aria-labelledby="tab-buffers" hidden>
+        <h2>Buffer 是一段存储的用途；先定计划，再分配真实存储</h2>
+        <p class="section-intro">TensorSpec 保存 shape / dtype；Graph.constants 保存权重数值。编译器规划中间张量的大小、偏移与存活区间，Runtime 才向设备申请内存。</p>
+        <div class="flow" aria-label="Buffer 从计划到物理内存">
+          <div class="flow-box"><h3>① 编译期：分析存活区间</h3><p>生产者 → 最后一个消费者。根据张量大小计算全局 arena 的偏移；只有不同时存活的张量才可复用空间。</p></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box"><h3>② Host：分配与绑定地址</h3><p>申请设备 Buffer，上传常量和输入；设备基地址 + 编译期偏移，得到每个 Dispatch 的张量地址。</p></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box emphasis"><h3>③ Device：按地址读写</h3><p>Kernel load 输入，计算输出，再 store。完成依赖后，下一个 Kernel 才能消费或复用相应存储。</p></div>
+        </div>
+        <div class="subsection">
+          <h3>主线的真实数据流：当前全图标量实现</h3>
+          <div class="flow" aria-label="当前全图设备内数据流">
+            <div class="flow-box"><h3>设备 DDR / Global Memory</h3><p>输入、常驻权重与中间 arena。Tile 首先是地址范围和循环边界，不需要先在 DDR 中复制出新矩阵。</p></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="flow-box emphasis"><h3>寄存器与计算单元</h3><p>一个线程负责一个输出元素。读取操作数，执行运算；浮点 GEMM 等归约在 FP32 累加值中逐项完成。</p></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="flow-box"><h3>Global Memory 中的结果</h3><p>中间结果继续留在设备，由后续 Dispatch 读取；最终输出按需拷回 Host。</p></div>
+          </div>
+          <div class="facts" aria-label="当前全图路径的资源声明"><span class="fact">LMEM：0 B</span><span class="fact">DXA：未启用</span><span class="fact">TCU：未启用</span><span class="fact">全局 Buffer：按生命周期复用</span></div>
+          <p class="section-intro">图中省略硬件管理的 Cache。寄存器的最终分配由机器码后端完成；这里不把源码中的累加变量等同于某个固定物理寄存器。</p>
+          <div class="sources" id="buffer-sources" aria-label="Buffer 与数据流源码"></div>
+        </div>
+        <details>
+          <summary>另一条路径：优化 FFN 的 LMEM / DXA 双缓冲</summary>
+          <p>已有固定 FFN 模板可以在 LMEM 这块 SRAM 中划出 A/B Tile 的 Stage 0 和 Stage 1 地址区间。一个 Stage 被计算消费时，另一个 Stage 可预取下一块；等待搬运完成后才能使用，等待计算消费结束后才能覆盖。</p>
+          <div class="flow compact" aria-label="优化 FFN 可选流水方案"><div class="flow-box"><h3>DDR 中的 A / B Tile</h3><p>依据 shape、stride 和块坐标确定地址</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-box"><h3>LMEM SRAM 的两组 Buffer</h3><p>Stage 0 / Stage 1，交替装载与消费</p></div><span class="arrow" aria-hidden="true">→</span><div class="flow-box"><h3>寄存器计算 → DDR 输出</h3><p>累加完成后存回；可见性受同步约束</p></div></div>
+          <p><strong>Buffer 已经位于 LMEM / SRAM 内部，不是“SRAM 之后再经过一个 Buffer”。</strong>这条优化路径不能代表当前全图的全部算子都已采用双缓冲；双缓冲也需要容量、同步和搬运重叠条件。</p>
+        </details>
+      </section>
+      <section class="panel" id="panel-backend" role="tabpanel" aria-labelledby="tab-backend" hidden>
+        <h2>MLIR 表达计算，VOLT 完成最终机器指令选择</h2>
+        <p class="section-intro">这条全图路径由 Python 生成 MLIR 算子体；不依赖手写 C++ 承载算子实现。Host C++ 仍负责设备内存、参数打包与 Kernel 发射。</p>
+        <div class="flow compact" aria-label="设备代码编译链">
+          <div class="flow-box"><h3>① Canonical Graph</h3><p>算子、静态形状、权重与数据依赖</p></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box"><h3>② Device MLIR</h3><p>SCF / Arith / Math / LLVM Dialect</p></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box"><h3>③ LLVM IR</h3><p>mlir-opt Lowering<br>mlir-translate 导出</p></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box"><h3>④ VOLT / LLVM</h3><p>RISC-V + Vortex 扩展的机器指令</p></div><span class="arrow" aria-hidden="true">→</span>
+          <div class="flow-box emphasis"><h3>⑤ ELF → vxbin</h3><p>链接、设备镜像与 Runtime 装载</p></div>
+        </div>
+        <p class="note"><strong>LLVM Dialect 与 LLVM IR 是相邻的不同表示。</strong>MLIR Lowering 生成 LLVM Dialect，再导出 LLVM IR。最终指令选择、寄存器分配和链接由匹配版本的 VOLT / LLVM 工具链完成。</p>
+        <div class="subsection">
+          <h3>Runtime 执行的是已编译好的 Dispatch DAG</h3>
+          <ol class="plain-list"><li>分配设备程序、进程内常驻权重和中间张量 arena，绑定输入 / 输出地址。</li><li>上传本帧输入与调用方提供的历史状态，构造 Kernel 参数缓冲区。</li><li>按依赖顺序提交 Dispatch；写入完成后，消费者才能读取同一 Buffer。</li><li>等待设备完成并读回所需输出。调用方将 next_bev 作为下一帧 prev_bev，显式完成历史状态回馈。</li></ol>
+          <p class="section-intro">阶段报告是可检查的编译产物；生成源码、通过 MLIR 验证、生成设备镜像、设备运行是不同完成条件。性能数值应来自对应设备和输入规模的实际测量。</p>
+          <div class="sources" id="backend-sources" aria-label="机器码与 Runtime 源码"></div>
+        </div>
+      </section>
+      <section class="inspector" id="source-inspector" aria-labelledby="inspector-heading">
+        <div class="inspector-head">
+          <div class="inspector-title"><h2 id="inspector-heading">对应源码</h2><span class="label" id="source-range"></span></div>
+          <code class="source-path" id="source-path"></code>
+          <p class="source-role" id="source-role"></p>
+          <div class="source-links"><a id="github-source" target="_blank" rel="noopener noreferrer">GitHub 固定版本 / 行号 ↗</a><a id="local-source">本地源码（当前工作区）</a></div>
+          <p class="hash" id="source-hash"></p>
+        </div>
+        <pre class="code-body" id="code-body" tabindex="0" aria-label="实际源码及行号"></pre>
+        <p class="footnote">代码片段由生成工具读取真实文件后嵌入，包含原行号与文件 SHA-256。本地链接直接打开当前文件；GitHub 固定版本链接在对应源码提交推送后可用。后续工作区修改可能与本页快照不同。</p>
+      </section>
+    </main>
+    <footer class="footer">V8 对应重构后的规范目录。V6 固定 FFN 与 V7 异构架构图保留各自历史内容；阅读旧图时，应同时查看其版本说明和执行范围。</footer>
+  </div>
+  <script type="application/json" id="architecture-catalog">__ARCHITECTURE_CATALOG_JSON__</script>
+  <script>
+    "use strict";
+    (() => {
+      const byId = id => document.getElementById(id);
+      let catalog;
+      try {
+        catalog = JSON.parse(byId("architecture-catalog").textContent);
+        if (!Array.isArray(catalog.stages) || !catalog.stages.length || !catalog.sources) throw new Error("缺少阶段或源码目录");
+      } catch (error) {
+        byId("load-error").hidden = false;
+        byId("load-error").textContent = "源码目录加载失败：" + error.message;
+        return;
+      }
+      const stages = catalog.stages;
+      const sourceButtons = new Map();
+      let currentStage = 0;
+      let currentSource = null;
+      const addText = (parent, tag, text, className) => {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        element.textContent = String(text ?? "");
+        parent.append(element);
+        return element;
+      };
+      const formatValue = value => Array.isArray(value) ? value.join("；") : String(value ?? "");
+      const snapshot = byId("snapshot");
+      for (const [label, value] of [["分支", catalog.meta?.branch], ["代码快照", catalog.meta?.commit], ["源码提交日期", catalog.meta?.date]]) {
+        const item = addText(snapshot, "span", label + "：");
+        addText(item, "code", value || "未提供");
+      }
+      function showSource(sourceId) {
+        const source = catalog.sources[sourceId];
+        if (!source) return;
+        currentSource = sourceId;
+        byId("source-path").textContent = source.file + (source.symbol ? " · " + source.symbol : "");
+        byId("source-role").textContent = source.role || "";
+        byId("source-range").textContent = "L" + source.start + "–L" + source.end;
+        byId("source-hash").textContent = "文件 SHA-256 · UTF-8 / LF  " + (source.sha256 || "未记录");
+        const encodedPath = source.file.split("/").map(encodeURIComponent).join("/");
+        byId("github-source").href = "https://github.com/luogantt/General-AI-Compiler/blob/" + encodeURIComponent(catalog.meta?.commit || "49ac6aa") + "/" + encodedPath + "#L" + source.start + "-L" + source.end;
+        byId("local-source").href = "../" + encodedPath;
+        const pre = byId("code-body");
+        pre.replaceChildren();
+        const lines = String(source.code || "").replace(/\r\n/g, "\n").split("\n");
+        if (lines.length > 1 && lines[lines.length - 1] === "") lines.pop();
+        for (let index = 0; index < lines.length; index++) {
+          const line = addText(pre, "span", lines[index] || " ", "code-line");
+          line.dataset.line = String(Number(source.start) + index);
+        }
+        pre.scrollTop = 0;
+        pre.scrollLeft = 0;
+        for (const [id, buttons] of sourceButtons) for (const button of buttons) button.setAttribute("aria-pressed", String(id === currentSource));
+      }
+      function renderSources(container, ids) {
+        container.replaceChildren();
+        for (const id of ids || []) {
+          const source = catalog.sources[id];
+          if (!source) continue;
+          const button = addText(container, "button", source.role || source.symbol || source.file, "source-choice");
+          button.type = "button";
+          button.setAttribute("aria-pressed", String(id === currentSource));
+          button.setAttribute("aria-controls", "source-inspector");
+          addText(button, "code", source.file + ":" + source.start);
+          button.addEventListener("click", () => showSource(id));
+          if (!sourceButtons.has(id)) sourceButtons.set(id, []);
+          sourceButtons.get(id).push(button);
+        }
+      }
+      function selectStage(index, updateHash = true) {
+        currentStage = Math.max(0, Math.min(stages.length - 1, index));
+        const stage = stages[currentStage];
+        for (const button of byId("pipeline-list").querySelectorAll("button")) button.setAttribute("aria-pressed", String(Number(button.dataset.index) === currentStage));
+        byId("stage-heading").textContent = stage.number + " · " + stage.title;
+        for (const name of ["input", "action", "output", "boundary", "artifact"]) byId("stage-" + name).textContent = formatValue(stage[name]);
+        byId("previous-stage").disabled = currentStage === 0;
+        byId("next-stage").disabled = currentStage === stages.length - 1;
+        renderSources(byId("stage-sources"), stage.sources);
+        if (stage.sources?.length) showSource(stage.sources[0]);
+        if (updateHash) {
+          try { history.replaceState(null, "", "#stage-" + stage.number); } catch (_) { /* Some offline browser policies disable history writes. */ }
+        }
+      }
+      stages.forEach((stage, index) => {
+        const item = document.createElement("li");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "stage";
+        button.dataset.index = String(index);
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-controls", "stage-detail");
+        addText(button, "span", stage.number, "stage-no");
+        const labels = document.createElement("span");
+        addText(labels, "span", stage.title, "stage-title");
+        addText(labels, "span", stage.id, "stage-id");
+        button.append(labels);
+        button.addEventListener("click", () => selectStage(index));
+        item.append(button);
+        byId("pipeline-list").append(item);
+      });
+      byId("previous-stage").addEventListener("click", () => selectStage(currentStage - 1));
+      byId("next-stage").addEventListener("click", () => selectStage(currentStage + 1));
+      for (const layer of catalog.layers || []) {
+        const row = document.createElement("tr");
+        addText(addText(row, "td", ""), "code", layer.path);
+        const role = addText(row, "td", "");
+        addText(role, "strong", layer.title);
+        addText(role, "div", layer.role);
+        addText(row, "td", formatValue(layer.depends));
+        byId("layer-table").append(row);
+      }
+      for (const model of catalog.models || []) {
+        const card = document.createElement("article");
+        card.className = "model-card";
+        addText(card, "h3", model.name);
+        addText(card, "p", model.scope);
+        const buttons = addText(card, "div", "", "sources");
+        renderSources(buttons, model.sources);
+        byId("model-grid").append(card);
+      }
+      renderSources(byId("buffer-sources"), catalog.buffer_sources);
+      renderSources(byId("backend-sources"), catalog.backend_sources);
+      const tabs = [...document.querySelectorAll(".tab")];
+      function selectPanel(name, moveFocus = false) {
+        const selected = tabs.find(tab => tab.dataset.panel === name) || tabs[0];
+        for (const tab of tabs) {
+          const active = tab === selected;
+          tab.setAttribute("aria-selected", String(active));
+          tab.tabIndex = active ? 0 : -1;
+          byId("panel-" + tab.dataset.panel).hidden = !active;
+        }
+        if (moveFocus) selected.focus();
+        if (name === "buffers" && catalog.buffer_sources?.length) showSource(catalog.buffer_sources[0]);
+        if (name === "backend" && catalog.backend_sources?.length) showSource(catalog.backend_sources[0]);
+        if (name === "layers" && catalog.models?.[0]?.sources?.length) showSource(catalog.models[0].sources[0]);
+        if (name === "pipeline") selectStage(currentStage, false);
+      }
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => selectPanel(tab.dataset.panel));
+        tab.addEventListener("keydown", event => {
+          let next = index;
+          if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+          else if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+          else if (event.key === "Home") next = 0;
+          else if (event.key === "End") next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          selectPanel(tabs[next].dataset.panel, true);
+        });
+      });
+      const initial = /^#stage-(\d+)$/.exec(location.hash);
+      const initialIndex = initial ? stages.findIndex(stage => Number(stage.number) === Number(initial[1])) : 0;
+      selectStage(initialIndex < 0 ? 0 : initialIndex, false);
+    })();
+  </script>
+</body>
+</html>

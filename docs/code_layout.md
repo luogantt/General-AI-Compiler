@@ -1,5 +1,8 @@
 # 源码分层与编译流程
 
+交互式入口：[架构图目录](index.html) → [V8：分层与十阶段源码](vortex-matmul-end-to-end-v8.html)。
+V8 对应本次重构；V6 的旧路径、行号和代码摘录是固定历史快照。
+
 本项目采用“通用图语义、通用编译分析、模型构图、目标实现、执行与验证”分层。
 ONNX 与 `torch.export` 先导入 Python 表达的 Canonical Graph；目标后端再生成 MLIR。
 因此，模型导入器不直接生成机器码，也不负责分配设备 Buffer。

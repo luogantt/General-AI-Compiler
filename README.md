@@ -117,7 +117,9 @@ Direct MLIR 现支持 `--matmul-schedule dxa-double-buffer`：FC1/FC2 按 M/N/K 
 
 2026-10-14 的 SimX 验证覆盖尾部 Tile、多 warp 和 Stage 复用。在合成生产宽度 `[1,8,256] → 512 → 256` 上，`4×4×128` Tile 的总周期比同输入 scalar 少 **17.5%**，最大绝对误差 `1.43051147e-6`；小尺寸双缓冲也可能更慢。这是一个静态 FFN 的模拟器结果，不代表完整 BEVFormer 或 FPGA/ASIC 延迟，见[原始对照记录](docs/validation/vortex/buffered-mlir-2026-10-14/README.md)。
 
-Vortex 的交互式 HTML 说明统一放在本仓库 `docs/`。建议从 V6 开始，逐模块查看编译器代码；V1–V5 保留不同阶段的说明。
+Vortex 的交互式 HTML 说明统一放在本仓库 `docs/`。
+先打开[架构图目录](docs/index.html)，再进入 **V8** 查看本次源码分层后的真实代码映射；
+旧图保留为历史版本，不能把固定 FFN 的 LMEM/DXA 优化视为全图默认实现。
 
 | 版本 | 内容 |
 | --- | --- |
@@ -126,10 +128,16 @@ Vortex 的交互式 HTML 说明统一放在本仓库 `docs/`。建议从 V6 开�
 | [V3：端到端搬运](docs/vortex-matmul-end-to-end-v3.html) | DDR → LMEM Buffer → 累加寄存器 → DDR |
 | [V4：代码映射](docs/vortex-matmul-code-map-v4.html) | 数据流步骤对应编译器与 RTL 源码 |
 | [V5：编译器全流程](docs/vortex-matmul-end-to-end-v5.html) | 模型导入、优化、计算模板、后端调度与精度 |
-| [V6：逐模块源码](docs/vortex-matmul-end-to-end-v6.html) | 模型导入到 Runtime 的源码摘录、解释与链接 |
-| [V7：BEVFormer 全模型异构架构](docs/bevformer-compiler-architecture.html) | 模型导入、Canonical Graph、自动切分、后端 Lowering、全局 Buffer 与 Runtime 边界 |
+| [V6：逐模块源码](docs/vortex-matmul-end-to-end-v6.html) | 固定 FFN 历史快照：模型导入到 Runtime 的源码摘录、解释与链接 |
+| [V7：BEVFormer 全模型异构设计](docs/bevformer-compiler-architecture.html) | 历史设计：模型导入、Canonical Graph、自动切分、后端 Lowering、全局 Buffer 与 Runtime 边界 |
+| [V8：重构后的分层与十阶段源码](docs/vortex-matmul-end-to-end-v8.html) | 模型适配器、实际十阶段函数、全图 Buffer、MLIR/VOLT/Runtime；源码摘录按当前规范路径自动生成 |
 
-下载仓库后用浏览器打开 HTML 即可交互。GAC 源码和文档链接使用仓库内相对路径；Vortex/LLVM 源码链接仍指向页面标注的独立本地 checkout。V4/V6 的源码摘录保留原始版本与 SHA，V6 的 GAC 摘录同时提供固定 commit 的 GitHub 链接。
+下载仓库后用浏览器打开 HTML 即可交互。V8 的 GAC 源码链接使用仓库内相对路径，
+并附带固定源码提交的 GitHub 链接。历史 V4/V6 的摘录、旧目录与 SHA 保持原版本；
+其中 Vortex/LLVM 链接仍指向页面标注的独立 checkout。
+
+V8 从真实函数提取代码、行号和文件 SHA-256，更新源码后运行
+`python tools/build_architecture_docs.py`；加 `--check` 可验证页面是否需要重新生成。
 
 ## MLIR / `mlir-opt` 文件在哪里？
 

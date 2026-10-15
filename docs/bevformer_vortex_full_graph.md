@@ -1,4 +1,4 @@
-# BEVFormer 整图 Vortex 后端：V6 十层实现
+# BEVFormer 整图 Vortex 后端：十阶段实现
 
 分支：`lg/bevformer-vortex-full-ops`。
 
@@ -6,6 +6,9 @@
 BEVFormer streaming Graph 编译到**单一 Vortex 设备**。网络计算包含 ResNet/FPN、
 运动补偿、时序/空间 Attention、Encoder、Decoder、原始检测头和下一帧 BEV 状态。
 算子先由软件 Kernel 实现，不要求硬件为每种算子提供专用指令。
+
+重构后的实际函数、Buffer 和代码位置见 [V8 架构图](vortex-matmul-end-to-end-v8.html)。
+V6 是此前固定 FFN 路径的源码快照；它定义的模块划分继续沿用，但实现范围与代码目录已经演进。
 
 当前实现覆盖项目规范 IR 的 33 类算子。完整生产 Profile 与真实 checkpoint 已完成
 MLIR Lowering、VOLT 指令选择、ELF 链接和 `.vxbin` 封装；数值验证使用完整拓扑的
@@ -15,7 +18,7 @@ MLIR Lowering、VOLT 指令选择、ELF 链接和 `.vxbin` 封装；数值验证
 
 ## 1. 十个模块的代码与交付物
 
-| V6 模块 | 实际动作 | 代码入口 | Artifact |
+| 编译阶段 | 实际动作 | 代码入口 | Artifact |
 |---|---|---|---|
 | 1 模型导入 | ONNX、torch.export、Graph JSON；完整 BEVFormer `.gacweights` 权重绑定 | [`build_vortex_graph.main`](../src/gac/tools/build_vortex_graph.py)、[`load_bevformer_step_graph`](../src/gac/models/bevformer/frontends/graph.py) | `01-import.json`、外置权重 `.bin` |
 | 2 IR 转换 | 使用带名字、Shape、DType、属性和来源的 Graph IR；推导所有值类型 | [`Graph`](../src/gac/core/ir.py)、[`ShapeInferencePass`](../src/gac/compiler/passes.py) | `02-graph.json` |

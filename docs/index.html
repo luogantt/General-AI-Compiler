@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>General AI Compiler · 架构图目录</title>
+  <style>
+    :root { color-scheme: light; --paper: #fff; --ink: #172635; --muted: #526374; --line: #d8e0e8; --accent: #0756a6; --soft: #eef5fc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f7fa; color: var(--ink); font: 16px/1.7 system-ui, "Microsoft YaHei", sans-serif; }
+    main { max-width: 1024px; margin: auto; padding: 36px 22px 56px; }
+    h1 { font-size: clamp(26px, 4vw, 36px); margin: 0 0 8px; line-height: 1.35; }
+    h2 { font-size: 22px; margin: 30px 0 12px; }
+    h3 { font-size: 18px; margin: 0 0 8px; }
+    p { margin: 8px 0; }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    a:hover { text-decoration-thickness: 2px; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+    code { font: .9em ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+    .muted { color: var(--muted); }
+    .current { padding: 24px; margin: 24px 0 16px; border: 2px solid var(--accent); border-radius: 12px; background: var(--soft); }
+    .current h2 { margin-top: 0; }
+    .primary { display: inline-block; margin: 12px 0 4px; padding: 9px 17px; background: var(--accent); color: white; border-radius: 6px; font-weight: 650; text-decoration: none; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .card { padding: 19px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+    .card p { color: var(--muted); font-size: 15px; }
+    .note { padding: 16px 18px; border-left: 4px solid #9b6816; background: #fff8e9; }
+    footer { color: var(--muted); border-top: 1px solid var(--line); margin-top: 30px; padding-top: 15px; font-size: 14px; }
+    @media (max-width: 620px) { main { padding: 24px 16px 40px; } .grid { grid-template-columns: 1fr; } .current { padding: 18px; } }
+    @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --paper: #16212e; --ink: #e4edf6; --muted: #afbdcc; --line: #3b4a59; --accent: #86bfff; --soft: #152a40; } body { background: #101923; } .primary { background: #0756a6; } .note { background: #30291b; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>General AI Compiler · 架构图目录</h1>
+    <p class="muted">从模型导入、十个编译阶段，到 Buffer、机器码和 Runtime。</p>
+    <p>当前源码分支：<code>lg/bevformer-vortex-full-ops</code>。源码分层重构基线：<code>49ac6aa</code>。</p>
+  </header>
+
+  <section class="current" aria-labelledby="current-title">
+    <h2 id="current-title">当前入口：V8 · 分层源码与十个编译阶段</h2>
+    <p>按重构后的目录查看 ModelAdapter、通用 Graph、编译流水线、Vortex 代码生成与执行之间的关系；每个阶段对应实际源码位置。</p>
+    <a class="primary" href="vortex-matmul-end-to-end-v8.html">打开 V8 架构图 →</a>
+    <p><a href="code_layout.md">源码分层与扩展说明</a> · <a href="bevformer_vortex_full_graph.md">BEVFormer 全图 Vortex 路径与验证范围</a></p>
+    <p class="muted">模型范围需分别看待：BEVFormer 全图路径已建立；UniAD 目前是 FFN 适配；VLA 是可扩展方向。</p>
+  </section>
+
+  <aside class="note" aria-label="阅读范围">
+    <strong>看图时先区分两条实现路径。</strong>
+    当前全图路径使用 global arena 与 SIMT 软件 Kernel；历史固定 FFN 路径包含 LMEM、DXA 和双缓冲设计。
+    旧图中的搬运与缓冲策略，不能直接视为当前所有算子都已采用的实现。
+  </aside>
+
+  <section aria-labelledby="archive-title">
+    <h2 id="archive-title">历史架构图 · 保留供对照</h2>
+    <p class="muted">以下 8 个文件均保留。源码位置和实现范围以图中的版本说明为准；查看重构后的代码请从 V8 开始。</p>
+    <div class="grid">
+      <article class="card">
+        <h3><a href="vortex-matmul-end-to-end-v6.html">V6 · 十个模块对应源码</a></h3>
+        <p>模型导入到 Runtime 的代码映射。固定源码版本为 <code>53cc39cd953d0a6319ba1fc4ceacb1756e4b2038</code>，对应此前的固定 FFN 路径及目录结构。</p>
+      </article>
+      <article class="card">
+        <h3><a href="vortex-matmul-end-to-end-v5.html">V5 · 编译器、后端与精度</a></h3>
+        <p>十个编译阶段的概念展开，以及计算模板、内存规划、流水调度和五类算子的设计约束。</p>
+      </article>
+      <article class="card">
+        <h3><a href="vortex-matmul-code-map-v4.html">V4 · 矩阵分块到编译器与 RTL</a></h3>
+        <p>把矩阵执行过程对应到 Kernel、编译器和 RTL 源码，帮助理解软件动作与硬件模块的关系。</p>
+      </article>
+      <article class="card">
+        <h3><a href="vortex-matmul-end-to-end-v3.html">V3 · DDR Tile 到 SRAM Buffer</a></h3>
+        <p>按步骤解释矩阵分块、搬运、双缓冲、C 累加与写回。适合先理解 Buffer 的作用。</p>
+      </article>
+      <article class="card">
+        <h3><a href="vortex-matmul-compute-v2.html">V2 · 矩阵乘法计算过程</a></h3>
+        <p>以 100×100 矩阵乘法解释分块、计算资源和数据流，是较早的计算过程示意。</p>
+      </article>
+      <article class="card">
+        <h3><a href="vortex-matmul-dataflow.html">初版 · SGEMM 硬件数据流</a></h3>
+        <p>从 Vortex 硬件数据流角度观察矩阵乘法，适合与后续分步版对照阅读。</p>
+      </article>
+      <article class="card">
+        <h3><a href="bevformer-vortex-buffered-code-map.html">BEVFormer FFN · 双缓冲源码图</a></h3>
+        <p>固定 FFN 编译链、LMEM Buffer 与搬运代码的对应关系；它与当前全图软件 Kernel 路径分开阅读。</p>
+      </article>
+      <article class="card">
+        <h3><a href="bevformer-compiler-architecture.html">V7 · 历史全模型异构设计</a></h3>
+        <p>BEVFormer 全模型与 CUDA 异构编译设计记录。用于了解项目演进，不代表当前单 Vortex 全图执行方案。</p>
+      </article>
+    </div>
+  </section>
+
+  <footer>本目录与 V8 可在本地离线使用；历史 V7 包含外部组件。源码的 GitHub 链接需要联网且对应提交已推送。Markdown 文档可在代码编辑器或 GitHub 中阅读。</footer>
+</main>
+</body>
+</html>
