@@ -83,7 +83,7 @@ def build_catalog() -> dict:
         add(stage.name, COMPILER, symbol, f"第 {stage.number} 阶段的实际执行函数")
     add("pipeline", "src/gac/compiler/pipeline.py", "run_pipeline", "通用阶段顺序与失败阻断")
     add("entry", COMPILER, "compile_vortex_graph", "十阶段函数注册与编译入口")
-    add("frontend", "src/gac/frontends/model_frontend.py", "load_model", "通用模型文件 → Canonical Graph")
+    add("frontend", "src/gac/frontends/model_frontend.py", "load_model", "通用模型文件 → Canonical Graph", max_lines=50)
     add("model-api", "src/gac/models/api.py", "load_model_graph", "模型适配器 → 同一种 Graph")
     add("adapter-protocol", "src/gac/models/api.py", "ModelAdapter", "新增模型需要满足的 Graph 接口")
     add("adapter-register", "src/gac/models/api.py", "register_model_adapter", "注册实际模型适配器；不初始化设备")
@@ -91,12 +91,16 @@ def build_catalog() -> dict:
     add("uniad", "src/gac/models/uniad/adapter.py", "UniADFFNAdapter.build", "当前 UniAD 单层 FFN 构图")
     add("shared-ffn", "src/gac/models/common/ffn.py", "build_transformer_ffn_graph", "模型无关的共享 FFN")
     add("shape", "src/gac/compiler/passes.py", "ShapeInferencePass.run", "推导并校验 TensorSpec")
+    add("constant-folding", "src/gac/compiler/passes.py", "ConstantFoldingPass.run", "图优化内部实现：常量折叠")
+    add("dead-code", "src/gac/compiler/passes.py", "DeadCodeEliminationPass.run", "图优化内部实现：死代码消除")
     add("static", COMPILER, "_validate_static_specs", "静态形状、DType 与 RV32 范围")
+    add("boolean-check", COMPILER, "_validate_boolean_operations", "合法化内部实现：布尔算子约束")
     add("templates", COMPILER, "_template", "按规范算子选择软件计算模板")
     add("target-matmul", "src/gac/targets/vortex/scalar_ops.py", "_matmul", "目标 GEMM 计算模板：load / K 轴累加")
     add("target-layernorm", "src/gac/targets/vortex/scalar_ops.py", "_layer_norm", "目标 LayerNorm 归约模板")
     add("target-softmax", "src/gac/targets/vortex/scalar_ops.py", "_softmax", "目标 Softmax 归约模板")
     add("scalar-arithmetic", "src/gac/targets/vortex/scalar_ir.py", "ScalarBuilder.binary", "实际生成 arith.addf / mulf 等 MLIR 运算")
+    add("scalar-loop", "src/gac/targets/vortex/scalar_ir.py", "ScalarBuilder.loop", "Tiling 内部实现：生成 SCF 循环与归约累加值")
     add("memory-plan", MEMORY, "plan_memory", "Buffer 生命周期与布局规划合同", max_lines=24)
     add("memory-lifetimes", MEMORY, "plan_memory · definition / uses", "生产时刻、最后消费与输出存活期",
         anchor="definition: dict[str, int]", max_lines=22)
@@ -106,6 +110,8 @@ def build_catalog() -> dict:
     add("device-load", "src/gac/targets/vortex/scalar_ir.py", "ScalarBuilder.load", "生成普通设备内存读取")
     add("device-store", "src/gac/targets/vortex/scalar_ir.py", "ScalarBuilder.store", "生成普通设备内存写回")
     add("kernel-abi", COMPILER, "_entry", "uniform 参数解包、CTA CSR 和线程索引")
+    add("kernel-body", COMPILER, "_kernel_body", "Codegen 内部实现：生成算子体与 store")
+    add("host-generation", HOST, "emit_graph_host", "Runtime 阶段内部实现：生成 Host 调度程序", max_lines=38)
     add("host-allocate", HOST, "Device::initialize（生成的 Host C++）", "一个设备、一个队列与真实设备 Buffer",
         anchor="void initialize(const std::string& kernel)", max_lines=21)
     add("host-upload", HOST, "Device::upload（生成的 Host C++）", "Host 数据上传到设备全局 Buffer",
@@ -136,11 +142,11 @@ def build_catalog() -> dict:
         ("图优化 Pass", "已推导类型的 Graph",
          "执行常量折叠、死代码消除，然后重新推导类型；保存 Pass 报告。",
          "优化后的 Graph + Pass 报告",
-         "当前全图路径不宣称实现任意融合或全自动硬件调优。", []),
+         "当前全图路径不宣称实现任意融合或全自动硬件调优。", ["constant-folding", "dead-code", "shape"]),
         ("算子合法化", "优化后的图与 Vortex 目标约束",
          "复核图、存储/索引范围和输出数，拒绝无法由当前目标表达的节点。",
          "可继续 Lowering 的静态图",
-         "Lowering 分阶段进行；真正生成目标指令语义在第 9 阶段。", ["static"]),
+         "Lowering 分阶段进行；真正生成目标指令语义在第 9 阶段。", ["static", "boolean-check"]),
         ("子图切分与 DAG", "合法算子与张量生产/消费关系",
          "当前基线每个节点形成一个可执行区域，计算区域间数据依赖。",
          "KernelPartition 列表和依赖 DAG",
@@ -152,7 +158,7 @@ def build_catalog() -> dict:
         ("Tiling 与线程工作量", "选定模板和输出规模",
          "当前每个 SIMT 线程负责一个输出，归约轴由线程内串行循环完成。",
          "output_elements_per_thread=1、reduction=serial、LMEM=0",
-         "全图标量基线没有 BM/BN/BK 调优。固定 FFN 的分块优化是另一条路径。", []),
+         "全图标量基线没有 BM/BN/BK 调优。固定 FFN 的分块优化是另一条路径。", ["kernel-abi", "target-matmul", "scalar-loop"]),
         ("Schedule 与 Buffer", "区域依赖、Tile 计划和张量活跃区间",
          "规划全局 arena 地址复用，构造严格有序的 Dispatch；每次等待前一次完成。",
          "MemoryPlan + 带事件顺序的 Dispatch 列表",
@@ -160,11 +166,11 @@ def build_catalog() -> dict:
         ("Codegen 与 Lowering", "调度后的模板、地址 ABI 与线程索引",
          "生成 SCF/Arith/Math/LLVM Dialect；mlir-opt Lowering、mlir-translate、VOLT 编译与链接。",
          "kernel.mlir → LLVM IR → ELF → kernel.vxbin",
-         "编译 API 生成源码/计划；最终机器码构建由生成的 Makefile 执行，C++ 只承担 Host 调度。", ["scalar-arithmetic", "kernel-abi", "makefile", "translate"]),
+         "编译 API 生成源码/计划；最终机器码构建由生成的 Makefile 执行，C++ 只承担 Host 调度。", ["kernel-body", "scalar-arithmetic", "kernel-abi", "makefile", "translate"]),
         ("Runtime 与设备执行", "Dispatch、Buffer 计划与已构建 vxbin",
          "本阶段生成 Host 程序；运行该程序时分配真实设备内存、上传、按事件启动并读回。",
          "设备输出与执行状态",
-         "编译阶段生成 Runtime 源码不等于已经运行设备；模拟器时间也不等于芯片延时。", ["host-allocate", "host-upload", "host-dispatch", "host-readback"]),
+         "编译阶段生成 Runtime 源码不等于已经运行设备；模拟器时间也不等于芯片延时。", ["host-generation", "host-allocate", "host-upload", "host-dispatch", "host-readback"]),
     )
     stages = []
     for stage, description in zip(COMPILER_STAGES, descriptions, strict=True):

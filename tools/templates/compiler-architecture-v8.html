@@ -36,12 +36,20 @@
     .panel { border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); padding:23px; }
     .section-intro { margin-top:6px; color:var(--muted); max-width:1030px; }
     .pipeline { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; padding:0; margin:22px 0; list-style:none; counter-reset:stages; }
-    .stage { display:flex; align-items:flex-start; width:100%; min-height:88px; text-align:left; gap:11px; padding:13px; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius); }
+    .stage { display:flex; align-items:flex-start; width:100%; height:100%; min-height:150px; text-align:left; gap:11px; padding:13px; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius); }
     .stage[aria-pressed="true"] { background:var(--tint); border-color:var(--accent); }
     .stage-no { flex:0 0 25px; height:25px; border:1px solid var(--line); border-radius:50%; text-align:center; line-height:23px; font-size:12px; }
     .stage[aria-pressed="true"] .stage-no { border-color:var(--accent); color:var(--accent); }
     .stage-title { display:block; font-weight:650; line-height:1.45; }
-    .stage-id { display:block; color:var(--muted); font:10px/1.5 ui-monospace,Consolas,monospace; margin-top:5px; overflow-wrap:anywhere; }
+    .stage-symbol,.stage-location { display:block; font:11px/1.6 ui-monospace,Consolas,monospace; margin-top:7px; overflow-wrap:anywhere; }
+    .stage-location { color:var(--muted); }
+    .stage-open { display:block; color:var(--accent); font-size:11px; margin-top:7px; }
+    .stage-workspace { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.6fr); gap:20px; align-items:start; scroll-margin-top:16px; }
+    .stage-workspace>div { min-width:0; }
+    .stage-workspace .contract { grid-template-columns:1fr; }
+    .stage-workspace .contract>.arrow { height:24px; transform:rotate(90deg); }
+    .stage-workspace .inspector { margin-top:0; }
+    .stage-workspace .code-body { max-height:540px; }
     .step-heading { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-bottom:12px; }
     .step-nav { display:flex; gap:6px; }
     .small-button { border:1px solid var(--line); background:var(--surface); border-radius:5px; padding:4px 10px; font-size:13px; }
@@ -97,7 +105,7 @@
     .footnote { padding:12px 20px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
     .footer { margin-top:24px; font-size:12px; color:var(--muted); }
     .load-error { color:#b33434; padding:20px; border:1px solid currentColor; margin:20px 0; }
-    @media (max-width:1000px) { .pipeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .flow.compact { flex-wrap:wrap; gap:10px; } .flow.compact .flow-box { flex-basis:27%; } .flow.compact>.arrow { display:none; } .model-grid { grid-template-columns:1fr; } }
+    @media (max-width:1000px) { .pipeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .stage-workspace { grid-template-columns:1fr; } #stage-source-slot { order:-1; } .flow.compact { flex-wrap:wrap; gap:10px; } .flow.compact .flow-box { flex-basis:27%; } .flow.compact>.arrow { display:none; } .model-grid { grid-template-columns:1fr; } }
     @media (max-width:650px) { .shell { padding:20px 13px 32px; } .panel { padding:17px 13px; } .tabs { gap:6px; } .tab { padding:8px 11px; font-size:13px; } .pipeline { gap:7px; } .stage { padding:10px; gap:7px; min-height:90px; } .contract { grid-template-columns:1fr; } .contract>.arrow { height:25px; transform:rotate(90deg); } .flow { flex-direction:column; } .flow>.arrow { flex-basis:27px; transform:rotate(90deg); } .flow.compact .flow-box { flex-basis:auto; } .step-heading { align-items:flex-start; } .step-nav { white-space:nowrap; } .code-body { font-size:11px; } .code-line::before { width:48px; padding-right:10px; } }
     @media print { .shell { width:100%; padding:0; } body { background:white; color:black; } .panel { display:block !important; margin-bottom:18px; break-inside:avoid; } .tabs,.step-nav,.source-links,.breadcrumb { display:none; } .inspector { break-before:page; } .code-body { max-height:none; } }
   </style>
@@ -130,8 +138,9 @@
       <div id="load-error" class="load-error" role="alert" hidden></div>
       <section class="panel" id="panel-pipeline" role="tabpanel" aria-labelledby="tab-pipeline">
         <h2>十步是执行顺序，也是一组可检查的边界</h2>
-        <p class="section-intro">导入得到 Python Graph；目标后端随后生成 MLIR。按 1 → 10 阅读，每一步输出构成后一步的输入。选择卡片可查看实现与阶段产物。</p>
+        <p class="section-intro">每个 banner 直接标出代码文件、函数与行号。点击后，在下方同时查看该阶段的输入/输出与真实源码；还可选择内部 Pass、模板、Buffer 或 Runtime 实现。</p>
         <ol class="pipeline" id="pipeline-list" aria-label="编译阶段顺序"></ol>
+        <div id="stage-workspace" class="stage-workspace">
         <div id="stage-detail" aria-live="polite">
           <div class="step-heading">
             <h3 id="stage-heading"></h3>
@@ -146,7 +155,10 @@
           </div>
           <p class="boundary"><strong>实现边界：</strong><span id="stage-boundary"></span></p>
           <p class="artifact">可检查产物：<code id="stage-artifact"></code></p>
+          <p class="boundary"><strong>入口与内部实现：</strong>下面可切换具体代码。<a href="#pipeline-list">返回十个 banner ↑</a></p>
           <div id="stage-sources" class="sources" aria-label="当前阶段的源码"></div>
+        </div>
+        <div id="stage-source-slot"></div>
         </div>
       </section>
       <section class="panel" id="panel-layers" role="tabpanel" aria-labelledby="tab-layers" hidden>
@@ -215,6 +227,7 @@
           <div class="sources" id="backend-sources" aria-label="机器码与 Runtime 源码"></div>
         </div>
       </section>
+      <div id="shared-source-slot">
       <section class="inspector" id="source-inspector" aria-labelledby="inspector-heading">
         <div class="inspector-head">
           <div class="inspector-title"><h2 id="inspector-heading">对应源码</h2><span class="label" id="source-range"></span></div>
@@ -226,6 +239,7 @@
         <pre class="code-body" id="code-body" tabindex="0" aria-label="实际源码及行号"></pre>
         <p class="footnote">代码片段由生成工具读取真实文件后嵌入，包含原行号与文件 SHA-256。本地链接直接打开当前文件；GitHub 固定版本链接在对应源码提交推送后可用。后续工作区修改可能与本页快照不同。</p>
       </section>
+      </div>
     </main>
     <footer class="footer">V8 对应重构后的规范目录。V6 固定 FFN 与 V7 异构架构图保留各自历史内容；阅读旧图时，应同时查看其版本说明和执行范围。</footer>
   </div>
@@ -284,6 +298,11 @@
         for (const [id, buttons] of sourceButtons) for (const button of buttons) button.setAttribute("aria-pressed", String(id === currentSource));
       }
       function renderSources(container, ids) {
+        for (const [id, buttons] of sourceButtons) {
+          const retained = buttons.filter(button => !container.contains(button));
+          if (retained.length) sourceButtons.set(id, retained);
+          else sourceButtons.delete(id);
+        }
         container.replaceChildren();
         for (const id of ids || []) {
           const source = catalog.sources[id];
@@ -292,7 +311,8 @@
           button.type = "button";
           button.setAttribute("aria-pressed", String(id === currentSource));
           button.setAttribute("aria-controls", "source-inspector");
-          addText(button, "code", source.file + ":" + source.start);
+          addText(button, "code", source.symbol);
+          addText(button, "code", source.file + ":L" + source.start);
           button.addEventListener("click", () => showSource(id));
           if (!sourceButtons.has(id)) sourceButtons.set(id, []);
           sourceButtons.get(id).push(button);
@@ -301,6 +321,7 @@
       function selectStage(index, updateHash = true) {
         currentStage = Math.max(0, Math.min(stages.length - 1, index));
         const stage = stages[currentStage];
+        byId("stage-source-slot").append(byId("source-inspector"));
         for (const button of byId("pipeline-list").querySelectorAll("button")) button.setAttribute("aria-pressed", String(Number(button.dataset.index) === currentStage));
         byId("stage-heading").textContent = stage.number + " · " + stage.title;
         for (const name of ["input", "action", "output", "boundary", "artifact"]) byId("stage-" + name).textContent = formatValue(stage[name]);
@@ -323,9 +344,21 @@
         addText(button, "span", stage.number, "stage-no");
         const labels = document.createElement("span");
         addText(labels, "span", stage.title, "stage-title");
-        addText(labels, "span", stage.id, "stage-id");
+        const source = catalog.sources[stage.sources[0]];
+        addText(labels, "code", source.symbol + "()", "stage-symbol");
+        const location = addText(labels, "code", "", "stage-location");
+        source.file.split("/").forEach((part, index) => {
+          if (index) location.append(document.createTextNode("/"), document.createElement("wbr"));
+          location.append(document.createTextNode(part));
+        });
+        location.append(document.createTextNode(":L" + source.start));
+        addText(labels, "span", "点击查看对应代码 →", "stage-open");
+        button.setAttribute("aria-label", stage.number + " · " + stage.title + "；" + source.symbol + "；" + source.file + " 第 " + source.start + " 行");
         button.append(labels);
-        button.addEventListener("click", () => selectStage(index));
+        button.addEventListener("click", () => {
+          selectStage(index);
+          byId("stage-workspace").scrollIntoView({block:"start", behavior:"auto"});
+        });
         item.append(button);
         byId("pipeline-list").append(item);
       });
@@ -354,6 +387,7 @@
       const tabs = [...document.querySelectorAll(".tab")];
       function selectPanel(name, moveFocus = false) {
         const selected = tabs.find(tab => tab.dataset.panel === name) || tabs[0];
+        if (name !== "pipeline") byId("shared-source-slot").append(byId("source-inspector"));
         for (const tab of tabs) {
           const active = tab === selected;
           tab.setAttribute("aria-selected", String(active));
