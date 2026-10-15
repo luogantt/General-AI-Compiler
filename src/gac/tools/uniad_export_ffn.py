@@ -18,7 +18,7 @@ from typing import Any, Mapping
 import numpy as np
 
 
-from gac.uniad import (
+from gac.models.uniad import (
     UniADFFNContract,
     encoder_ffn_checkpoint_keys,
     extract_encoder_ffn_weights,

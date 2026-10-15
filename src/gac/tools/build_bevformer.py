@@ -18,94 +18,70 @@ import re
 import sys
 from typing import Any, Sequence
 
-from gac.backends.cuda import compile_cuda
-from gac.bevformer_spatial import (
-    SpatialCrossAttentionConfig,
-    build_spatial_cross_attention_graph,
-)
-from gac.bevformer_temporal import (
-    TemporalSelfAttentionConfig,
-    build_temporal_self_attention_graph,
-)
-from gac.bevformer_decoder import (
-    DecoderCrossAttentionConfig,
-    build_decoder_cross_attention_graph,
-)
-from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
-from gac.bevformer_decoder_self import (
-    DecoderSelfAttentionConfig,
-    build_decoder_self_attention_graph,
-)
-from gac.bevformer_decoder_layer import (
+from gac.targets.cuda.compiler import compile_cuda
+from gac.models.bevformer.spatial import SpatialCrossAttentionConfig, build_spatial_cross_attention_graph
+from gac.models.bevformer.temporal import TemporalSelfAttentionConfig, build_temporal_self_attention_graph
+from gac.models.bevformer.decoder import DecoderCrossAttentionConfig, build_decoder_cross_attention_graph
+from gac.models.bevformer.ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
+from gac.models.bevformer.decoder_self import DecoderSelfAttentionConfig, build_decoder_self_attention_graph
+from gac.models.bevformer.decoder_layer import (
     BevFormerDecoderLayerConfig,
     build_bevformer_decoder_layer_graph,
 )
-from gac.bevformer_detection_head import (
-    DetectionHeadConfig,
-    build_detection_head_graph,
-)
-from gac.bevformer_refinement import (
+from gac.models.bevformer.detection_head import DetectionHeadConfig, build_detection_head_graph
+from gac.models.bevformer.refinement import (
     DecoderReferenceRefinementConfig,
     build_decoder_reference_refinement_graph,
 )
-from gac.bevformer_encoder_layer import (
+from gac.models.bevformer.encoder_layer import (
     BevFormerEncoderLayerConfig,
     build_bevformer_encoder_layer_graph,
 )
-from gac.bevformer_encoder_stack import (
+from gac.models.bevformer.encoder_stack import (
     BevFormerEncoderStackConfig,
     build_bevformer_encoder_stack_graph,
 )
-from gac.bevformer_query_init import (
-    DecoderQueryInitConfig,
-    build_decoder_query_init_graph,
-)
-from gac.bevformer_feature_prep import (
-    BevFormerFeaturePrepConfig,
-    build_bevformer_feature_prep_graph,
-)
-from gac.bevformer_encoder_inputs import (
+from gac.models.bevformer.query_init import DecoderQueryInitConfig, build_decoder_query_init_graph
+from gac.models.bevformer.feature_prep import BevFormerFeaturePrepConfig, build_bevformer_feature_prep_graph
+from gac.models.bevformer.encoder_inputs import (
     BevFormerEncoderInputConfig,
     build_bevformer_encoder_input_graph,
 )
-from gac.bevformer_decoder_stack import (
+from gac.models.bevformer.decoder_stack import (
     BevFormerDecoderStackConfig,
     build_bevformer_decoder_stack_graph,
 )
-from gac.bevformer_detection_stack import (
-    DetectionStackConfig,
-    build_detection_stack_graph,
-)
-from gac.bevformer_decoder_pipeline import (
+from gac.models.bevformer.detection_stack import DetectionStackConfig, build_detection_stack_graph
+from gac.models.bevformer.decoder_pipeline import (
     BevFormerDecoderPipelineConfig,
     build_bevformer_decoder_pipeline_graph,
 )
-from gac.bevformer_cold_pipeline import (
+from gac.models.bevformer.cold_pipeline import (
     BevFormerColdPipelineConfig,
     build_bevformer_cold_pipeline_graph,
 )
-from gac.bevformer_history_pipeline import (
+from gac.models.bevformer.history_pipeline import (
     BevFormerHistoryPipelineConfig,
     build_bevformer_history_pipeline_graph,
 )
-from gac.bevformer_step_pipeline import (
+from gac.models.bevformer.step_pipeline import (
     BevFormerStepPipelineConfig,
     build_bevformer_step_pipeline_graph,
 )
-from gac.errors import GACError, ValidationError
-from gac.frontends.bevformer_backbone import (
+from gac.core.errors import GACError, ValidationError
+from gac.models.bevformer.frontends.backbone import (
     BEVFORMER_R50_FPN_PROFILE,
     BevFormerBackboneError,
     ResNetFpnProfile,
     build_bevformer_backbone_graph,
     validate_checkpoint_weights,
 )
-from gac.frontends.bevformer_export import (
+from gac.models.bevformer.frontends.export import (
     BevFormerExportError,
     build_bevformer_tiny_manifest,
     save_bevformer_manifest,
 )
-from gac.frontends.bevformer_weights import (
+from gac.models.bevformer.frontends.weights import (
     extract_decoder_cross_attention_weights,
     extract_decoder_layer_weights,
     extract_decoder_query_init_weights,
@@ -121,8 +97,8 @@ from gac.frontends.bevformer_weights import (
     extract_spatial_attention_weights,
     extract_temporal_attention_weights,
 )
-from gac.package import load_package, rebuild_cuda_program, write_package
-from gac.weights import LoadedWeights, load_weights
+from gac.artifacts.hxp import load_package, rebuild_cuda_program, write_package
+from gac.artifacts.weights import LoadedWeights, load_weights
 
 
 _SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")

@@ -15,7 +15,7 @@ import tempfile
 
 import numpy as np
 
-from gac.mlir_async_tiled_matmul import (
+from gac.targets.cuda.async_tiled_matmul import (
     ASYNC_MATMUL_BLOCK,
     ASYNC_MATMUL_GRID,
     ASYNC_MATMUL_K,

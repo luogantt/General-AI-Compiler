@@ -15,9 +15,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from gac.backends.vortex import compile_vortex_direct, write_vortex_artifact
-from gac.backends.vortex_buffered_mlir import VortexBufferPlan
-from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph, ffn_weight_shapes
+from gac.targets.vortex.ffn import compile_vortex_direct, write_vortex_artifact
+from gac.targets.vortex.buffered_mlir import VortexBufferPlan
+from gac.models.bevformer.ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph, ffn_weight_shapes
 
 
 def fixture(rows: int, channels: int):

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from gac.ir import Graph
+from gac.core.ir import Graph
 
 
 class ModelFrontendError(ValueError):
@@ -57,17 +57,17 @@ def load_model(
     if model_format == "json":
         if expected_sha256 is not None:
             raise ModelFrontendError("expected_sha256 applies only to torch-export archives")
-        from .json_frontend import load_graph
+        from gac.frontends.json_frontend import load_graph
 
         return load_graph(path)
     if model_format == "onnx":
         if expected_sha256 is not None:
             raise ModelFrontendError("expected_sha256 applies only to torch-export archives")
-        from .onnx_frontend import load_onnx
+        from gac.frontends.onnx_frontend import load_onnx
 
         return load_onnx(path, strict=strict)
 
-    from .torch_export_frontend import load_exported_program
+    from gac.frontends.torch_export_frontend import load_exported_program
 
     return load_exported_program(
         path,

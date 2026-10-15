@@ -17,31 +17,24 @@ from pathlib import Path
 import time
 from typing import Any
 
-from gac.backends.cuda import compile_cuda
-from gac.backends.mlir_cublas_ptx import (
-    TARGET as MLIR_CUBLAS_PTX_TARGET,
-    compile_mlir_cublas_ptx,
-)
-from gac.backends.mlir_cuda import compile_mlir_cuda
-from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
-from gac.mlir_cublas_ptx_artifact import (
+from gac.targets.cuda.compiler import compile_cuda
+from gac.targets.cuda.cublas_ptx import TARGET as MLIR_CUBLAS_PTX_TARGET, compile_mlir_cublas_ptx
+from gac.targets.cuda.mlir import compile_mlir_cuda
+from gac.models.api import get_model_adapter
+from gac.artifacts.cuda_cublas_ptx import (
     ARTIFACT_FILES as MLIR_CUBLAS_PTX_FILES,
     MANIFEST_FILE as MLIR_CUBLAS_PTX_MANIFEST,
     write_mlir_cublas_ptx_artifact,
 )
-from gac.mlir_tiled_ffn import (
-    DEFAULT_TILE,
-    TARGET as MLIR_TILED_FFN_TARGET,
-    compile_mlir_tiled_ffn,
-)
-from gac.mlir_tiled_ffn_artifact import (
+from gac.targets.cuda.tiled_ffn import DEFAULT_TILE, TARGET as MLIR_TILED_FFN_TARGET, compile_mlir_tiled_ffn
+from gac.artifacts.cuda_tiled_ffn import (
     ARTIFACT_FILES as MLIR_TILED_FFN_FILES,
     MANIFEST_FILE as MLIR_TILED_FFN_MANIFEST,
     write_mlir_tiled_ffn_artifact,
 )
-from gac.mlir_toolchain import DEFAULT_TIMEOUT_SECONDS
-from gac.package import write_package
-from gac.uniad import load_bundle
+from gac.toolchains.mlir import DEFAULT_TIMEOUT_SECONDS
+from gac.artifacts.hxp import write_package
+from gac.models.uniad import load_bundle
 
 
 CUDA_HXP_TARGET = "cuda-hxp"
@@ -320,20 +313,7 @@ def main(argv: list[str] | None = None) -> None:
     if profile.hidden_dim != profile.embed_dim * 2:
         raise RuntimeError("current GAC FFN lowering requires hidden_dim == 2 * embed_dim")
 
-    config = BEVFormerFFNConfig(
-        batch=profile.batch,
-        bev_h=profile.bev_h,
-        bev_w=profile.bev_w,
-        embed_dim=profile.embed_dim,
-        post_layer_norm=True,
-        layer_norm_epsilon=profile.layer_norm_epsilon,
-        ffn_dropout=0.1,
-    )
-    graph = build_bevformer_ffn_graph(
-        loaded.weights,
-        config,
-        name="uniad_stage2_encoder_layer_%d_ffn" % profile.layer,
-    )
+    graph = get_model_adapter("uniad-ffn").build(loaded)
     try:
         args.output.mkdir(parents=True, exist_ok=False)
     except FileExistsError:

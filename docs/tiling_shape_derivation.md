@@ -1094,9 +1094,9 @@ subject to
 
 本文方法不依赖特定项目。本仓库中可以参考以下小型实现：
 
-- [`TiledMatmulConfig`](../src/gac/mlir_tiled_matmul.py#L59-L117)：CUDA shared-memory Tile、线程和容量约束；
-- [`bevformer_tiled_candidates()`](../src/gac/mlir_tiled_matmul.py#L338-L347)：静态 GEMM 候选集合；
-- [`VortexBufferPlan`](../src/gac/backends/vortex_buffered_mlir.py#L19-L66)：Vortex FP32 双 Stage LMEM 计划；
-- [`vortex.py`](../src/gac/backends/vortex.py#L1456-L1471)：Vortex Runtime occupancy 准入检查。
+- [`TiledMatmulConfig`](../src/gac/targets/cuda/tiled_matmul.py#L59-L117)：CUDA shared-memory Tile、线程和容量约束；
+- [`bevformer_tiled_candidates()`](../src/gac/targets/cuda/tiled_matmul.py#L338-L347)：静态 GEMM 候选集合；
+- [`VortexBufferPlan`](../src/gac/targets/vortex/buffered_mlir.py#L19-L66)：Vortex FP32 双 Stage LMEM 计划；
+- [`vortex.py`](../src/gac/targets/vortex/ffn.py#L1456-L1471)：Vortex Runtime occupancy 准入检查。
 
 这些代码是具体后端示例，不代表本文中的完整通用 Tile 求解器已经全部实现。

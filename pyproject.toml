@@ -32,7 +32,7 @@ cuda12 = [
 ]
 
 [project.scripts]
-gac = "gac.cli:main"
+gac = "gac.tools.cli:main"
 gac-bevformer = "gac.tools.build_bevformer:main"
 gac-bevformer-plan = "gac.tools.plan_bevformer:main"
 gac-bevformer-export-checkpoint = "gac.tools.export_bevformer_checkpoint:main"

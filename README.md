@@ -93,7 +93,7 @@ graph = import_exported_program(exported_program)
 
 完整 Canonical Graph（包括从完整 HXP 恢复的图）现在可以先做算子支持分析，再按 CNN、Attention、FFN 和 utility 语义区域自动切分，生成带真实 SSA 数据依赖的 Dispatch DAG。Runtime 规划同时保存两份互补的静态内存结果：完整源图的 `MemoryPlan` 是所有 value allocation 的语义权威；按 Dispatch 折叠后的 global-boundary `MemoryPlan` 只保留公共 ABI、常量和跨 Dispatch value，并给出 Runtime schedule 坐标下的 Buffer lifetime。冻结 Profile 中预期的 3 个 Encoder FFN 与 6 个 Decoder FFN，只有在满足严格静态 FP32 pattern 和边界契约时才是 `vortex-v3` Direct-MLIR 候选；CNN、Attention、geometry、detection、state 和其他 utility 仍使用 `cuda-sm86`。
 
-[`bevformer_compiler.py`](src/gac/bevformer_compiler.py) 是这条全模型规划链的总控入口。当前 Runtime 计划已经生成 `setup`/`invoke` 两个 phase 的 `RuntimeStep`：常量上传属于 `setup`，输入、跨 target value、最终输出的逻辑搬运及 Dispatch 提交属于 `invoke`。这些 transfer 只描述必须发生的数据移动，并要求跨 target Runtime Adapter；物理 CUDA↔Vortex 统一 Session、DMA/host staging、事件同步和 zero-copy 尚未集成，因此这份离线计划不代表完整 BEVFormer 已经在 Vortex 上执行。分层设计、全局 Buffer 语义、Dispatch DAG 和验收条件见 [BEVFormer 全模型异构编译与 Dispatch 架构](docs/bevformer_full_model_dispatch_architecture.md)。
+[`bevformer_compiler.py`](src/gac/workflows/bevformer.py) 是这条全模型规划链的总控入口。当前 Runtime 计划已经生成 `setup`/`invoke` 两个 phase 的 `RuntimeStep`：常量上传属于 `setup`，输入、跨 target value、最终输出的逻辑搬运及 Dispatch 提交属于 `invoke`。这些 transfer 只描述必须发生的数据移动，并要求跨 target Runtime Adapter；物理 CUDA↔Vortex 统一 Session、DMA/host staging、事件同步和 zero-copy 尚未集成，因此这份离线计划不代表完整 BEVFormer 已经在 Vortex 上执行。分层设计、全局 Buffer 语义、Dispatch DAG 和验收条件见 [BEVFormer 全模型异构编译与 Dispatch 架构](docs/bevformer_full_model_dispatch_architecture.md)。
 
 对已经生成并校验过的完整 streaming-step HXP，可以执行 `gac-bevformer-plan step.hxp -o plan.json --lowered-source-dir build/dispatches`，生成确定性的异构计划 JSON，并按 Dispatch 输出可审查的 CUDA C 或 Tensor/Linalg MLIR 源码。这个命令只做离线规划和源码生成，不会启动物理 CUDA/Vortex Runtime。
 
@@ -105,7 +105,7 @@ graph = import_exported_program(exported_program)
 
 compatibility C++ bridge 已用官方 BEVFormer-tiny checkpoint 第 0 层真实权重跑通一行生产宽度 `[1,1,256] → 512 → 256`，SimX 对冻结 GAC/NumPy golden 的最大绝对误差为 `1.90734863e-6`；完整 2500-row 真实权重 artifact 已成功编译为 `.vxbin`。验证记录见 [Vortex BEVFormer FFN validation](docs/validation/vortex/bevformer-ffn-2026-10-13/README.md)。
 
-`lg/bevformer-vortex-direct-mlir` 分支加入 `--device-lowering direct-mlir`：三个设备 Kernel 由 [vortex_device_mlir.py](src/gac/backends/vortex_device_mlir.py) 直接生成 LLVM Dialect MLIR，携带 RV32 参数 ABI、CTA CSR、`vortex.kernel` annotation、`llvm.used` 和 `llvm.compiler.used`。artifact 的 Makefile 从同一个固定 VOLT LLVM 20.1.8 树依次调用 `mlir-opt`、`mlir-translate`、VOLT clang 和 `ld.lld`，最后由 `vxbin.py` 生成 `.vxbin`；设备目录中不再生成 `kernel.cpp`。这条路径现已实际完成 `MLIR → LLVM IR → VOLT → ELF → vxbin → SimX`：合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为 `1.1920929e-7`。10 次 SimX 的 runtime event-profile 均值为 `4.447282 ms`、端到端均值为 `4.602381 ms`；这些是软件模拟器的小尺寸结果，不能作为 Vortex 硬件或完整 BEVFormer 的推理速度。统一工具链、生成命令、ABI 和验证边界见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)、[Vortex Direct-MLIR ABI](docs/designs/vortex_direct_mlir_abi.md) 与 [direct-MLIR 验证记录](docs/validation/vortex/direct-mlir-2026-10-13/README.md)。这一步先建立标量机器码基线；分块、LMEM 复用、融合、双缓冲和 TCU 映射属于后续性能 lowering。
+`lg/bevformer-vortex-direct-mlir` 分支加入 `--device-lowering direct-mlir`：三个设备 Kernel 由 [vortex_device_mlir.py](src/gac/targets/vortex/device_mlir.py) 直接生成 LLVM Dialect MLIR，携带 RV32 参数 ABI、CTA CSR、`vortex.kernel` annotation、`llvm.used` 和 `llvm.compiler.used`。artifact 的 Makefile 从同一个固定 VOLT LLVM 20.1.8 树依次调用 `mlir-opt`、`mlir-translate`、VOLT clang 和 `ld.lld`，最后由 `vxbin.py` 生成 `.vxbin`；设备目录中不再生成 `kernel.cpp`。这条路径现已实际完成 `MLIR → LLVM IR → VOLT → ELF → vxbin → SimX`：合成 `[1,2,4] → 8 → 4` smoke 的最大绝对误差为 `1.1920929e-7`。10 次 SimX 的 runtime event-profile 均值为 `4.447282 ms`、端到端均值为 `4.602381 ms`；这些是软件模拟器的小尺寸结果，不能作为 Vortex 硬件或完整 BEVFormer 的推理速度。统一工具链、生成命令、ABI 和验证边界见 [BEVFormer FFN 到 Vortex 3.0 后端](docs/bevformer_vortex_backend.md)、[Vortex Direct-MLIR ABI](docs/designs/vortex_direct_mlir_abi.md) 与 [direct-MLIR 验证记录](docs/validation/vortex/direct-mlir-2026-10-13/README.md)。这一步先建立标量机器码基线；分块、LMEM 复用、融合、双缓冲和 TCU 映射属于后续性能 lowering。
 
 如果要从输入模型开始逐层理解每一份 MLIR、Vortex Kernel ABI、VOLT 链接与 Runtime
 调度，请阅读 [BEVFormer Direct-MLIR → Vortex 编译器分层架构](docs/bevformer_vortex_direct_mlir_architecture.md)。
@@ -139,8 +139,8 @@ GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`
 
 - [`tools/build_mlir_wsl.sh`](tools/build_mlir_wsl.sh) 从项目外部的 `llvm-project` checkout 构建 `mlir-opt`、`mlir-translate` 和 `llc`。默认稳定路径是 WSL 中的 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
 - 本次 BEVFormer/UniAD 验证实际使用的可执行文件是 WSL 中的 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`；它是本机编译产物，不在 Git 中。对应的外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`，同样位于 General-AI-Compiler 仓库之外。
-- [`src/gac/mlir_toolchain.py`](src/gac/mlir_toolchain.py) 负责查找 `mlir-opt`、构造无 shell 的命令参数、执行官方 GPU→NVVM pipeline、提取 PTX，并记录 LLVM revision、版本、命令和摘要。
-- [`src/gac/backends/mlir_ptx.py`](src/gac/backends/mlir_ptx.py) 是 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/backends/mlir_cublas_ptx.py`](src/gac/backends/mlir_cublas_ptx.py) 保留两个 cuBLAS MatMul，并把两个融合 Kernel 由 MLIR 降到 PTX。
+- [`src/gac/toolchains/mlir.py`](src/gac/toolchains/mlir.py) 负责查找 `mlir-opt`、构造无 shell 的命令参数、执行官方 GPU→NVVM pipeline、提取 PTX，并记录 LLVM revision、版本、命令和摘要。
+- [`src/gac/targets/cuda/ptx.py`](src/gac/targets/cuda/ptx.py) 是 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/targets/cuda/cublas_ptx.py`](src/gac/targets/cuda/cublas_ptx.py) 保留两个 cuBLAS MatMul，并把两个融合 Kernel 由 MLIR 降到 PTX。
 - Git 中可直接查看的 MLIR 示例是 [`examples/mlir_sm86_add_relu.mlir`](examples/mlir_sm86_add_relu.mlir) 和 [`examples/mlir_sm86_layernorm_fusion.mlir`](examples/mlir_sm86_layernorm_fusion.mlir)。保存的真实 lowering 样例位于 [`docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir)、[`production-ffn.binary.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.binary.mlir) 和 [`production-ffn.ptx`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.ptx)。
 - 普通编译生成的 `.mlir`、`.ptx`、manifest 和报告写入 `build/`；该目录不进入 Git。它们是编译产物，`src/gac/` 下的 Python 文件才是 emitter、lowering、artifact 校验和 Runtime 实现。
 
@@ -369,7 +369,7 @@ PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
 
 ## tiled、NVGPU/MMA、异步双 stage 与 autotuning
 
-[`src/gac/mlir_tiled_ffn.py`](src/gac/mlir_tiled_ffn.py) 已把单缓冲 16×16×16 FP32 shared-memory tile 接成完整生产形状 FFN：FC1+Bias+ReLU、FC2、Bias+Residual+LayerNorm 三次 PTX dispatch，执行不经过 NVRTC。[`MlirTiledFfnSession`](src/gac/mlir_tiled_ffn_runtime.py) 与无权重 artifact 已接到 benchmark/autotune。RTX 3070 Ti Laptop 上使用 warmup 50、每个 repeat 100 次、40 个 repeat、public samples 30 的固定提交 `5794d2c` 正式结果如下：
+[`src/gac/targets/cuda/tiled_ffn.py`](src/gac/targets/cuda/tiled_ffn.py) 已把单缓冲 16×16×16 FP32 shared-memory tile 接成完整生产形状 FFN：FC1+Bias+ReLU、FC2、Bias+Residual+LayerNorm 三次 PTX dispatch，执行不经过 NVRTC。[`MlirTiledFfnSession`](src/gac/execution/mlir_tiled_ffn.py) 与无权重 artifact 已接到 benchmark/autotune。RTX 3070 Ti Laptop 上使用 warmup 50、每个 repeat 100 次、40 个 repeat、public samples 30 的固定提交 `5794d2c` 正式结果如下：
 
 | 完整 FFN 候选 | PTX-first | NVRTC-first | 正确性/选择状态 |
 | --- | ---: | ---: | --- |
@@ -377,9 +377,9 @@ PYTHONPATH=src python tools/benchmark_mlir_cublas_ptx_ffn.py \
 | `mlir-cublas-ptx-sm86` | 0.221915998 ms | 0.223343678 ms | `allclose=True`，max abs `7.152557e-7`，eligible，autotuner 选择 |
 | `mlir-cuda-sm86` | 0.227223997 ms | 0.229038086 ms | eligible |
 
-[`src/gac/mlir_tiled_matmul.py`](src/gac/mlir_tiled_matmul.py) 还提供真实输入 Tensor Core 功能候选。TF32 路径计算 `A[16,16] × B[16,8] → C[16,8]`，PTX 含 4 条 `mma.sync.m16n8k4`、12 次 global load 和 4 次 store；FP16 路径计算 `A[16,32] × B[32,8] → C_f32[16,8]`，PTX 含 2 条 `mma.sync.m16n8k16`、24 次 global load 和 4 次 store。两者在 RTX 3070 Ti Laptop 上均为 `max_abs_error=0`，每次 launch 的 CUDA Event 中位数分别为 **3.8796 μs** 和 **4.0127 μs**。它们仍是固定尺寸功能候选，没有接入生产 FC1/FC2 或完整 FFN。
+[`src/gac/targets/cuda/tiled_matmul.py`](src/gac/targets/cuda/tiled_matmul.py) 还提供真实输入 Tensor Core 功能候选。TF32 路径计算 `A[16,16] × B[16,8] → C[16,8]`，PTX 含 4 条 `mma.sync.m16n8k4`、12 次 global load 和 4 次 store；FP16 路径计算 `A[16,32] × B[32,8] → C_f32[16,8]`，PTX 含 2 条 `mma.sync.m16n8k16`、24 次 global load 和 4 次 store。两者在 RTX 3070 Ti Laptop 上均为 `max_abs_error=0`，每次 launch 的 CUDA Event 中位数分别为 **3.8796 μs** 和 **4.0127 μs**。它们仍是固定尺寸功能候选，没有接入生产 FC1/FC2 或完整 FFN。
 
-[`src/gac/mlir_async_tiled_matmul.py`](src/gac/mlir_async_tiled_matmul.py) 实现了真实输入 FP32 `16×16×64` 双缓冲 MatMul。LLVM 24→SM86 PTX 7.1 包含 8 条 `cp.async`、4 个 commit、`wait_group [1,1,1,0]` 和 4096 B shared memory；RTX 3070 Ti Laptop 上 256 个输出逐元素 exact，`max_abs_error=0`，每次 launch 中位数 **2.652160 μs**。这个固定尺寸候选尚未接入生产 FFN。
+[`src/gac/targets/cuda/async_tiled_matmul.py`](src/gac/targets/cuda/async_tiled_matmul.py) 实现了真实输入 FP32 `16×16×64` 双缓冲 MatMul。LLVM 24→SM86 PTX 7.1 包含 8 条 `cp.async`、4 个 commit、`wait_group [1,1,1,0]` 和 4096 B shared memory；RTX 3070 Ti Laptop 上 256 个输出逐元素 exact，`max_abs_error=0`，每次 launch 中位数 **2.652160 μs**。这个固定尺寸候选尚未接入生产 FFN。
 
 功能候选可以独立复现：
 
@@ -395,7 +395,7 @@ PYTHONPATH=src python tools/probe_mlir_async_tiled_matmul.py \
   --mlir-opt "$HOME/.cache/gac-mlir/current-build/bin/mlir-opt"
 ```
 
-[`src/gac/mlir_ptx_autotune.py`](src/gac/mlir_ptx_autotune.py) 定义候选的 backend、`(M,N,K)` tile、CUDA block、FP32/TF32/FP16 精度和融合策略。它先对每个候选做输出正确性检查，再计时并按重复样本的中位数选择赢家；缓存绑定 graph/source SHA-256、设备、候选空间和计时配置，并用原子替换发布。[`src/gac/mlir_cublas_ptx_benchmark.py`](src/gac/mlir_cublas_ptx_benchmark.py) 现在可以让 `mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和一个 `mlir-tiled-ffn-sm86` Session 同轮进入 CUDA Event 计时。真实输入 MMA 与 `cp.async` MatMul 仍未接到完整 FFN autotune。生产 Tensor Core FFN、双缓冲生产 FFN、cuBLASLt 和更多 tile 候选仍未完成。
+[`src/gac/tuning/cuda_ptx.py`](src/gac/tuning/cuda_ptx.py) 定义候选的 backend、`(M,N,K)` tile、CUDA block、FP32/TF32/FP16 精度和融合策略。它先对每个候选做输出正确性检查，再计时并按重复样本的中位数选择赢家；缓存绑定 graph/source SHA-256、设备、候选空间和计时配置，并用原子替换发布。[`src/gac/tuning/cuda_cublas_ptx.py`](src/gac/tuning/cuda_cublas_ptx.py) 现在可以让 `mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和一个 `mlir-tiled-ffn-sm86` Session 同轮进入 CUDA Event 计时。真实输入 MMA 与 `cp.async` MatMul 仍未接到完整 FFN autotune。生产 Tensor Core FFN、双缓冲生产 FFN、cuBLASLt 和更多 tile 候选仍未完成。
 
 本轮优化边界、真机结果和未接线候选见 [cuBLAS+PTX 优化验证说明](docs/validation/sm86/mlir-cublas-ptx-2026-10-11/README.md)。
 
@@ -579,51 +579,39 @@ GAC_REQUIRE_CUDA=1 python -m unittest discover -s tests -v
 ## 项目结构
 
 ```text
-src/gac/ir.py, ops.py, passes.py     Canonical Graph、算子语义与图优化
-src/gac/backends/cuda.py             SM86 支持检查、CUDA 生成与 launch metadata
-src/gac/backends/mlir.py             Canonical Graph 到标准 tensor/linalg MLIR
-src/gac/backends/mlir_cuda.py        严格 FFN pattern 到显式 cuBLAS/NVRTC call plan
-src/gac/backends/mlir_ptx.py         严格生产 FFN 到 GPU Dialect/NVVM/PTX artifact
-src/gac/backends/mlir_cublas_ptx.py  2×cuBLAS + 2×MLIR PTX 的严格四调用计划
-src/gac/backends/vortex.py           两级 MLIR 审计、Vortex Runtime plan、direct-MLIR/compatibility artifact 与 host 生成
-src/gac/backends/vortex_device_mlir.py 面向 Vortex/VOLT 的 RV32 LLVM Dialect device Kernel emitter
-src/gac/backends/vortex_buffered_mlir.py M/N/K 分块、DXA/LMEM 双 Stage 与 FP32 累加的直接 MLIR lowering
-src/gac/mlir_toolchain.py            mlir-opt 发现、WSL 调用、验证和诊断
-src/gac/mlir_runtime.py              SM86 FFN call plan 的 CuPy/cuBLAS/NVRTC 执行
-src/gac/mlir_ptx_runtime.py          校验并加载 MLIR 生成 PTX 的 SM86 Runtime
-src/gac/mlir_cublas_ptx_runtime.py   校验并执行 cuBLAS+MLIR PTX 四调用计划
-src/gac/mlir_cublas_ptx_artifact.py  无权重四调用 PTX 目录的原子写入与校验加载
-src/gac/mlir_ptx_artifact.py         无内联权重的离线 PTX 目录写入、校验与加载
-src/gac/mlir_tiled_matmul.py         shared-memory tiled PTX 与真实输入 FP16/TF32 MMA 功能候选
-src/gac/mlir_async_tiled_matmul.py   真实输入 cp.async 双缓冲 MatMul 功能候选
-src/gac/mlir_tiled_ffn.py            单缓冲 tiled FC1/FC2 的三 dispatch FFN 计划
-src/gac/mlir_tiled_ffn_runtime.py    校验并执行三 dispatch tiled FFN
-src/gac/mlir_tiled_ffn_artifact.py   tiled FFN 无权重目录的原子写入与校验加载
-src/gac/mlir_ptx_autotune.py         正确性门、median 选择与完整性缓存
-src/gac/mlir_cublas_ptx_benchmark.py 三个真实 FFN Session 的 CUDA Event adapter
-src/gac/memory.py                    生命周期分析与静态 arena 规划
-src/gac/package.py                   HXP 写入、摘要校验、安全加载与 codegen 复核
-src/gac/runtime.py                   CudaSession、vendor 选择、传输、启动与计时
-src/gac/profiler.py                  Trace 与 CUDA Event Profile 聚合
-src/gac/frontends/                   JSON、BEVFormer 合同与 Backbone 导入
-src/gac/uniad/                       UniAD FFN 合同、bundle 与 checkpoint 映射
-src/gac/bevformer*.py                BEVFormer 算子、Encoder/Decoder/raw head 与状态 Runtime
-src/gac/tools/build_bevformer.py     权重检查及 BEVFormer 子图/HXP 构建入口
-src/gac/tools/build_bevformer_vortex.py BEVFormer FFN 的 MLIR→Vortex artifact 构建入口
-src/gac/tools/uniad_*.py             UniAD 导出、编译、FFN 与端到端基准入口
-src/gac/cli.py                       doctor / compile / mlir-compile / inspect / run
-examples/                            MLP、MLIR FFN smoke、MSDA 示例与冻结合同
-tools/build_mlir_wsl.sh              从本地 llvm-project 构建最小 MLIR 工具集
-tools/build_volt_mlir_wsl.sh         构建固定 revision 的 LLVM 20.1.8 MLIR/VOLT 统一工具链
-tools/benchmark_mlir_cuda_ffn.py     生产尺寸 FFN 切片的真机基准与正确性报告
-tools/benchmark_mlir_cublas_ptx_ffn.py cuBLAS+MLIR PTX 的配对基准、artifact 与 autotune 报告
-tools/probe_mlir_tiled_matmul.py     tiled MatMul 与 FP16/TF32 MMA lowering probe
-tools/run_mlir_functional_mma.py    真实输入 MMA 的正确性与 CUDA Event 测量
-tools/probe_mlir_async_tiled_matmul.py cp.async 双缓冲 MatMul lowering probe
-tools/run_mlir_async_tiled_matmul.py 双缓冲 MatMul 的正确性与 CUDA Event 测量
-tests/                               编译器、Runtime、HXP、BEVFormer 与物理 CUDA 测试
-docs/                                架构、设计、后端约定、路线图和验收证据
+src/gac/
+├── core/                 Graph、TensorSpec、算子语义与异常
+├── compiler/             十阶段契约、图 Pass、分区、Buffer 规划
+├── frontends/            通用 JSON / ONNX / torch.export 导入
+├── models/
+│   ├── api.py            延迟加载的模型适配器注册表
+│   ├── common/           可复用 Transformer / FFN 构图
+│   ├── bevformer/        BEVFormer 构图、状态与专用权重导入
+│   └── uniad/            当前 UniAD 单层 FFN 适配与数据包
+├── targets/
+│   ├── vortex/           十阶段实现、MLIR、设备 ABI、Host 生成
+│   ├── cuda/             CUDA / MLIR / PTX 编译与计算模板
+│   └── mlir.py           通用 Tensor / Linalg MLIR 导出
+├── toolchains/           外部 MLIR / LLVM 工具调用与版本检查
+├── execution/            设备 Session、Dispatch 与性能采集
+├── artifacts/            HXP、权重和离线 PTX 产物
+├── validation/           独立 NumPy 参考执行与精度验证
+├── tuning/               CUDA 候选搜索与基准
+├── workflows/            同时了解模型与目标的上层编排
+├── tools/                命令行入口
+└── _compat.py            旧导入路径的集中兼容映射
+
+examples/                 模型示例与冻结合同
+tools/                    构建、验证和基准脚本
+tests/                    编译、模型、Runtime 与架构边界测试
+docs/                     设计说明与验收证据
 ```
+
+分层职责、十阶段代码位置与新增模型方法见[源码分层说明](docs/code_layout.md)。
+新代码使用规范导入，例如 `gac.core.ir`、`gac.models.bevformer.ffn` 和
+`gac.targets.vortex.compiler`；原来的 `gac.ir`、`gac.bevformer_ffn`、
+`gac.backends.vortex_graph` 等名称仍按需映射到同一实现。
+未来 VLA 模型通过 `ModelAdapter → Graph` 接入；这不代表其全部算子或完整推理已经实现。
 
 更完整的实现映射见[架构说明](docs/architecture.md)，MLIR 分层与里程碑见 [MLIR 编译器架构](docs/MLIR_ARCHITECTURE.md)，BEVFormer 图与状态语义见[编译器设计](docs/bevformer_compiler_design.md)，后端扩展约定见[后端编写指南](docs/backend_authoring.md)，后续计划见[路线图](docs/roadmap.md)。
 

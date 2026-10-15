@@ -133,7 +133,7 @@ class UniADFFNContractTests(unittest.TestCase):
                     UniADFFNContract.from_dict(invalid)
 
     def test_protocol_modules_parse_as_python_39(self):
-        package = Path(__file__).parents[1] / "src" / "gac" / "uniad"
+        package = Path(__file__).parents[1] / "src" / "gac" / "models" / "uniad"
         for name in ("contract.py", "artifact.py", "checkpoint.py", "__init__.py"):
             with self.subTest(name=name):
                 ast.parse(

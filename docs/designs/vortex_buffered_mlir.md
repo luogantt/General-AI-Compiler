@@ -112,11 +112,11 @@ GAC 代码入口采用函数名定位，避免后续修改导致行号失效：
 | 工作 | GAC 源码入口 |
 |---|---|
 | CLI、Tile 参数 | [`build_bevformer_vortex.py`](../../src/gac/tools/build_bevformer_vortex.py)：`_parser()`、`main()` |
-| 双 Stage 字节数、CTA Grid | [`vortex_buffered_mlir.py`](../../src/gac/backends/vortex_buffered_mlir.py)：`VortexBufferPlan` |
+| 双 Stage 字节数、CTA Grid | [`vortex_buffered_mlir.py`](../../src/gac/targets/vortex/buffered_mlir.py)：`VortexBufferPlan` |
 | LMEM 地址、循环、边界、累加 | 同文件：`_matmul_kernel()` |
 | DXA/barrier 设备操作 | 同文件：`_copy()`、`_collective_helpers()` |
 | 生成与审计 Device MLIR | 同文件：`emit_bevformer_ffn_buffered_device_mlir()`、`audit_bevformer_ffn_buffered_device_mlir()` |
-| 接入编译链、Manifest | [`vortex.py`](../../src/gac/backends/vortex.py)：`compile_vortex_direct()`、`write_vortex_artifact()` |
+| 接入编译链、Manifest | [`vortex.py`](../../src/gac/targets/vortex/ffn.py)：`compile_vortex_direct()`、`write_vortex_artifact()` |
 | Host 描述符、LMEM 申请 | 同文件：`_buffered_host_source()` |
 | 同版 MLIR/VOLT 构建 | 同文件：`_direct_makefile()` |
 

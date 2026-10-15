@@ -13,12 +13,12 @@
 
 ## MLIR / `mlir-opt` 文件在哪里？
 
-**`mlir-opt` 不在 General-AI-Compiler 仓库中，也不是 GAC 直接调用的动态库。** 它是项目外部 LLVM/MLIR 源码构建得到的命令行程序。GAC 通过 [`mlir_toolchain.py`](../src/gac/mlir_toolchain.py) 启动该程序，将 GPU Dialect MLIR 离线降低到 NVVM 和 SM86 PTX。二进制与构建目录依赖平台和 LLVM revision，所以不提交到 Git。
+**`mlir-opt` 不在 General-AI-Compiler 仓库中，也不是 GAC 直接调用的动态库。** 它是项目外部 LLVM/MLIR 源码构建得到的命令行程序。GAC 通过 [`mlir_toolchain.py`](../src/gac/toolchains/mlir.py) 启动该程序，将 GPU Dialect MLIR 离线降低到 NVVM 和 SM86 PTX。二进制与构建目录依赖平台和 LLVM revision，所以不提交到 Git。
 
 GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/lg/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前不含这些文件。当前机器用于正式验证的二进制是 `/home/thomas/gac-mlir-build-lf/bin/mlir-opt`，其外部 LLVM 源码入口是 `C:\Users\Thomas\Desktop\universal_ai_compile\llvm-project\mlir\tools\mlir-opt\mlir-opt.cpp`。
 
 - [`tools/build_mlir_wsl.sh`](../tools/build_mlir_wsl.sh) 从本地 `llvm-project` checkout 构建 `mlir-opt`、`mlir-translate` 和 `llc`。默认稳定路径为 WSL 的 `$HOME/.cache/gac-mlir/current-build/bin/mlir-opt`。
-- [`src/gac/backends/mlir_ptx.py`](../src/gac/backends/mlir_ptx.py) 实现 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/backends/mlir_cublas_ptx.py`](../src/gac/backends/mlir_cublas_ptx.py) 实现 BEVFormer/UniAD 固定 FFN 的 cuBLAS + MLIR PTX lowering。
+- [`src/gac/backends/mlir_ptx.py`](../src/gac/targets/cuda/ptx.py) 实现 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/backends/mlir_cublas_ptx.py`](../src/gac/targets/cuda/cublas_ptx.py) 实现 BEVFormer/UniAD 固定 FFN 的 cuBLAS + MLIR PTX lowering。
 - Git 跟踪的输入示例是 [`mlir_sm86_add_relu.mlir`](../examples/mlir_sm86_add_relu.mlir) 和 [`mlir_sm86_layernorm_fusion.mlir`](../examples/mlir_sm86_layernorm_fusion.mlir)。保存的实际 lowering 样例是 [`production-ffn.gpu.mlir`](validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir)、[`production-ffn.binary.mlir`](validation/sm86/mlir-ptx-2026-10-11/production-ffn.binary.mlir) 和 [`production-ffn.ptx`](validation/sm86/mlir-ptx-2026-10-11/production-ffn.ptx)。
 - UniAD 编译生成的 `.mlir`、`.ptx` 和 manifest 默认位于 `build/uniad/`，该目录被 Git 忽略。离线 artifact 部署后不需要 `mlir-opt` 或 NVRTC；CUDA Driver 仍会在模块加载时把 textual PTX JIT 为设备 SASS。
 

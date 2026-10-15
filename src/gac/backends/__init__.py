@@ -1,1 +1,4 @@
-"""Target compilers. Importing this package never initializes a device."""
+"""Legacy backend imports; canonical implementations live in :mod:`gac.targets`.
+
+The central compatibility finder redirects old module names lazily.
+"""

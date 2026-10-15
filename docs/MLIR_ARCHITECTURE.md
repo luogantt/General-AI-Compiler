@@ -100,7 +100,7 @@ M0/M1 为了让测试产物完全自包含，把小型 smoke 权重写成 `dense
 
 ### 3.3 `mlir-cuda-sm86` FFN runtime-call 切片
 
-当前可执行切片由 [`src/gac/backends/mlir_cuda.py`](../src/gac/backends/mlir_cuda.py) 与 [`src/gac/mlir_runtime.py`](../src/gac/mlir_runtime.py) 实现。它先调用 tensor-level `compile_mlir(..., fuse=True)`，再检查融合后的图是否**完整且恰好**为：
+当前可执行切片由 [`src/gac/backends/mlir_cuda.py`](../src/gac/targets/cuda/mlir.py) 与 [`src/gac/mlir_runtime.py`](../src/gac/execution/mlir_cuda.py) 实现。它先调用 tensor-level `compile_mlir(..., fuse=True)`，再检查融合后的图是否**完整且恰好**为：
 
 ```text
 MatMul → AddReLU → MatMul → Add(fc2 bias) → Add(query residual) → LayerNorm
@@ -136,7 +136,7 @@ python -m gac.cli run examples/bevformer_tiny_ffn.json \
 
 ### 3.4 `mlir-ptx-sm86` 生产形状 FFN 全 PTX 切片
 
-全 PTX 切片由 [`src/gac/backends/mlir_ptx.py`](../src/gac/backends/mlir_ptx.py) 与 [`src/gac/mlir_ptx_runtime.py`](../src/gac/mlir_ptx_runtime.py) 实现。它从 Canonical Graph 分支复用 M2a 的严格 FFN pattern 检查，但进一步把支持范围固定为生产尺寸 `[1,2500,256] → 512 → 256`、FP32、连续布局、一个 query 输入和一个输出。Tensor-level MLIR 仅作为独立的调试/审阅输出，不是 GPU emitter 的输入，也不进入部署 PTX artifact。匹配成功后，编译器直接物化三个 MLIR GPU Kernel：
+全 PTX 切片由 [`src/gac/backends/mlir_ptx.py`](../src/gac/targets/cuda/ptx.py) 与 [`src/gac/mlir_ptx_runtime.py`](../src/gac/execution/mlir_ptx.py) 实现。它从 Canonical Graph 分支复用 M2a 的严格 FFN pattern 检查，但进一步把支持范围固定为生产尺寸 `[1,2500,256] → 512 → 256`、FP32、连续布局、一个 query 输入和一个输出。Tensor-level MLIR 仅作为独立的调试/审阅输出，不是 GPU emitter 的输入，也不进入部署 PTX artifact。匹配成功后，编译器直接物化三个 MLIR GPU Kernel：
 
 | PTX entry | 计算 |
 | --- | --- |
@@ -163,7 +163,7 @@ MLIR→PTX 本身不会自动提速。离线 textual PTX 可以移除部署机�
 
 ### 3.5 `mlir-cublas-ptx-sm86` 四调用生产候选
 
-[`src/gac/backends/mlir_cublas_ptx.py`](../src/gac/backends/mlir_cublas_ptx.py) 复用同一个严格 matcher，只接受静态连续 FP32 `[1,2500,256] → 512 → 256`。其 call record 顺序是：
+[`src/gac/backends/mlir_cublas_ptx.py`](../src/gac/targets/cuda/cublas_ptx.py) 复用同一个严格 matcher，只接受静态连续 FP32 `[1,2500,256] → 512 → 256`。其 call record 顺序是：
 
 | 顺序 | 实现 | 融合边界 |
 | ---: | --- | --- |
@@ -172,9 +172,9 @@ MLIR→PTX 本身不会自动提速。离线 textual PTX 可以移除部署机�
 | 3 | CuPy/cuBLAS | FC2 MatMul |
 | 4 | MLIR→NVVM→PTX | Bias + query residual + LayerNorm |
 
-两个融合 `gpu.func` 经官方 LLVM 24 pipeline 生成 PTX 7.1。[`MlirCublasPtxSession`](../src/gac/mlir_cublas_ptx_runtime.py) 在访问 CUDA 前验证整个 program、PTX entry、裸指针参数数量、`.maxntid 256,1,1` 和四调用实现顺序，再用 `RawModule(path=...)` 加载 PTX。Runtime 不编译 CUDA C/NVRTC，也不回退到 NumPy、旧 CUDA 或全 PTX。MatMul 是 `cupy.matmul(..., out=...)` 的 cuBLAS 路径；当前没有直接调用 cuBLASLt，也没有把 epilogue 下推到 cuBLASLt。
+两个融合 `gpu.func` 经官方 LLVM 24 pipeline 生成 PTX 7.1。[`MlirCublasPtxSession`](../src/gac/execution/mlir_cublas_ptx.py) 在访问 CUDA 前验证整个 program、PTX entry、裸指针参数数量、`.maxntid 256,1,1` 和四调用实现顺序，再用 `RawModule(path=...)` 加载 PTX。Runtime 不编译 CUDA C/NVRTC，也不回退到 NumPy、旧 CUDA 或全 PTX。MatMul 是 `cupy.matmul(..., out=...)` 的 cuBLAS 路径；当前没有直接调用 cuBLASLt，也没有把 epilogue 下推到 cuBLASLt。
 
-[`mlir_cublas_ptx_artifact.py`](../src/gac/mlir_cublas_ptx_artifact.py) 可把 `fusions.gpu.mlir`、`fusions.binary.mlir`、`fusions.ptx` 与 manifest 原子发布为无权重目录。加载器限制成员集合、常规文件类型与大小，拒绝符号链接、重复 JSON key、摘要和目标不匹配，再用调用者提供的独立已验证 graph 重建完整计划。HXP v1 仍不承载这类 artifact。
+[`mlir_cublas_ptx_artifact.py`](../src/gac/artifacts/cuda_cublas_ptx.py) 可把 `fusions.gpu.mlir`、`fusions.binary.mlir`、`fusions.ptx` 与 manifest 原子发布为无权重目录。加载器限制成员集合、常规文件类型与大小，拒绝符号链接、重复 JSON key、摘要和目标不匹配，再用调用者提供的独立已验证 graph 重建完整计划。HXP v1 仍不承载这类 artifact。
 
 RTX 3070 Ti Laptop（SM86、8 GB）上的两轮正式结果如下；每轮 warmup 50，40 个 repeat，每个 repeat 100 次完整四调用 FFN：
 
@@ -187,15 +187,15 @@ RTX 3070 Ti Laptop（SM86、8 GB）上的两轮正式结果如下；每轮 warmu
 
 ### 3.6 tiled、NVGPU/MMA、异步双 stage 与 autotuning
 
-[`mlir_tiled_matmul.py`](../src/gac/mlir_tiled_matmul.py) 直接为生产 FC1 `[2500,256]@[256,512]` 和 FC2 `[2500,512]@[512,256]` 物化显式 GPU Dialect。每个 block 计算一个 output tile，线程用带边界检查的 strided loop 协作填充 A/B 两个 workgroup-memory tile，经过 barrier 后累加。16×16×16 候选每 block 为 256 线程、静态 shared memory 为 2048 bytes；LLVM 24 实际 PTX 检查到两个 shared 声明、shared load/store、两次 barrier 与向量 shared load。FC1 在同一 Kernel 合并 bias+ReLU。[`mlir_tiled_ffn.py`](../src/gac/mlir_tiled_ffn.py)、[`mlir_tiled_ffn_runtime.py`](../src/gac/mlir_tiled_ffn_runtime.py) 与 [`mlir_tiled_ffn_artifact.py`](../src/gac/mlir_tiled_ffn_artifact.py) 已把 FC1、FC2 和最终 Bias+Residual+LayerNorm 接成三个 PTX dispatch 的完整 `mlir-tiled-ffn-sm86` Session。它仍是单缓冲且一线程负责一个标量输出。
+[`mlir_tiled_matmul.py`](../src/gac/targets/cuda/tiled_matmul.py) 直接为生产 FC1 `[2500,256]@[256,512]` 和 FC2 `[2500,512]@[512,256]` 物化显式 GPU Dialect。每个 block 计算一个 output tile，线程用带边界检查的 strided loop 协作填充 A/B 两个 workgroup-memory tile，经过 barrier 后累加。16×16×16 候选每 block 为 256 线程、静态 shared memory 为 2048 bytes；LLVM 24 实际 PTX 检查到两个 shared 声明、shared load/store、两次 barrier 与向量 shared load。FC1 在同一 Kernel 合并 bias+ReLU。[`mlir_tiled_ffn.py`](../src/gac/targets/cuda/tiled_ffn.py)、[`mlir_tiled_ffn_runtime.py`](../src/gac/execution/mlir_tiled_ffn.py) 与 [`mlir_tiled_ffn_artifact.py`](../src/gac/artifacts/cuda_tiled_ffn.py) 已把 FC1、FC2 和最终 Bias+Residual+LayerNorm 接成三个 PTX dispatch 的完整 `mlir-tiled-ffn-sm86` Session。它仍是单缓冲且一线程负责一个标量输出。
 
 同一模块提供真实输入的 FP16 与 TF32 `nvgpu.mma.sync` 功能候选。TF32 计算 `A[16,16] f32 × B[16,8] f32 → C[16,8] f32`，用 4 条 `mma.sync.aligned.m16n8k4` 覆盖 K=16，最终 PTX 审计为 12 次 global load 和 4 次 store；FP16 计算 `A[16,32] f16 × B[32,8] f16 → C[16,8] f32`，用 2 条 `mma.sync.aligned.m16n8k16` 覆盖 K=32，最终 PTX 有 24 次 global load 和 4 次 store。RTX 3070 Ti Laptop 上，两者 `max_abs_error=0`，每次 launch 的 CUDA Event 中位数分别为 `3.879600 μs` 和 `4.012688 μs`（warmup 50、30 个样本、每样本 1000 次 launch）。它们仍是固定尺寸功能候选，没有生产 shape 的边界处理、占用率验收，也未接入 FC1/FC2 或完整 FFN。
 
-[`mlir_async_tiled_matmul.py`](../src/gac/mlir_async_tiled_matmul.py) 把异步双 stage 从调度 smoke 升级为真实输入 FP32 `A[16,64] × B[64,16] → C[16,16]` MatMul 功能候选。最终 PTX 有 8 条 `cp.async`、4 条 `cp.async.commit_group`，四次 wait 的深度为 `[1,1,1,0]`，并包含 4096 bytes shared memory 与 7 个 barrier。RTX 3070 Ti Laptop 上 256 个输出逐元素 exact，`max_abs_error=0`，每次 launch 的 CUDA Event 中位数为 `2.652160 μs`（warmup 20、30 个样本、每样本 200 次 launch）。此前 128-byte、2-copy 的 schedule probe 继续作为较小的编译器调度证据；新的功能候选仍未接入生产 FC1/FC2 或上述完整 FFN，因此不能把其微基准解释为 FFN 加速。
+[`mlir_async_tiled_matmul.py`](../src/gac/targets/cuda/async_tiled_matmul.py) 把异步双 stage 从调度 smoke 升级为真实输入 FP32 `A[16,64] × B[64,16] → C[16,16]` MatMul 功能候选。最终 PTX 有 8 条 `cp.async`、4 条 `cp.async.commit_group`，四次 wait 的深度为 `[1,1,1,0]`，并包含 4096 bytes shared memory 与 7 个 barrier。RTX 3070 Ti Laptop 上 256 个输出逐元素 exact，`max_abs_error=0`，每次 launch 的 CUDA Event 中位数为 `2.652160 μs`（warmup 20、30 个样本、每样本 200 次 launch）。此前 128-byte、2-copy 的 schedule probe 继续作为较小的编译器调度证据；新的功能候选仍未接入生产 FC1/FC2 或上述完整 FFN，因此不能把其微基准解释为 FFN 加速。
 
-[`mlir_ptx_autotune.py`](../src/gac/mlir_ptx_autotune.py) 用 `(backend, tile, block, precision, fusion)` 描述候选。每个候选先过数值正确性门，再采集指定重复次数的样本，并以中位数最小者获胜；完全相同的中位数用候选 SHA-256 确定性破同分。缓存绑定 graph/source SHA-256、设备描述、候选空间和测量配置，以原子 replace 发布，并拒绝损坏、重复 key 或上下文变化。
+[`mlir_ptx_autotune.py`](../src/gac/tuning/cuda_ptx.py) 用 `(backend, tile, block, precision, fusion)` 描述候选。每个候选先过数值正确性门，再采集指定重复次数的样本，并以中位数最小者获胜；完全相同的中位数用候选 SHA-256 确定性破同分。缓存绑定 graph/source SHA-256、设备描述、候选空间和测量配置，以原子 replace 发布，并拒绝损坏、重复 key 或上下文变化。
 
-[`mlir_cublas_ptx_benchmark.py`](../src/gac/mlir_cublas_ptx_benchmark.py) 提供真实 CUDA adapter：三个常驻 Session 用 CUDA Event 测完整 FFN，`mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和 `mlir-tiled-ffn-sm86` 都先过正确性门再进入选择。RTX 3070 Ti Laptop 的固定提交 `5794d2c` 正式验收采用 warmup 50、100 次/repeat、40 个 repeat 和 30 个 public samples；PTX-first 的 device-resident 中位数依次为 `0.221915998 / 0.227223997 / 0.892597122 ms/FFN`，NVRTC-first 为 `0.223343678 / 0.229038086 / 0.893539200 ms/FFN`。两轮三者均 eligible，最终选择 M2c；M2c 与 tiled 两轮最大绝对误差均为 `7.152557e-7`。固定尺寸 MMA 与双缓冲 MatMul 没有完整 FFN Session，仍不参与这组三候选 autotune。双缓冲 tiled FFN、生产 Tensor Core FC1/FC2、cuBLASLt 和更多 tile 候选尚未完成。
+[`mlir_cublas_ptx_benchmark.py`](../src/gac/tuning/cuda_cublas_ptx.py) 提供真实 CUDA adapter：三个常驻 Session 用 CUDA Event 测完整 FFN，`mlir-cublas-ptx-sm86`、`mlir-cuda-sm86` 和 `mlir-tiled-ffn-sm86` 都先过正确性门再进入选择。RTX 3070 Ti Laptop 的固定提交 `5794d2c` 正式验收采用 warmup 50、100 次/repeat、40 个 repeat 和 30 个 public samples；PTX-first 的 device-resident 中位数依次为 `0.221915998 / 0.227223997 / 0.892597122 ms/FFN`，NVRTC-first 为 `0.223343678 / 0.229038086 / 0.893539200 ms/FFN`。两轮三者均 eligible，最终选择 M2c；M2c 与 tiled 两轮最大绝对误差均为 `7.152557e-7`。固定尺寸 MMA 与双缓冲 MatMul 没有完整 FFN Session，仍不参与这组三候选 autotune。双缓冲 tiled FFN、生产 Tensor Core FC1/FC2、cuBLASLt 和更多 tile 候选尚未完成。
 
 复现编译证据：
 

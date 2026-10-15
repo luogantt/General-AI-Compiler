@@ -4,6 +4,8 @@ from __future__ import annotations
 
 __version__ = "0.1.0"
 
-# Public imports are intentionally lazy.  Importing ``gac`` must not initialize
-# a device runtime or require optional frontend dependencies.
+# Keep the old flat API lazy while all implementation lives in layered packages.
+from ._compat import install_legacy_imports
+
+install_legacy_imports()
 

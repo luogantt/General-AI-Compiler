@@ -43,33 +43,33 @@ from benchmark_mlir_cuda_ffn import (
     _upload_resident_query,
     _warmup_resident_once,
 )
-from gac.backends.mlir_cublas_ptx import compile_mlir_cublas_ptx
-from gac.backends.mlir_cuda import compile_mlir_cuda
-from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
-from gac.mlir_cublas_ptx_artifact import (
+from gac.targets.cuda.cublas_ptx import compile_mlir_cublas_ptx
+from gac.targets.cuda.mlir import compile_mlir_cuda
+from gac.models.bevformer.ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
+from gac.artifacts.cuda_cublas_ptx import (
     ARTIFACT_FILES,
     MANIFEST_FILE,
     load_mlir_cublas_ptx_artifact,
     write_mlir_cublas_ptx_artifact,
 )
-from gac.mlir_cublas_ptx_benchmark import (
+from gac.tuning.cuda_cublas_ptx import (
     FfnSessionAutotuneRunner,
     executable_ffn_candidates,
     skipped_tiled_candidate_report,
 )
-from gac.mlir_cublas_ptx_runtime import MlirCublasPtxSession
-from gac.mlir_ptx_autotune import AutotuneConfig, autotune_mlir_ptx_ffn
-from gac.mlir_runtime import MlirCudaSession
-from gac.mlir_tiled_ffn import compile_mlir_tiled_ffn
-from gac.mlir_tiled_ffn_artifact import (
+from gac.execution.mlir_cublas_ptx import MlirCublasPtxSession
+from gac.tuning.cuda_ptx import AutotuneConfig, autotune_mlir_ptx_ffn
+from gac.execution.mlir_cuda import MlirCudaSession
+from gac.targets.cuda.tiled_ffn import compile_mlir_tiled_ffn
+from gac.artifacts.cuda_tiled_ffn import (
     ARTIFACT_FILES as TILED_ARTIFACT_FILES,
     MANIFEST_FILE as TILED_MANIFEST_FILE,
     load_mlir_tiled_ffn_artifact,
     write_mlir_tiled_ffn_artifact,
 )
-from gac.mlir_tiled_ffn_runtime import MlirTiledFfnSession
-from gac.runtime import reference_run
-from gac.uniad import ArtifactError, load_bundle
+from gac.execution.mlir_tiled_ffn import MlirTiledFfnSession
+from gac.validation.reference import reference_run
+from gac.models.uniad import ArtifactError, load_bundle
 
 
 PTX_PATH = "mlir_cublas_ptx"

@@ -15,7 +15,7 @@ import tempfile
 
 import numpy as np
 
-from gac.mlir_tiled_matmul import (
+from gac.targets.cuda.tiled_matmul import (
     FUNCTIONAL_MMA_BLOCK,
     FUNCTIONAL_MMA_FP16_K,
     FUNCTIONAL_MMA_FP16_K_STEP,

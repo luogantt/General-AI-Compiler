@@ -111,7 +111,8 @@ class UniADCompileFfnTests(unittest.TestCase):
 
         stdout = io.StringIO()
         with (
-            patch.object(compiler, "build_bevformer_ffn_graph", return_value=graph),
+            patch.object(compiler, "get_model_adapter",
+                         return_value=SimpleNamespace(build=lambda data: graph)) as adapter,
             patch.object(compiler, "compile_cuda", return_value=cuda_program),
             patch.object(
                 compiler, "write_package", side_effect=self._write_fake_package
@@ -171,6 +172,7 @@ class UniADCompileFfnTests(unittest.TestCase):
             "wsl_distribution": "Ubuntu-24.04",
             "timeout": 33.0,
         }
+        adapter.assert_called_once_with("uniad-ffn")
         compile_cublas.assert_called_once_with(graph, **toolchain)
         compile_tiled.assert_called_once_with(
             graph,
@@ -224,7 +226,8 @@ class UniADCompileFfnTests(unittest.TestCase):
         output = self.root / "legacy-pair"
         cuda_program = SimpleNamespace(launches=(object(),))
         with (
-            patch.object(compiler, "build_bevformer_ffn_graph", return_value=object()),
+            patch.object(compiler, "get_model_adapter",
+                         return_value=SimpleNamespace(build=lambda data: object())),
             patch.object(compiler, "compile_cuda", return_value=cuda_program),
             patch.object(
                 compiler, "write_package", side_effect=self._write_fake_package
@@ -298,7 +301,8 @@ class UniADCompileFfnTests(unittest.TestCase):
         output = self.root / "failed"
         with (
             patch.object(
-                compiler, "build_bevformer_ffn_graph", return_value=object()
+                compiler, "get_model_adapter",
+                return_value=SimpleNamespace(build=lambda data: object())
             ),
             patch.object(
                 compiler,
@@ -356,7 +360,7 @@ class UniADCompileFfnTests(unittest.TestCase):
         )
         stderr = io.StringIO()
         with (
-            patch.object(compiler, "build_bevformer_ffn_graph") as build_graph,
+            patch.object(compiler, "get_model_adapter") as adapter,
             redirect_stderr(stderr),
             self.assertRaises(SystemExit) as raised,
         ):
@@ -372,7 +376,7 @@ class UniADCompileFfnTests(unittest.TestCase):
             )
         self.assertEqual(raised.exception.code, 2)
         self.assertIn("production UniAD profile", stderr.getvalue())
-        build_graph.assert_not_called()
+        adapter.assert_not_called()
 
         parser = compiler._build_parser()
         args = parser.parse_args(

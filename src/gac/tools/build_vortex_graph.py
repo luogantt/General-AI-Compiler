@@ -9,10 +9,11 @@ import sys
 
 import numpy as np
 
-from ..backends.vortex_graph import compile_vortex_graph, write_vortex_graph_artifact
-from ..errors import GACError
-from ..frontends.json_frontend import load_graph
-from ..runtime import reference_run
+from gac.targets.vortex.compiler import compile_vortex_graph, write_vortex_graph_artifact
+from gac.core.errors import GACError
+from gac.frontends.model_frontend import load_model
+from gac.models.api import list_model_adapters, load_model_graph
+from gac.validation.reference import reference_run
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -20,6 +21,8 @@ def main(argv: list[str] | None = None) -> int:
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--model", help="canonical Graph JSON, ONNX, trusted torch.export .pt2, or verified HXP graph")
     source.add_argument("--bevformer-weights", help="data-only .gacweights; construct the complete BEVFormer-tiny streaming graph")
+    parser.add_argument("--adapter", choices=list_model_adapters(),
+                        help="construct --model with a registered model adapter instead of a generic frontend")
     parser.add_argument("--expected-checkpoint-sha256", help="expected source checkpoint hash for --bevformer-weights")
     parser.add_argument("--output", "-o", required=True, help="new artifact directory")
     parser.add_argument("--mlir-opt", help="pinned VOLT LLVM20 mlir-opt; verify and lower device MLIR")
@@ -31,23 +34,21 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.golden and not args.inputs:
             raise ValueError("--golden requires --inputs")
-        if args.expected_checkpoint_sha256 and not args.bevformer_weights:
-            raise ValueError("--expected-checkpoint-sha256 requires --bevformer-weights")
+        if args.adapter and args.bevformer_weights:
+            raise ValueError("--adapter is used with --model; --bevformer-weights already selects bevformer-step")
+        adapter = "bevformer-step" if args.bevformer_weights else args.adapter
+        if args.expected_checkpoint_sha256 and adapter != "bevformer-step":
+            raise ValueError("--expected-checkpoint-sha256 requires the bevformer-step adapter")
         path = Path(args.model or args.bevformer_weights)
-        if args.bevformer_weights:
-            from ..frontends.bevformer_graph import load_bevformer_step_graph
-            graph = load_bevformer_step_graph(path, expected_checkpoint_sha256=args.expected_checkpoint_sha256)
+        if adapter:
+            options = ({"expected_checkpoint_sha256": args.expected_checkpoint_sha256}
+                       if adapter == "bevformer-step" else {})
+            graph = load_model_graph(adapter, path, **options)
         elif path.suffix.lower() == ".hxp":
-            from ..package import load_package
+            from gac.artifacts.hxp import load_package
             graph = load_package(path).graph
-        elif path.suffix.lower() == ".onnx":
-            from ..frontends.onnx_frontend import load_onnx
-            graph = load_onnx(path)
-        elif path.suffix.lower() == ".pt2":
-            from ..frontends.torch_export_frontend import load_exported_program
-            graph = load_exported_program(path, trusted=args.trusted)
         else:
-            graph = load_graph(path)
+            graph = load_model(path, trusted=args.trusted)
         inputs = None
         if args.inputs:
             with np.load(args.inputs, allow_pickle=False) as archive:

@@ -26,7 +26,7 @@ from typing import Any, Callable
 
 import numpy as np
 
-from gac.uniad import load_bundle
+from gac.models.uniad import load_bundle
 
 
 MLIR = "mlir_cuda_cublas_fused"
@@ -366,29 +366,17 @@ def main() -> None:
     if args.repeats % 2:
         parser.error("--repeats must be even for order-balanced comparison")
 
-    from gac.backends.cuda import compile_cuda
-    from gac.backends.mlir_cuda import compile_mlir_cuda
-    from gac.bevformer_ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph
-    from gac.mlir_runtime import MlirCudaSession
-    from gac.package import load_package, rebuild_cuda_program, write_package
-    from gac.runtime import CudaSession, reference_run
+    from gac.targets.cuda.compiler import compile_cuda
+    from gac.targets.cuda.mlir import compile_mlir_cuda
+    from gac.models.api import get_model_adapter
+    from gac.execution.mlir_cuda import MlirCudaSession
+    from gac.artifacts.hxp import load_package, rebuild_cuda_program, write_package
+    from gac.execution.cuda import CudaSession
+    from gac.validation.reference import reference_run
 
     loaded = load_bundle(args.bundle)
     profile = loaded.contract
-    config = BEVFormerFFNConfig(
-        batch=profile.batch,
-        bev_h=profile.bev_h,
-        bev_w=profile.bev_w,
-        embed_dim=profile.embed_dim,
-        post_layer_norm=True,
-        layer_norm_epsilon=profile.layer_norm_epsilon,
-        ffn_dropout=0.1,
-    )
-    graph = build_bevformer_ffn_graph(
-        loaded.weights,
-        config,
-        name="uniad_stage2_encoder_layer_%d_ffn" % profile.layer,
-    )
+    graph = get_model_adapter("uniad-ffn").build(loaded)
     query, expected, reference_source = _query_and_reference(
         loaded, reference_run, graph, args.seed
     )

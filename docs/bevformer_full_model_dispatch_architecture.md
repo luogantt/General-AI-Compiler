@@ -108,14 +108,14 @@ gac-bevformer-plan complete-step.hxp \
 
 | 阶段 | 输入 | 核心工作 | 输出 | 代码 |
 | --- | --- | --- | --- | --- |
-| 全模型建图 | 配置、权重、静态 Profile | 组合 Backbone、Encoder、Decoder、检测与状态图 | 一个经过验证的 `Graph` | [`bevformer_step_pipeline.py`](../src/gac/bevformer_step_pipeline.py)、[`compose.py`](../src/gac/compose.py) |
-| 支持分析 | 完整 `Graph` | 节点语义分类；发现并严格验证 FFN 岛 | 每节点 target/kind/reason 和 FFN region | [`bevformer_partition.py`](../src/gac/bevformer_partition.py) |
-| 通用切分 | 每节点 `NodePlacement` | 按 target 和 semantic group 提取子图；建立边界 | `Dispatch`、`DispatchEdge`、`DispatchDAG` | [`partition.py`](../src/gac/partition.py) |
-| 全局内存 | 完整源图 | 基于定义/最后使用做静态 arena 分配和安全复用 | 权威 `MemoryPlan` | [`memory.py`](../src/gac/memory.py) |
-| Runtime 规划 | DAG + 全图 MemoryPlan | 投影各 Dispatch binding；构造折叠的 global-boundary MemoryPlan；显式生成逻辑 transfer | setup/invoke `RuntimeStep`、Buffer lifetime | [`dispatch_runtime.py`](../src/gac/dispatch_runtime.py) |
-| BEVFormer 总控 | 完整源图 | 串起分析、切分、策略、MemoryPlan 和 Runtime 计划 | `BevFormerWholeModelPlan` | [`bevformer_compiler.py`](../src/gac/bevformer_compiler.py) |
+| 全模型建图 | 配置、权重、静态 Profile | 组合 Backbone、Encoder、Decoder、检测与状态图 | 一个经过验证的 `Graph` | [`bevformer_step_pipeline.py`](../src/gac/models/bevformer/step_pipeline.py)、[`compose.py`](../src/gac/compiler/compose.py) |
+| 支持分析 | 完整 `Graph` | 节点语义分类；发现并严格验证 FFN 岛 | 每节点 target/kind/reason 和 FFN region | [`bevformer_partition.py`](../src/gac/workflows/bevformer_partition.py) |
+| 通用切分 | 每节点 `NodePlacement` | 按 target 和 semantic group 提取子图；建立边界 | `Dispatch`、`DispatchEdge`、`DispatchDAG` | [`partition.py`](../src/gac/compiler/partition.py) |
+| 全局内存 | 完整源图 | 基于定义/最后使用做静态 arena 分配和安全复用 | 权威 `MemoryPlan` | [`memory.py`](../src/gac/compiler/memory.py) |
+| Runtime 规划 | DAG + 全图 MemoryPlan | 投影各 Dispatch binding；构造折叠的 global-boundary MemoryPlan；显式生成逻辑 transfer | setup/invoke `RuntimeStep`、Buffer lifetime | [`dispatch_runtime.py`](../src/gac/execution/dispatch.py) |
+| BEVFormer 总控 | 完整源图 | 串起分析、切分、策略、MemoryPlan 和 Runtime 计划 | `BevFormerWholeModelPlan` | [`bevformer_compiler.py`](../src/gac/workflows/bevformer.py) |
 | 离线计划工具 | 完整 streaming-step HXP | 校验包、生成计划 JSON、可选逐 Dispatch 导出源码 | 原子写入的计划和 `.cu`/`.mlir` 清单 | [`plan_bevformer.py`](../src/gac/tools/plan_bevformer.py) |
-| Vortex FFN 后端 | 一个规范化 FFN Graph | Tensor/Linalg MLIR → LLVM Dialect → VOLT → ELF/vxbin | 后端可生成三个静态 FFN Kernel artifact；全模型 planner 本身只发出离线计划，按需停在 Tensor/Linalg MLIR 源码 | [`vortex.py`](../src/gac/backends/vortex.py)、[`vortex_device_mlir.py`](../src/gac/backends/vortex_device_mlir.py) |
+| Vortex FFN 后端 | 一个规范化 FFN Graph | Tensor/Linalg MLIR → LLVM Dialect → VOLT → ELF/vxbin | 后端可生成三个静态 FFN Kernel artifact；全模型 planner 本身只发出离线计划，按需停在 Tensor/Linalg MLIR 源码 | [`vortex.py`](../src/gac/targets/vortex/ffn.py)、[`vortex_device_mlir.py`](../src/gac/targets/vortex/device_mlir.py) |
 
 ### 3.1 支持分析不是只看算子名称
 

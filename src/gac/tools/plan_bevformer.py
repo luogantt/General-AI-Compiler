@@ -17,12 +17,9 @@ import sys
 import tempfile
 from typing import Any, Sequence
 
-from gac.bevformer_compiler import (
-    lower_bevformer_dispatch_sources,
-    plan_bevformer_graph,
-)
-from gac.errors import GACError, ValidationError
-from gac.package import load_package
+from gac.workflows.bevformer import lower_bevformer_dispatch_sources, plan_bevformer_graph
+from gac.core.errors import GACError, ValidationError
+from gac.artifacts.hxp import load_package
 
 
 _FULL_STEP_KIND = "bevformer-complete-stateful-streaming-step-static"

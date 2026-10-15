@@ -25,15 +25,15 @@ from typing import Any, Callable
 
 import numpy as np
 
-from gac.backends.cuda import compile_cuda
-from gac.backends.mlir_cuda import compile_mlir_cuda
-from gac.bevformer_ffn import (
+from gac.targets.cuda.compiler import compile_cuda
+from gac.targets.cuda.mlir import compile_mlir_cuda
+from gac.models.bevformer.ffn import (
     BEVFormerFFNConfig,
     build_bevformer_ffn_graph,
     ffn_weight_shapes,
 )
-from gac.mlir_runtime import MlirCudaSession
-from gac.runtime import CudaSession, reference_run
+from gac.execution.mlir_cuda import MlirCudaSession
+from gac.execution.cuda import CudaSession, reference_run
 
 
 SEED = 20261010

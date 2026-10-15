@@ -73,9 +73,10 @@ class BevFormerGraphFrontendTests(unittest.TestCase):
             load_bevformer_step_graph("absent.gacweights", config={})
 
     def test_import_does_not_load_cuda_or_frameworks(self):
-        source = ("import sys; import gac.frontends.bevformer_graph; "
-                  "forbidden={'gac.backends.cuda','gac.compiler','gac.package','torch','mmcv'}; "
-                  "assert not forbidden.intersection(sys.modules), forbidden.intersection(sys.modules)")
+        source = ("import sys; import gac.models.bevformer.frontends.graph; "
+                  "forbidden=('gac.targets','gac.execution','gac.artifacts.package','torch','cupy','mmcv'); "
+                  "loaded=[name for name in sys.modules if any(name==prefix or name.startswith(prefix+'.') for prefix in forbidden)]; "
+                  "assert not loaded, loaded")
         result = subprocess.run([sys.executable, "-c", source], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0, result.stderr)
 

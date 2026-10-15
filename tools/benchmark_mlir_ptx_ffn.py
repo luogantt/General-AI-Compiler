@@ -36,16 +36,16 @@ from benchmark_mlir_cuda_ffn import (
     _upload_resident_query,
     _warmup_resident_once,
 )
-from gac.backends.mlir_cuda import compile_mlir_cuda
-from gac.backends.mlir_ptx import compile_mlir_ptx
-from gac.mlir_ptx_artifact import (
+from gac.targets.cuda.mlir import compile_mlir_cuda
+from gac.targets.cuda.ptx import compile_mlir_ptx
+from gac.artifacts.cuda_ptx import (
     ARTIFACT_FILES,
     load_mlir_ptx_artifact,
     write_mlir_ptx_artifact,
 )
-from gac.mlir_ptx_runtime import MlirPtxSession
-from gac.mlir_runtime import MlirCudaSession
-from gac.runtime import reference_run
+from gac.execution.mlir_ptx import MlirPtxSession
+from gac.execution.mlir_cuda import MlirCudaSession
+from gac.validation.reference import reference_run
 
 
 PTX_PATH = "mlir_ptx"

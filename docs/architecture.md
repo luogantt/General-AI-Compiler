@@ -1,5 +1,9 @@
 # 架构设计、实现状态与参考系统映射
 
+源码现已重构为 `core / compiler / frontends / models / targets / execution` 等职责包。
+当前目录、十阶段函数位置及模型扩展接口见[源码分层说明](code_layout.md)；
+下文历史核对中的旧 Python 模块名仍通过兼容映射可用。
+
 ## 1. 范围
 
 GAC 的目标是一个完整的编译—推理闭环：输入模型经过统一图表示、后端能力查询、设备划分和执行计划生成，被封装成 `.hxp`，再由 Runtime 加载执行。当前已实现前端、图优化、CUDA SM 8.6 源码生成、单 GPU Session、版本化 HXP 原型、静态 arena 规划及 CUDA Session 对 arena offset 的消费；MLIR 侧已实现 tensor/linalg emitter、严格限定一个 BEVFormer FFN pattern 的 SM86 runtime-call 切片、生产形状 FFN 的全 PTX 切片、2×cuBLAS MatMul + 2×MLIR PTX 融合 Kernel 的四调用生产候选，以及单缓冲三 dispatch 的 tiled FFN Session。真实输入 FP16/TF32 MMA 与 `cp.async` 双缓冲 MatMul 固定尺寸功能候选也已在 SM86 真机运行，但尚未进入生产 FFN。通用异构划分、任意 tensor/linalg 图的通用 MLIR GPU lowering 与通用 Host Execution Plan 仍是设计目标。

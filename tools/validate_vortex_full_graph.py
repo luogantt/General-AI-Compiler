@@ -20,11 +20,11 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(REPO / "src"), str(REPO)]
 
-from gac.backends.vortex_graph import SOFTWARE_OPS, compile_vortex_graph, write_vortex_graph_artifact
-from gac.backends.vortex_graph_validation import NativeVortexGraphSession
-from gac.bevformer_step_pipeline import build_bevformer_step_pipeline_graph
-from gac.ir import Node
-from gac.runtime import reference_run
+from gac.targets.vortex.compiler import SOFTWARE_OPS, compile_vortex_graph, write_vortex_graph_artifact
+from gac.targets.vortex.validation import NativeVortexGraphSession
+from gac.models.bevformer.step_pipeline import build_bevformer_step_pipeline_graph
+from gac.core.ir import Node
+from gac.validation.reference import reference_run
 
 
 def main(argv=None):

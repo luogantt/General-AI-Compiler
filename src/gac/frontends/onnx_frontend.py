@@ -30,8 +30,8 @@ from typing import Any, Mapping, Sequence
 
 import numpy as np
 
-from gac.ir import Graph, Node, TensorSpec
-from gac.passes import ShapeInferencePass
+from gac.core.ir import Graph, Node, TensorSpec
+from gac.compiler.passes import ShapeInferencePass
 
 
 class OnnxFrontendError(ValueError):

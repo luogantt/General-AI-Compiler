@@ -132,7 +132,7 @@ pass。`mlir-opt` 在这些边界负责真实的解析、验证、规范化和 C
 ## 4. 第 1 层：Canonical Graph 冻结模型语义
 
 `compile_vortex_direct()` 首先复用 `compile_vortex()` 建立共享前端。
-[`_match_bevformer_ffn()`](../src/gac/backends/vortex.py) 不接受任意图，而是要求精确的
+[`_match_bevformer_ffn()`](../src/gac/targets/vortex/ffn.py) 不接受任意图，而是要求精确的
 节点序列：
 
 ```text
@@ -173,8 +173,8 @@ Canonical Graph 首先由通用 MLIR 前端生成 `frontend.mlir`。这一层使
 可执行文件，并非 Python 模拟优化器，也不是通过动态库调用一段 C 接口。
 
 优化后，后端不会直接相信文本结果。
-[`_parse_optimized_mlir()`](../src/gac/backends/vortex.py) 和
-[`_audit_optimized_weights()`](../src/gac/backends/vortex.py) 会重新审计：
+[`_parse_optimized_mlir()`](../src/gac/targets/vortex/ffn.py) 和
+[`_audit_optimized_weights()`](../src/gac/targets/vortex/ffn.py) 会重新审计：
 
 - 是否恰好存在两个 `linalg.matmul`；
 - 是否存在预期的 ReLU 和 LayerNorm；
@@ -208,7 +208,7 @@ layer_norm(residual, norm_weight, norm_bias → output; epsilon)
 - 上游 `optimized.mlir` 的摘要。
 
 第二次 `mlir-opt` 验证并规范化这份计划，然后
-[`_parse_vortex_mlir()`](../src/gac/backends/vortex.py) 再次检查调用数量、顺序、类型、
+[`_parse_vortex_mlir()`](../src/gac/targets/vortex/ffn.py) 再次检查调用数量、顺序、类型、
 SSA 实参、launch 常量和权重绑定。
 
 保留 call-plan 层的原因，是让模型分析与设备代码生成解耦。未来 MatMul 可以改成
@@ -217,16 +217,16 @@ LMEM tiled、TCU 或库调用，但三个 Kernel 的输入输出和调用关系�
 
 ## 7. 第 4 层：直接生成 LLVM Dialect 设备 Kernel
 
-[`compile_vortex_direct()`](../src/gac/backends/vortex.py) 在共享前端完成后执行以下工作：
+[`compile_vortex_direct()`](../src/gac/targets/vortex/ffn.py) 在共享前端完成后执行以下工作：
 
 1. 要求所选 `mlir-opt` 必须来自固定的 VOLT LLVM 20.1.8 revision。
 2. 计算 `optimized.mlir` 和 `vortex.mlir` 的 SHA-256。
 3. 调用
-   [`emit_bevformer_ffn_device_mlir()`](../src/gac/backends/vortex_device_mlir.py)
+   [`emit_bevformer_ffn_device_mlir()`](../src/gac/targets/vortex/device_mlir.py)
    生成 `kernel.mlir`。
 4. 第三次调用外部 `mlir-opt` 验证并规范化设备 module。
 5. 调用
-   [`audit_bevformer_ffn_device_mlir()`](../src/gac/backends/vortex_device_mlir.py)
+   [`audit_bevformer_ffn_device_mlir()`](../src/gac/targets/vortex/device_mlir.py)
    对规范化后的设备代码做结构和语义审计。
 
 实现上，`compile_vortex_direct()` 当前复用 `compile_vortex()` 来构建共享前端和 call
@@ -310,7 +310,7 @@ Host 通过 `args_host` 提交参数，Vortex Runtime 把 blob 复制到 device 
 Host/Kernel 边界传递的是这三个固定布局 struct 和 raw device address，不传递 MLIR
 MemRef descriptor。
 
-Host 结构体在 [`_common_header()`](../src/gac/backends/vortex.py) 中通过 `sizeof`、
+Host 结构体在 [`_common_header()`](../src/gac/targets/vortex/ffn.py) 中通过 `sizeof`、
 `alignof` 和 `offsetof` 的 `static_assert` 固定布局；相同合同也写入 `manifest.json`。
 
 Vortex host API 提供的地址在参数 blob 中以 `i64` 保存，但当前设备为 RV32。Host 在
@@ -426,7 +426,7 @@ sequenceDiagram
 
 ## 12. Artifact 结构与完整性保护
 
-[`write_vortex_artifact()`](../src/gac/backends/vortex.py) 只允许写入不存在或为空的目标
+[`write_vortex_artifact()`](../src/gac/targets/vortex/ffn.py) 只允许写入不存在或为空的目标
 目录，并通过 staging directory 原子发布。Direct 模式生成 17 个受 manifest 管理的
 payload，再额外写入 `manifest.json`：
 
@@ -592,9 +592,9 @@ BEVFormer 推理延时，不能换算 FPS 或与 RTX 3070 CUDA Event 结果直�
 | 位置 | 作用 |
 |---|---|
 | [`src/gac/tools/build_bevformer_vortex.py`](../src/gac/tools/build_bevformer_vortex.py) | CLI、输入选择和 Direct/compatibility 路由 |
-| [`src/gac/backends/mlir.py`](../src/gac/backends/mlir.py) | Canonical Graph 到 Tensor/Linalg MLIR |
-| [`src/gac/backends/vortex.py`](../src/gac/backends/vortex.py) | Graph/MLIR 审计、call plan、Host、Makefile、artifact |
-| [`src/gac/backends/vortex_device_mlir.py`](../src/gac/backends/vortex_device_mlir.py) | LLVM Dialect Kernel 生成与语义审计 |
+| [`src/gac/backends/mlir.py`](../src/gac/targets/mlir.py) | Canonical Graph 到 Tensor/Linalg MLIR |
+| [`src/gac/backends/vortex.py`](../src/gac/targets/vortex/ffn.py) | Graph/MLIR 审计、call plan、Host、Makefile、artifact |
+| [`src/gac/backends/vortex_device_mlir.py`](../src/gac/targets/vortex/device_mlir.py) | LLVM Dialect Kernel 生成与语义审计 |
 | [`tools/build_volt_mlir_wsl.sh`](../tools/build_volt_mlir_wsl.sh) | 固定 LLVM/VOLT 20.1.8 工具链构建 |
 | [`tests/test_vortex_backend.py`](../tests/test_vortex_backend.py) | 编译流程、ABI、manifest、Makefile 和负向测试 |
 | [`tests/test_vortex_device_mlir.py`](../tests/test_vortex_device_mlir.py) | Device MLIR emitter/auditor 测试 |

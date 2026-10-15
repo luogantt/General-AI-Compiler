@@ -17,16 +17,16 @@ MLIR Lowering、VOLT 指令选择、ELF 链接和 `.vxbin` 封装；数值验证
 
 | V6 模块 | 实际动作 | 代码入口 | Artifact |
 |---|---|---|---|
-| 1 模型导入 | ONNX、torch.export、Graph JSON；完整 BEVFormer `.gacweights` 权重绑定 | [`build_vortex_graph.main`](../src/gac/tools/build_vortex_graph.py)、[`load_bevformer_step_graph`](../src/gac/frontends/bevformer_graph.py) | `01-import.json`、外置权重 `.bin` |
-| 2 IR 转换 | 使用带名字、Shape、DType、属性和来源的 Graph IR；推导所有值类型 | [`Graph`](../src/gac/ir.py)、[`ShapeInferencePass`](../src/gac/passes.py) | `02-graph.json` |
-| 3 图优化 Pass | 常量折叠、死代码消除、重新推导 Shape | [`compile_vortex_graph`](../src/gac/backends/vortex_graph.py) | `03-passes.json` |
+| 1 模型导入 | ONNX、torch.export、Graph JSON；完整 BEVFormer `.gacweights` 权重绑定 | [`build_vortex_graph.main`](../src/gac/tools/build_vortex_graph.py)、[`load_bevformer_step_graph`](../src/gac/models/bevformer/frontends/graph.py) | `01-import.json`、外置权重 `.bin` |
+| 2 IR 转换 | 使用带名字、Shape、DType、属性和来源的 Graph IR；推导所有值类型 | [`Graph`](../src/gac/core/ir.py)、[`ShapeInferencePass`](../src/gac/compiler/passes.py) | `02-graph.json` |
+| 3 图优化 Pass | 常量折叠、死代码消除、重新推导 Shape | [`compile_vortex_graph`](../src/gac/targets/vortex/compiler.py) | `03-passes.json` |
 | 4 合法化与 Lowering | 检查算子、静态 Shape、精度和 RV32 字节/索引范围；拒绝不支持的节点 | `_validate_static_specs`、`_validate_boolean_operations`、`_kernel_body` | `04-capabilities.json` |
 | 5 子图切分 | 当前每个节点形成一个可执行子图；建立数据依赖，目标全部为 `vortex-v3` | `compile_vortex_graph` 的 dispatch 构造 | `05-dispatch-dag.json` |
-| 6 计算模板 | 选择逐元素、布局、GEMM、卷积、归约和多层采样模板 | `_template`、[`emit_scalar_op`](../src/gac/backends/vortex_scalar_ops.py)、[`emit_spatial_op`](../src/gac/backends/vortex_spatial_ops.py) | `06-templates.json` |
-| 7 Tiling | 基线按线性输出元素分工，每线程一个输出；归约轴在寄存器中循环 | [`ScalarBuilder`](../src/gac/backends/vortex_scalar_ir.py) 与各算子模板 | `07-tiling.json` |
-| 8 Schedule | 推导全图活跃区间，规划全局 arena/视图；按拓扑串联事件，保护复用地址 | [`plan_memory`](../src/gac/memory.py)、dispatch 的 `depends_on/wait_for_dispatch` | `08-schedule.json` |
+| 6 计算模板 | 选择逐元素、布局、GEMM、卷积、归约和多层采样模板 | `_template`、[`emit_scalar_op`](../src/gac/targets/vortex/scalar_ops.py)、[`emit_spatial_op`](../src/gac/targets/vortex/spatial_ops.py) | `06-templates.json` |
+| 7 Tiling | 基线按线性输出元素分工，每线程一个输出；归约轴在寄存器中循环 | [`ScalarBuilder`](../src/gac/targets/vortex/scalar_ir.py) 与各算子模板 | `07-tiling.json` |
+| 8 Schedule | 推导全图活跃区间，规划全局 arena/视图；按拓扑串联事件，保护复用地址 | [`plan_memory`](../src/gac/compiler/memory.py)、dispatch 的 `depends_on/wait_for_dispatch` | `08-schedule.json` |
 | 9 Codegen | SCF/Arith/Math/LLVM 混合设备 IR 降为纯 LLVM Dialect，再经 LLVM IR/VOLT 生成机器码 | `_kernel_body`、`_entry`、`LOWERING_PASSES` | `kernel.mlir` → `.ll` → `.elf` → `.vxbin` |
-| 10 Runtime | 一个设备、一个队列、常驻权重、全局 arena、原生 DType 输入输出、事件等待 | [`emit_graph_host`](../src/gac/backends/vortex_graph_runtime.py) | `main.cpp`、`10-runtime.json` |
+| 10 Runtime | 一个设备、一个队列、常驻权重、全局 arena、原生 DType 输入输出、事件等待 | [`emit_graph_host`](../src/gac/targets/vortex/host_runtime.py) | `main.cpp`、`10-runtime.json` |
 
 第 2 层的模型语义 IR 当前仍是项目的 Python Graph 对象；可执行 MLIR 在第 9 层由
 已选模板生成。它没有伪装成通用 Linalg-to-Vortex 自动编译器，也没有绕道生成设备

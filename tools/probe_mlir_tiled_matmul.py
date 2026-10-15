@@ -9,7 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from gac.mlir_tiled_matmul import (
+from gac.targets.cuda.tiled_matmul import (
     FunctionalMmaPtxProbe,
     bevformer_fc1_tiled_config,
     bevformer_fc2_tiled_config,

@@ -1,0 +1,1 @@
+"""gac.models.common package."""

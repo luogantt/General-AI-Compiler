@@ -9,7 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from gac.mlir_async_tiled_matmul import lower_async_tiled_matmul_to_ptx
+from gac.targets.cuda.async_tiled_matmul import lower_async_tiled_matmul_to_ptx
 
 
 def _parser() -> argparse.ArgumentParser:

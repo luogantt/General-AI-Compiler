@@ -22,8 +22,8 @@ from typing import Any
 
 import numpy as np
 
-from gac.errors import ValidationError
-from gac.weights import write_weights
+from gac.core.errors import ValidationError
+from gac.artifacts.weights import write_weights
 
 
 DEFAULT_PREFIXES = ("img_backbone.", "img_neck.", "pts_bbox_head.")

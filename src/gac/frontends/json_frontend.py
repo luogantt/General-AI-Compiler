@@ -13,7 +13,7 @@ from typing import Any, Mapping
 
 import numpy as np
 
-from gac.ir import Graph, Node, TensorSpec
+from gac.core.ir import Graph, Node, TensorSpec
 
 
 class JsonFrontendError(ValueError):

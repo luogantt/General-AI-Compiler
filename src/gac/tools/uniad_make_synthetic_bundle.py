@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 
-from gac.uniad import UniADFFNContract, write_bundle
+from gac.models.uniad import UniADFFNContract, write_bundle
 
 
 def main() -> None:

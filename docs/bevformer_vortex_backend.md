@@ -83,7 +83,7 @@ MSDeformableAttention、时序/空间 Attention、Decoder、检测头和状态�
 lowering 到 Vortex。当前代码也没有把原来的 CUDA、PTX 或 cuBLAS 实现在 Vortex
 运行时中复用；Vortex 路径会生成独立的 RISC-V/Vortex Kernel。
 
-实现入口是 [`src/gac/backends/vortex.py`](../src/gac/backends/vortex.py)，命令行
+实现入口是 [`src/gac/backends/vortex.py`](../src/gac/targets/vortex/ffn.py)，命令行
 工具是 [`tools/build_bevformer_vortex.py`](../tools/build_bevformer_vortex.py)。
 
 ## MLIR 与 Vortex 的边界

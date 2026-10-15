@@ -10,24 +10,20 @@ import sys
 
 import numpy as np
 
-from ..backends.vortex import (
+from gac.targets.vortex.ffn import (
     DIRECT_MLIR_LOWERING,
     LEGACY_CPP_LOWERING,
     compile_vortex,
     compile_vortex_direct,
     write_vortex_artifact,
 )
-from ..backends.vortex_buffered_mlir import VortexBufferPlan
-from ..bevformer_ffn import (
-    BEVFormerFFNConfig,
-    build_bevformer_ffn_graph,
-    ffn_weight_shapes,
-)
-from ..errors import GACError
-from ..frontends.json_frontend import JsonFrontendError, load_graph
-from ..frontends.bevformer_weights import extract_encoder_ffn_weights
-from ..mlir_toolchain import DEFAULT_TIMEOUT_SECONDS
-from ..weights import load_weights
+from gac.targets.vortex.buffered_mlir import VortexBufferPlan
+from gac.models.bevformer.ffn import BEVFormerFFNConfig, build_bevformer_ffn_graph, ffn_weight_shapes
+from gac.core.errors import GACError
+from gac.frontends.json_frontend import JsonFrontendError, load_graph
+from gac.models.bevformer.frontends.weights import extract_encoder_ffn_weights
+from gac.toolchains.mlir import DEFAULT_TIMEOUT_SECONDS
+from gac.artifacts.weights import load_weights
 
 
 def _parser() -> argparse.ArgumentParser:
