@@ -1,0 +1,43 @@
+{
+  "remote_artifact": "/home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015",
+  "commands": [
+    {
+      "label": "warm-simx",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s env LD_LIBRARY_PATH=/home/robot/project/vortex/build/sw/runtime VORTEX_DRIVER=simx /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/gac_bevformer_full_vortex --data-dir /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015 --kernel /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/kernel.vxbin --threads 4 --repeat 1 --warmup 0",
+      "exit_code": 0,
+      "elapsed_host_seconds": 4.625
+    },
+    {
+      "label": "warm-device-check",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s /home/robot/anaconda3/bin/python /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/verify_outputs.py --data-dir /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015 --report /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/warm-correctness.json",
+      "exit_code": 0,
+      "elapsed_host_seconds": 0.13999999999941792
+    },
+    {
+      "label": "history-route-probe-simx",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s env LD_LIBRARY_PATH=/home/robot/project/vortex/build/sw/runtime VORTEX_DRIVER=simx /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/gac_bevformer_full_vortex --data-dir /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015 --kernel /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/kernel.vxbin --threads 4 --repeat 1 --warmup 0",
+      "exit_code": 0,
+      "elapsed_host_seconds": 4.781999999999243
+    },
+    {
+      "label": "history-route-probe-device-check",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s /home/robot/anaconda3/bin/python /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/verify_outputs.py --data-dir /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015 --report /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/history-route-probe-correctness.json",
+      "exit_code": 0,
+      "elapsed_host_seconds": 0.13999999999941792
+    },
+    {
+      "label": "restored-artifact-verify",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s python3 /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/verify_artifact.py",
+      "exit_code": 0,
+      "elapsed_host_seconds": 0.0779999999977008
+    },
+    {
+      "label": "restored-cold-output-check",
+      "command": "cd /home/robot/project/vortex/build && timeout 120s /home/robot/anaconda3/bin/python /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015/verify_outputs.py --data-dir /home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015",
+      "exit_code": 0,
+      "elapsed_host_seconds": 0.1720000000022992
+    }
+  ],
+  "restored_cold_fixture": true,
+  "restored_artifact_verified": true
+}

@@ -1,0 +1,14 @@
+usage: python3 -m unittest [-h]
+python3 -m unittest: error: --uniad-root does not contain projects/mmdet3d_plugin: /tmp/tmp_rkh14wi
+usage: python3 -m unittest [-h] --uniad-root UNIAD_ROOT --output OUTPUT
+                           [--device DEVICE] [--warmup WARMUP]
+                           [--measure MEASURE] [--workers WORKERS]
+                           [--log-interval LOG_INTERVAL] [--seed SEED]
+                           [--deterministic]
+                           [--cfg-options KEY=VALUE [KEY=VALUE ...]]
+                           config checkpoint
+python3 -m unittest: error: the following arguments are required: --uniad-root
+----------------------------------------------------------------------
+Ran 651 tests in 49.449s
+
+OK (skipped=32)

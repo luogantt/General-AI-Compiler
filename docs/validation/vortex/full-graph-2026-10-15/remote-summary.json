@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "remote_host": "robot@192.168.115.128",
+  "remote_artifact": "/home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015",
+  "graph": "bevformer_streaming_step",
+  "operator_types": 33,
+  "dispatch_count": 811,
+  "device_count": 1,
+  "threads": 4,
+  "arena_bytes": 6096,
+  "frames": [
+    {
+      "frame": "cold",
+      "passed": true,
+      "outputs_verified": 9,
+      "max_abs_error": 7.62939453125e-06,
+      "end_to_end_simulator_host_wall_ms": 4540.340167
+    },
+    {
+      "frame": "warm",
+      "passed": true,
+      "outputs_verified": 9,
+      "max_abs_error": 7.62939453125e-06,
+      "end_to_end_simulator_host_wall_ms": 4572.205371
+    },
+    {
+      "frame": "history-route-probe",
+      "passed": true,
+      "outputs_verified": 9,
+      "max_abs_error": 7.62939453125e-06,
+      "end_to_end_simulator_host_wall_ms": 4736.891533
+    }
+  ],
+  "all_passed": true,
+  "state_feedback": "actual remote cold-frame next_bev -> warm-frame prev_bev",
+  "history_probe": "selected_prev_bev exactly matches controlled FP16 arange+3 history at zero rotation",
+  "frozen_cold_fixture_restored_and_verified": true,
+  "production_checkpoint_validated": false,
+  "silicon_latency_measured": false
+}

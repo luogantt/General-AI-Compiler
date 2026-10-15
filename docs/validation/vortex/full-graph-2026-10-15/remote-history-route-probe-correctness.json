@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "validation": "remote_simx_full_graph_history-route-probe",
+  "remote_host": "robot@192.168.115.128",
+  "remote_artifact": "/home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015",
+  "graph": "bevformer_streaming_step",
+  "dispatch_count": 811,
+  "operator_count": 33,
+  "oracle": "NumPy reference_run reconstructed optimized graph and frozen raw constants; original/optimized graph equivalence separately validated in WSL",
+  "passed": true,
+  "rtol": 0.002,
+  "atol": 0.0003,
+  "outputs": [
+    {
+      "name": "cls_logits",
+      "shape": [
+        1,
+        3,
+        10
+      ],
+      "dtype": "float32",
+      "size_bytes": 120,
+      "passed": true,
+      "max_abs_error": 1.4901161193847656e-08,
+      "actual_sha256": "a294bd7fa8ed86d1bfe67cc120bfe02ce262821053e78217e5742c5754e8f465",
+      "golden_sha256": "58643f334d793149a8fdf2e5a337eb1a44fb99e8c219ab285b93f29123cb720e"
+    },
+    {
+      "name": "bbox_regression",
+      "shape": [
+        1,
+        3,
+        10
+      ],
+      "dtype": "float32",
+      "size_bytes": 120,
+      "passed": true,
+      "max_abs_error": 7.62939453125e-06,
+      "actual_sha256": "034f739d6413f4c61a3a12eb9892f0f4419ddea2ca16e246ff72053a68dc8c40",
+      "golden_sha256": "903d8cc2c5cc820ba05145da8cce592355b3666dfed7ab48592a5c8e5b2709a4"
+    },
+    {
+      "name": "next_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float16",
+      "size_bytes": 16,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "5e2252626dcd989156ba3ba6130c5e28929b8ca8ccca024132ee73ceb0f68a3c",
+      "golden_sha256": "5e2252626dcd989156ba3ba6130c5e28929b8ca8ccca024132ee73ceb0f68a3c"
+    },
+    {
+      "name": "selected_prev_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float32",
+      "size_bytes": 32,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "64df4310721138383101d44fcb9be00ff5fefd71f58fff6e0d0f95f0f16b53aa",
+      "golden_sha256": "64df4310721138383101d44fcb9be00ff5fefd71f58fff6e0d0f95f0f16b53aa"
+    },
+    {
+      "name": "motion_compensated_prev_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float32",
+      "size_bytes": 32,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "64df4310721138383101d44fcb9be00ff5fefd71f58fff6e0d0f95f0f16b53aa",
+      "golden_sha256": "64df4310721138383101d44fcb9be00ff5fefd71f58fff6e0d0f95f0f16b53aa"
+    },
+    {
+      "name": "coverage_Identity",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "06fbf9caca859d755d5ab45933d5510bd870a81ea4baf63e51631c798bf24eac",
+      "golden_sha256": "06fbf9caca859d755d5ab45933d5510bd870a81ea4baf63e51631c798bf24eac"
+    },
+    {
+      "name": "coverage_GELU",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 3.725290298461914e-09,
+      "actual_sha256": "c9074914b877b0dda2054e05c1f247af2af59ad3f140ef67cb4ff69cfa1247ac",
+      "golden_sha256": "95ed95cfa1db31c0c5d3275802148c39951513cc12177bd5f8b94611794d9b28"
+    },
+    {
+      "name": "coverage_AddReLU",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "585596826e131dd08f287cc7de858cc5c9d7fee072528894c347bcd4d9179297",
+      "golden_sha256": "585596826e131dd08f287cc7de858cc5c9d7fee072528894c347bcd4d9179297"
+    },
+    {
+      "name": "coverage_MatMulBiasGELU",
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "float32",
+      "size_bytes": 8,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "03e710f7ff47ab8c9d9722b0a26a1cfe0b7f5a5b69bdbe006460a4f85d43eabf",
+      "golden_sha256": "03e710f7ff47ab8c9d9722b0a26a1cfe0b7f5a5b69bdbe006460a4f85d43eabf"
+    }
+  ],
+  "limitation": "Tiny synthetic graph, not production checkpoint accuracy or silicon latency.",
+  "history_route_probe": {
+    "history": "FP16 arange +3",
+    "rotation_delta_degrees": 0,
+    "selected_prev_bev_exactly_matches_history": true,
+    "nonzero_history_values": [
+      [
+        [
+          3.0,
+          4.0,
+          5.0,
+          6.0
+        ],
+        [
+          7.0,
+          8.0,
+          9.0,
+          10.0
+        ]
+      ]
+    ]
+  }
+}

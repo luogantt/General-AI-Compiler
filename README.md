@@ -1,5 +1,7 @@
 # General AI Compiler（GAC）
 
+`lg/bevformer-vortex-full-ops` 分支新增[按照 V6 十层架构实现的整图 Vortex 后端](docs/bevformer_vortex_full_graph.md)：现有 BEVFormer streaming Graph 的 33 类规范算子均可生成独立软件 MLIR Kernel，统一在一台 Vortex 上执行。包含全局 Buffer 复用、事件调度和原生 DType Runtime；完整拓扑的小尺寸模型已通过真实 MLIR 编译及 SimX 数值验证。真实 checkpoint 的生产 Profile 已编译为 `.vxbin`，生产尺寸输入的精度与速度仍待验证。
+
 > 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、cuBLAS 混合 FFN、全 PTX FFN，以及两次 cuBLAS MatMul 配合两个 MLIR→PTX 融合 Kernel 的 `mlir-cublas-ptx-sm86` 生产候选。
 
 GAC 的 CUDA 路径把模型配置、权重和静态计算图转换为可校验的 HXP 包，在 Runtime 中完成设备检查、显存规划、实现选择、NVRTC 编译和 CUDA 执行。逐元素、布局、Attention 与 BEV 专用算子由项目生成 CUDA；生产尺寸 FP32 Conv 和 MatMul 可分别选择 cuDNN 与 CuPy/cuBLAS。MLIR 侧有五条边界不同的路径：`mlir-linalg` 生成标准 Tensor/Linalg MLIR；`mlir-cuda-sm86` 用两次 cuBLAS MatMul 和两个 NVRTC 融合 Kernel 执行固定 FFN；`mlir-ptx-sm86` 把同一生产形状 FFN 的三个 `gpu.func` 经官方 LLVM 24 `mlir-opt` 降到 SM86 PTX；`mlir-cublas-ptx-sm86` 保留两次 CuPy/cuBLAS MatMul，并把两个融合阶段改为 MLIR PTX；`mlir-tiled-ffn-sm86` 用两个单缓冲 tiled MatMul Kernel 和一个最终融合 PTX Kernel 执行三个 dispatch。

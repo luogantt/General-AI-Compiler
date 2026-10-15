@@ -1,0 +1,77 @@
+{
+  "kind": "synthetic-tiny-whole-BEVFormer",
+  "original_nodes": 1057,
+  "dispatches": 811,
+  "operator_types": [
+    "Add",
+    "AddReLU",
+    "BatchNorm",
+    "Cast",
+    "Clamp",
+    "Concat",
+    "Conv2D",
+    "Cos",
+    "Div",
+    "Expand",
+    "GELU",
+    "Greater",
+    "GridSample2D",
+    "Identity",
+    "LayerNorm",
+    "Less",
+    "Log",
+    "MSDeformableAttention",
+    "MatMul",
+    "MatMulBiasGELU",
+    "MaxPool2D",
+    "Mul",
+    "ReLU",
+    "ReduceMean",
+    "ReduceSum",
+    "Reshape",
+    "Sigmoid",
+    "Sin",
+    "Slice",
+    "Softmax",
+    "Sub",
+    "Transpose",
+    "Where"
+  ],
+  "arena_bytes": 6096,
+  "native": [
+    {
+      "frame": "cold",
+      "passed": true
+    },
+    {
+      "frame": "warm",
+      "passed": true
+    },
+    {
+      "frame": "history-route-probe",
+      "passed": true
+    }
+  ],
+  "simx": [
+    {
+      "frame": "cold",
+      "passed": true,
+      "simulator_host_wall_seconds": 3.4091196889999935
+    },
+    {
+      "frame": "warm",
+      "passed": true,
+      "simulator_host_wall_seconds": 3.387874382999996
+    },
+    {
+      "frame": "history-route-probe",
+      "passed": true,
+      "simulator_host_wall_seconds": 3.377014336000002
+    }
+  ],
+  "state_feedback": "previous invocation next_bev -> host -> next invocation prev_bev",
+  "state_probe": "selected_prev_bev matches controlled FP16 history exactly",
+  "oracle": "original unoptimized Graph / independent NumPy evaluator",
+  "production_checkpoint_validated": false,
+  "silicon_latency_measured": false
+}

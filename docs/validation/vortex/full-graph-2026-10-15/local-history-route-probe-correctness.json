@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "rtol": 0.002,
+  "atol": 0.0003,
+  "outputs": [
+    {
+      "name": "cls_logits",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "bbox_regression",
+      "passed": true,
+      "max_abs_error": 7.62939453125e-06
+    },
+    {
+      "name": "next_bev",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "selected_prev_bev",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "motion_compensated_prev_bev",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "coverage_Identity",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "coverage_GELU",
+      "passed": true,
+      "max_abs_error": 3.725290298461914e-09
+    },
+    {
+      "name": "coverage_AddReLU",
+      "passed": true,
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "coverage_MatMulBiasGELU",
+      "passed": true,
+      "max_abs_error": 0.0
+    }
+  ]
+}

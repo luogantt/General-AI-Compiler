@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "validation": "remote_simx_full_graph_cold",
+  "remote_host": "robot@192.168.115.128",
+  "remote_artifact": "/home/robot/project/vortex/build/tests/regression/gac_full_ops_20261015",
+  "graph": "bevformer_streaming_step",
+  "dispatch_count": 811,
+  "operator_count": 33,
+  "passed": true,
+  "rtol": 0.002,
+  "atol": 0.0003,
+  "outputs": [
+    {
+      "name": "cls_logits",
+      "shape": [
+        1,
+        3,
+        10
+      ],
+      "dtype": "float32",
+      "size_bytes": 120,
+      "passed": true,
+      "max_abs_error": 2.9802322387695312e-08,
+      "actual_sha256": "27d158ec46bf7537f4484db64700ec5c15851b88e518eaef268b1c73d258bbea",
+      "golden_sha256": "1633b725e8b81e9efef078e65f0a5c3602e0fc00b2feffd284043d98bdd5aceb"
+    },
+    {
+      "name": "bbox_regression",
+      "shape": [
+        1,
+        3,
+        10
+      ],
+      "dtype": "float32",
+      "size_bytes": 120,
+      "passed": true,
+      "max_abs_error": 7.62939453125e-06,
+      "actual_sha256": "034f739d6413f4c61a3a12eb9892f0f4419ddea2ca16e246ff72053a68dc8c40",
+      "golden_sha256": "3a25a13955120e937c2aa3668836f63befa9a2c9b2be627c3312c96f3d7d9ca0"
+    },
+    {
+      "name": "next_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float16",
+      "size_bytes": 16,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "557cb50d0e160ac5e5dead199055fe475efb0e6a8c32985dc45263493b33e743",
+      "golden_sha256": "557cb50d0e160ac5e5dead199055fe475efb0e6a8c32985dc45263493b33e743"
+    },
+    {
+      "name": "selected_prev_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float32",
+      "size_bytes": 32,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "3e6c3d906deee0e3b1107e989319e0f71bbd38d45b4a587d083c11c3e2061e4e",
+      "golden_sha256": "3e6c3d906deee0e3b1107e989319e0f71bbd38d45b4a587d083c11c3e2061e4e"
+    },
+    {
+      "name": "motion_compensated_prev_bev",
+      "shape": [
+        1,
+        2,
+        4
+      ],
+      "dtype": "float32",
+      "size_bytes": 32,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "dd06f64183228c4d4a6b20d498e7b0d8022e94d80a5351bbdc7a386301d8e268",
+      "golden_sha256": "dd06f64183228c4d4a6b20d498e7b0d8022e94d80a5351bbdc7a386301d8e268"
+    },
+    {
+      "name": "coverage_Identity",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "7f1f6d73377f8c1a7eebdfd9eaae577dd562cd3a5e60b2518b6bf77284abdb00",
+      "golden_sha256": "7f1f6d73377f8c1a7eebdfd9eaae577dd562cd3a5e60b2518b6bf77284abdb00"
+    },
+    {
+      "name": "coverage_GELU",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "904287e4c543fdc32a9466f8b8288dfa349ed0033b959b9f7bfe734e31075dac",
+      "golden_sha256": "904287e4c543fdc32a9466f8b8288dfa349ed0033b959b9f7bfe734e31075dac"
+    },
+    {
+      "name": "coverage_AddReLU",
+      "shape": [
+        1,
+        18
+      ],
+      "dtype": "float32",
+      "size_bytes": 72,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "66167b4e8f0118ae14ba3e3ba9181f84485f21110980100267213d49f11c34a7",
+      "golden_sha256": "66167b4e8f0118ae14ba3e3ba9181f84485f21110980100267213d49f11c34a7"
+    },
+    {
+      "name": "coverage_MatMulBiasGELU",
+      "shape": [
+        1,
+        2
+      ],
+      "dtype": "float32",
+      "size_bytes": 8,
+      "passed": true,
+      "max_abs_error": 0.0,
+      "actual_sha256": "e645b3439ac86e1608714884708858baf15a33a753ac34cecdb4f1f1e243a3d1",
+      "golden_sha256": "e645b3439ac86e1608714884708858baf15a33a753ac34cecdb4f1f1e243a3d1"
+    }
+  ],
+  "limitation": "Tiny all-operator graph with synthetic weights, not full-size checkpoint inference; simulator wall time is not hardware inference latency."
+}

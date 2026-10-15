@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "backend": "vortex-full-graph",
+  "graph": "bevformer_streaming_step",
+  "timing_kind": "host_wall_including_driver_or_simulation",
+  "hardware_inference_latency_measured": false,
+  "device_count": 1,
+  "dispatch_count": 811,
+  "arena_bytes": 6096,
+  "threads": 4,
+  "warmup": 0,
+  "repeat": 1,
+  "h2d_host_wall_mean_ms": 0.172669,
+  "dispatch_host_wall_mean_ms": 4539.737580,
+  "d2h_host_wall_mean_ms": 0.429918,
+  "end_to_end_host_wall_mean_ms": 4540.340167,
+  "numerical_verification": "run verify_outputs.py separately"
+}

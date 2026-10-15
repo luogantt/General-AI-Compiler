@@ -1,0 +1,67 @@
+{
+  "kind": "production-profile-real-checkpoint-compile-only",
+  "graph": "bevformer_complete_cold_and_warm_streaming_step",
+  "source_checkpoint_sha256": "7305046dbaa4fe8b1fa6d6acb9e0e3d605a70a3c473f763e936103428d2b2f12",
+  "source_weights_sha256": "ee9776e968cce3e9dfbaa0b551c38d9cdec2a4b1649d898f377b2adc04fe6b26",
+  "dispatch_count": 929,
+  "operator_counts": {
+    "Add": 205,
+    "BatchNorm": 53,
+    "Cast": 3,
+    "Clamp": 22,
+    "Concat": 22,
+    "Conv2D": 55,
+    "Cos": 2,
+    "Div": 26,
+    "Expand": 6,
+    "Greater": 4,
+    "GridSample2D": 1,
+    "LayerNorm": 29,
+    "Less": 2,
+    "Log": 6,
+    "MSDeformableAttention": 12,
+    "MatMul": 118,
+    "MaxPool2D": 1,
+    "Mul": 28,
+    "ReLU": 74,
+    "ReduceMean": 3,
+    "ReduceSum": 7,
+    "Reshape": 129,
+    "Sigmoid": 14,
+    "Sin": 2,
+    "Slice": 47,
+    "Softmax": 16,
+    "Sub": 7,
+    "Transpose": 30,
+    "Where": 5
+  },
+  "memory": {
+    "arena_size": 516096000,
+    "resident_bytes": 136079360,
+    "external_input_bytes": 15104460,
+    "external_output_bytes": 1352000
+  },
+  "mlir_verified_and_lowered": true,
+  "device_binary_built": true,
+  "inference_executed": false,
+  "numerical_accuracy_validated": false,
+  "hardware_latency_measured": false,
+  "binaries": {
+    "kernel.mlir": {
+      "size_bytes": 4997868,
+      "sha256": "c73cbe407280ed0e4abecf02378ed3c09cd9ccc82b3b431fb8f394a5177d7c66"
+    },
+    "kernel.ll": {
+      "size_bytes": 1993885,
+      "sha256": "b70f127b7358e9b9c9bddbf6cf3e2168622d8c5a930ac17e0a363722b8a9847e"
+    },
+    "kernel.elf": {
+      "size_bytes": 257692,
+      "sha256": "87b6ed03741d731a92b896791454b0c7b829468f0effb7afddfa68ef0078b9f7"
+    },
+    "kernel.vxbin": {
+      "size_bytes": 193047,
+      "sha256": "56dd2c3078e5322fbfeef002476f3927b82decc88d6482ef2d53a03b9c65c28a"
+    }
+  }
+}
