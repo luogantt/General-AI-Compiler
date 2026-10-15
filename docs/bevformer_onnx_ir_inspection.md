@@ -10,6 +10,7 @@
 | --- | --- |
 | `bevformer-tiny-cold.onnx` | 导出的模型图和权重，ONNX opset 17 |
 | `inspection/index.html` | 点击算子，查看源 ONNX、前端节点、输入输出类型和权重摘要 |
+| `inspection/graph-network.html` | 可逐层展开的网络图、真实上下游连线及矩阵切片，生成方式见 [网络图查看器](graph_ir_network_viewer.md) |
 | `inspection/graph.ir.txt` | 适合直接阅读的 GAC Graph IR 文本 |
 | `inspection/canonical.graph.json` | 可回读的 Graph 结构，不把大权重展开成 JSON |
 | `inspection/constants.npz` | 前端提取的真实常量数组 |

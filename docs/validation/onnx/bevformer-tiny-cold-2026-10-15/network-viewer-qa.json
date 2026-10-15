@@ -1,0 +1,95 @@
+{
+  "initial": {
+    "nodes": 5511,
+    "constants": 4088,
+    "visible": 10,
+    "edges": 9,
+    "scale": 0.85,
+    "rendered": 10,
+    "unique": 10,
+    "moduleKeys": [
+      "scope:@root-ops",
+      "scope:img_backbone",
+      "scope:img_neck",
+      "scope:pts_bbox_head"
+    ],
+    "graphBounds": {
+      "width": 912,
+      "height": 1184
+    },
+    "canvas": {
+      "width": 888,
+      "height": 765.765625
+    },
+    "scope": "前端 Graph IR；固定合成标定的冷帧原始检测头，不含框解码。激活值尚未计算。",
+    "counts": "5,511 算子节点4,088 权重 / 常量2,996 尚未合法化结构与类型来自同一份 Graph IR · 权重显示真实切片"
+  },
+  "expanded": {
+    "scope": "img_backbone",
+    "nodes": 9
+  },
+  "focused": {
+    "id": "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.2/Gemm__matmul",
+    "op": "MatMul",
+    "up": [
+      "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.1/Relu"
+    ],
+    "down": [
+      "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.2/Gemm"
+    ],
+    "visible": [
+      "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.1/Relu",
+      "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.2/Gemm__matmul",
+      "/pts_bbox_head/transformer/can_bus_mlp/can_bus_mlp.2/Gemm"
+    ],
+    "scale": 0.85
+  },
+  "matrix": {
+    "name": "img_neck.fpn_convs.0.conv.weight",
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "planes": 8,
+    "first": -0.009019424207508564,
+    "secondPlaneFirst": -0.026095448061823845
+  },
+  "bias": {
+    "name": "img_neck.lateral_convs.0.conv.bias",
+    "shape": [
+      256
+    ],
+    "first": 0.024059711024165154
+  },
+  "alias": {
+    "name": "onnx::MatMul_14522",
+    "source": "onnx::MatMul_14152",
+    "via": [
+      "Identity_0"
+    ],
+    "first": -0.0017651545349508524
+  },
+  "flat": {
+    "name": "img_neck.lateral_convs.0.conv.weight",
+    "rows": 256,
+    "cols": 2048,
+    "first": 0.06025540456175804
+  },
+  "mobile": {
+    "width": 390,
+    "scrollWidth": 390,
+    "nodes": 10,
+    "scale": 0.85
+  },
+  "errors": [],
+  "success": true,
+  "graph_json_sha256": "b2bb406757b475be78440422ae42a5ae74348b65e5ef33887f892a4261a547f9",
+  "html_sha256": "6093825e474174b672dbba5d1f105de6401efb34f99f0291850fe0ab08b0bd12",
+  "checks": {
+    "python_tests": 8,
+    "javascript_layout_tests": 7,
+    "real_browser": true
+  }
+}
