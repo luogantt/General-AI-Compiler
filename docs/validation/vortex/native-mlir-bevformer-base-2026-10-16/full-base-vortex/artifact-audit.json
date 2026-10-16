@@ -1,0 +1,133 @@
+{
+  "status": "pass",
+  "scope": "full original-resolution BEVFormer base compilation; not whole-model device execution",
+  "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d  /home/thomas/gac-native-build/gac-compile\n537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8  /home/thomas/gac-native-build/gac-opt\n",
+  "dispatch_count": 3224,
+  "elf_kernel_entry_count": 3224,
+  "vxbin_kernel_entry_count": 3224,
+  "resident_bytes": 2032441772,
+  "constant_file_count": 859,
+  "constant_file_bytes": 368518572,
+  "arena_bytes": 1554944000,
+  "embedded_constant_bytes": 2073600,
+  "kernel_address_start": 2147483648,
+  "kernel_address_end": 2148483072,
+  "op_counts": {
+    "gac.slice": 594,
+    "gac.conv2d_relu": 246,
+    "gac.max_pool2d": 6,
+    "gac.conv2d": 420,
+    "gac.add_relu": 198,
+    "gac.concat": 177,
+    "gac.sigmoid": 175,
+    "gac.deform_conv2d": 156,
+    "gac.batch_norm": 156,
+    "gac.relu": 170,
+    "gac.resize": 12,
+    "gac.add": 152,
+    "gac.transpose": 76,
+    "gac.expand": 68,
+    "gac.tile": 2,
+    "gac.cast": 1,
+    "gac.gemm": 8,
+    "gac.layer_norm": 49,
+    "gac.matmul_bias": 133,
+    "gac.softmax": 24,
+    "gac.ms_deform_attn_offsets": 18,
+    "gac.reduce_mean": 6,
+    "gac.gather": 125,
+    "gac.div": 30,
+    "gac.matmul_bias_relu": 36,
+    "gac.matmul": 12,
+    "gac.clamp": 54,
+    "gac.sub": 18,
+    "gac.log": 18,
+    "gac.scatter_nd": 66,
+    "gac.mul": 18
+  },
+  "view_elision": {
+    "dispatches_removed": 331,
+    "logical_copy_bytes_removed": 16368553824,
+    "public_output_views_materialized": true
+  },
+  "undefined_elf_symbols": [],
+  "llvm_declarations": [
+    "declare ptr @llvm.riscv.vx.uniform.p0.p0(ptr) #1",
+    "declare i32 @llvm.riscv.vx.uniform.i32.i32(i32) #1",
+    "declare float @llvm.maximum.f32(float, float) #2",
+    "declare float @llvm.exp.f32(float) #2",
+    "declare float @llvm.sqrt.f32(float) #2",
+    "declare float @llvm.log.f32(float) #2"
+  ],
+  "artifacts": {
+    "plan.json": {
+      "bytes": 2041652,
+      "sha256": "1d21dcb5340d405e7e5d59f17ff390e1e14b48c10f6a85326d5d79958de5e2ad"
+    },
+    "kernel.mlir": {
+      "bytes": 23741937,
+      "sha256": "e92c52a665be9209f5ad35f940667a3ba6a73bfe74379375d1bb16eeb09bde78"
+    },
+    "kernel.ll": {
+      "bytes": 13289789,
+      "sha256": "a73b2a45ca5100b25f76482f69e0e210e25228b2d9596e24387bd65872263000"
+    },
+    "kernel.elf": {
+      "bytes": 1285396,
+      "sha256": "cedc39f79a60bdd2436584b46c56adffe6c4191f0bdb041585b1d879916c09fd"
+    },
+    "kernel.vxbin": {
+      "bytes": 1085390,
+      "sha256": "4dc4f23995852d3fef5bf6ae93004657d0db5103036bc26490db319185adc599"
+    },
+    "kernel.dump": {
+      "bytes": 8581032,
+      "sha256": "13e476918a7720fd190298c161d03b8be818cb1b240a242270875a88fc5b196e"
+    },
+    "config.stamp": {
+      "bytes": 13551,
+      "sha256": "4df75a54246e77fcf34e58c85e60327797a25706bedb54f81d0789bff9f4679e"
+    }
+  },
+  "input_shapes": {
+    "images": [
+      1,
+      6,
+      3,
+      928,
+      1600
+    ]
+  },
+  "outputs": [
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "float32"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "float32"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "float32"
+    }
+  ],
+  "compile_time": "\tCommand being timed: \"env GAC_CONSTANT_FOLD_PROFILE=bevformer-base GAC_NATIVE_BIN=/home/thomas/gac-native-build LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release VORTEX_BUILD=/home/thomas/vortex-gac-buffered-build32 bash native/tools/compile-vortex.sh build/bevformer-base-onnx/bevformer-base-cold.onnx /home/thomas/gac-base-vortex\"\n\tUser time (seconds): 233.52\n\tSystem time (seconds): 30.73\n\tPercent of CPU this job got: 94%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 4:39.46\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 1300316\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 33\n\tMinor (reclaiming a frame) page faults: 4915744\n\tVoluntary context switches: 37337\n\tInvoluntary context switches: 826\n\tSwaps: 0\n\tFile system inputs: 836550\n\tFile system outputs: 12842336\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+}

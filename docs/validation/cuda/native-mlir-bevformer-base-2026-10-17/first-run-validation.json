@@ -1,0 +1,197 @@
+{
+  "deployment_id": "752afa1f8c4e4dfc9b5f7b2bd1d6438a",
+  "cases": [
+    {
+      "name": "full-model",
+      "status": "gpu_passed",
+      "gpu_executed": true,
+      "artifact_hashes_verified": true,
+      "exit_code": 0,
+      "runtime": {
+        "arena_bytes": 1554944000,
+        "completed_dispatches": 3224,
+        "compute_capability": "8.6",
+        "device_memory_bytes": 8220901376,
+        "device_memory_snapshots": [
+          {
+            "free_bytes": 8036089856,
+            "stage": "context-created",
+            "total_bytes": 8220901376,
+            "used_device_bytes": 184811520
+          },
+          {
+            "free_bytes": 8033992704,
+            "stage": "module-loaded",
+            "total_bytes": 8220901376,
+            "used_device_bytes": 186908672
+          },
+          {
+            "free_bytes": 5945229312,
+            "stage": "buffers-allocated",
+            "total_bytes": 8220901376,
+            "used_device_bytes": 2275672064
+          },
+          {
+            "free_bytes": 5932646400,
+            "stage": "dispatches-completed",
+            "total_bytes": 8220901376,
+            "used_device_bytes": 2288254976
+          }
+        ],
+        "device_ordinal": 0,
+        "dispatch_wall_ms": 17076.585458,
+        "dispatches": 3224,
+        "download_ms": 5.6481390000000005,
+        "driver_version": 13000,
+        "embedded_constant_bytes": 2073600,
+        "execution": "cuda-device",
+        "gpu_dispatch_ms": 17050.46484375,
+        "gpu_dispatch_samples_ms": [
+          17050.46484375
+        ],
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "host_operator_fallback": false,
+        "initialization_ms": 17358.991559,
+        "input_file_io_ms": 145.07925800000015,
+        "inputs": [
+          {
+            "file": "input_0.bin",
+            "name": "images",
+            "tensor_index": 0
+          }
+        ],
+        "jit_log": "",
+        "measured_runs": 1,
+        "memory_note": "Static device buffer allocations only; excludes CUDA context, PTX module/JIT, embedded constants and possible local-memory spills. This is not a measured GPU-memory peak.",
+        "memory_snapshot_note": "cuMemGetInfo point samples of the whole device; may include other processes and driver allocations. These samples are not this process's measured peak.",
+        "output_file_io_ms": 11.750683,
+        "outputs": [
+          {
+            "dtype": "float32",
+            "file": "output_0.bin",
+            "name": "bev_embed",
+            "shape": [
+              40000,
+              1,
+              256
+            ],
+            "tensor_index": 3420
+          },
+          {
+            "dtype": "float32",
+            "file": "output_1.bin",
+            "name": "all_cls_scores",
+            "shape": [
+              6,
+              1,
+              900,
+              10
+            ],
+            "tensor_index": 4082
+          },
+          {
+            "dtype": "float32",
+            "file": "output_2.bin",
+            "name": "all_bbox_preds",
+            "shape": [
+              6,
+              1,
+              900,
+              10
+            ],
+            "tensor_index": 4083
+          }
+        ],
+        "planned_buffer_bytes": 2030368172,
+        "scheduling": "single-cuda-stream-manifest-order",
+        "schema_version": 1,
+        "static_allocated_tensor_bytes": 2030368172,
+        "status": "completed",
+        "timing_kind": "cuda-events-whole-dispatch-sequence",
+        "timing_note": "GPU interval includes device work and any host submission gaps; excludes PTX JIT, transfers, file I/O and warmup. Trace mode synchronizes every dispatch and is not a throughput measurement. Transfers use host API wall time.",
+        "total_host_wall_ms": 34664.635296,
+        "trace_dispatches": false,
+        "upload_ms": 58.87732900000002,
+        "warmup_runs": 0
+      },
+      "wall_seconds": 35.457283951000136,
+      "numerical_passed": true,
+      "outputs": {
+        "bev_embed": {
+          "passed": true,
+          "shape": [
+            40000,
+            1,
+            256
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.1189451217651367e-05,
+          "mean_abs_error": 5.66800638687985e-07,
+          "dtype_matches": true,
+          "rtol": 0.001,
+          "atol": 0.0001,
+          "artifact": {
+            "bytes": 40960000,
+            "sha256": "d0da6f0782bdf0612773abad20d70e4996fb58b25b142c683b393e16515c5dcd"
+          }
+        },
+        "all_cls_scores": {
+          "passed": true,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.288818359375e-05,
+          "mean_abs_error": 1.4320700256912797e-06,
+          "dtype_matches": true,
+          "rtol": 0.001,
+          "atol": 0.0001,
+          "artifact": {
+            "bytes": 216000,
+            "sha256": "df531c947979519ae95aa2c136713cf2aa5ad8a3cec9941f43d75342fcf28030"
+          }
+        },
+        "all_bbox_preds": {
+          "passed": true,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 6.176531314849854e-05,
+          "mean_abs_error": 1.8790646922163299e-06,
+          "dtype_matches": true,
+          "rtol": 0.001,
+          "atol": 0.0001,
+          "artifact": {
+            "bytes": 216000,
+            "sha256": "d21284509b68fe26353df227009bf74d14089fead863ce894128da8306724495"
+          }
+        }
+      },
+      "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181"
+    }
+  ],
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "python_operator_fallback": false,
+  "numerical_passed": true,
+  "status": "gpu_passed",
+  "runner_sha256": "8d67cda8b01f7e4b5fa2023a753848f60072c006296c9276278a2df3b2a25415",
+  "deployment_archive_sha256": "db2a89023cee1d7d6ad1e7c80190823d36134052d3ac322364cce65f4802df40",
+  "raw_validation_report_sha256": "a27d0b5f62356f67868d19895cbe3cd2e6e7bfd0c9898cf5aa9e4289fc5709f8"
+}

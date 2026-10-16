@@ -1,0 +1,134 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "shape_if_squeeze_negative_axis",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_identity_dead_invalid_squeeze",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_squeeze_middle_reverse_equal",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_rank_one_to_scalar",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_scalar_condition_identity",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_after_runtime_reshape",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_constant_nonzero_geometry",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "NZ": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_different_capture",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_different_capture/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_axis_mismatch",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_axis_mismatch/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_gather_axis",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_gather_axis/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_not_one",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_not_one/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_shape_slice",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_shape_slice/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_branch_domain",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_branch_domain/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_branch_attribute",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_branch_attribute/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_extra_branch_op",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_extra_branch_op/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_wrong_branch_output",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_wrong_branch_output/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_extra_if_attribute",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_extra_if_attribute/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_runtime_condition",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_runtime_condition/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_unresolved_extent",
+      "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_unresolved_extent/model.onnx\":4:0)): error: 'gac.squeeze_if_unit_dim' op shape-guarded If requires a static input shape before device legalization",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_opset12",
+      "diagnostic": "loc(\"Shape#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_opset12/model.onnx\":1:0)): error: importer supports standard ONNX opsets 13 through 18 only: Shape",
+      "passed": true
+    },
+    {
+      "name": "shape_if_reject_opset19",
+      "diagnostic": "loc(\"Shape#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_opset19/model.onnx\":1:0)): error: importer supports standard ONNX opsets 13 through 18 only: Shape",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "source_reports": {
+    "/home/thomas/gac-cuda-operators-frozen-v2-20261017/cuda-validation.json": "9bd6bd006d3d0afe13ae188e1be0982cef91e5c9711f70ba5c69a403981a4132",
+    "build/cuda-ptx-session/operators-results/results/validation.json": "b2caed708d88504f321cdd54a86c151098e116104d29615004e85bfac917b471",
+    "build/cuda-ptx-session/operators-deployment.tar.metadata.json": "76c40eecca98ca78f6930a14b642f8cffc29e439eb4d82e9e634a96d311eccad",
+    "build/cuda-ptx-session/operators-results/results/suite.json": "3bdad69faedb6c5e6481fcecc9f5a282eb2af10205e693b4a215271e06d4800b",
+    "/home/thomas/gac-cuda-frozen-operators-20261017/identities.json": "63ae388cb40f026bae01946b32118091e5cb2c9d6d19ae816d9aa43b7851d5b1"
+  },
+  "validation_code": {
+    "native/tests/run_cuda_tests.py": "21e1be7713c9a4499411f03c3277b745608a32346ae8f607eca5f5c7d3f0a4cb",
+    "native/tests/run_full_model.py": "b86cf14d3ce5b51271f17d3116de1bc38fb5fdd556178077de213b372ae306d3",
+    "native/runtime/cuda-run.cpp": "8555d67632ed0b7b8c5d8db96da3a95941dd338fc2b60bc06c7e85bb2fb26f01",
+    "native/runtime/dispatch-plan.h": "37eed00ce8b7d1aff273d113e572c942aeb8f8bd8021a8113c60dbdbac183194",
+    "build/cuda-ptx-session/package_deployment.py": "a1069553e9b574b33b3dde48fc314458637e5961da9006654dacfa0411edf8ec"
+  },
+  "compact_files": {
+    "operators-compile.json": "76ff18b4b2469466f85f899ec7aa4a21627fc8cf0b4c642d9fd2dcbdbadd86e5",
+    "operators-gpu-validation.json": "bc8306f5b6ce4de9f1a5dedad207cfe2b9ea87af51050732d57f8ef422058697"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "cases": [
+    {
+      "name": "range_i64_positive",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_negative",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_above_double_exactness",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_below_double_exactness",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_max_no_terminal_overflow",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_min_no_terminal_overflow",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_cross_extremes",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i64_minimum_delta",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i32_max_no_terminal_overflow",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_i16_min_no_terminal_overflow",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_empty_positive_concat",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_empty_negative_concat",
+      "constant_payload_bit_exact": true
+    },
+    {
+      "name": "range_empty_equal_concat",
+      "constant_payload_bit_exact": true
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "/img_backbone/layer4/layer4.2/relu_2/Relu": {
+    "passed": true,
+    "shape": [
+      6,
+      2048,
+      15,
+      25
+    ],
+    "actual_dtype": "float32",
+    "expected_dtype": "float32",
+    "finite": true,
+    "mismatched_elements": 0,
+    "max_abs_error": 4.351139068603516e-06,
+    "mean_abs_error": 1.4775077438066041e-08
+  },
+  "/img_neck/lateral_convs.0/conv/Conv": {
+    "passed": true,
+    "shape": [
+      6,
+      256,
+      15,
+      25
+    ],
+    "actual_dtype": "float32",
+    "expected_dtype": "float32",
+    "finite": true,
+    "mismatched_elements": 0,
+    "max_abs_error": 1.043081283569336e-06,
+    "mean_abs_error": 1.4193164207022668e-07
+  },
+  "/img_neck/fpn_convs.0/conv/Conv": {
+    "passed": true,
+    "shape": [
+      6,
+      256,
+      15,
+      25
+    ],
+    "actual_dtype": "float32",
+    "expected_dtype": "float32",
+    "finite": true,
+    "mismatched_elements": 0,
+    "max_abs_error": 1.0013580322265625e-05,
+    "mean_abs_error": 8.405065317573543e-07
+  }
+}

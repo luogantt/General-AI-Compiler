@@ -1,0 +1,1207 @@
+{
+  "date": "2026-10-16",
+  "status": "Complete official base cold ONNX and real CPU reference produced; native compilation and execution are validated separately",
+  "complete_base_onnx_produced": true,
+  "complete_base_reference_produced": true,
+  "complete_base_native_compile_or_inference_verified": false,
+  "profile": {
+    "config": "projects/configs/bevformer/bevformer_base.py",
+    "backbone": "ResNet101 Caffe style with DCNv2 in stages 3/4",
+    "images": [
+      1,
+      6,
+      3,
+      928,
+      1600
+    ],
+    "bev": [
+      200,
+      200
+    ],
+    "encoder_layers": 6,
+    "feature_levels": 4,
+    "decoder_layers": 6,
+    "object_queries": 900,
+    "frame": "cold",
+    "metadata": "fixed synthetic all-visible calibration, zero CAN-bus; not dataset accuracy"
+  },
+  "checkpoint": {
+    "path": "build/checkpoints/bevformer_r101_dcn_24ep.pth",
+    "bytes": 276980568,
+    "sha256": "5fda3ed3e0d2d1dc09baca337aa1ed64aece057fed7d8238525c5ed342649177",
+    "strict_state_tensors": 1089
+  },
+  "environment": {
+    "windows_python": "build/bev-export-env/Scripts/python.exe",
+    "linux_python": "/home/thomas/gac-bev-export-env/bin/python",
+    "linux_python_version": "3.10.22",
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "mmcv": "1.4.0 (no compiled _ext)",
+    "mmdet": "2.14.0",
+    "onnx": "1.21.0",
+    "numpy": "1.23.5",
+    "linux_frozen_packages": [
+      "addict==2.4.0",
+      "certifi==2022.12.7",
+      "charset-normalizer==2.1.1",
+      "contourpy==1.3.2",
+      "cycler==0.12.1",
+      "einops==0.8.2",
+      "filelock==3.32.3",
+      "fonttools==4.65.0",
+      "idna==3.4",
+      "jinja2==3.1.6",
+      "kiwisolver==1.5.1",
+      "markupsafe==3.0.3",
+      "matplotlib==3.10.9",
+      "ml-dtypes==0.5.4",
+      "mmcv==1.4.0",
+      "mmdet==2.14.0",
+      "mpmath==1.3.0",
+      "networkx==3.4.2",
+      "numpy==1.23.5",
+      "onnx==1.21.0",
+      "opencv-python==4.11.0.86",
+      "packaging==26.3",
+      "pillow==12.3.0",
+      "platformdirs==4.12.4",
+      "protobuf==7.36.2",
+      "pycocotools==2.0.11",
+      "pyparsing==3.3.3",
+      "python-dateutil==2.9.0.post0",
+      "pyyaml==6.0.3",
+      "requests==2.28.1",
+      "scipy==1.10.1",
+      "setuptools==75.8.2",
+      "six==1.17.0",
+      "sympy==1.14.0",
+      "terminaltables==3.1.10",
+      "tomli==2.5.0",
+      "torch==2.0.1+cpu",
+      "torchvision==0.15.2+cpu",
+      "typing-extensions==4.16.0",
+      "urllib3==1.26.13",
+      "wheel==0.48.0",
+      "yapf==0.43.0"
+    ]
+  },
+  "attempts": [
+    {
+      "environment": "Windows",
+      "phase": "torch.load official checkpoint during full-export invocation",
+      "result": "failed",
+      "confirmed_cause": "PyTorch DefaultCPUAllocator reported not enough memory allocating 40960000 bytes",
+      "log": {
+        "path": "build/bevformer-base-export.log",
+        "bytes": 4083,
+        "sha256": "25700bc953d6dd5661c59f8253463d617ce03aa9324ab27f02a004abf730bb8c"
+      },
+      "context": "Read-only OS measurement showed about 4 GiB free committed-memory capacity; unrelated user applications remained running."
+    },
+    {
+      "environment": "WSL Ubuntu24.04",
+      "phase": "model_built and strict load logged; real tracing forward had not completed",
+      "result": "unexpected process/VM termination",
+      "cause": "not established",
+      "evidence": "Tool session ended exit 1 without Python traceback or /usr/bin/time footer. Next WSL process inspection showed a newly booted VM and no export process. Host committed-memory pressure was observed, but this is not proof of the termination cause.",
+      "camera_chunk": 0,
+      "reference_mode": "trace",
+      "log": {
+        "path": "build/bevformer-base-wsl-export.log",
+        "bytes": 2277,
+        "sha256": "ae93983e95779ad13df8cdbf71047433681dc00606b1653f42d9c153013f1737"
+      }
+    },
+    {
+      "started_utc": "2026-10-16T11:05:02.804155+00:00",
+      "host": "local WSL Ubuntu24.04",
+      "python": "/home/thomas/gac-bev-export-env/bin/python",
+      "camera_chunk": 1,
+      "reference_mode": "trace",
+      "threads": 4,
+      "input": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "bev": [
+        200,
+        200
+      ],
+      "log": "build/bevformer-base-wsl-export-camera1-resumed.log",
+      "source_sha256": {
+        "tools/export_bevformer_onnx.py": "bb4951421ae2d90810ce88eb210600b567257bc4f1692516969240aa0d151e2d",
+        "tools/bevformer_export_ops.py": "efc63fb601880d8cd6da38faaa83c4dcc03ef4fd3c4e657e0d1ecb0789a10b1f",
+        "tools/bevformer_export_contract_tests.py": "e148f4566569f0b2ec85ea4a5fd5e133b5cf6bff3ea8daa1ad77d0275b86c6a7",
+        "tools/validate_bevformer_onnx.py": "1238d01e0ac3b3b70d6515adadc0bd9008b574118695138496db61a0f9e87d75"
+      },
+      "result": "stopped by task agent after decoder forward, before ONNX serialization",
+      "stop_reason": "12.5 GiB RSS and excessive discarded inner custom-op trace; replaced with validated opaque true-reference forward"
+    },
+    {
+      "started_utc": "2026-10-16T11:09:53.810363+00:00",
+      "host": "local WSL Ubuntu24.04",
+      "python": "/home/thomas/gac-bev-export-env/bin/python",
+      "camera_chunk": 1,
+      "reference_mode": "trace",
+      "threads": 4,
+      "input": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "bev": [
+        200,
+        200
+      ],
+      "log": "build/bevformer-base-wsl-export-opaque.log",
+      "source_sha256": {
+        "tools/export_bevformer_onnx.py": "bb4951421ae2d90810ce88eb210600b567257bc4f1692516969240aa0d151e2d",
+        "tools/bevformer_export_ops.py": "65da28059a2023c7516b425b56c0159020d534e7d2357d62b491da0f0ef3daa0",
+        "tools/bevformer_export_contract_tests.py": "e148f4566569f0b2ec85ea4a5fd5e133b5cf6bff3ea8daa1ad77d0275b86c6a7",
+        "tools/validate_bevformer_onnx.py": "1238d01e0ac3b3b70d6515adadc0bd9008b574118695138496db61a0f9e87d75"
+      },
+      "result": "success",
+      "exit_code": 0,
+      "elapsed_seconds": 542.15,
+      "max_rss_kib": 6066820,
+      "user_seconds": 681.67,
+      "system_seconds": 33.78,
+      "onnx_checker_full_check": true,
+      "strict_shape_inference": true,
+      "artifact_directory": "build/bevformer-base-onnx",
+      "artifacts": {
+        "bevformer-base-cold.onnx": {
+          "bytes": 282985849,
+          "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed"
+        },
+        "images.npy": {
+          "bytes": 106905728,
+          "sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28"
+        },
+        "pytorch-outputs.npz": {
+          "bytes": 41392792,
+          "sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181"
+        },
+        "export-report.json": {
+          "bytes": 9703,
+          "sha256": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb"
+        },
+        "fixed-metadata.json": {
+          "bytes": 2819,
+          "sha256": "179b667ea77ebe72fa6b00574464d28d042cadc5de10890e2e0d77fc76620d75"
+        }
+      },
+      "timing_scope": "Real CPU forward + ONNX trace/export/checks; not pure inference latency"
+    }
+  ],
+  "completed_validation": {
+    "official_base_build_only_windows": {
+      "path": "build/bevformer-base-build.log",
+      "bytes": 10298,
+      "sha256": "992f22c4e0d10ef1962370ce1a5fea8fabf21be87c72623a369e5e45e0b52120"
+    },
+    "official_base_build_only_linux": {
+      "path": "build/bevformer-base-wsl-build.log",
+      "bytes": 10407,
+      "sha256": "3830e389ece2db243406bb8e11cc3301ef14e52964409a88c8ed6e8a16534d2c"
+    },
+    "operator_and_export_contracts": {
+      "reference_contracts": {
+        "passed": true,
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "cases": [
+          {
+            "case": "dcn_groups_1_deform_groups_1",
+            "passed": true,
+            "max_abs_error": 1.430511474609375e-06
+          },
+          {
+            "case": "dcn_groups_2_deform_groups_2",
+            "passed": true,
+            "max_abs_error": 1.3113021850585938e-06
+          },
+          {
+            "case": "msda_1_levels_query_chunks",
+            "passed": true,
+            "max_abs_error": 0.0
+          },
+          {
+            "case": "msda_4_levels_query_chunks",
+            "passed": true,
+            "max_abs_error": 1.1920928955078125e-07
+          }
+        ],
+        "dcn_offset_contract": "offset[:, deform_group*2*Kh*Kw + 2*(kh*Kw+kw) + {dy:0, dx:1}]"
+      },
+      "cases": [
+        {
+          "name": "upstream_dcn_symbolic",
+          "valid": true,
+          "kind": "MMCVModulatedDeformConv2d",
+          "domain": "mmcv",
+          "attributes": {
+            "deform_groups": 2,
+            "dilation": [
+              1,
+              2
+            ],
+            "groups": 2,
+            "padding": [
+              1,
+              2
+            ],
+            "stride": [
+              2,
+              1
+            ]
+          },
+          "nodes": 1,
+          "shape": [
+            1,
+            4,
+            3,
+            7
+          ],
+          "trace_reference_exact": true,
+          "max_abs_error": 0.0
+        },
+        {
+          "name": "upstream_msda_1_levels_symbolic",
+          "valid": true,
+          "kind": "MSDeformAttn",
+          "domain": "gac",
+          "attributes": {
+            "align_corners": 0,
+            "mode": "bilinear",
+            "padding_mode": "zeros",
+            "version": 1
+          },
+          "nodes": 1,
+          "shape": [
+            2,
+            11,
+            6
+          ],
+          "trace_reference_exact": true,
+          "max_abs_error": 0.0
+        },
+        {
+          "name": "upstream_msda_4_levels_symbolic",
+          "valid": true,
+          "kind": "MSDeformAttn",
+          "domain": "gac",
+          "attributes": {
+            "align_corners": 0,
+            "mode": "bilinear",
+            "padding_mode": "zeros",
+            "version": 1
+          },
+          "nodes": 1,
+          "shape": [
+            2,
+            11,
+            6
+          ],
+          "trace_reference_exact": true,
+          "max_abs_error": 1.1920928955078125e-07
+        }
+      ],
+      "success": true,
+      "camera_batching": {
+        "passed": true,
+        "checkpoint": {
+          "state_tensors": 1089,
+          "strict_load": true,
+          "sha256": "5fda3ed3e0d2d1dc09baca337aa1ed64aece057fed7d8238525c5ed342649177"
+        },
+        "rtol": 0.0001,
+        "atol": 0.0001,
+        "scope": "Two 64x96 images, original R101/DCNv2/FPN eval, batch2 vs serial batch1; not full detector",
+        "levels": [
+          {
+            "level": 0,
+            "shape": [
+              2,
+              256,
+              8,
+              12
+            ],
+            "max_abs_error": 3.24249267578125e-05
+          },
+          {
+            "level": 1,
+            "shape": [
+              2,
+              256,
+              4,
+              6
+            ],
+            "max_abs_error": 5.340576171875e-05
+          },
+          {
+            "level": 2,
+            "shape": [
+              2,
+              256,
+              2,
+              3
+            ],
+            "max_abs_error": 2.002716064453125e-05
+          },
+          {
+            "level": 3,
+            "shape": [
+              2,
+              256,
+              1,
+              2
+            ],
+            "max_abs_error": 4.57763671875e-05
+          }
+        ]
+      }
+    },
+    "contracts_manifest": {
+      "path": "build/bevformer-export-contract-tests-linux/manifest.json",
+      "bytes": 3204,
+      "sha256": "6dfe6c5be249eb863b8b2b1c23ffd6eb56e86ab2b2627c94b852b397110e89e0"
+    },
+    "scope": "Small true PyTorch ONNX symbolic exports plus independent numerical references and small camera batching test. These do not demonstrate a full-size detector forward."
+  },
+  "small_contract_test_command": "/home/thomas/gac-bev-export-env/bin/python tools/bevformer_export_contract_tests.py build/bevformer-export-contract-tests-linux --source-root /mnt/c/Users/Thomas/Desktop/project/BEVFormer-master --base-checkpoint build/checkpoints/bevformer_r101_dcn_24ep.pth --trusted-checkpoint",
+  "source_provenance_limit": "Early failed runs did not capture exact source versions. Successful run source hashes were captured before launch in successful_export.source_sha256; later test-only changes are recorded separately.",
+  "historical_sources_before_success": [
+    {
+      "path": "tools/export_bevformer_onnx.py",
+      "bytes": 23603,
+      "sha256": "bb4951421ae2d90810ce88eb210600b567257bc4f1692516969240aa0d151e2d"
+    },
+    {
+      "path": "tools/bevformer_export_ops.py",
+      "bytes": 14123,
+      "sha256": "efc63fb601880d8cd6da38faaa83c4dcc03ef4fd3c4e657e0d1ecb0789a10b1f"
+    },
+    {
+      "path": "tools/bevformer_export_contract_tests.py",
+      "bytes": 8218,
+      "sha256": "e148f4566569f0b2ec85ea4a5fd5e133b5cf6bff3ea8daa1ad77d0275b86c6a7"
+    },
+    {
+      "path": "tools/validate_bevformer_onnx.py",
+      "bytes": 6713,
+      "sha256": "1238d01e0ac3b3b70d6515adadc0bd9008b574118695138496db61a0f9e87d75"
+    }
+  ],
+  "successful_export": {
+    "started_utc": "2026-10-16T11:09:53.810363+00:00",
+    "host": "local WSL Ubuntu24.04",
+    "python": "/home/thomas/gac-bev-export-env/bin/python",
+    "camera_chunk": 1,
+    "reference_mode": "trace",
+    "threads": 4,
+    "input": [
+      1,
+      6,
+      3,
+      928,
+      1600
+    ],
+    "bev": [
+      200,
+      200
+    ],
+    "log": "build/bevformer-base-wsl-export-opaque.log",
+    "source_sha256": {
+      "tools/export_bevformer_onnx.py": "bb4951421ae2d90810ce88eb210600b567257bc4f1692516969240aa0d151e2d",
+      "tools/bevformer_export_ops.py": "65da28059a2023c7516b425b56c0159020d534e7d2357d62b491da0f0ef3daa0",
+      "tools/bevformer_export_contract_tests.py": "e148f4566569f0b2ec85ea4a5fd5e133b5cf6bff3ea8daa1ad77d0275b86c6a7",
+      "tools/validate_bevformer_onnx.py": "1238d01e0ac3b3b70d6515adadc0bd9008b574118695138496db61a0f9e87d75"
+    },
+    "result": "success",
+    "exit_code": 0,
+    "elapsed_seconds": 542.15,
+    "max_rss_kib": 6066820,
+    "user_seconds": 681.67,
+    "system_seconds": 33.78,
+    "onnx_checker_full_check": true,
+    "strict_shape_inference": true,
+    "artifact_directory": "build/bevformer-base-onnx",
+    "artifacts": {
+      "bevformer-base-cold.onnx": {
+        "bytes": 282985849,
+        "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed"
+      },
+      "images.npy": {
+        "bytes": 106905728,
+        "sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28"
+      },
+      "pytorch-outputs.npz": {
+        "bytes": 41392792,
+        "sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181"
+      },
+      "export-report.json": {
+        "bytes": 9703,
+        "sha256": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb"
+      },
+      "fixed-metadata.json": {
+        "bytes": 2819,
+        "sha256": "179b667ea77ebe72fa6b00574464d28d042cadc5de10890e2e0d77fc76620d75"
+      }
+    },
+    "timing_scope": "Real CPU forward + ONNX trace/export/checks; not pure inference latency"
+  },
+  "onnx_summary": {
+    "nodes": 22412,
+    "initializers": 777,
+    "opset_imports": {
+      "": 17,
+      "gac": 1,
+      "mmcv": 1
+    },
+    "operator_counts": {
+      "Add": 968,
+      "And": 4,
+      "BatchNormalization": 156,
+      "Cast": 390,
+      "Clip": 60,
+      "Concat": 759,
+      "Constant": 7276,
+      "ConstantOfShape": 555,
+      "Conv": 666,
+      "Div": 221,
+      "Equal": 557,
+      "Expand": 675,
+      "Gather": 1171,
+      "Gemm": 8,
+      "Greater": 9,
+      "Identity": 801,
+      "If": 37,
+      "LayerNormalization": 49,
+      "Less": 2,
+      "Log": 18,
+      "MatMul": 182,
+      "Max": 1,
+      "MaxPool": 6,
+      "Mul": 1036,
+      "NonZero": 36,
+      "Range": 300,
+      "ReduceMean": 6,
+      "ReduceSum": 48,
+      "Relu": 650,
+      "Reshape": 512,
+      "Resize": 12,
+      "ScatterND": 181,
+      "Shape": 1781,
+      "Sigmoid": 175,
+      "Slice": 1072,
+      "Softmax": 24,
+      "Split": 13,
+      "Squeeze": 73,
+      "Sub": 18,
+      "Tile": 8,
+      "Transpose": 124,
+      "Unsqueeze": 1078,
+      "Where": 520,
+      "gac::MSDeformAttn": 18,
+      "mmcv::MMCVModulatedDeformConv2d": 156
+    },
+    "msda_spatial_shapes": [
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          116,
+          200
+        ],
+        [
+          58,
+          100
+        ],
+        [
+          29,
+          50
+        ],
+        [
+          15,
+          25
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ],
+      [
+        [
+          200,
+          200
+        ]
+      ]
+    ],
+    "metadata_scope": "fixed synthetic all-visible calibration, zero CAN-bus, cold path, normalized seeded synthetic images; no nuScenes accuracy claim"
+  },
+  "export_report": {
+    "source": "original upstream PyTorch modules, not GAC Graph reconstruction",
+    "scope": "bevformer_base complete cold raw-head path; fixed calibration/CAN-bus; no box decoding",
+    "profile": {
+      "config_name": "bevformer_base",
+      "bev_h": 200,
+      "bev_w": 200,
+      "backbone_depth": 101,
+      "encoder_layers": 6,
+      "feature_levels": 4,
+      "normalization": {
+        "mean": [
+          103.53,
+          116.28,
+          123.675
+        ],
+        "std": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "to_rgb": false
+      },
+      "camera_batch_chunk": 1
+    },
+    "wrapper_boundary": "Tensor-only wrapper repeats extract_img_feat batch/camera reshape and calls the original mmdet backbone/FPN and upstream BEVFormerHead.forward. Evaluation-time GridMask is an identity and is omitted. Dataset image normalization/padding and final box decoding are external. Backbone/FPN executes independent camera batches sequentially with fixed eval BatchNorm statistics, then concatenates them in camera order.",
+    "source_root": "/mnt/c/Users/Thomas/Desktop/project/BEVFormer-master",
+    "config": "/mnt/c/Users/Thomas/Desktop/project/BEVFormer-master/projects/configs/bevformer/bevformer_base.py",
+    "config_sha256": "45905ac50a8afa841f0be43c81152277dd694de62054c3595dfd56efd33d6324",
+    "checkpoint": {
+      "state_tensors": 1089,
+      "strict_load": true,
+      "sha256": "5fda3ed3e0d2d1dc09baca337aa1ed64aece057fed7d8238525c5ed342649177"
+    },
+    "metadata": "synthetic fixed all-visible projection; zero CAN-bus; not a dataset accuracy fixture",
+    "input": {
+      "images": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ]
+    },
+    "versions": {
+      "torch": "2.0.1+cpu",
+      "onnx": "1.21.0"
+    },
+    "opset": 17,
+    "cpu_extension_symbols_guarded": [
+      "_ext.assign_score_withk_backward",
+      "_ext.assign_score_withk_forward",
+      "_ext.ball_query_forward",
+      "_ext.bbox_overlaps",
+      "_ext.border_align_backward",
+      "_ext.border_align_forward",
+      "_ext.bottom_pool_backward",
+      "_ext.bottom_pool_forward",
+      "_ext.box_iou_rotated",
+      "_ext.carafe_backward",
+      "_ext.carafe_forward",
+      "_ext.carafe_naive_backward",
+      "_ext.carafe_naive_forward",
+      "_ext.contour_expand",
+      "_ext.correlation_backward",
+      "_ext.correlation_forward",
+      "_ext.deform_conv_backward_input",
+      "_ext.deform_conv_backward_parameters",
+      "_ext.deform_conv_forward",
+      "_ext.deform_roi_pool_backward",
+      "_ext.deform_roi_pool_forward",
+      "_ext.dynamic_point_to_voxel_backward",
+      "_ext.dynamic_point_to_voxel_forward",
+      "_ext.dynamic_voxelize_forward",
+      "_ext.furthest_point_sampling_forward",
+      "_ext.furthest_point_sampling_with_dist_forward",
+      "_ext.fused_bias_leakyrelu",
+      "_ext.gather_points_backward",
+      "_ext.gather_points_forward",
+      "_ext.get_compiler_version",
+      "_ext.get_compiling_cuda_version",
+      "_ext.group_points_backward",
+      "_ext.group_points_forward",
+      "_ext.hard_voxelize_forward",
+      "_ext.iou3d_boxes_iou_bev_forward",
+      "_ext.iou3d_nms_forward",
+      "_ext.iou3d_nms_normal_forward",
+      "_ext.knn_forward",
+      "_ext.left_pool_backward",
+      "_ext.left_pool_forward",
+      "_ext.masked_col2im_forward",
+      "_ext.masked_im2col_forward",
+      "_ext.modulated_deform_conv_backward",
+      "_ext.ms_deform_attn_backward",
+      "_ext.ms_deform_attn_forward",
+      "_ext.nms",
+      "_ext.nms_match",
+      "_ext.nms_rotated",
+      "_ext.pixel_group",
+      "_ext.points_in_boxes_all_forward",
+      "_ext.points_in_boxes_cpu_forward",
+      "_ext.points_in_boxes_part_forward",
+      "_ext.psamask_backward",
+      "_ext.psamask_forward",
+      "_ext.right_pool_backward",
+      "_ext.right_pool_forward",
+      "_ext.roi_align_backward",
+      "_ext.roi_align_forward",
+      "_ext.roi_align_rotated_backward",
+      "_ext.roi_align_rotated_forward",
+      "_ext.roi_pool_backward",
+      "_ext.roi_pool_forward",
+      "_ext.roiaware_pool3d_backward",
+      "_ext.roiaware_pool3d_forward",
+      "_ext.roipoint_pool3d_forward",
+      "_ext.sigmoid_focal_loss_backward",
+      "_ext.sigmoid_focal_loss_forward",
+      "_ext.softmax_focal_loss_backward",
+      "_ext.softmax_focal_loss_forward",
+      "_ext.softnms",
+      "_ext.sync_bn_backward_data",
+      "_ext.sync_bn_backward_param",
+      "_ext.sync_bn_forward_mean",
+      "_ext.sync_bn_forward_output",
+      "_ext.sync_bn_forward_var",
+      "_ext.three_interpolate_backward",
+      "_ext.three_interpolate_forward",
+      "_ext.three_nn_forward",
+      "_ext.tin_shift_backward",
+      "_ext.tin_shift_forward",
+      "_ext.top_pool_backward",
+      "_ext.top_pool_forward",
+      "_ext.upfirdn2d"
+    ],
+    "operator_reference_contract_tests": {
+      "passed": true,
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "cases": [
+        {
+          "case": "dcn_groups_1_deform_groups_1",
+          "passed": true,
+          "max_abs_error": 1.430511474609375e-06
+        },
+        {
+          "case": "dcn_groups_2_deform_groups_2",
+          "passed": true,
+          "max_abs_error": 1.3113021850585938e-06
+        },
+        {
+          "case": "msda_1_levels_query_chunks",
+          "passed": true,
+          "max_abs_error": 0.0
+        },
+        {
+          "case": "msda_4_levels_query_chunks",
+          "passed": true,
+          "max_abs_error": 1.1920928955078125e-07
+        }
+      ],
+      "dcn_offset_contract": "offset[:, deform_group*2*Kh*Kw + 2*(kh*Kw+kw) + {dy:0, dx:1}]"
+    },
+    "dcn_eager_reference": "torchvision compiled CPU deform_conv2d; original MMCV ONNX symbolic",
+    "dcn_adapter": {
+      "domain": "mmcv",
+      "op_type": "MMCVModulatedDeformConv2d",
+      "opset": 1,
+      "reference": "torchvision compiled CPU deform_conv2d",
+      "symbolic": "delegates unchanged to MMCV ModulatedDeformConv2dFunction.symbolic",
+      "reason": "Avoid PyTorch 2.0 tracing alias error in MMCV output-buffer copy adapter"
+    },
+    "attention_export": "gac",
+    "attention_adapter": {
+      "domain": "gac",
+      "op_type": "MSDeformAttn",
+      "opset": 1,
+      "query_chunk": 256,
+      "patched_original_call_sites": [
+        "projects.mmdet3d_plugin.bevformer.modules.temporal_self_attention.multi_scale_deformable_attn_pytorch",
+        "projects.mmdet3d_plugin.bevformer.modules.spatial_cross_attention.multi_scale_deformable_attn_pytorch",
+        "projects.mmdet3d_plugin.bevformer.modules.decoder.multi_scale_deformable_attn_pytorch"
+      ],
+      "reference": "PyTorch GridSample, query chunks, one level at a time; no activation precomputation",
+      "trace_boundary": "Outer custom Function symbolic retained; inner reference executes with tracing temporarily paused",
+      "reduction": "sum points per level, then accumulate levels; FP32 rounding checked with tolerance"
+    },
+    "reference_mode": "trace",
+    "reference_boundary": "Real upstream forward executed during ONNX tracing with explicit export adapters; no separate full-model comparison before/after tracer compatibility changes",
+    "upstream_sources": {
+      "projects/mmdet3d_plugin/bevformer/dense_heads/bevformer_head.py": "e655b6d8ee6fecc27724f70017362c2bf7abbe95a49319c1dbcfbbc3129243b0",
+      "projects/mmdet3d_plugin/bevformer/modules/custom_base_transformer_layer.py": "98887b6baeccada8b9981f757dbd8d342655388e69dbd11f67ae711040ca0173",
+      "projects/mmdet3d_plugin/bevformer/modules/decoder.py": "f6d270db1f5c6dc8751c9ca97effc534eb38e1daf14bc2d83eb9df06a3a41d91",
+      "projects/mmdet3d_plugin/bevformer/modules/encoder.py": "ebcf1e68f3807832c9fe7a45cbaf1d747cc2a196f14cd48019e06c751e849009",
+      "projects/mmdet3d_plugin/bevformer/modules/multi_scale_deformable_attn_function.py": "4ae517761d3f4d362a05722c134e2f005315dc3df41c4e5551eafe7757a57ccb",
+      "projects/mmdet3d_plugin/bevformer/modules/spatial_cross_attention.py": "045ac69d3baec715f2d73065ea50dd799b214b4de1d7e030e5907e36a82b47de",
+      "projects/mmdet3d_plugin/bevformer/modules/temporal_self_attention.py": "c4c893779f9ba61d1397c8e691ca730d22e0e83ba88eef6c4f583c6f3975cce2",
+      "projects/mmdet3d_plugin/bevformer/modules/transformer.py": "5bc369a36ec323c6e3d67f4fc8b0ca7628bb4748e336832a8cd50422fc01c62d",
+      "projects/mmdet3d_plugin/core/bbox/coders/nms_free_coder.py": "f9cd5871541d3074b29bcdb0a4f458cd2e1164fcefe3379890e6d59bb1ea66bb",
+      "projects/mmdet3d_plugin/core/bbox/util.py": "d24c61941209fa7a7be18d3b4c628dc06006f692fde0e7863fb54bca50282beb",
+      "projects/mmdet3d_plugin/models/utils/bricks.py": "62d1095bca8ac51c374a39f175db1d452b6670ef0bc4ab199fbec9315e584031",
+      "projects/mmdet3d_plugin/models/utils/visual.py": "af1108b82e6e8a02664810d1bac5feb097b7422ad4d747b9f6cba9217be0b247"
+    },
+    "export_compatibility": [
+      {
+        "attribute": "pts_bbox_head.transformer.use_can_bus",
+        "before": true,
+        "after": 1,
+        "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+      },
+      {
+        "attribute": "pts_bbox_head.transformer.use_shift",
+        "before": true,
+        "after": 1,
+        "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+      },
+      {
+        "attribute": "pts_bbox_head.transformer.encoder.get_reference_points",
+        "reason": "Make requested dtype explicit after original linspace/meshgrid construction",
+        "before": "original reference-point algorithm",
+        "after": "same algorithm plus dtype-preserving .to(dtype)"
+      }
+    ],
+    "outputs": {
+      "bev_embed": [
+        40000,
+        1,
+        256
+      ],
+      "all_cls_scores": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "all_bbox_preds": [
+        6,
+        1,
+        900,
+        10
+      ]
+    },
+    "onnx": {
+      "file": "bevformer-base-cold.onnx",
+      "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+      "nodes": 22412,
+      "initializers": 777,
+      "checker_full_check": true,
+      "grid_sample_dtype_agreement": true,
+      "custom_operators": {
+        "mmcv::MMCVModulatedDeformConv2d": 156,
+        "gac::MSDeformAttn": 18
+      }
+    }
+  },
+  "opaque_contract_tests": {
+    "reference_contracts": {
+      "passed": true,
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "cases": [
+        {
+          "case": "dcn_groups_1_deform_groups_1",
+          "passed": true,
+          "max_abs_error": 1.430511474609375e-06
+        },
+        {
+          "case": "dcn_groups_2_deform_groups_2",
+          "passed": true,
+          "max_abs_error": 1.3113021850585938e-06
+        },
+        {
+          "case": "msda_1_levels_query_chunks",
+          "passed": true,
+          "max_abs_error": 0.0
+        },
+        {
+          "case": "msda_4_levels_query_chunks",
+          "passed": true,
+          "max_abs_error": 1.1920928955078125e-07
+        }
+      ],
+      "dcn_offset_contract": "offset[:, deform_group*2*Kh*Kw + 2*(kh*Kw+kw) + {dy:0, dx:1}]"
+    },
+    "cases": [
+      {
+        "name": "upstream_dcn_symbolic",
+        "valid": true,
+        "kind": "MMCVModulatedDeformConv2d",
+        "domain": "mmcv",
+        "attributes": {
+          "deform_groups": 2,
+          "dilation": [
+            1,
+            2
+          ],
+          "groups": 2,
+          "padding": [
+            1,
+            2
+          ],
+          "stride": [
+            2,
+            1
+          ]
+        },
+        "nodes": 1,
+        "shape": [
+          1,
+          4,
+          3,
+          7
+        ],
+        "trace_reference_exact": true,
+        "max_abs_error": 0.0
+      },
+      {
+        "name": "upstream_msda_1_levels_symbolic",
+        "valid": true,
+        "kind": "MSDeformAttn",
+        "domain": "gac",
+        "attributes": {
+          "align_corners": 0,
+          "mode": "bilinear",
+          "padding_mode": "zeros",
+          "version": 1
+        },
+        "nodes": 1,
+        "shape": [
+          2,
+          11,
+          6
+        ],
+        "trace_reference_exact": true,
+        "max_abs_error": 0.0
+      },
+      {
+        "name": "upstream_msda_4_levels_symbolic",
+        "valid": true,
+        "kind": "MSDeformAttn",
+        "domain": "gac",
+        "attributes": {
+          "align_corners": 0,
+          "mode": "bilinear",
+          "padding_mode": "zeros",
+          "version": 1
+        },
+        "nodes": 1,
+        "shape": [
+          2,
+          11,
+          6
+        ],
+        "trace_reference_exact": true,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ],
+    "opaque_trace_exception_restored": true,
+    "success": true,
+    "test_source_sha256": "392eb78464c41700f01d1c137c6e9317f4e4735862597d9889710f99854c995d"
+  },
+  "memory_changes_used_in_success": {
+    "camera_chunk": 1,
+    "camera_chunk_scope": "Sequential original backbone/FPN eval over each camera, concatenated in original order; all six original full-resolution cameras and weights retained. Small original-model batch2/serial parity passed. Complete forward output captured, but no separate full before/after-adapter comparison.",
+    "attention": "Explicit gac::MSDeformAttn preserves original sampling semantics; eager reference samples query chunks one level at a time. No all-level full-query sampled-value stack.",
+    "reference_mode": "trace: capture real forward tensors from the same torch.onnx.export invocation, avoiding two additional full network forwards. No independent complete pre-adapter/post-adapter comparison is claimed.",
+    "opaque_trace": "Real MSDA reference executes with tracing disabled inside its custom Function forward, restoring saved tracing state in finally. The outer symbolic survives as one gac::MSDeformAttn. Successful and exception restoration paths tested."
+  },
+  "reproduce_success_command": "/home/thomas/gac-bev-export-env/bin/python tools/export_bevformer_onnx.py --source-root /mnt/c/Users/Thomas/Desktop/project/BEVFormer-master --config /mnt/c/Users/Thomas/Desktop/project/BEVFormer-master/projects/configs/bevformer/bevformer_base.py --checkpoint build/checkpoints/bevformer_r101_dcn_24ep.pth --trusted-checkpoint --camera-chunk 1 --reference-mode trace --output-dir build/bevformer-base-onnx --threads 4",
+  "jobs_after_export": {
+    "local_export": "completed exit 0",
+    "remote_fallback": "stopped on user pause before full export; not resumed",
+    "remote_address": "192.168.115.128"
+  },
+  "native_compile_status_at_export_archive": "First strict native import found 37 shape-guarded ONNX If nodes; native semantic legalization added and 21 targeted tests passed. Whole-model compilation and machine-code execution remain separate evidence, not implied by export success.",
+  "native_shape_if_tests": {
+    "compiler": "/home/thomas/gac-native-build/gac-compile",
+    "target": "native",
+    "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+    "vortex_device_execution": false,
+    "cases": [
+      {
+        "name": "shape_if_squeeze_negative_axis",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_identity_dead_invalid_squeeze",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_squeeze_middle_reverse_equal",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_rank_one_to_scalar",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_scalar_condition_identity",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_after_runtime_reshape",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_constant_nonzero_geometry",
+        "dispatches": 0,
+        "max_absolute_errors": {
+          "NZ": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_different_capture",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_different_capture/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_axis_mismatch",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_axis_mismatch/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_gather_axis",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_gather_axis/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_not_one",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_not_one/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_shape_slice",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_shape_slice/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_branch_domain",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_branch_domain/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_branch_attribute",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_branch_attribute/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_extra_branch_op",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_extra_branch_op/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_wrong_branch_output",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_wrong_branch_output/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_extra_if_attribute",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_extra_if_attribute/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_runtime_condition",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_runtime_condition/model.onnx\":4:0)): error: If is supported only as an exact shape-guarded Squeeze/Identity pattern: If",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_unresolved_extent",
+        "diagnostic": "loc(\"If#3\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_unresolved_extent/model.onnx\":4:0)): error: 'gac.squeeze_if_unit_dim' op shape-guarded If requires a static input shape before device legalization",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_opset12",
+        "diagnostic": "loc(\"Shape#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_opset12/model.onnx\":1:0)): error: importer supports standard ONNX opsets 13 through 18 only: Shape",
+        "passed": true
+      },
+      {
+        "name": "shape_if_reject_opset19",
+        "diagnostic": "loc(\"Shape#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-shape-if-tests/shape_if_reject_opset19/model.onnx\":1:0)): error: importer supports standard ONNX opsets 13 through 18 only: Shape",
+        "passed": true
+      }
+    ]
+  }
+}

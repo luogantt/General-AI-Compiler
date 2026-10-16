@@ -1,0 +1,11 @@
+/home/thomas/gac-base-native/02-optimized.mlir:2:3: error: aggregate buffers exceed signed RV32 budget: 2857401828 bytes (arena 2292224000, embedded constants 42393600, peak simultaneously live arena 1935257600 at dispatch 2216); tiling/fusion or memory scheduling is required
+  live 491520000 bytes: gac.matmul  : 'tensor<6x40000x512xf32>'
+  live 491520000 bytes: gac.add  : 'tensor<6x40000x512xf32>'
+  live 245760000 bytes: gac.constant_of_shape  : 'tensor<1x6x40000x256xf32>'
+  live 245760000 bytes: gac.scatter_nd  : 'tensor<1x6x40000x256xf32>'
+  live 189388800 bytes: gac.transpose  : 'tensor<1x6x30825x256xf32>'
+  live 189388800 bytes: gac.add  : 'tensor<6x30825x256xf32>'
+  live 40960000 bytes: gac.transpose  : 'tensor<1x40000x256xf32>'
+  live 40960000 bytes: gac.layer_norm  : 'tensor<1x40000x256xf32>'
+  func.func @main(%arg0: tensor<1x6x3x928x1600xf32>) -> (tensor<40000x1x256xf32>, tensor<6x1x900x10xf32>, tensor<6x1x900x10xf32>) attributes {gac.input_names = ["images"], gac.output_names = ["bev_embed", "all_cls_scores", "all_bbox_preds"]} {
+  ^

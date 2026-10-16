@@ -1,0 +1,274 @@
+{
+  "audit": "Read-only ONNX model/fixture inspection; no GAC graph transformation or backend execution.",
+  "model": {
+    "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\bevformer-onnx-inspect\\bevformer-tiny-cold.onnx",
+    "bytes": 200663543,
+    "sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070"
+  },
+  "ir_version": 8,
+  "producer_name": "pytorch",
+  "producer_version": "2.0.1",
+  "opsets": {
+    "ai.onnx": 17
+  },
+  "node_count": 9129,
+  "initializer_count": 454,
+  "value_info_count": 0,
+  "inputs": [
+    {
+      "name": "images",
+      "dtype": "FLOAT",
+      "shape": [
+        1,
+        6,
+        3,
+        480,
+        800
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "name": "bev_embed",
+      "dtype": "FLOAT",
+      "shape": [
+        2500,
+        1,
+        256
+      ]
+    },
+    {
+      "name": "all_cls_scores",
+      "dtype": "FLOAT",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ]
+    },
+    {
+      "name": "all_bbox_preds",
+      "dtype": "FLOAT",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ]
+    }
+  ],
+  "operator_counts": {
+    "Add": 311,
+    "And": 4,
+    "Cast": 32,
+    "Clip": 57,
+    "Concat": 319,
+    "Constant": 3626,
+    "ConstantOfShape": 384,
+    "Conv": 55,
+    "Div": 44,
+    "Equal": 376,
+    "Expand": 495,
+    "Gather": 216,
+    "Gemm": 8,
+    "Greater": 6,
+    "GridSample": 12,
+    "Identity": 18,
+    "LayerNormalization": 40,
+    "Less": 2,
+    "Log": 18,
+    "MatMul": 152,
+    "Max": 1,
+    "MaxPool": 1,
+    "Mul": 433,
+    "NonZero": 18,
+    "ReduceMean": 3,
+    "ReduceSum": 36,
+    "Relu": 96,
+    "Reshape": 313,
+    "ScatterND": 127,
+    "Shape": 301,
+    "Sigmoid": 19,
+    "Slice": 363,
+    "Softmax": 18,
+    "Split": 55,
+    "Squeeze": 128,
+    "Sub": 30,
+    "Tile": 8,
+    "Transpose": 132,
+    "Unsqueeze": 496,
+    "Where": 376
+  },
+  "top_level_modules": {
+    "<unnamed>": 45,
+    "Constant": 1,
+    "Constant_1": 1,
+    "Constant_2": 1,
+    "Constant_3": 1,
+    "Constant_4": 1,
+    "Constant_5": 1,
+    "Constant_6": 1,
+    "Reshape": 1,
+    "Reshape_1": 1,
+    "img_backbone": 119,
+    "img_neck": 2,
+    "pts_bbox_head": 8954
+  },
+  "graph_attributes": 0,
+  "external_initializers": 0,
+  "export_provenance": {
+    "source": "original upstream PyTorch modules, not GAC Graph reconstruction",
+    "scope": "BEVFormer-tiny complete cold raw-head path; fixed calibration/CAN-bus; no box decoding",
+    "wrapper_boundary": "Tensor-only wrapper repeats extract_img_feat batch/camera reshape and calls the original mmdet backbone/FPN and unmodified upstream BEVFormerHead.forward. Evaluation-time GridMask is an identity and is omitted. Dataset image normalization/padding and final box decoding are external.",
+    "config": "C:\\Users\\Thomas\\Desktop\\project\\BEVFormer-master\\projects\\configs\\bevformer\\bevformer_tiny.py",
+    "config_sha256": "85da2b393cb0103645bdc034c87028b6fcf5d7bdd79530ed6b4f4b2d05777882",
+    "checkpoint": {
+      "state_tensors": 643,
+      "strict_load": true,
+      "sha256": "7305046dbaa4fe8b1fa6d6acb9e0e3d605a70a3c473f763e936103428d2b2f12"
+    },
+    "metadata": "synthetic fixed all-visible projection; zero CAN-bus; not a dataset accuracy fixture",
+    "outputs": {
+      "bev_embed": [
+        2500,
+        1,
+        256
+      ],
+      "all_cls_scores": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "all_bbox_preds": [
+        6,
+        1,
+        900,
+        10
+      ]
+    }
+  },
+  "config_on_disk": {
+    "path": "C:\\Users\\Thomas\\Desktop\\project\\BEVFormer-master\\projects\\configs\\bevformer\\bevformer_tiny.py",
+    "bytes": 9381,
+    "sha256": "85da2b393cb0103645bdc034c87028b6fcf5d7bdd79530ed6b4f4b2d05777882"
+  },
+  "config_hash_matches_export": true,
+  "input_fixture": {
+    "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\bevformer-onnx-inspect\\images.npy",
+    "bytes": 27648128,
+    "sha256": "d3e5d4a8bf084fd74f27c5d9496f18ca7219c91f4df7c6208c45851bacca7aa4",
+    "shape": [
+      1,
+      6,
+      3,
+      480,
+      800
+    ],
+    "dtype": "float32",
+    "finite": true
+  },
+  "golden_fixture": {
+    "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\bevformer-onnx-inspect\\pytorch-outputs.npz",
+    "bytes": 2992792,
+    "sha256": "5695575cfbd854d44f05ef49a2816fb5ed2a023e9bd0a5194ffcbde2cce70298",
+    "outputs": {
+      "bev_embed": {
+        "shape": [
+          2500,
+          1,
+          256
+        ],
+        "dtype": "float32",
+        "finite": true
+      },
+      "all_cls_scores": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "dtype": "float32",
+        "finite": true
+      },
+      "all_bbox_preds": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "dtype": "float32",
+        "finite": true
+      }
+    }
+  },
+  "existing_onnx_correctness": {
+    "success": true,
+    "model_sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070",
+    "onnxruntime": "1.23.2",
+    "rtol": 0.001,
+    "atol": 0.0001,
+    "scope": "Single seeded image fixture, fixed calibration/CAN-bus, cold raw heads; no dataset accuracy or performance claim.",
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "outputs": {
+      "bev_embed": {
+        "shape": [
+          2500,
+          1,
+          256
+        ],
+        "expected_shape": [
+          2500,
+          1,
+          256
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 3.2782554626464844e-06,
+        "mean_abs_error": 2.568235579417433e-07
+      },
+      "all_cls_scores": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "expected_shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 1.049041748046875e-05,
+        "mean_abs_error": 6.839964124891493e-07
+      },
+      "all_bbox_preds": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "expected_shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "finite": true,
+        "allclose": true,
+        "max_abs_error": 5.340576171875e-05,
+        "mean_abs_error": 1.8787348347241613e-06
+      }
+    }
+  },
+  "fresh_onnx_checker_full_check": "passed"
+}

@@ -1,0 +1,56 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "constant_fp64_geometry",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_visibility_indices",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_scatter_tile_split",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_fp64_layout",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_fp64_bool_cast",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_empty_reduce",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    }
+  ]
+}

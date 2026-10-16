@@ -1,0 +1,249 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "matmul_bias_relu",
+      "operation_counts": [
+        5,
+        3
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "multi_consumer",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0,
+        "M": 1.4901161193847656e-07
+      },
+      "passed": true
+    },
+    {
+      "name": "conv_bias_relu",
+      "operation_counts": [
+        4,
+        3
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.9073486328125e-06
+      },
+      "passed": true
+    },
+    {
+      "name": "residual_add_relu",
+      "operation_counts": [
+        2,
+        1
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "softmax",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_chain",
+      "shape_chain_folded": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "invalid_broadcast",
+      "diagnostic": "loc(\"bad_add\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/invalid_broadcast/model.onnx\":1:0)): error: 'gac.add' op incompatible broadcast dimensions 3 and 4\nloc(\"bad_add\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/invalid_broadcast/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "unsupported",
+      "diagnostic": "loc(\"unknown\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/unsupported/model.onnx\":1:0)): error: custom ONNX domain has no registered import contract: Mystery",
+      "inspection_preserved_unsupported": true,
+      "passed": true
+    },
+    {
+      "name": "matmul_rank_and_broadcast",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "batched": 2.384185791015625e-07,
+        "dot": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "grouped_dilated_conv",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 9.5367431640625e-07
+      },
+      "passed": true
+    },
+    {
+      "name": "layer_norm_axes_and_bias",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-07
+      },
+      "passed": true
+    },
+    {
+      "name": "reductions_axes",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "sum": 2.384185791015625e-07,
+        "mean": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "layout_concat_negative_slice",
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "grid_sample_bilinear_boundaries",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "unaligned": 0.0,
+        "aligned": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "fp16_rounding_no_fusion",
+      "rounding_boundaries_preserved": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "cast_bool_values",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "identity_input_output_alias",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "X": 0.0,
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "constant_only_output",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "runtime_shape_rejected",
+      "device_rejection": "loc(\"runtime_shape\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/runtime_shape_rejected/model.onnx\":1:0)): error: shape/axes inputs must be compile-time integer constants; a declared output shape alone is insufficient",
+      "passed": true
+    },
+    {
+      "name": "constant_shape_zero_division",
+      "diagnostic": "loc(\"invalid_shape_division\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/constant_shape_zero_division/model.onnx\":1:0)): error: 'gac.div' op division by zero in constant shape program",
+      "passed": true
+    },
+    {
+      "name": "duplicate_add_cse",
+      "cse_operation_counts": {
+        "add": [
+          2,
+          1
+        ]
+      },
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "public_output_fallback_name_collision",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "value_2": 0.0,
+        "value_3": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "reshape_inferred_and_zero_copy",
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "flat": 0.0,
+        "leading": 0.0,
+        "trailing": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "reshape_dynamic_zero_copy",
+      "device_rejection": "loc(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_dynamic_zero_copy/model.onnx\":0:0): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range",
+      "passed": true
+    },
+    {
+      "name": "reshape_zero_extent_semantics",
+      "device_rejection": "loc(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_zero_extent_semantics/model.onnx\":0:0): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range",
+      "passed": true
+    },
+    {
+      "name": "reshape_multiple_inferred",
+      "diagnostic": "loc(\"reshape_multiple_inferred\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_multiple_inferred/model.onnx\":1:0)): error: 'gac.reshape' op Reshape has multiple inferred dimensions\nloc(\"reshape_multiple_inferred\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_multiple_inferred/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "reshape_nonintegral_inference",
+      "diagnostic": "loc(\"reshape_nonintegral_inference\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_nonintegral_inference/model.onnx\":1:0)): error: 'gac.reshape' op Reshape cannot infer a unique integral dimension\nloc(\"reshape_nonintegral_inference\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_nonintegral_inference/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "reshape_literal_zero_and_inferred",
+      "diagnostic": "loc(\"reshape_literal_zero_and_inferred\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_literal_zero_and_inferred/model.onnx\":1:0)): error: 'gac.reshape' op Reshape allowzero=1 cannot combine zero and -1\nloc(\"reshape_literal_zero_and_inferred\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_literal_zero_and_inferred/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "reshape_copied_zero_ambiguous",
+      "diagnostic": "loc(\"reshape_copied_zero_ambiguous\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_copied_zero_ambiguous/model.onnx\":1:0)): error: 'gac.reshape' op Reshape cannot infer a unique dimension from a zero product\nloc(\"reshape_copied_zero_ambiguous\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_copied_zero_ambiguous/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "reshape_invalid_negative",
+      "diagnostic": "loc(\"reshape_invalid_negative\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_invalid_negative/model.onnx\":1:0)): error: 'gac.reshape' op invalid Reshape dimension\nloc(\"reshape_invalid_negative\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_invalid_negative/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "reshape_extent_overflow",
+      "diagnostic": "loc(\"reshape_extent_overflow\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_extent_overflow/model.onnx\":1:0)): error: 'gac.reshape' op Reshape dimension product overflows i64\nloc(\"reshape_extent_overflow\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-reshape-tests/reshape_extent_overflow/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    }
+  ]
+}

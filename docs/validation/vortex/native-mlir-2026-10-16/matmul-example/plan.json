@@ -1,0 +1,78 @@
+{
+  "arena_bytes": 64,
+  "compiler_backend": "native-mlir",
+  "dispatches": [
+    {
+      "depends_on": [],
+      "elements": 8,
+      "inputs": [
+        "X",
+        "value_1",
+        "value_2"
+      ],
+      "kernel": "gac_op_0",
+      "op": "gac.matmul_bias_relu",
+      "output": "Y",
+      "wait_for_dispatch": -1
+    }
+  ],
+  "double_buffer": false,
+  "inputs": [
+    "X"
+  ],
+  "lmem_bytes": 0,
+  "outputs": [
+    "Y"
+  ],
+  "schedule": "serialized dispatches; SSA last-use buffer reuse",
+  "schema_version": 1,
+  "target": "vortex",
+  "template": "one output per SIMT thread; serial reductions",
+  "tensors": [
+    {
+      "bytes": 24,
+      "dtype": "float32",
+      "name": "X",
+      "offset": 0,
+      "shape": [
+        2,
+        3
+      ],
+      "storage": "input"
+    },
+    {
+      "bytes": 48,
+      "dtype": "float32",
+      "file": "tensor_1.bin",
+      "name": "value_1",
+      "offset": 0,
+      "shape": [
+        3,
+        4
+      ],
+      "storage": "constant"
+    },
+    {
+      "bytes": 16,
+      "dtype": "float32",
+      "file": "tensor_2.bin",
+      "name": "value_2",
+      "offset": 0,
+      "shape": [
+        4
+      ],
+      "storage": "constant"
+    },
+    {
+      "bytes": 32,
+      "dtype": "float32",
+      "name": "Y",
+      "offset": 0,
+      "shape": [
+        2,
+        4
+      ],
+      "storage": "arena"
+    }
+  ]
+}

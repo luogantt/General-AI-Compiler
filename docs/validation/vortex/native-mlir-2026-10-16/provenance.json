@@ -1,0 +1,73 @@
+{
+  "branch": "lg/bevformer-vortex-full-ops",
+  "base_commit": "5380fc61ed247220de297b7ba6ea9ee4cc50e75c",
+  "note": "Validation includes uncommitted native implementation; source hashes identify it.",
+  "compiler_sources_sha256": {
+    "native/CMakeLists.txt": "40dd27940a636cbf303b116a31d6146e6fe795646264df194bca9762b46bb64e",
+    "native/include/gac/Dialect.h": "ebe3e84fff52711df3fe7d24c7880b65de20d48e0c84f04916418596bbb46800",
+    "native/include/gac/OnnxImporter.h": "2d63fe8c7d7c6be84f3365af14109b32fd68ba23defa0e4438baf07b32cea43d",
+    "native/include/gac/Passes.h": "7c23aaae7fc6c1a436270cdc71ac4980e0ef26ac0550ebfd59be4e20372565e5",
+    "native/include/gac/VortexLowering.h": "0e01eec140c39f46572812be9d22735d3f8aa33ff5d91c1a616d0450c5ff49a3",
+    "native/lib/Dialect.cpp": "f60a761cf5469a6321d8f218718e338f22e01b02bb775af0c9fac3a011112bd4",
+    "native/lib/GraphPasses.cpp": "249b1cee5abf2dd7dac4d002ed809ba8d258423c4175fa2c3dc75b0155bab663",
+    "native/lib/OnnxImporter.cpp": "4ad2fe517c05d711d8ade4192f37d51ad319a26591252154d2c224becb630539",
+    "native/lib/VortexLowering.cpp": "e950225a35e0a20780f8a5ea789329a085601f8276d1b9c1519535c4f12319df",
+    "native/runtime/vortex-run.cpp": "c32074d02b2b046f62d6a8543960ee4668c5f4dedd10ab36b6230e659a004677",
+    "native/tests/archive_validation.py": "ceeba89c11d5afa87bc226e99815b7cb15158aa21ed94ceac6bdc063f6b766af",
+    "native/tests/generate_models.py": "ab6e61b11d6119426f400a81b4c2f154baf1f96b027ff990ac037393cce1d5bd",
+    "native/tests/run_tests.py": "de281159219cea9b6e78db6c30a524394cb32afe356ccf204f5132aa7e19963e",
+    "native/tests/run_vortex_tests.py": "293b5c7a48af4db0db7894dde01c6bb418551a53cae6fed948506ced34034490",
+    "native/tools/Vortex.mk": "818634bcb9065a69ca49e4f9f7c72e93396585c049281eb0940dbe5acf26cd4a",
+    "native/tools/compile-vortex.sh": "d91537f05ead940a2e6e453d812ee7d712ac7566d2d80d2f96db40747a9bf4a0",
+    "native/tools/gac-compile.cpp": "9642121841212738656ca734df9f9934d635c1eb74b3f253f999f93b24950d41",
+    "native/tools/gac-opt.cpp": "075ee5120cea9050a7f79475139489bf17af04ae9a0eb60d3cf7b820f820a7cc"
+  },
+  "tools": {
+    "mlir-opt": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-opt",
+      "sha256": "1cb3bdcc43bf743da203458e2aa3aaba08a1b929ad9eae38a1f6c3255e1944cd",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 20.1.8\n  Optimized build with assertions."
+    },
+    "mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 20.1.8\n  Optimized build with assertions."
+    },
+    "clang": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+      "sha256": "f1af489a7b7a2a51b9743c8f8796b6cef0fb3ecd2d4f0bf4a0196d7b0aa3b9a4",
+      "version": "clang version 20.1.8 (/mnt/c/Users/Thomas/Desktop/universal_ai_compile/llvm-project b2ecfe086df2d00233a87f3d3ebe6a74aba129e2)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /home/thomas/gac-volt-llvm20/build-release/bin\nBuild config: +assertions"
+    },
+    "llc": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+      "sha256": "807bf384ee53ce8583067571c1803ab32ee5da37924d05557cc089ed441c3201",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 20.1.8\n  Optimized build with assertions.\n  Default target: x86_64-unknown-linux-gnu\n  Host CPU: meteorlake\n\n  Registered Targets:\n    riscv32 - 32-bit RISC-V\n    riscv64 - 64-bit RISC-V\n    x86     - 32-bit X86: Pentium-Pro and above\n    x86-64  - 64-bit X86: EM64T and AMD64"
+    },
+    "gac-compile": {
+      "path": "/home/thomas/gac-native-build/gac-compile",
+      "sha256": "b4eef240a2d4ecdd3a7fd63d2a8191dc0646b1e1690b668e2193bc853748360e"
+    },
+    "gac-opt": {
+      "path": "/home/thomas/gac-native-build/gac-opt",
+      "sha256": "1d07ac83316d8e909d5fd01005de22a15263ac795e7dc3c1cee5cd5866f91f41"
+    },
+    "gac-vortex-run": {
+      "path": "/home/thomas/gac-native-build/gac-vortex-run",
+      "sha256": "4fa439719be0baa6efde00dc1450df97719bd5773a0e8b8ac33d7bff545336b7"
+    }
+  },
+  "simx_artifacts_sha256": {
+    "matmul_bias_relu": {
+      "kernel.elf": "800c41f3cd3ba521fbfdb1c1784a4dd4e30d53ddc65eb9a3aecc166c5ee8a900",
+      "kernel.vxbin": "40450131eb620c7f58cd3c6c4a460ab3980726a4c9feb847a9ee727c811037d5"
+    },
+    "conv_bias_relu": {
+      "kernel.elf": "400ac39e78014cf0cf0026897e9b07acaa2656b7bc53a4348c254fafe8d630b7",
+      "kernel.vxbin": "342328d00ff7c89c5b87bf96750200c9f01c3cf9c9dce2248c7eaf0c25167d1c"
+    },
+    "softmax": {
+      "kernel.elf": "4dc32e9eafcc07ef4c80a001bb6409f7f0f5763f82cdf3740caa176f6feba305",
+      "kernel.vxbin": "feeec6442ebc33bc59d4740fd9d06a993d1cb5219a5b7318129d4f9637f05635"
+    }
+  }
+}

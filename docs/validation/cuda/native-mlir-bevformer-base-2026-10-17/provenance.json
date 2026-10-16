@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_reports": {
+    "build/cuda-ptx-session/base-results/results/validation.json": "a27d0b5f62356f67868d19895cbe3cd2e6e7bfd0c9898cf5aa9e4289fc5709f8",
+    "build/cuda-ptx-session/base-deployment.tar.metadata.json": "b275c7d72489ee5051b94532ce724d97fc0e2888e8bf6d7683e30c92116e4216",
+    "build/bevformer-base-onnx/export-report.json": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb",
+    "build/cuda-ptx-session/base-results/monitor-report.json": "e41a71f7ceb69a9a4a35f4fe218068374483e0400ee587c505cbd03afb779e66",
+    "build/cuda-ptx-session/base-results/monitor-samples.jsonl": "a3f183b6444ca16e3506ca6c85f60456650f0c32fc58879a84fd82c8c4ab4951",
+    "build/cuda-ptx-session/base-results/results/suite.json": "82dc036abed07965eeecaaab75c62ffd1f90d2971977d1fa89ed3c451001c139",
+    "/home/thomas/gac-base-cuda-final-20261017/artifact-audit.json": "c1e3d678130383d11b3d0e4b831702845c5b276d47bf5fd90b0f3d23d3eabb70",
+    "/home/thomas/gac-base-cuda-final-20261017/compile-provenance.txt": "c32cffb69beb2477ec78696bfc042537dc63da07484183cfef6d32b089923910",
+    "build/cuda-ptx-session/base-benchmark-reports/results-benchmark/suite.json": "b679fd31f73492a0a895c13a2a993bb668207f842c05aca732428ef838b00b69",
+    "build/cuda-ptx-session/base-benchmark-reports/results-benchmark/output-hashes.json": "55e391bae02d99ae413d730ac93b6a098ca5602edcb3db0c006c7e1b319505a6",
+    "build/cuda-ptx-session/base-benchmark-reports/results-benchmark/cases/full-model/output/runtime-report.json": "5bb22f3aa8a8364b351760868a35cf2f1fce5598a97c2bc2f37d61b20cbd2e72"
+  },
+  "code_sha256": {
+    "native/tests/run_cuda_tests.py": "21e1be7713c9a4499411f03c3277b745608a32346ae8f607eca5f5c7d3f0a4cb",
+    "native/tests/run_full_model.py": "b86cf14d3ce5b51271f17d3116de1bc38fb5fdd556178077de213b372ae306d3",
+    "native/runtime/cuda-run.cpp": "8555d67632ed0b7b8c5d8db96da3a95941dd338fc2b60bc06c7e85bb2fb26f01",
+    "native/runtime/dispatch-plan.h": "37eed00ce8b7d1aff273d113e572c942aeb8f8bd8021a8113c60dbdbac183194",
+    "tools/export_bevformer_onnx.py": "bb4951421ae2d90810ce88eb210600b567257bc4f1692516969240aa0d151e2d"
+  },
+  "compact_files": {
+    "artifact-audit.json": "c1e3d678130383d11b3d0e4b831702845c5b276d47bf5fd90b0f3d23d3eabb70",
+    "compile-provenance.txt": "c32cffb69beb2477ec78696bfc042537dc63da07484183cfef6d32b089923910",
+    "export-reference-contract.json": "7b2b9b271166df529cb96fa1d53b40f17e0fe0aa483470949b8c8bbac9f190a3",
+    "first-run-memory-monitor.json": "e41a71f7ceb69a9a4a35f4fe218068374483e0400ee587c505cbd03afb779e66",
+    "first-run-validation.json": "97ed70f6ee74b38b1f6a55cd1dafceeb896ed92c56195045c5f84f10954523f5",
+    "warmed-benchmark.json": "4f7eb916191ebaa21a102e2dcc2f7337e70d76c33c99cdf0f19800b1e76fddc9"
+  }
+}

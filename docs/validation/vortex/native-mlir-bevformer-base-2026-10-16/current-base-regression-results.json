@@ -1,0 +1,298 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_at_start": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "cases": [
+    {
+      "name": "dcn_mask_bias",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1666307674d071dc72943789e59a56a170e77c3ef19372db915b37b1c9bad94d",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      },
+      "library_sha256": "2e13ea00d9c4fa211ae182d2256a8246c5d8692338416e96a960cd13826cc418",
+      "test_wall_seconds": 0.42337005099989256
+    },
+    {
+      "name": "dcn_batch_grouped",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1c5236a8c99b06f00f427734a13994076ff47360da795bb2c5e0bbc382bcd98f",
+      "passed": true,
+      "arena_bytes": 768,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-07
+      },
+      "library_sha256": "f7fb77ca6b7774a689887852701d5b1b06f211f53a4b7553a3ac1217d4c20da4",
+      "test_wall_seconds": 0.2678332689999934
+    },
+    {
+      "name": "dcn_four_deform_groups",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1e81e8d876d21926a21e80a1f62ff7fa3840bfdda3ec8fc739ab294df5e86726",
+      "passed": true,
+      "arena_bytes": 576,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-07
+      },
+      "library_sha256": "ef3836401fb68600b69e4402bdd58bd1ddc1fc4244a6764eee7f39486675e3fd",
+      "test_wall_seconds": 0.26282980400003453
+    },
+    {
+      "name": "dcn_zero_offset_conv_equivalence",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "5f52bb9f21dfd39418ba95e3d5bf26b29bf51d2662f4a8c58b6d5be1ef449b55",
+      "passed": true,
+      "arena_bytes": 512,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "library_sha256": "0b4a2857ca672987a5c1044da05e829b92ac2a31819eaff85b48d39bf426981f",
+      "test_wall_seconds": 0.2800309820000848
+    },
+    {
+      "name": "dcn_fractional_zero_padding",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "85dd85a2918f89abb34f2a65f60989b4ae650029c04b03edaa32fdf870fcdae8",
+      "passed": true,
+      "arena_bytes": 64,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "0616a52035c60492839338f73e2df9e9c79bbd5e0eda56fe9acafdacd09665fa",
+      "test_wall_seconds": 0.292055348999952
+    },
+    {
+      "name": "dcn_reject_offset_channels",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": null,
+      "model_sha256": "1c4387e37f4c89e99fd82c1855b25dac97f3d34ea41250ad92f7d84349b8e30f",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"dcn_mask_bias\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/dcn_reject_offset_channels/model.onnx\":1:0)): error: 'gac.deform_conv2d' op DeformConv2D offset/mask channels must be 2*deform_groups*kH*kW / deform_groups*kH*kW\nloc(\"dcn_mask_bias\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/dcn_reject_offset_channels/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "test_wall_seconds": 0.0069008089999442745
+    },
+    {
+      "name": "dcn_reject_groups",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": null,
+      "model_sha256": "bc4c519970d75c8e88b8ea4c17db9953b27f5fba1c822dd9564898133e6b6cca",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"dcn_reject_groups\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/dcn_reject_groups/model.onnx\":1:0)): error: 'gac.deform_conv2d' op DeformConv2D channels must be positive and divisible by their groups\nloc(\"dcn_reject_groups\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/dcn_reject_groups/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "test_wall_seconds": 0.006704895000098077
+    },
+    {
+      "name": "resize_fpn_2x",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU",
+      "model_sha256": "f5439bee0ee0dd631d4da4f3f5888df91e3f4b973c3c24d1940865b6ee992486",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "3320e604c984b606eecefff260488d3fad25a18b9975727f6c8c9dff44160825",
+      "test_wall_seconds": 0.23078042800000276
+    },
+    {
+      "name": "resize_sizes_batch",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU",
+      "model_sha256": "8eef8485deb474c80d93e98114798b2e1fd62c20217af1a8e5b948d47b90b578",
+      "passed": true,
+      "arena_bytes": 960,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "8958d4e36986176da6e591e3addfe22f92095adfb0ef371bc24670c04435da4b",
+      "test_wall_seconds": 0.2621973530000332
+    },
+    {
+      "name": "resize_noninteger_scales",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU",
+      "model_sha256": "7f27a1e19c22712f7df3dc1598a55d204b87ba03aea2ed66876a7b9228d5f0b6",
+      "passed": true,
+      "arena_bytes": 192,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "3bfdb9348c1d30dae882a047bfb14376b81c9c7b3d876d66b4dc62111b15199c",
+      "test_wall_seconds": 0.26816415499990853
+    },
+    {
+      "name": "resize_empty_roi",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU; ONNX zero-element ROI placeholder",
+      "model_sha256": "64cbfc98c7c3393a71964e6a79375df5e19c391a838960bd15fc6b3a0b86bb13",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "3320e604c984b606eecefff260488d3fad25a18b9975727f6c8c9dff44160825",
+      "test_wall_seconds": 0.24674603699997988
+    },
+    {
+      "name": "resize_empty_scales_sizes",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU; ONNX zero-element ROI/scales placeholders",
+      "model_sha256": "9a8341af99572942cb5f5ddef5a2f3cc8d90f635d29612b05fd19e9f1dc8df2d",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "b296c57d2a2536509a5249a1ff9a8e5501d42cf6647761802521f222cdff4a99",
+      "test_wall_seconds": 0.24495471099999122
+    },
+    {
+      "name": "resize_reject_linear",
+      "kind": "Resize",
+      "reference": null,
+      "model_sha256": "0edfff0794fe29b9c8a424cfae66dab90c04a0a3d44364192ef54a4d7a7d8dcc",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"resize_reject_linear\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/resize_reject_linear/model.onnx\":1:0)): error: native Resize currently requires nearest/asymmetric/floor, no antialias, stretch sizes",
+      "test_wall_seconds": 0.006230744999925264
+    },
+    {
+      "name": "resize_reject_half_pixel",
+      "kind": "Resize",
+      "reference": null,
+      "model_sha256": "d977a5ff2ef5677a382f268c8ec17687d1c6ade0cefe6431842b438e04962c1c",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"resize_reject_half_pixel\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/resize_reject_half_pixel/model.onnx\":1:0)): error: native Resize currently requires nearest/asymmetric/floor, no antialias, stretch sizes",
+      "test_wall_seconds": 0.007656285999928514
+    },
+    {
+      "name": "resize_reject_ceil",
+      "kind": "Resize",
+      "reference": null,
+      "model_sha256": "fe15f733a7ceb6f5514658b20d58f2a4ac0cd468349205bccd59187113f948ba",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"resize_reject_ceil\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/resize_reject_ceil/model.onnx\":1:0)): error: native Resize currently requires nearest/asymmetric/floor, no antialias, stretch sizes",
+      "test_wall_seconds": 0.00705439099999694
+    },
+    {
+      "name": "msda_exact_pixel_centers",
+      "kind": "MSDeformAttn",
+      "reference": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "model_sha256": "36461f3cbc0bda504cb690935ffdc90e41302e920f90e17b927cb53ce8506970",
+      "passed": true,
+      "arena_bytes": 64,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "a07dc28ce9b4056b5c5c884597a49a87b3c9ed6b2319ea6d9b10c340dc8b7ff3",
+      "test_wall_seconds": 0.26551133299994945
+    },
+    {
+      "name": "msda_multilevel_heads",
+      "kind": "MSDeformAttn",
+      "reference": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "model_sha256": "01cc3e655f51c67d2573e5d417be52877150baf72e2a3d629e0ea2442bf905c5",
+      "passed": true,
+      "arena_bytes": 128,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "library_sha256": "6d794836d5e86382ae7017d9fdfb0cdb1090af281b5b36fc30ffbf517de2e355",
+      "test_wall_seconds": 0.36400731999992786
+    },
+    {
+      "name": "msda_batch_three_levels",
+      "kind": "MSDeformAttn",
+      "reference": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "model_sha256": "86a58720c6a53a6f10be17c9489be629042ecab241599e0a61cd9e4d299fa21e",
+      "passed": true,
+      "arena_bytes": 192,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "library_sha256": "f981c35589bde822f8c8cefc74b52c4dd432f870b6b5218b9f8be6398c2df747",
+      "test_wall_seconds": 0.2838979749999453
+    },
+    {
+      "name": "msda_reject_spatial_sum",
+      "kind": "MSDeformAttn",
+      "reference": null,
+      "model_sha256": "fa5f0a1c8e140b99eddb278ab2d3eb0dad849e1f11ded1a7b4987fb896b96013",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"msda_multilevel_heads\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/msda_reject_spatial_sum/model.onnx\":1:0)): error: 'gac.ms_deform_attn' op MSDeformAttn value sequence length must equal sum(H_l*W_l)\nloc(\"msda_multilevel_heads\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/msda_reject_spatial_sum/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "test_wall_seconds": 0.009790074999955323
+    },
+    {
+      "name": "msda_reject_head_mismatch",
+      "kind": "MSDeformAttn",
+      "reference": null,
+      "model_sha256": "fc8fda692ee4c90c13896d422c8df97e7672e3b18fcfa0a03598e574dd958cbb",
+      "passed": true,
+      "expected_rejection": true,
+      "diagnostic": "loc(\"msda_multilevel_heads\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/msda_reject_head_mismatch/model.onnx\":1:0)): error: 'gac.ms_deform_attn' op MSDeformAttn batch/head dimensions disagree\nloc(\"msda_multilevel_heads\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-current-regressions/base/msda_reject_head_mismatch/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "test_wall_seconds": 0.006095355000070413
+    },
+    {
+      "name": "memory_fragmented_fork",
+      "kind": "StaticMemoryForkDAG",
+      "reference": "PyTorch eager matmul/relu/cat/add; two observable outputs",
+      "model_sha256": "c026a41fc58add8f54b7bf89d72c510a662fbf620bfde28a413d6a9793500bda",
+      "passed": true,
+      "arena_bytes": 1024,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 8,
+      "max_absolute_errors": {
+        "retained": 3.5762786865234375e-07,
+        "Y": 1.9073486328125e-06
+      },
+      "library_sha256": "5992ea5ec34906bb501b6b9ff35c1fe141d94bbfceb3c81b06c2b18fb7138898",
+      "test_wall_seconds": 0.38726462800002537
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "compiler_stable_during_run": true
+}

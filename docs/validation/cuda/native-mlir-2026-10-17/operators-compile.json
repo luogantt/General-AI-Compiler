@@ -1,0 +1,3586 @@
+{
+  "schema_version": 1,
+  "validation_date": "2026-10-17",
+  "target": "cuda",
+  "compiler_backend": "native-mlir",
+  "case_count": 62,
+  "full_model_gpu_validation": "not_in_this_operator_report",
+  "status": "compiled_only",
+  "gpu_executed": false,
+  "numerical_passed": null,
+  "compiler_sha256": "dabfe3c5c0f93508cefe20586056e95cca13e70b8a5fdd2c072a9fd9394bac61",
+  "tool_identities": {
+    "gac-compile": {
+      "sha256": "dabfe3c5c0f93508cefe20586056e95cca13e70b8a5fdd2c072a9fd9394bac61"
+    },
+    "gac-opt": {
+      "sha256": "876ccd9b8b942865aead4e35d90e825e1435038e3df37704907abf23aeaf74ef"
+    }
+  },
+  "llvm_version": "20.1.8",
+  "gpu_target": "sm_86",
+  "ptx_features": "+ptx80",
+  "ptxas_case_count": 62,
+  "raw_report_sha256": "9bd6bd006d3d0afe13ae188e1be0982cef91e5c9711f70ba5c69a403981a4132",
+  "cases": [
+    {
+      "name": "native-base-ops-tests/dcn_mask_bias",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 629,
+          "sha256": "1666307674d071dc72943789e59a56a170e77c3ef19372db915b37b1c9bad94d"
+        },
+        "plan.json": {
+          "bytes": 2337,
+          "sha256": "bd47051e2d2f8e699f70a0a8d31362e941ac405f586c30a5e31357a8868db9a7"
+        },
+        "kernel.ptx": {
+          "bytes": 6714,
+          "sha256": "d33f3abf9f7f47c795f20d72e0f1ee93105ba7fa74d6b55eaa4ca720f1f404f7"
+        },
+        "kernel.ll": {
+          "bytes": 8597,
+          "sha256": "61f822b0fa6c3ec20700329283e338cd7878eb2ce1fe6fe89c9e0ca2e04012cc"
+        },
+        "kernel.mlir": {
+          "bytes": 14374,
+          "sha256": "67aab49ec3d45c2dd27e5920ba8774f3400bd2619d0a2be278d2cd8646d322e8"
+        },
+        "kernel.cubin": {
+          "bytes": 5032,
+          "sha256": "b73384aae782bb67838691efc921514e171fcc88f9c156c675ed8ebeff3e56f3"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1025,
+          "sha256": "9640dd858ca7b02c27745d72c2827450e2e7c70d9510acef1f191acb128498b7"
+        },
+        "inputs": {
+          "bytes": 4220,
+          "sha256": "b2747ffc622724dc3799c887cf77a0db63a3fd384efbdd79df1bc4911f25702e"
+        },
+        "reference": {
+          "bytes": 616,
+          "sha256": "87bf7d7a226b4c36c17bd6389b649b718f5035eb37091c231c4cb68b26fd6227"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 216,
+          "sha256": "6f2f1f9b6f5ff87a3b184b4bc2132fc911a294947135f627a8b24492fc31907e"
+        },
+        "value_4": {
+          "bytes": 12,
+          "sha256": "9744f8e1849755fe9ddf6f89cce8a9f9e10b4ec011bf220a2eff61a8ac689aff"
+        }
+      },
+      "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/dcn_batch_grouped",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 768,
+      "artifacts": {
+        "model": {
+          "bytes": 721,
+          "sha256": "1c5236a8c99b06f00f427734a13994076ff47360da795bb2c5e0bbc382bcd98f"
+        },
+        "plan.json": {
+          "bytes": 2344,
+          "sha256": "4a38ebe68b24bcf753ff77ff5349288f4a6ba41e2fb30644c2869ff89761aef7"
+        },
+        "kernel.ptx": {
+          "bytes": 7225,
+          "sha256": "8f57ee36d7b972bb44c9844605ee5ef1a4d4bba3f95b8a085abf9f5e03ff47c5"
+        },
+        "kernel.ll": {
+          "bytes": 9017,
+          "sha256": "a69e0942f6bcd5076d402b029b5fb926b89ec741ca0c9eefa4f7fc441a6f7fc4"
+        },
+        "kernel.mlir": {
+          "bytes": 14983,
+          "sha256": "b4aa83de065a3317c53427a9e5d5fc34261e01b9af29a738d754bca787aec0ee"
+        },
+        "kernel.cubin": {
+          "bytes": 5160,
+          "sha256": "eab7593d45e090a6158785584711ee507e9cc5a9b96f9a048ce2a01867f51746"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1033,
+          "sha256": "4b5d57f365de3a36ceaaaf41ac8afb2e5ae09f7bdc06206a587132ba4a80677a"
+        },
+        "inputs": {
+          "bytes": 6404,
+          "sha256": "3064a8f6b3bc596cad60b0b154499f9ef9b709012ee4c30d8c7415f96d6832d3"
+        },
+        "reference": {
+          "bytes": 976,
+          "sha256": "5eac746f54635d9e72de9b089b9c5911c1251cb892763fc321a2647f39459940"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 288,
+          "sha256": "d503850dcef655287c2e8b7dce7bd41c440c08156b902b020bf45762e9dacae1"
+        },
+        "value_4": {
+          "bytes": 24,
+          "sha256": "3c4b15471e23603f6aeee52af42ef7222bafd0c6697f6c9879a83779f20a0373"
+        }
+      },
+      "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/dcn_four_deform_groups",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 576,
+      "artifacts": {
+        "model": {
+          "bytes": 783,
+          "sha256": "1e81e8d876d21926a21e80a1f62ff7fa3840bfdda3ec8fc739ab294df5e86726"
+        },
+        "plan.json": {
+          "bytes": 2133,
+          "sha256": "39d36b3e214fa6e137074a1c5c4c3a0acb83961e92af76e46182e118a04ab34f"
+        },
+        "kernel.ptx": {
+          "bytes": 6557,
+          "sha256": "91e7e2d57b52185200ac3a60b3d10e2cd0ff544a7ab08f3413a5ae3058f887eb"
+        },
+        "kernel.ll": {
+          "bytes": 8495,
+          "sha256": "22c46d7a437c8f302d35a3fc10f1b51719aac8d2bb9358c01b876e57a21829ab"
+        },
+        "kernel.mlir": {
+          "bytes": 14246,
+          "sha256": "bd49e3aeb392b5c45d3e87ec8f3d1c2ebdca922ab356f1b93177264a787a67e8"
+        },
+        "kernel.cubin": {
+          "bytes": 5160,
+          "sha256": "0be9da81a021d56bd8651964452ef7bf47052766ca14b17670717a5b7a5483ba"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1043,
+          "sha256": "838b6c4b4fd24112e4c623768d9c094d633849f847535979e934b260b127cbd2"
+        },
+        "inputs": {
+          "bytes": 11716,
+          "sha256": "993b38b5da521bf5a4726547d5176ad006139d28f954c578ab0eb0d0ea649cc2"
+        },
+        "reference": {
+          "bytes": 816,
+          "sha256": "7c451aec15c26e6f7f17c68de6f1efb9698f01d88bf509e474ab610c7d078a11"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 384,
+          "sha256": "5c829bc663b03545ba3688513481f64c698058330b39260d1a273149dc31e22d"
+        }
+      },
+      "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/dcn_zero_offset_conv_equivalence",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 512,
+      "artifacts": {
+        "model": {
+          "bytes": 707,
+          "sha256": "5f52bb9f21dfd39418ba95e3d5bf26b29bf51d2662f4a8c58b6d5be1ef449b55"
+        },
+        "plan.json": {
+          "bytes": 2142,
+          "sha256": "12da59511b7812030be27a434e65f162e2cad907e0189a8ffc44a2693b1187e5"
+        },
+        "kernel.ptx": {
+          "bytes": 6499,
+          "sha256": "b9462c842e2cefb58c45e3e48189c34f630844e91af956ee737571d8b1746664"
+        },
+        "kernel.ll": {
+          "bytes": 8471,
+          "sha256": "cea349b9a3aa5e3d04e7593bfdd813774479af32f271e900abb845bec6e682b5"
+        },
+        "kernel.mlir": {
+          "bytes": 14216,
+          "sha256": "fe4aee878b180e8ba5b7905e7426366746d3c81a23c707451087db354ea58811"
+        },
+        "kernel.cubin": {
+          "bytes": 5032,
+          "sha256": "0f3ed681c61a96fb3f10d89de49f63e84cfe9952f74aabc1e44bf75b73581d19"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1063,
+          "sha256": "0f46013cd805cb0e8aebf92f6e6f543cac5654c610a96a15e848da1718f3668e"
+        },
+        "inputs": {
+          "bytes": 4460,
+          "sha256": "de62339efb0eaa5b8604885c4ee38d8eb4675de592c00481b0fc6d400d40b41d"
+        },
+        "reference": {
+          "bytes": 736,
+          "sha256": "e6c1d8138c2b4cfdf4ef3a97e0d29457a9c4407a05eeeb92d7c180bc6b1f7864"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 288,
+          "sha256": "3f1f0f33f5da44d3ebad056506ef49481a9e49e664fad1bd3dcd58744a539d50"
+        }
+      },
+      "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/dcn_fractional_zero_padding",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 435,
+          "sha256": "85dd85a2918f89abb34f2a65f60989b4ae650029c04b03edaa32fdf870fcdae8"
+        },
+        "plan.json": {
+          "bytes": 2339,
+          "sha256": "f7416f243f7b3b1dbc96cf5257964c9a8ef1eefe0a919f5f8b0e2cc2c1fa446f"
+        },
+        "kernel.ptx": {
+          "bytes": 4510,
+          "sha256": "47a9cf831d80e4c53095f609fd4d1332d440ab49cbea6cd2ba426acc728c2a67"
+        },
+        "kernel.ll": {
+          "bytes": 7570,
+          "sha256": "807110f5193e2dbe3408fbce74acd7eab47c0a4b825edd353978929a410b2f5c"
+        },
+        "kernel.mlir": {
+          "bytes": 13712,
+          "sha256": "58776a385c9a8497ae3270b941fe0058ceccffb04df06ff682b18b6404472189"
+        },
+        "kernel.cubin": {
+          "bytes": 4264,
+          "sha256": "c7eef2b7d2605c79e8e0970ec01148801ef717e686d7829fa127dfa200c5a8eb"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1053,
+          "sha256": "424a04fc9ef7cb06f34f7c68bce90ab99fa15cb8b4f30d18090621855c58e41a"
+        },
+        "inputs": {
+          "bytes": 836,
+          "sha256": "d307cf2df45b1d46ab3e24393db93ae4b95e865e79fa6e1df2f5b1455062bb31"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "63511da924b021b4c74dd4133b5c8e4c56444fab1ba76924c5153ca5bc970919"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 4,
+          "sha256": "2e1aa1fb85393154079c4ea3f344c1a5fda688727ca86df2eca0fba747d2e331"
+        },
+        "value_4": {
+          "bytes": 4,
+          "sha256": "beaa542611efe241b9a124e7a37537e24fe84ddf1805ce95aae512e52851abf7"
+        }
+      },
+      "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/resize_fpn_2x",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 290,
+          "sha256": "f5439bee0ee0dd631d4da4f3f5888df91e3f4b973c3c24d1940865b6ee992486"
+        },
+        "plan.json": {
+          "bytes": 1627,
+          "sha256": "cd0a9234d966aab0bf89df9412836e58c4121ee1b95d60322c8c7dc7dd9d414c"
+        },
+        "kernel.ptx": {
+          "bytes": 1521,
+          "sha256": "df3f6f50e1cf0d058e2c6dbe7969e0b8802dba46b1d774ca879e03c3e6f9ec8c"
+        },
+        "kernel.ll": {
+          "bytes": 2192,
+          "sha256": "9d460393f136563107c0cd1da017dcd9c81d5111c8355d9e9b03cd6e6a395501"
+        },
+        "kernel.mlir": {
+          "bytes": 3607,
+          "sha256": "e539266f87bcb486a18f2b6dcc57a72bf7e8af03c0631b76d96f0554eb6709b5"
+        },
+        "kernel.cubin": {
+          "bytes": 3112,
+          "sha256": "ab216c882a16448765f6a6bd808825780c353d2f424bcb93a63513e76644b90c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1025,
+          "sha256": "2955e219aad460d112844274bf928e651fa3e1d0fcceca79c96119bec7b8a00b"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "3303a7f0ec76839bba879f1973f21829c1855deaba3033f19c9b9453315d0f30"
+        },
+        "reference": {
+          "bytes": 640,
+          "sha256": "4e523e957fb4bbe035a4d0ae38c5d908367f86b287cfec5c1697d1055d0ebd17"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "aa5b3e0ef3e85eb14fa5e9eea359ae9b4f94dec784834d64c0b29ec5a8c83844"
+        }
+      },
+      "reference_description": "torch.nn.functional.interpolate nearest CPU",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/resize_sizes_batch",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 960,
+      "artifacts": {
+        "model": {
+          "bytes": 316,
+          "sha256": "8eef8485deb474c80d93e98114798b2e1fd62c20217af1a8e5b948d47b90b578"
+        },
+        "plan.json": {
+          "bytes": 1632,
+          "sha256": "b12781a945c5c20f4157df6a1d492a1882472463fdc7350846602480cd125cf6"
+        },
+        "kernel.ptx": {
+          "bytes": 1766,
+          "sha256": "0f05ed97f4d8705b4b28b616e8219b3e8860b212c1fedf8ee8e0a4857c23ef3a"
+        },
+        "kernel.ll": {
+          "bytes": 2482,
+          "sha256": "ffa26d0161bf07af5247aad8efdf2ea19bf434b866ccfcfd16393a7fda833083"
+        },
+        "kernel.mlir": {
+          "bytes": 4361,
+          "sha256": "f88a5500d84e368d8bf15738632efc95513a1f41047c993d32ffbae419c8f4d2"
+        },
+        "kernel.cubin": {
+          "bytes": 3368,
+          "sha256": "72ec8fda173d651c35d02393d66c79c79c937bee6c034fc39150f8cf2f63b43e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1035,
+          "sha256": "3967f9c47e321544694c8e2ae42ece9116a6f1d3cc67fa9e06dbb196a669b6eb"
+        },
+        "inputs": {
+          "bytes": 616,
+          "sha256": "3522ae0f97194484ed2ab81f43ef217b86fb469645c48f965854fa9a312a41fa"
+        },
+        "reference": {
+          "bytes": 1216,
+          "sha256": "c57a2ed6acb7484aebdb100b6cfd85af0f8f3be947d587410195f21fe9b488cf"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 32,
+          "sha256": "8df469e440a993fb985ba7bee422e19746f5dda0000362e9fb94fcd71f23aef7"
+        }
+      },
+      "reference_description": "torch.nn.functional.interpolate nearest CPU",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/resize_noninteger_scales",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 312,
+          "sha256": "7f27a1e19c22712f7df3dc1598a55d204b87ba03aea2ed66876a7b9228d5f0b6"
+        },
+        "plan.json": {
+          "bytes": 1638,
+          "sha256": "d6724121d155f6936168adc89efb95b82091aec284a11d8d71b2d7a5c6610be4"
+        },
+        "kernel.ptx": {
+          "bytes": 1596,
+          "sha256": "27fa63060872194cbf687d33d7ced55b80f12d4b3f53160f8f277e34ec9f4d2f"
+        },
+        "kernel.ll": {
+          "bytes": 2204,
+          "sha256": "13e767857dd6d7bad958763f5c865f43815cf72539a8f5564ecd0fde88cc19e2"
+        },
+        "kernel.mlir": {
+          "bytes": 3618,
+          "sha256": "7045c9d8fd2425e7f692844896448735bc00249129ed54e37d2a8b39f6aa3e53"
+        },
+        "kernel.cubin": {
+          "bytes": 5416,
+          "sha256": "09b20415ad5ccb96fe2315dd1cf4d9ff92c4d82bab36046924e687686f95da82"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1047,
+          "sha256": "18f3a5fdf5ef49a98659eace706bea840093b0b1776ce33dd4497227a87fc01c"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "955602074a400862a7e6bc354a88ff96a044483ebf3e86827a0c15c37f1bb9fc"
+        },
+        "reference": {
+          "bytes": 448,
+          "sha256": "a34369520f247787efeb11bbe1d67297bd7b8be4185878109f2e5ee3b5730868"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "1936eb3bd91a947e3961ea3abec8029f888a3b59ed2730e4326f50271c952679"
+        }
+      },
+      "reference_description": "torch.nn.functional.interpolate nearest CPU",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/resize_empty_roi",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 312,
+          "sha256": "64cbfc98c7c3393a71964e6a79375df5e19c391a838960bd15fc6b3a0b86bb13"
+        },
+        "plan.json": {
+          "bytes": 1630,
+          "sha256": "810a230e8e2ff480a2edc1990eb43a0f729e70c0bb722f3cc82a8690cebf56ac"
+        },
+        "kernel.ptx": {
+          "bytes": 1521,
+          "sha256": "df3f6f50e1cf0d058e2c6dbe7969e0b8802dba46b1d774ca879e03c3e6f9ec8c"
+        },
+        "kernel.ll": {
+          "bytes": 2192,
+          "sha256": "9d460393f136563107c0cd1da017dcd9c81d5111c8355d9e9b03cd6e6a395501"
+        },
+        "kernel.mlir": {
+          "bytes": 3610,
+          "sha256": "8adfb4508ab2ff724a05a0b8efc9ee8bd98e18240b0bdaf2bbc5464501130b47"
+        },
+        "kernel.cubin": {
+          "bytes": 3112,
+          "sha256": "ab216c882a16448765f6a6bd808825780c353d2f424bcb93a63513e76644b90c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1031,
+          "sha256": "6668198bc5ca9116abb7f146062fd499b39c180475e1ab1130596eaf88ac91b6"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "3303a7f0ec76839bba879f1973f21829c1855deaba3033f19c9b9453315d0f30"
+        },
+        "reference": {
+          "bytes": 640,
+          "sha256": "4e523e957fb4bbe035a4d0ae38c5d908367f86b287cfec5c1697d1055d0ebd17"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "aa5b3e0ef3e85eb14fa5e9eea359ae9b4f94dec784834d64c0b29ec5a8c83844"
+        }
+      },
+      "reference_description": "torch.nn.functional.interpolate nearest CPU; ONNX zero-element ROI placeholder",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/resize_empty_scales_sizes",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 368,
+          "sha256": "9a8341af99572942cb5f5ddef5a2f3cc8d90f635d29612b05fd19e9f1dc8df2d"
+        },
+        "plan.json": {
+          "bytes": 1637,
+          "sha256": "ea78e4b3b0e6325eae0d4d26615043fe65afe42021fe2220f0c66b21f9c1773f"
+        },
+        "kernel.ptx": {
+          "bytes": 1314,
+          "sha256": "3a82f11b9be20d88375868a8395e853e2e4b502595659b103b9149c3e1d24aef"
+        },
+        "kernel.ll": {
+          "bytes": 2238,
+          "sha256": "0fc4ce2203f3af605c8bb19d1a695e759a6108834b7a6930c63b1b54c2eb80e9"
+        },
+        "kernel.mlir": {
+          "bytes": 4297,
+          "sha256": "22ba7fd128af01e22e9d395908e1945d452bf6a149aa2e5fb5229ee55c0551d8"
+        },
+        "kernel.cubin": {
+          "bytes": 3112,
+          "sha256": "52393162174849e115ef5044da333a67584cd3dc52f122416c7766bdf5d00618"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1049,
+          "sha256": "445fcbe5c371a23d90d5a4f5522f1f8b213d8ef16712efab223fb49f237d324f"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "3303a7f0ec76839bba879f1973f21829c1855deaba3033f19c9b9453315d0f30"
+        },
+        "reference": {
+          "bytes": 640,
+          "sha256": "4e523e957fb4bbe035a4d0ae38c5d908367f86b287cfec5c1697d1055d0ebd17"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 32,
+          "sha256": "75c757be80a782f447a0bde38cfa860818246aeb67891e83115be94b1f26f790"
+        }
+      },
+      "reference_description": "torch.nn.functional.interpolate nearest CPU; ONNX zero-element ROI/scales placeholders",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/msda_exact_pixel_centers",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 380,
+          "sha256": "36461f3cbc0bda504cb690935ffdc90e41302e920f90e17b927cb53ce8506970"
+        },
+        "plan.json": {
+          "bytes": 2183,
+          "sha256": "db4861f49109ca16d3669876b73c70e110ae9dc0a3420b7b01a4cc6dd23b7c4e"
+        },
+        "kernel.ptx": {
+          "bytes": 4100,
+          "sha256": "73caf5092be37001b3ae4d49e1ed6e4844871f05e4fd4421f5710535f0a8efe9"
+        },
+        "kernel.ll": {
+          "bytes": 7733,
+          "sha256": "d49ea1e9f51705d9b8f03f7e4e353c688f5d4c190d97dd8af1332f743b60954c"
+        },
+        "kernel.mlir": {
+          "bytes": 12997,
+          "sha256": "5d39bff541ce3f5a04744b275d930afc2192be94e6cfe83d949a862381440b60"
+        },
+        "kernel.cubin": {
+          "bytes": 4136,
+          "sha256": "dbb9806b0d617c67d8b552f4f7ced245c0ef925b209748ecc2ac4ab48023f9ff"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1047,
+          "sha256": "c141ff695cf71d5c6335ad27bd2b4d4374230a03fd8eda209d377da2a902af10"
+        },
+        "inputs": {
+          "bytes": 892,
+          "sha256": "2f357868d71601ba8bdc2e9fd6149264809d594a9c38bc6594ea2e6f5ed64f4a"
+        },
+        "reference": {
+          "bytes": 320,
+          "sha256": "b9a26711b1011fbfbb2f99486c82658fbc2efc61b4fdd5adbea0095b05799c13"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 16,
+          "sha256": "fa7c63f601691b958793c6d5ebe2ec4456e1a35b2b448b4f3e55cd1f86787673"
+        }
+      },
+      "reference_description": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/msda_multilevel_heads",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 390,
+          "sha256": "01cc3e655f51c67d2573e5d417be52877150baf72e2a3d629e0ea2442bf905c5"
+        },
+        "plan.json": {
+          "bytes": 2183,
+          "sha256": "d50fd3fb5c1205349cac975c35cd75ed20c2f9519977568d6117e9e96a96f625"
+        },
+        "kernel.ptx": {
+          "bytes": 9545,
+          "sha256": "2aeff9686bf78fbca7ed2f6e35b35c130503e9639b5281c541444e5fc94ddaee"
+        },
+        "kernel.ll": {
+          "bytes": 14898,
+          "sha256": "59efa4e51c2eb427898cee8540c0b8c9ce1b71a39e940c478208cc8fe6c9c969"
+        },
+        "kernel.mlir": {
+          "bytes": 25518,
+          "sha256": "9cbf2df4da4f16bb4223b9a62433508e3d4d049211883f1c65299d296fc7f16a"
+        },
+        "kernel.cubin": {
+          "bytes": 5928,
+          "sha256": "884fff413fa3fe003aef730768564f21271bde0e9898bf5cf7498c78a2da4a9e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1041,
+          "sha256": "0aeeed36273135dd0b95e308f5f8a340c0c43c825299499985b7fe8ae20e5bfd"
+        },
+        "inputs": {
+          "bytes": 1260,
+          "sha256": "1763f926d5d0e4932d6f68293996f9474df6caad272d4d72a3e3f52b86ef2228"
+        },
+        "reference": {
+          "bytes": 328,
+          "sha256": "65033bcc4f6a121a2391386fa855faeaf5b6eaf1f1cef5e11a4eaa959a882154"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/msda_batch_three_levels",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 410,
+          "sha256": "86a58720c6a53a6f10be17c9489be629042ecab241599e0a61cd9e4d299fa21e"
+        },
+        "plan.json": {
+          "bytes": 2189,
+          "sha256": "ddf77cec1c8e9bef9b5817594d5f385297ecbea2ab5702a9538d84a369c07c4a"
+        },
+        "kernel.ptx": {
+          "bytes": 13172,
+          "sha256": "3cb1b8686e4a82c68c38e69f7339193bf22e4b13dad8eb23a8627fe704f0d857"
+        },
+        "kernel.ll": {
+          "bytes": 22774,
+          "sha256": "c3f4a770af6035e8c889914e3f0f97d40b95459eaadca463eb12d44350dc03f0"
+        },
+        "kernel.mlir": {
+          "bytes": 39138,
+          "sha256": "2dfd820bd0d9134f1a11f0eb17925acd34a2d33034e7d935479f4fcc10cc2ffa"
+        },
+        "kernel.cubin": {
+          "bytes": 7464,
+          "sha256": "25aeee0ceb030a70d59507a270707c1d73a7d27dea5bfa448d5035525ad9f05d"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1045,
+          "sha256": "ca0c38667a7aef2f97bed1e974ec26531a79256c7cb9c3b7160a68f444bd785d"
+        },
+        "inputs": {
+          "bytes": 3948,
+          "sha256": "9d68ae58c93c2dfcc0c27f5e2c893190c4065c24362c379de5f1d122549f2af3"
+        },
+        "reference": {
+          "bytes": 448,
+          "sha256": "9c4a38244d261de32849de4baac8ab96f2b8e56a6939441ee41602a6ae74cc0b"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 48,
+          "sha256": "22689b8e8ebea33a2e1f71f2347d1074d612fcb0eb3f5499c8b1757c1824b8b8"
+        }
+      },
+      "reference_description": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-base-ops-tests/memory_fragmented_fork",
+      "status": "compiled_only",
+      "dispatches": 7,
+      "arena_bytes": 832,
+      "artifacts": {
+        "model": {
+          "bytes": 3286,
+          "sha256": "c026a41fc58add8f54b7bf89d72c510a662fbf620bfde28a413d6a9793500bda"
+        },
+        "plan.json": {
+          "bytes": 5747,
+          "sha256": "e75d48093c7c5850d74b05f79f798b171ac47808fc74f4d5ebd93cfc4ed6871a"
+        },
+        "kernel.ptx": {
+          "bytes": 11420,
+          "sha256": "8cb2607b72c4fb6b4bfb43225aed66df91ae24adc06ff49fc7b8b330a52abc2e"
+        },
+        "kernel.ll": {
+          "bytes": 10565,
+          "sha256": "a79d15b01593312827c5247e897958b34a962b17b4c9c1f2438b9dc2c58704fd"
+        },
+        "kernel.mlir": {
+          "bytes": 16455,
+          "sha256": "e9d7b25d744e43aa85fde4c5fe7f3369867a6052e0d5af74181f46c51b5389d8"
+        },
+        "kernel.cubin": {
+          "bytes": 17064,
+          "sha256": "69b309f42561298664a1abc06233dfe8dfb6b69460617a687df4847812a8914a"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1043,
+          "sha256": "66996002f241e1582568a98eb7667a4673ce42e5bc2b90d1495161222c23b33f"
+        },
+        "inputs": {
+          "bytes": 512,
+          "sha256": "1aecd1f705e5c8db6f3b5b41fd386b090ce4684667c8702208ac0c7ed2a3ba61"
+        },
+        "reference": {
+          "bytes": 824,
+          "sha256": "6bfba0529900196e5657f39e94caaa0775b79d1528bab4120659456b7bfd0023"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 1024,
+          "sha256": "551d71b22f88898bf101534192bf3007581ecb189f8486ae76b65a6c8fef2fc7"
+        },
+        "value_2": {
+          "bytes": 512,
+          "sha256": "2fd76f81b81b605923733e7d4d38781c12fa07db63016f31a1f133361a0c0ba7"
+        },
+        "value_3": {
+          "bytes": 768,
+          "sha256": "27906d9cee9098920bdf58c5f98d8308672e45a2c72fa356e72a91caffbfe0ca"
+        },
+        "value_4": {
+          "bytes": 48,
+          "sha256": "e26202d8969ecdb704fbdb1effd4f532cf1357b5b0c462c2cacc5a0cbe71854a"
+        },
+        "value_5": {
+          "bytes": 384,
+          "sha256": "3f130d61f99c5b2e273095611754e263f42b0c9c77d2e346bc90b14e0c02041e"
+        }
+      },
+      "reference_description": "PyTorch eager matmul/relu/cat/add; two observable outputs",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "torchvision": "0.15.2+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/temporal_reference_right",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 554,
+          "sha256": "8e1498a4c89216917ac1649e5fb5ef73d7839da0944d7869ca18452656d10ea2"
+        },
+        "plan.json": {
+          "bytes": 2659,
+          "sha256": "aca4569115ff32df1df226d0a7690f9ca268c117263a4c6d10c163b1807e5d6f"
+        },
+        "kernel.ptx": {
+          "bytes": 12871,
+          "sha256": "e3cecea25c4703b17a2ce425d580b1695897e2729e41215083f9ab77bc1f8324"
+        },
+        "kernel.ll": {
+          "bytes": 19788,
+          "sha256": "af3be76e6968aa51c6703a1a5a60858492bf5f079b716be5382c2ecbaf5deba0"
+        },
+        "kernel.mlir": {
+          "bytes": 41028,
+          "sha256": "354b0d00fe2c6cb3ca8b79e30cd3b1d2e1a63c5f9d544965556c9b218399d6c0"
+        },
+        "kernel.cubin": {
+          "bytes": 10280,
+          "sha256": "46991dc0b50203cc01ea88f82eaa638594e735044d16a539190f06121c643750"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1055,
+          "sha256": "481687547f17b82b7eb5d90e8d616cdea345f3eeae616dd0df3b977b5716b83d"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "96b2b092972412f03702fec81e78fc3aeb815956cd617845f3c45e3e985ca5e8"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "f67fca0c11ff1946e027a8621c624f53b4acb3e63a682d84d3692928130a63cc"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/temporal_reference_left",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 553,
+          "sha256": "5288fa60500717f692e92eb0a294eb90a725ea0e910a8a5edc834d3c18ec0aee"
+        },
+        "plan.json": {
+          "bytes": 2659,
+          "sha256": "aca4569115ff32df1df226d0a7690f9ca268c117263a4c6d10c163b1807e5d6f"
+        },
+        "kernel.ptx": {
+          "bytes": 12871,
+          "sha256": "a52f79d77ee807bb0b71c202d4516b1f8488c1993e02abd77ec59e36642248f3"
+        },
+        "kernel.ll": {
+          "bytes": 19788,
+          "sha256": "d75b54afa063781766b70bc7dd91f1fc8f9b485969b201d74ef336301470098c"
+        },
+        "kernel.mlir": {
+          "bytes": 41027,
+          "sha256": "caa5a0fb9d7e968a4a5d5952afd764f33de4579050f1c5def42d57c973c5d256"
+        },
+        "kernel.cubin": {
+          "bytes": 10280,
+          "sha256": "46991dc0b50203cc01ea88f82eaa638594e735044d16a539190f06121c643750"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1053,
+          "sha256": "dc3ffd25303fef39ef277a98811fb5a34022b5c258bf248a7eef83fae15eef6e"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "c6730a49c653509afdf879f642c5814ae7c8aa8a3ed453ce748be7ae1f31449e"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "3e23bd764bfc1e6e3d1210d69539a53b764e1397690cd02f453a513ceafca1ca"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/spatial_rank_seven_right",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 834,
+          "sha256": "1781dcc298adff49ca038098522973503d3a4a1eafeba3e48ef68b3b840b3c14"
+        },
+        "plan.json": {
+          "bytes": 2670,
+          "sha256": "cf3bb4c0b10cf2911664efa51b4d4d813529c91e2460b30f183ca165c093c099"
+        },
+        "kernel.ptx": {
+          "bytes": 13380,
+          "sha256": "86eee3e8bf8a7f518d6d68ac7c10c9a0cd9676dfdd6124851b23cefb14db8e0d"
+        },
+        "kernel.ll": {
+          "bytes": 20205,
+          "sha256": "c7bbbb3d817bdf986e096f61501dab250ad98bfbe5cb5ed012d66f51d5dbd255"
+        },
+        "kernel.mlir": {
+          "bytes": 42167,
+          "sha256": "a479fda36891fd3924ea31ecfcc9954ed9453b39d2e3ecb2d24449123754b766"
+        },
+        "kernel.cubin": {
+          "bytes": 10536,
+          "sha256": "4b81c5c7ae0bfbc45c00a5b52bae45b3f347b647d69744bc09d0cbda2165619c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1055,
+          "sha256": "f0a01e308f24fd4a566a8d562a82e1b7f61cd0c38e2da21c36d7537fc9d44e14"
+        },
+        "inputs": {
+          "bytes": 2906,
+          "sha256": "c60bfe183a1c4c5453c030a9721729aac4499242a278dee5d7afd790d407abd2"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "542b2e2837aaf173cdd64c8f2ad32044f667dc6db189d6c137848b32ff981c46"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/spatial_rank_seven_left",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 833,
+          "sha256": "614f9e629baaa098f0e7e243bb6142e8eb33beb61baf92ed71d60d782efb163e"
+        },
+        "plan.json": {
+          "bytes": 2670,
+          "sha256": "cf3bb4c0b10cf2911664efa51b4d4d813529c91e2460b30f183ca165c093c099"
+        },
+        "kernel.ptx": {
+          "bytes": 13380,
+          "sha256": "e35ef25e156dcfe0495a43dd285a4a50e056584fd92f9f7f0c7666646b9bc4b3"
+        },
+        "kernel.ll": {
+          "bytes": 20205,
+          "sha256": "906b88a311f7e4af17321161566e6a2bb2b9d95ca4517accce8c11dd2ba6662b"
+        },
+        "kernel.mlir": {
+          "bytes": 42166,
+          "sha256": "baebf0b5f5537d57854cc0dff03c665a4fa4ccd9d946f9bca371e19068279725"
+        },
+        "kernel.cubin": {
+          "bytes": 10536,
+          "sha256": "4b81c5c7ae0bfbc45c00a5b52bae45b3f347b647d69744bc09d0cbda2165619c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1053,
+          "sha256": "cb2bcaaf263a121233c4b24e79a97a0f6f935a559b7dce5bf5ab628827bdb28d"
+        },
+        "inputs": {
+          "bytes": 2906,
+          "sha256": "dfa96526a501fddf13adbd77af5a1a3f146f67f609b2a03eabcfe4e5ac1ce92d"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "1e8b08a07e6bbb4fdd9837465513969c7a048efb1a002b3eaa3d12d37669c2ed"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/spatial_single_use_view_chain",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 992,
+          "sha256": "c8579d777dccf25c6f434c0b928487cb8dbb66a71847f34773eaac79f458f101"
+        },
+        "plan.json": {
+          "bytes": 2670,
+          "sha256": "cf3bb4c0b10cf2911664efa51b4d4d813529c91e2460b30f183ca165c093c099"
+        },
+        "kernel.ptx": {
+          "bytes": 13380,
+          "sha256": "86eee3e8bf8a7f518d6d68ac7c10c9a0cd9676dfdd6124851b23cefb14db8e0d"
+        },
+        "kernel.ll": {
+          "bytes": 20205,
+          "sha256": "c7bbbb3d817bdf986e096f61501dab250ad98bfbe5cb5ed012d66f51d5dbd255"
+        },
+        "kernel.mlir": {
+          "bytes": 42172,
+          "sha256": "daa77e968a3bd9f7638a5a409ccc310990f130f660f2621230aede6398ff5d04"
+        },
+        "kernel.cubin": {
+          "bytes": 10536,
+          "sha256": "4b81c5c7ae0bfbc45c00a5b52bae45b3f347b647d69744bc09d0cbda2165619c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1065,
+          "sha256": "5f78f98a153c40dbb49fad4681717a627f2a16c1dd4b3691063439d42c212b23"
+        },
+        "inputs": {
+          "bytes": 2906,
+          "sha256": "3d03898e7d334e7e8e3ab6437f93c26dac1fd13a66f1a0f4c77779e3df537f46"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "0484d6b0aff11fabc929f8edbe9a06ac983f3381b127b50b085cd589c97f99a6"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/temporal_full_shape_normalizer",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 560,
+          "sha256": "20ef7938e640486a6c804ebbd4500d8f55add9a4cfc954dd1536eb473fee603d"
+        },
+        "plan.json": {
+          "bytes": 2660,
+          "sha256": "fb4f0cb2cc541eed343d881a97cacdd34a081deeed0a199bb3549e8b960230e2"
+        },
+        "kernel.ptx": {
+          "bytes": 14044,
+          "sha256": "174c20fdd2d528293b53cae61100afbd63eb0cc155fc14ee0cccd98019690908"
+        },
+        "kernel.ll": {
+          "bytes": 20628,
+          "sha256": "a63de492a37ee4e6cee9375d7b353e251c15bc08c0577cb7a5dcac23045f3077"
+        },
+        "kernel.mlir": {
+          "bytes": 41486,
+          "sha256": "8352f663eff77551ca31cf44a8e19348a81a1722dd9141bfe7f54a5f603048f7"
+        },
+        "kernel.cubin": {
+          "bytes": 10664,
+          "sha256": "876575f6fac57be5063f17ac734ae6498a55ae73a0e2d8d39688ed1816dc7845"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1067,
+          "sha256": "7e799670f93461208ce75ceae9221287877b430b1ad3c40808dbd8c7b031f103"
+        },
+        "inputs": {
+          "bytes": 3610,
+          "sha256": "f62aace99b80a8d1f96f37dedf462526badf9ad4ba006a52475a096d0cb08f32"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "4309e82f222e2b327f2755d8cdd045de49e9aea3bf384bb0f0dbdf482bb2326c"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/temporal_signed_and_infinite_normalizer",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 192,
+      "artifacts": {
+        "model": {
+          "bytes": 569,
+          "sha256": "4661f1600b439aa47c64ca7efb2043c0814cff1ce9802bbabd435572a5e62d3c"
+        },
+        "plan.json": {
+          "bytes": 2659,
+          "sha256": "aca4569115ff32df1df226d0a7690f9ca268c117263a4c6d10c163b1807e5d6f"
+        },
+        "kernel.ptx": {
+          "bytes": 12871,
+          "sha256": "e3cecea25c4703b17a2ce425d580b1695897e2729e41215083f9ab77bc1f8324"
+        },
+        "kernel.ll": {
+          "bytes": 19788,
+          "sha256": "af3be76e6968aa51c6703a1a5a60858492bf5f079b716be5382c2ecbaf5deba0"
+        },
+        "kernel.mlir": {
+          "bytes": 41043,
+          "sha256": "2a6be65989d04bc1a09c5579d61caf62947cbb38ccb06aadf429e3d1bc8cc936"
+        },
+        "kernel.cubin": {
+          "bytes": 10280,
+          "sha256": "46991dc0b50203cc01ea88f82eaa638594e735044d16a539190f06121c643750"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1085,
+          "sha256": "12fd15034b2ef474c2a456a646aa5ec8349e4cbb017d7c3160d54775673591f2"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "387f67d0db302fb0df66b440b5535f7e0d1f9178a2eb8193053ade40936e2b1c"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "7450bfc6cc598be0c107f15a52afb16128256cf4c30aae9d1d1a9dd0f59a4560"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/public_locations_retained",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 885,
+          "sha256": "81c593b25423579460a47b503695065d8c83a1c618491a8b0211befe463173f7"
+        },
+        "plan.json": {
+          "bytes": 4826,
+          "sha256": "9f7d3069d22f0d59e50011b0475e9b187f55a11cdc4f320eb7210fa9c1baff84"
+        },
+        "kernel.ptx": {
+          "bytes": 13793,
+          "sha256": "46b9d75c18685370a9cc6dd8f069255b925951a64921de2e8781d7ce327392a6"
+        },
+        "kernel.ll": {
+          "bytes": 19891,
+          "sha256": "18215069e63c8b703f1ff67f80071e717787f4a3e9f88d0d40cdb2d2f4a078ff"
+        },
+        "kernel.mlir": {
+          "bytes": 36441,
+          "sha256": "0bcaacb80f6812b8cb1c364da7565925b987d4205bec5c55d427cd4eaba9bcf9"
+        },
+        "kernel.cubin": {
+          "bytes": 13416,
+          "sha256": "e41fda6f57ac042ae077eb8747243eb23cf8ee0777daa63262ef37750bc4e2fb"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1057,
+          "sha256": "7cd7cee389afc9b923271c0925f7e24c88c569073612c51cc823050da1f11234"
+        },
+        "inputs": {
+          "bytes": 2906,
+          "sha256": "83ef763861066463d518642aeea8b2cc1a38979aeed433cedb45bc0f2c7e6319"
+        },
+        "reference": {
+          "bytes": 1428,
+          "sha256": "13ac1f3896f33bca97a79be16875005dc777249d530d181d48543a85b8d14caf"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        },
+        "value_6": {
+          "bytes": 56,
+          "sha256": "302703aa0364a4367dbdbde6100b1553441d6f40892b03fd8117d9562e64751b"
+        },
+        "value_7": {
+          "bytes": 48,
+          "sha256": "408b8712784745056b7df345e11f89b6799ba73660450b74c7727ea05c86a846"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/public_division_retained",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 1728,
+      "artifacts": {
+        "model": {
+          "bytes": 597,
+          "sha256": "8f31cd981174eaca5e048b84a715832c4e86afd6a03898cfeb73cccb7a4781b6"
+        },
+        "plan.json": {
+          "bytes": 3803,
+          "sha256": "7aaec2c3adbcf8a7bb2b212a4b8d1937c450dfdcd7a1761a4c7efe4009cb4c41"
+        },
+        "kernel.ptx": {
+          "bytes": 12809,
+          "sha256": "84d19652d178ae1187c935986714f789d23eb15f18febbeac67e79f038dc9042"
+        },
+        "kernel.ll": {
+          "bytes": 19013,
+          "sha256": "c0072fffcc5b04d840d6215408219a8f068732d5d5e87b47d8cab6828eb066d0"
+        },
+        "kernel.mlir": {
+          "bytes": 35038,
+          "sha256": "7d30b8478ef5630fd2c1e3cc0441ece0d07cf110d3bd8db887239fc93f97c4ee"
+        },
+        "kernel.cubin": {
+          "bytes": 11944,
+          "sha256": "21ea74e4001e00de004cb65f99ebea76883772bde96d02355989ff9f5d277d91"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1055,
+          "sha256": "5cbed691bd28d9cba12405fc602453cdc183f0cbca17f61a51b37762ea59aab5"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "c2d52fdd56c44244567251dd0aebb0fcc63b7419f01d1c528fe565b402ae2131"
+        },
+        "reference": {
+          "bytes": 1414,
+          "sha256": "62009018fde699e902d1a7442fbf9203b70ff58f6876d4a70496c31b3cf3702c"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/division_extra_consumer",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 1728,
+      "artifacts": {
+        "model": {
+          "bytes": 642,
+          "sha256": "2306911cb73e1ea4b6fd0cc2254df92168a1c179f497e57adc63241dd598570c"
+        },
+        "plan.json": {
+          "bytes": 4384,
+          "sha256": "560ac958c52e5de369d6b1ec81967a8d6a67b433cf078dddede7238fa56b8938"
+        },
+        "kernel.ptx": {
+          "bytes": 14172,
+          "sha256": "7f0d06e4d6b748dde2c7da1678d7fc9ce60c460fdd51d25e25351127fe54822e"
+        },
+        "kernel.ll": {
+          "bytes": 20860,
+          "sha256": "c30c694fc0c20103812afb87ae905619d0d98fb179d4690030b8e717326230d0"
+        },
+        "kernel.mlir": {
+          "bytes": 39307,
+          "sha256": "d44339f5512506be57f615d3c8179e9bcd85737d0a493d812e9ea54979304b6d"
+        },
+        "kernel.cubin": {
+          "bytes": 13672,
+          "sha256": "4006a4101362055be718e9c237738e2ea8cbbef9232ad83b8ee7db345f1d5363"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1053,
+          "sha256": "04b6c517af79817918308cfce1a71b93c4e12aed952b916d18151e16f4d93020"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "7dac59e1dc2e805c7d5e117a5f97cc30120af2d3d4cff02c3eeb245751c3665f"
+        },
+        "reference": {
+          "bytes": 1410,
+          "sha256": "18caf5ed16701a2a48f8bd4be758d192c76e4a067b0bb1eed0d8e744f21e9107"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/addition_extra_consumer",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 2304,
+      "artifacts": {
+        "model": {
+          "bytes": 934,
+          "sha256": "4905c74082753b65927827c5d581c4b047d20f0f03ab0d1b81743207efd788da"
+        },
+        "plan.json": {
+          "bytes": 4806,
+          "sha256": "1fab55a7d45fa22ca90f0d952a33ac7af223b849cd9a8b74e80c130ba9532497"
+        },
+        "kernel.ptx": {
+          "bytes": 14252,
+          "sha256": "99ae87ba67ca40435977448c71e818d97bb45d76c982ba00a9c620de010d2df2"
+        },
+        "kernel.ll": {
+          "bytes": 21240,
+          "sha256": "14c2a47cc0cdf318effd9ee64bb02b1ff8c8c68e58cb93d1f0fc5cdac3a4a754"
+        },
+        "kernel.mlir": {
+          "bytes": 40433,
+          "sha256": "96a3a172c02b06653a031244fa1a12908d8d3b9c3daccf23c109ce7084fa193e"
+        },
+        "kernel.cubin": {
+          "bytes": 13672,
+          "sha256": "f63a9650af71ed36f6129be26cbab5edf5f176405b01e9681bab9b8785747157"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1053,
+          "sha256": "2df3c91a0fd868e12d0a81ebc41461f65285ca3b41503ed87757dd40050c10a9"
+        },
+        "inputs": {
+          "bytes": 2906,
+          "sha256": "bd77dee042dd5e6d8f453e57419d8a44c10324c70f747b30ea80d6c03e61c541"
+        },
+        "reference": {
+          "bytes": 1410,
+          "sha256": "2d7531e07941b2cff75cc40be3d2f6b0b73f68a89d529986d4cfe6f138df45b8"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        },
+        "value_6": {
+          "bytes": 56,
+          "sha256": "302703aa0364a4367dbdbde6100b1553441d6f40892b03fd8117d9562e64751b"
+        },
+        "value_7": {
+          "bytes": 48,
+          "sha256": "408b8712784745056b7df345e11f89b6799ba73660450b74c7727ea05c86a846"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/transpose_before_add_not_absorbed",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 633,
+          "sha256": "2bd9ad50e5fc8a6f9abe3d91ebf4c3911b701b0839ff74b1e6ab422caeab903f"
+        },
+        "plan.json": {
+          "bytes": 4356,
+          "sha256": "2c1c719bdf35536d0ce3b14a854be354700b26eae137a51a1362a6cecb119960"
+        },
+        "kernel.ptx": {
+          "bytes": 14120,
+          "sha256": "f2183bca589057287a5b21b16960fd3c001921d045c3c08eba2f1f0c92920ec7"
+        },
+        "kernel.ll": {
+          "bytes": 20216,
+          "sha256": "2a70ec17eedf6209ed2085aaff5c4b171bea64f1637ef32fe386d93d6d7267af"
+        },
+        "kernel.mlir": {
+          "bytes": 37508,
+          "sha256": "10ff716e5a1855fc38a32556bf3c800d3a595dc206e35e360dbb01c573e8570d"
+        },
+        "kernel.cubin": {
+          "bytes": 13672,
+          "sha256": "f02c9a356f91deb2a6a08cc7fe28b3b3d679da41b0d9e373a70a74523a91b25c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1073,
+          "sha256": "e110c353dfbe980c381dc24ae7b5f8d3e537ce6c5c2ba8ba06d526f5bd53b775"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "3f9c5b7db3d1a62800884a545e92b904a6b37c2b3fa9f7e854f6ad826672a1f2"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "9165615f2ac33065d5d6bdf30ad5f75a547e65948d913efe6d5e730fe6bc27ae"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/transpose_after_add_not_absorbed",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 630,
+          "sha256": "79c1a6463c6a3c4a0043c09b450017e9372cfcffcea1efc5fb7702c66254ac88"
+        },
+        "plan.json": {
+          "bytes": 4356,
+          "sha256": "cc89d9baa977ecb336d76647a64dce064494a0ca23a61685d581d7feaa47789e"
+        },
+        "kernel.ptx": {
+          "bytes": 14120,
+          "sha256": "1ae3ceebcf67dbcb40152b868f5c48823f39c886b55d63d43096ef3e77719d79"
+        },
+        "kernel.ll": {
+          "bytes": 20216,
+          "sha256": "ed04d03fee93d669e4d4f957e90590d4fc6bfe51c572c0e3df52d8a0c516d630"
+        },
+        "kernel.mlir": {
+          "bytes": 37507,
+          "sha256": "164340c10e1b456b796202d5e0bdd4a4e2ba8a11074083d9529f2f0b427bdd1d"
+        },
+        "kernel.cubin": {
+          "bytes": 13672,
+          "sha256": "b2f876bfd0853c239dea6a879591f8b7ff158441caf33d9a42cf6f304401689e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1071,
+          "sha256": "79c99ffccfd6831de444007f12ee5ba0443b9a3008eab728d5186a3661b44d3f"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "ff56daba3f27c263ff88136c81a973e582f8c339a85241ce6379edad8268948d"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "a3b0dee62cb10ef83276c7e6dbc599ffd28e9cd30ec5d109d0ea7e2fdcfa2410"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/cast_before_add_not_absorbed",
+      "status": "compiled_only",
+      "dispatches": 5,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 650,
+          "sha256": "a4d5036325e5c9306096f6045f930b46c880e69e97373c86cb43397e94a403f2"
+        },
+        "plan.json": {
+          "bytes": 4905,
+          "sha256": "48065864b3f7a9a826c76937cb048ca825d90b28d72a9a10ce9cc0727e14c442"
+        },
+        "kernel.ptx": {
+          "bytes": 14680,
+          "sha256": "b890297f07ec7a97c99af900b8bc3fcb73df3a99de9eee6cf87a165ea6a6404c"
+        },
+        "kernel.ll": {
+          "bytes": 20431,
+          "sha256": "f4e956fefd2d914e2ed49deab41bf17e23fd6e84c732775d4d9f2d2812a49ef4"
+        },
+        "kernel.mlir": {
+          "bytes": 36768,
+          "sha256": "0423f504e3ff5bd85af26236b75b3fc0da5521d8ffd6e7f97c6ab6917a51d886"
+        },
+        "kernel.cubin": {
+          "bytes": 14888,
+          "sha256": "50db09b794da5b64883e1f000211b8ade04e5c567b14a4a30666b33b93317362"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1063,
+          "sha256": "15a408c99b7f4ffb651597073ff515865c2e6e3c3b46af651de06d6c337d7924"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "549552d68f9d2ac4163d0e9509f055c07e9e110bc1a9a7a4eba50c03c2b94d31"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "786e55418dbccf8194830a86616ab07330a913444db7e4296d4be3dc4f4235ef"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/cast_after_add_not_absorbed",
+      "status": "compiled_only",
+      "dispatches": 5,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 645,
+          "sha256": "cd7345d82715d8e2cf904bc780bcb0742ad6a436df49e10a52dbc96bbfbd228f"
+        },
+        "plan.json": {
+          "bytes": 4905,
+          "sha256": "cca9e0ec5c5ba73c3770e87c8f8cc901c4d6defa5a133d757b023cb881b7dd07"
+        },
+        "kernel.ptx": {
+          "bytes": 14680,
+          "sha256": "35ca85c769dafcbc24a5fc4b1ba77d8e7fb751db37026c4ee41f29246d902df6"
+        },
+        "kernel.ll": {
+          "bytes": 20431,
+          "sha256": "d8c08e8a5a8854eaab8ff9f3012c7d0434a6bfce6222dad9914744257ab77d08"
+        },
+        "kernel.mlir": {
+          "bytes": 36767,
+          "sha256": "a3521afbd81aad082a80415e67ea3951dd224d19bdb61f200edbecb0c9fa2775"
+        },
+        "kernel.cubin": {
+          "bytes": 14888,
+          "sha256": "e32dd3c0aa058142405c068f8eaee44b7e44d5581dec0b50aaae064a8dddef29"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1061,
+          "sha256": "67e05b64b00a96ac7d8a45885cfc07e2586e8cc00551f703f548778e3b6e501a"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "6118d19c163ec9b861563467ebc6ddb874f78e7a715092fa36f3123d01951b0b"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "5532a4a58380faed77c755d5c211304f66d584a4a9ace688a43a07e2da40853b"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-msda-offsets-tests/reversed_division_not_misidentified",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 1536,
+      "artifacts": {
+        "model": {
+          "bytes": 565,
+          "sha256": "1ed944286763ff65e7d058f986ca3e0fe87e31b05bafcef2e3f28a89c012273e"
+        },
+        "plan.json": {
+          "bytes": 3785,
+          "sha256": "d2c1178c0ef5ebe95c3a34f8ee6b0f6aad4fdd8f4796ca77cc2ae0ca61e201bd"
+        },
+        "kernel.ptx": {
+          "bytes": 12810,
+          "sha256": "c07052fe8b64630a180f78dc785379503d3ab4619ff4a263220ee2ad4398ab6b"
+        },
+        "kernel.ll": {
+          "bytes": 19013,
+          "sha256": "e8303249c40629215cab4a5b9c9756e23fada1a8ede6421328a62622af14cd50"
+        },
+        "kernel.mlir": {
+          "bytes": 35049,
+          "sha256": "88ea93da2c1734e5b019bf435e293dd74318ad86283e46c6af4986842f20b16d"
+        },
+        "kernel.cubin": {
+          "bytes": 11944,
+          "sha256": "c831facc9303a8581423c029ce3ef1f949c39f62380c8d4306387cbc46bcebcd"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1077,
+          "sha256": "3d6f34c6a21e4580a6948adde6c944565eb8b7575e475eca3ee3d96a5ab8e789"
+        },
+        "inputs": {
+          "bytes": 2858,
+          "sha256": "9d1c147e12c8666cd02fc6bd52af8d9a6e311d3b95b9ad5c986036db6638efac"
+        },
+        "reference": {
+          "bytes": 400,
+          "sha256": "354c93aeceeab3a01b1c38bbc4bd02c735fdc35ada5596b4693a8b2c5b1a89f2"
+        }
+      },
+      "constants": {
+        "value_5": {
+          "bytes": 32,
+          "sha256": "cbfcc322316df06a3a565fd59d483ebad947d8c9dd7edd76abf4f9e155bb7cf9"
+        }
+      },
+      "reference_description": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+      "reference_versions": {
+        "torch": "2.0.1+cpu",
+        "onnx": "1.21.0",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-scatter-legalization-tests/full_ordered_identity",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 289,
+          "sha256": "0c7402d74d4e89a048dc450b53a8fbf8c1d6a45ab914d51e1ecfacdacefce62c"
+        },
+        "plan.json": {
+          "bytes": 1576,
+          "sha256": "58984762ec8e6c24c1614d7a51f3bb02e2e00c30f1937298b6f9dcfc245223aa"
+        },
+        "kernel.ptx": {
+          "bytes": 948,
+          "sha256": "d8d13fd2be127d4f72596742b68f3e8dfb6ffc816c6f4944dba153443f6b1843"
+        },
+        "kernel.ll": {
+          "bytes": 1456,
+          "sha256": "b666a1f9a703d9ae6cd1527ff685967c9a69adb10fd5366f8487562fa8632ca0"
+        },
+        "kernel.mlir": {
+          "bytes": 1278,
+          "sha256": "d75093539dec57b8bec5b83e7346b833bde925ab0e8a98ffe62dea3ffbbfc672"
+        },
+        "kernel.cubin": {
+          "bytes": 2728,
+          "sha256": "9c7fac6fe2b5812e2b78e386380751339431d0a99b596d65524e7041e8294541"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1065,
+          "sha256": "26d385f7647262f04c689a23b37e4c7957cc8969b1df74a500dbdbe6d4bae3e4"
+        },
+        "inputs": {
+          "bytes": 586,
+          "sha256": "b59cbb9870dfeaaa7f611ce5581545f26309aa4a5610c2d948d40e330935499c"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "04a0a5912b917dcaef3af2b65483036eabc8f1ca83f40697942dd9c69ba3fc6f"
+        }
+      },
+      "constants": {},
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/full_ordered_reshape",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 282,
+          "sha256": "5f168d60e4bce5346030acb3cbd0e68b7a54bb444afa9e95d88893ebcce7b24f"
+        },
+        "plan.json": {
+          "bytes": 1777,
+          "sha256": "d62b90b8247f4d44a75a3e7bf9c3407083fd22f8e620f14bbac96c70fe0cafbd"
+        },
+        "kernel.ptx": {
+          "bytes": 993,
+          "sha256": "aa366ffde1b7bf90cd65b6e6985e57f348fb02d351c85c5c55b0b51240f7e52d"
+        },
+        "kernel.ll": {
+          "bytes": 1466,
+          "sha256": "3fa17b3e78df7ca7387ec1a79f8ccea07d3a52680870354a47e4d0efd3508f86"
+        },
+        "kernel.mlir": {
+          "bytes": 1295,
+          "sha256": "d570ace94717e7b57097663c12da8a822b596faafa892678221a1855fbd43180"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "c81cc5ddfad2b94b5fb84b488a185622a7cd3de665b47f3f7e5fb69034cc0469"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1063,
+          "sha256": "5b84f48fddc8eda3024e52de0c95cafb7bd57f1eecb2218b4879342fa8bd1cbb"
+        },
+        "inputs": {
+          "bytes": 586,
+          "sha256": "ae39bf7c937bf6c78348c5916286e8ad881418d52d6217e89a51d423ae24e7e2"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "04a0a5912b917dcaef3af2b65483036eabc8f1ca83f40697942dd9c69ba3fc6f"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 24,
+          "sha256": "5ea2e094aa88877a42f6f9ae790cf65e55bf777d727b27ed30552d8821443df9"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/full_negative_indices",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 283,
+          "sha256": "315ce7e6229c658c704f49697226834343835eb5d06059d3272e0557e5a92e4d"
+        },
+        "plan.json": {
+          "bytes": 1777,
+          "sha256": "d62b90b8247f4d44a75a3e7bf9c3407083fd22f8e620f14bbac96c70fe0cafbd"
+        },
+        "kernel.ptx": {
+          "bytes": 993,
+          "sha256": "aa366ffde1b7bf90cd65b6e6985e57f348fb02d351c85c5c55b0b51240f7e52d"
+        },
+        "kernel.ll": {
+          "bytes": 1466,
+          "sha256": "3fa17b3e78df7ca7387ec1a79f8ccea07d3a52680870354a47e4d0efd3508f86"
+        },
+        "kernel.mlir": {
+          "bytes": 1296,
+          "sha256": "cd1b299649c11965402cb440b3f117a473afce4ce975913ca7e2c64202e57be1"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "c81cc5ddfad2b94b5fb84b488a185622a7cd3de665b47f3f7e5fb69034cc0469"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1065,
+          "sha256": "19fa74cb1cbf5b5931b1cf194840b0c533b31a1696782c8d8d83f3cd6e15145d"
+        },
+        "inputs": {
+          "bytes": 586,
+          "sha256": "ae39bf7c937bf6c78348c5916286e8ad881418d52d6217e89a51d423ae24e7e2"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "04a0a5912b917dcaef3af2b65483036eabc8f1ca83f40697942dd9c69ba3fc6f"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 24,
+          "sha256": "5ea2e094aa88877a42f6f9ae790cf65e55bf777d727b27ed30552d8821443df9"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/full_permuted_retained",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 284,
+          "sha256": "030b328efe74f69aa9f104771f6fd592b2b6235c27043b002e0beb1fcb2f15bd"
+        },
+        "plan.json": {
+          "bytes": 1805,
+          "sha256": "6cf4a8b8142c6c1dd4c0253748684c399ae7458c8bdd919347fbec4ace7de004"
+        },
+        "kernel.ptx": {
+          "bytes": 1703,
+          "sha256": "0d8050f36f9dd25e725513e03d887e909643e1e19ba78a5938d1db1cfd0b84de"
+        },
+        "kernel.ll": {
+          "bytes": 2268,
+          "sha256": "c0fe051e6cf77d4372b8188fbf9391e9789d04b308d08baa9034ecb230472e05"
+        },
+        "kernel.mlir": {
+          "bytes": 2341,
+          "sha256": "ece577646465cf59da7657c3bde25b1973934f6f92753dd43f21c11ab5d1103c"
+        },
+        "kernel.cubin": {
+          "bytes": 3384,
+          "sha256": "5cf4de459e0769a587bc4762a071d0de32a5c625036530ab05a5b7ed25188a6f"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1067,
+          "sha256": "c91ef51ba5dc397255161fc23489c328f8b77a6a8bdc7f37036e892131d4c9b0"
+        },
+        "inputs": {
+          "bytes": 586,
+          "sha256": "ae39bf7c937bf6c78348c5916286e8ad881418d52d6217e89a51d423ae24e7e2"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "68024266272f77453e50cd39bb250c42959321c8be05f821f1e40e5b2f53a817"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 96,
+          "sha256": "7e8f988c03927f23858c5beb033b57b00333b1dd2ce2fde86b2972c3fd192607"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/partial_retained",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 230,
+          "sha256": "2737aa69599f745b48223cb1e30ad7fc0a937846c30a26ea9f4a04bd3d89f648"
+        },
+        "plan.json": {
+          "bytes": 1805,
+          "sha256": "b62bcf6ca2d8ced74d82336b29e687d40fbdefeacb843a39c91e6386b8b55805"
+        },
+        "kernel.ptx": {
+          "bytes": 1748,
+          "sha256": "6f479ee6aacbe652afe7e21f3e5ddaf378baf6a45313c39f3287c6ef8a106eea"
+        },
+        "kernel.ll": {
+          "bytes": 2271,
+          "sha256": "599d0351065bae09125f10972013be9c947051a035bb34518e170455bee40f46"
+        },
+        "kernel.mlir": {
+          "bytes": 2338,
+          "sha256": "8ac800875055e31a3f3a25b10b4647d3c418bf5eaaf0f59a5d8980aebc6d5935"
+        },
+        "kernel.cubin": {
+          "bytes": 3384,
+          "sha256": "f49bd207915c9f1438566b0596273a7aeec5324961c6bd11d5fa68ca3b62eaf9"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1055,
+          "sha256": "7e42f73e53f28bb0d9872b1dbdbd7533f9c858a5acece3cd82e34a39ae9d9af5"
+        },
+        "inputs": {
+          "bytes": 562,
+          "sha256": "9d348fa4d81ad29f83aa114e40024bbbfa535d26e9ba426720760db62ddcb543"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "b2d00ef927c59a59fdc3db851a54093654618a7118aa2c601c38346ae8aaadf9"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 48,
+          "sha256": "d923b16e3b3effbd16a515430ce1d2a3f0862946330dd9859acfaa1b0b219402"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_complete",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 620,
+          "sha256": "8d1c21fc22c0126a7b5b6c315f47c88f47db2909637b504a24edce8e6ad87fdf"
+        },
+        "plan.json": {
+          "bytes": 1821,
+          "sha256": "51cc2cd1ce57704693f2ada77616b5aebeca6fb986333eb6ac103815f6ee95e2"
+        },
+        "kernel.ptx": {
+          "bytes": 1046,
+          "sha256": "553cb79269b3572fecbdb2ca9ddddb3becc2304fd5810369af0b9f698ebe2652"
+        },
+        "kernel.ll": {
+          "bytes": 1679,
+          "sha256": "1e79b76b6e517033c0922b5ee8b4b81f298aee15f0f0f5d873ce1119d9040de9"
+        },
+        "kernel.mlir": {
+          "bytes": 2357,
+          "sha256": "370108233757e426ede5df84ffe8df0796c2caf74a671efb017b8d11bf93e804"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "ba659071b7680530423d5ef67c55d70bb612c226c604cd29f0f08f2c4497dc2e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1071,
+          "sha256": "d21c6b1c5116d58e3c4e28d954ca9d60690110d640fd62dd198114c20df196c6"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "fdc85cab8d746f8400043128b2c0a9f0e1ed58c880671eae22835a50ad519c94"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 32,
+          "sha256": "7534313a8d2422c4ed953633dab4b9d16f47c57196c0103a8cce259409dfe549"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_negative",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 620,
+          "sha256": "d0ee62d8cbd735ca1fae85750e2bc9ae84a130705f16e75c672affe4f1143b2f"
+        },
+        "plan.json": {
+          "bytes": 1821,
+          "sha256": "51cc2cd1ce57704693f2ada77616b5aebeca6fb986333eb6ac103815f6ee95e2"
+        },
+        "kernel.ptx": {
+          "bytes": 1046,
+          "sha256": "553cb79269b3572fecbdb2ca9ddddb3becc2304fd5810369af0b9f698ebe2652"
+        },
+        "kernel.ll": {
+          "bytes": 1679,
+          "sha256": "1e79b76b6e517033c0922b5ee8b4b81f298aee15f0f0f5d873ce1119d9040de9"
+        },
+        "kernel.mlir": {
+          "bytes": 2357,
+          "sha256": "f8979308307219227462dd15fa6afb9f5f028daa1587e583411b9994fb5c84fb"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "ba659071b7680530423d5ef67c55d70bb612c226c604cd29f0f08f2c4497dc2e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1071,
+          "sha256": "88b263f900d00ff2b66a942505f8f42fe44a322a7753af63017e22bd86748f58"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "fdc85cab8d746f8400043128b2c0a9f0e1ed58c880671eae22835a50ad519c94"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 32,
+          "sha256": "7534313a8d2422c4ed953633dab4b9d16f47c57196c0103a8cce259409dfe549"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_reverse_stage_order",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 631,
+          "sha256": "6037c04b7e04939b1ed402bde88dc0acd386819ecf2fb55e62db57bd6a341204"
+        },
+        "plan.json": {
+          "bytes": 1821,
+          "sha256": "51cc2cd1ce57704693f2ada77616b5aebeca6fb986333eb6ac103815f6ee95e2"
+        },
+        "kernel.ptx": {
+          "bytes": 1046,
+          "sha256": "553cb79269b3572fecbdb2ca9ddddb3becc2304fd5810369af0b9f698ebe2652"
+        },
+        "kernel.ll": {
+          "bytes": 1679,
+          "sha256": "1e79b76b6e517033c0922b5ee8b4b81f298aee15f0f0f5d873ce1119d9040de9"
+        },
+        "kernel.mlir": {
+          "bytes": 2368,
+          "sha256": "235d3b3cb2183d402e9dc996d30eba65909b2e9c69998281b598380a2eafbb19"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "ba659071b7680530423d5ef67c55d70bb612c226c604cd29f0f08f2c4497dc2e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1093,
+          "sha256": "3c566c31dfe3045d23c3b3a3079e6d1964b059d14d18f04d9c2e43d04700d5e1"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "fdc85cab8d746f8400043128b2c0a9f0e1ed58c880671eae22835a50ad519c94"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 32,
+          "sha256": "7534313a8d2422c4ed953633dab4b9d16f47c57196c0103a8cce259409dfe549"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_zero_source_eliminated",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 715,
+          "sha256": "845b4dc568e764b287b1ca025e4c8e66d3baae3c8af2fb910d5e8d25a527c3b9"
+        },
+        "plan.json": {
+          "bytes": 1622,
+          "sha256": "fb084706399e7d7eec3c7352ca41a70c9c0c80514485afbb23f3c8ac516170a0"
+        },
+        "kernel.ptx": {
+          "bytes": 1046,
+          "sha256": "553cb79269b3572fecbdb2ca9ddddb3becc2304fd5810369af0b9f698ebe2652"
+        },
+        "kernel.ll": {
+          "bytes": 1679,
+          "sha256": "1e79b76b6e517033c0922b5ee8b4b81f298aee15f0f0f5d873ce1119d9040de9"
+        },
+        "kernel.mlir": {
+          "bytes": 2371,
+          "sha256": "5d4565786a7c5f74e0275e55c8379d5fda81d55817fa4ecfdd539cf3806bdfb7"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "ba659071b7680530423d5ef67c55d70bb612c226c604cd29f0f08f2c4497dc2e"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1099,
+          "sha256": "37cf2b4b2d35f08a3b7c77bbb5e99623666cf45c243986f289636681faa35c91"
+        },
+        "inputs": {
+          "bytes": 288,
+          "sha256": "57bde35bba6c07eafc8a4a402f0d298c3b038bf3960679daa1c279679761e889"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "fdc85cab8d746f8400043128b2c0a9f0e1ed58c880671eae22835a50ad519c94"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 32,
+          "sha256": "7534313a8d2422c4ed953633dab4b9d16f47c57196c0103a8cce259409dfe549"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_missing_camera",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 468,
+          "sha256": "311dc2c17e01fd77dc7bc46500acc619febd371f5f3ff1c166659aa8de470604"
+        },
+        "plan.json": {
+          "bytes": 2679,
+          "sha256": "f0fa8356d04bd8997b9f1df49510ca6b71973778b0982da3d3204c5a89ab3fc7"
+        },
+        "kernel.ptx": {
+          "bytes": 3630,
+          "sha256": "52a5b698b6acf1559b4f9b71e9e374d5b0a383e512e2fa943b2a298afd309e6a"
+        },
+        "kernel.ll": {
+          "bytes": 3858,
+          "sha256": "c08763e85f08ca727404c3d82a8e15a6148e5ad985ac7b8b5966becb31f7e036"
+        },
+        "kernel.mlir": {
+          "bytes": 4290,
+          "sha256": "02ec12dbbc7a86301a9729000014bfa014fd13b15d2bf5d4bd77e630f7b87f97"
+        },
+        "kernel.cubin": {
+          "bytes": 5184,
+          "sha256": "7739515d5d1bd1d456e3271ee67de0b2fb6107f1d3514d50b4cdecdd6fe8ba24"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1083,
+          "sha256": "b0990c82c8e18d4ce5bcd71956283af7b8b69eeb42020c828a9b827825b6f190"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "dc5024bbb9029716247f4677a6c034bf6e83221d505a9068fc20cf23802e8892"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 96,
+          "sha256": "b138423ea9e58005590199cf34ff18f47e7ee76262887f91997940249349a6cc"
+        },
+        "value_3": {
+          "bytes": 96,
+          "sha256": "808409fca19a731a1fc216421513b8a53f286b2a25858a3f521f20b67c49e13d"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_overlap_across_stages",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 633,
+          "sha256": "24a1fa833694f77f7be988c6dccdae16f120af404e74470a69804b292040455e"
+        },
+        "plan.json": {
+          "bytes": 3258,
+          "sha256": "046ef68ae3dfcc6cd11d92c7a0d6335fe7e0421358645dfce595c7b568a45079"
+        },
+        "kernel.ptx": {
+          "bytes": 5130,
+          "sha256": "7e7f7d6c960b185a85471b3a76a26e156db8f159b9fbeafc57ef7db2af2079a9"
+        },
+        "kernel.ll": {
+          "bytes": 5397,
+          "sha256": "21b65371ad4aab5484ef7d8583a60f4308d45a3d89f287361c4639825d7d0959"
+        },
+        "kernel.mlir": {
+          "bytes": 6210,
+          "sha256": "8ab8a9a67a7ea4c0ba6de4ed4cee2b1469e301c5c4f86eeb14633b889a3ee245"
+        },
+        "kernel.cubin": {
+          "bytes": 6912,
+          "sha256": "fe5b380cb75e87f0c56066640d94f6068787a9acfa6221f5ef4101cd80287c18"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1097,
+          "sha256": "d389b63a85d07914a413dd536322ef2a69befe2143ba9128f3784955e59f43d1"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "2b48bb1da986790a6041d3c5dd3002797092094f254713daf32e96ab3cd76bec"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 96,
+          "sha256": "b138423ea9e58005590199cf34ff18f47e7ee76262887f91997940249349a6cc"
+        },
+        "value_3": {
+          "bytes": 96,
+          "sha256": "196717c00a2e748dbcb42a91a80d02c12d45ee4125bec19e09ac029968a2ad75"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_permuted_update_mapping",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 635,
+          "sha256": "fc87568cccf15a1fc242dba7500b237ab41b9ecc5bea44c40aa154188741f0c7"
+        },
+        "plan.json": {
+          "bytes": 3485,
+          "sha256": "9e9ae57dc7d076895db38523b1c815ed4d27cdb03436f3f9f08b71888ab89f11"
+        },
+        "kernel.ptx": {
+          "bytes": 5379,
+          "sha256": "28de254ac301c1fcbe0aa904d8af43ac18e267e42f178587693d86768df22526"
+        },
+        "kernel.ll": {
+          "bytes": 5397,
+          "sha256": "a97f9e2a30fd95e19a71d7bc1e7c20d754954dff998dddc501836365c44aab15"
+        },
+        "kernel.mlir": {
+          "bytes": 6212,
+          "sha256": "0c0286d8c6bc1656d0dd3ec52adbf1646996d7351564cc6401d7cf9503e3373a"
+        },
+        "kernel.cubin": {
+          "bytes": 6960,
+          "sha256": "fd01d39569101120dc063f958b34842219d67db28328ab12b586457ebc6ffc10"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1101,
+          "sha256": "fcf63cf837e9acf928c0ad269455b72735a33a3ee206d167beef8ae28e3b5313"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "51892bca4b7767f52378568920dc1025dbb818c23252da19c4e85eb746762e3d"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 96,
+          "sha256": "6d6aee57a9a765a596d6097118e83850a1200ea628fba6fb39becfc074dc65b7"
+        },
+        "value_3": {
+          "bytes": 96,
+          "sha256": "9eaac0504daf81fad757d9640b4b6e0b906c676b8f8dcd462733b9a1178828ca"
+        },
+        "value_4": {
+          "bytes": 96,
+          "sha256": "ed5c8335f0a43bf08555a271008ef7e70990bb3949f8793a18c92bed7f276de4"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_different_update_ssa",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 663,
+          "sha256": "c6dc558609836e8be8f7d6bd2eae00b8a8a32ff61b089b159de200a15b2faaf9"
+        },
+        "plan.json": {
+          "bytes": 3687,
+          "sha256": "7d5f0d4fc67077a6510514997731432af5e7930b7d5c98fcb9c95352a2efea90"
+        },
+        "kernel.ptx": {
+          "bytes": 5391,
+          "sha256": "65e52af59ee7996a4382aa6eb2574e40c3b914c90d822d15a5a065d621b3536f"
+        },
+        "kernel.ll": {
+          "bytes": 5397,
+          "sha256": "4c3b4f1e708af3238809303289f4ad4c6b993485c33e75614ff570f27942f9ce"
+        },
+        "kernel.mlir": {
+          "bytes": 6209,
+          "sha256": "12b8a154e268a4e96fcaf3abb00b405acaaa72c982f9714365ace7ce1f67b586"
+        },
+        "kernel.cubin": {
+          "bytes": 6960,
+          "sha256": "4f160e8c4431f73af51f308e6bfd850f080a6120b381fd0d6f4ed4364755ca37"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1095,
+          "sha256": "8332e25ea982be0c09b5832e4f4d2759e4eee70299000b0fab3bf571f24f4761"
+        },
+        "inputs": {
+          "bytes": 886,
+          "sha256": "1a05d539848c6b2bb11ea449b1a64943560c4a253205ff688193caef1504f3a4"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "05716d65a344e8b2f7d2816c016975111d1cad8a6733bf47525d28fb11a81bad"
+        }
+      },
+      "constants": {
+        "value_3": {
+          "bytes": 96,
+          "sha256": "b138423ea9e58005590199cf34ff18f47e7ee76262887f91997940249349a6cc"
+        },
+        "value_4": {
+          "bytes": 96,
+          "sha256": "808409fca19a731a1fc216421513b8a53f286b2a25858a3f521f20b67c49e13d"
+        },
+        "value_5": {
+          "bytes": 96,
+          "sha256": "196717c00a2e748dbcb42a91a80d02c12d45ee4125bec19e09ac029968a2ad75"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-scatter-legalization-tests/broadcast_chain_intermediate_public_output",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 672,
+          "sha256": "e22911a506b02a029e355bfd6387ab4b93db38aec1b14872aed7de9f224144e3"
+        },
+        "plan.json": {
+          "bytes": 3498,
+          "sha256": "e12cf71529f01a087afe0ed68b727dc7b6bfa75b9fddaab536ae17b293a6bf96"
+        },
+        "kernel.ptx": {
+          "bytes": 5391,
+          "sha256": "65e52af59ee7996a4382aa6eb2574e40c3b914c90d822d15a5a065d621b3536f"
+        },
+        "kernel.ll": {
+          "bytes": 5397,
+          "sha256": "4c3b4f1e708af3238809303289f4ad4c6b993485c33e75614ff570f27942f9ce"
+        },
+        "kernel.mlir": {
+          "bytes": 6215,
+          "sha256": "7be85765afc81ac655e2b382584ca454e0fc2c626f952e48a6812daac243a4b2"
+        },
+        "kernel.cubin": {
+          "bytes": 6960,
+          "sha256": "4f160e8c4431f73af51f308e6bfd850f080a6120b381fd0d6f4ed4364755ca37"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1107,
+          "sha256": "146d1645414deab11eb139940b64127dbefca313d3f81a91547e70393b5591aa"
+        },
+        "inputs": {
+          "bytes": 618,
+          "sha256": "4a0c925e6ff5b5f35dd3364dc89686561d83daffe13351bde43846e7088be325"
+        },
+        "reference": {
+          "bytes": 692,
+          "sha256": "7f3af68bd6596fe63032725e40471a6bad0d2b51f02e258585df83bf15177790"
+        }
+      },
+      "constants": {
+        "value_2": {
+          "bytes": 96,
+          "sha256": "b138423ea9e58005590199cf34ff18f47e7ee76262887f91997940249349a6cc"
+        },
+        "value_3": {
+          "bytes": 96,
+          "sha256": "808409fca19a731a1fc216421513b8a53f286b2a25858a3f521f20b67c49e13d"
+        },
+        "value_4": {
+          "bytes": 96,
+          "sha256": "196717c00a2e748dbcb42a91a80d02c12d45ee4125bec19e09ac029968a2ad75"
+        }
+      },
+      "reference_description": null,
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/matmul_bias_relu",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 266,
+          "sha256": "0258c36e8b15f12b6f337af62ee23082fe443f64ac83c9a3eacdf7396b27e845"
+        },
+        "plan.json": {
+          "bytes": 1813,
+          "sha256": "1614de7acbf5b5af0fa8fdf97c3a10b226ec3b1e6ff843f2485ff3bbe232e1bc"
+        },
+        "kernel.ptx": {
+          "bytes": 1944,
+          "sha256": "2ae61af6623dbf66069ae7f07c275c0b70d088d817ca8841586771326463c7f0"
+        },
+        "kernel.ll": {
+          "bytes": 2533,
+          "sha256": "0ea52af85fdd883d305fe7e1b2e67ece3de816835a92e578ddb24234918b0c05"
+        },
+        "kernel.mlir": {
+          "bytes": 3579,
+          "sha256": "37c7f3160dbae6552bc85ab1bbfe06f9635820b74e516e83db4cc591b299d443"
+        },
+        "kernel.cubin": {
+          "bytes": 3240,
+          "sha256": "3d3227a0538678cdf3d0b0ddd3e0d253c21ad72ed2dfd9d20d46c787ddb0f73c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1013,
+          "sha256": "ebc35d6abfb676cd75f44ec88611142240094bc071e962cf54da05b53e2d5d6d"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "09271f91dca150e017babd32bb3b7c7aa8eff50676b922858cc61c5295b497a6"
+        },
+        "reference": {
+          "bytes": 288,
+          "sha256": "7aaa92d8e759ed919e1acbb71b415fa35647cfb252de5f43c45f3d8453734726"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 48,
+          "sha256": "be8ab9773f9e88e1081b955b041dd0fad216cbbb07fa1f6dac8d1516e414a77f"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "adcea3a7c29f1e58e04dd753b381bca01cc50896b641aad1e5daa4b4bb6b0c66"
+        }
+      },
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/multi_consumer",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 285,
+          "sha256": "e68ec9d8663ed8190bb1772b3b4f2aeeccdfeccb56b77476e81ebdc912123e9d"
+        },
+        "plan.json": {
+          "bytes": 2312,
+          "sha256": "07ad67d40373b64b9e6eb464fbbdda921500fa1ea36fad33cb1c7d8fd1595be6"
+        },
+        "kernel.ptx": {
+          "bytes": 2845,
+          "sha256": "04ab36b998aecb032f61b66185ea95453a6c42ecfddc609b55b65abe7670592e"
+        },
+        "kernel.ll": {
+          "bytes": 3351,
+          "sha256": "15ef117c4a3095cbf01c391ca145750c0fe81e78e4d1c765446cc8a0a8229eda"
+        },
+        "kernel.mlir": {
+          "bytes": 4957,
+          "sha256": "33fca900d71246d7990fa9c5bc35594533b218e3ea477a7aa7e3f25fbdd4afad"
+        },
+        "kernel.cubin": {
+          "bytes": 4712,
+          "sha256": "938e6f5041c9f6c502aab37da26c759e1694c435c7ca006d419f23266c210ef0"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1009,
+          "sha256": "2087312fcd29e9b4e1a45d603caeb454ea16e81b648c9381f0cefb3be0ad587e"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "09271f91dca150e017babd32bb3b7c7aa8eff50676b922858cc61c5295b497a6"
+        },
+        "reference": {
+          "bytes": 554,
+          "sha256": "ca355be60b6a612784b0dc60dbd44c262f3930813b1570a52c8063fd21c63691"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 48,
+          "sha256": "be8ab9773f9e88e1081b955b041dd0fad216cbbb07fa1f6dac8d1516e414a77f"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "adcea3a7c29f1e58e04dd753b381bca01cc50896b641aad1e5daa4b4bb6b0c66"
+        }
+      },
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/conv_bias_relu",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 464,
+          "sha256": "03d8ceee30a917813a9cc5baccf4bd2a7b040406ab033b4dec2928f1ce2c347a"
+        },
+        "plan.json": {
+          "bytes": 1879,
+          "sha256": "ba0eaf990885a5452e5bcc5a3e50671314cc50d73b0f3e6e404772d52e0eb2b6"
+        },
+        "kernel.ptx": {
+          "bytes": 3181,
+          "sha256": "d02a423e5a5f684c74f8660fcdaafc780af361e17167f7ced58303a2acd5dad6"
+        },
+        "kernel.ll": {
+          "bytes": 3519,
+          "sha256": "77b9ec4bfe770b7f9b1e6f01be47420fb8344d93b0d84a34c12b8ccbcb473f2e"
+        },
+        "kernel.mlir": {
+          "bytes": 5534,
+          "sha256": "61b5e32ffdf95554d7f3755c91f3b2d45410765969acc3caf2cce2227faa1009"
+        },
+        "kernel.cubin": {
+          "bytes": 7848,
+          "sha256": "152216e72b376a6de4c317ee7d6658118195c61e78a37299c0eb8b57357d104d"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1009,
+          "sha256": "c5a9b2790d5bb51aecb64d6bed08200195442ca220f75aa47974957da8afe5c7"
+        },
+        "inputs": {
+          "bytes": 416,
+          "sha256": "2b1ed408d0d57844a8fe678f7b1c5e1ab81bce072242b411ce381a3abc129154"
+        },
+        "reference": {
+          "bytes": 496,
+          "sha256": "39fcbd0e742e1742e0c243b6afbb6f78662d6262e3d5279f23a4022e4a4120d0"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 216,
+          "sha256": "2350dd642aefe092c640637e452301144dd5b9ad0c62e286005c3f6101f0eb44"
+        },
+        "value_2": {
+          "bytes": 12,
+          "sha256": "54aed553ea21c9f16402cb46ff2414adbdbd5d63866177556b68d31e89e44c13"
+        }
+      },
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/residual_add_relu",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 177,
+          "sha256": "f4a808545cd0bd1c631d0059c748314c7cd83dedf5b50327d9e3d1c7ffc2f854"
+        },
+        "plan.json": {
+          "bytes": 1554,
+          "sha256": "6b1083017a01031ba91f70c5a47895ab0ee5ba6facb844dce09b532aaeeec32b"
+        },
+        "kernel.ptx": {
+          "bytes": 1228,
+          "sha256": "4153843b812e9b7a3a6a5f871015c7f50d92fc98b7c9cd1844f296f8c4c7672c"
+        },
+        "kernel.ll": {
+          "bytes": 1952,
+          "sha256": "44069abd32338ac496de95704ba67eb849077730502ad97aade3294698418313"
+        },
+        "kernel.mlir": {
+          "bytes": 2737,
+          "sha256": "9ec3508dd69ce36d8fbf87b2332232aae69557674ff14e78228aca0de571c465"
+        },
+        "kernel.cubin": {
+          "bytes": 2984,
+          "sha256": "7a01a1b64729c0a3b8b65da294f316100aed82287a2ad53c442cfae6d15a0e7a"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1015,
+          "sha256": "f5b1eeae1b990f0d5ee6a0f4a277a596dcc083de05658d451114f2e9592109b1"
+        },
+        "inputs": {
+          "bytes": 554,
+          "sha256": "4242594be4b2d7871668156f7ea637d538c750eaf12821543dab644e8fbf283f"
+        },
+        "reference": {
+          "bytes": 288,
+          "sha256": "b258632e6e4e773fd6a45772e5ed31928639e96df6bd2748cb6c6a597c43967d"
+        }
+      },
+      "constants": {},
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/softmax",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 141,
+          "sha256": "91e7de25fa4cc3fe101b5e18826319994661a515fe1e5bd8e47629d4ea525bd7"
+        },
+        "plan.json": {
+          "bytes": 1360,
+          "sha256": "9e819fc5e237ca24f5789abc8bf76fda9dd6b710f252ff1b4c10170842c153f6"
+        },
+        "kernel.ptx": {
+          "bytes": 3771,
+          "sha256": "e6f8ddb7900b9b7e2bea2249bfe7b455d9a251adb683534a7be1539582346054"
+        },
+        "kernel.ll": {
+          "bytes": 2967,
+          "sha256": "7b196d311714b78a2a9491f13243306e213067daf7377bf99308f048903b4433"
+        },
+        "kernel.mlir": {
+          "bytes": 3108,
+          "sha256": "eab0c34e829f0173ce7b27243da5e77b9c116baddb6ccf4116db7b1e4b546dcc"
+        },
+        "kernel.cubin": {
+          "bytes": 6448,
+          "sha256": "5d4309610bf5bd158f4828e13dc1331b8d9929a90dd0186b810e4e55209de282"
+        },
+        "compile-provenance.txt": {
+          "bytes": 995,
+          "sha256": "c520c05a6013c134cef6c3fef06b0b4a53fb23169141adbd53b32be60c349fa1"
+        },
+        "inputs": {
+          "bytes": 288,
+          "sha256": "7684826ac8a53cf585c485dd79337387b305c70f0a17112da09628dbcac8c767"
+        },
+        "reference": {
+          "bytes": 288,
+          "sha256": "90b1b7a2824e37778751f7dcf15af77fb4350b266162a33f4514da0cc80faa40"
+        }
+      },
+      "constants": {},
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-tests/shape_chain",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 692,
+          "sha256": "367446ee61b691e6aec214c23baedaa527b035c70f644af3e282aae633ce9a6f"
+        },
+        "plan.json": {
+          "bytes": 1592,
+          "sha256": "e40aa311c5c34070600a3f53a81ede7bcc0fa3889cfd28cc31b721b1e875d8f2"
+        },
+        "kernel.ptx": {
+          "bytes": 992,
+          "sha256": "a3eb54126711dbc8400a1cc392ea4729cb835c227ba19cbca12573a121edd547"
+        },
+        "kernel.ll": {
+          "bytes": 1465,
+          "sha256": "0d5ae2c56be8db44e44f94b0d771f5604c7e3b70af0c6c05d7bdd6a81d5e44a0"
+        },
+        "kernel.mlir": {
+          "bytes": 1264,
+          "sha256": "d6fd6fe0c1f360bf9d571d4218c7c8bdb5fa041743aedae51d4dd76d9af82315"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "6e7dbed02280eeaa882e5b452e6827754eb0867f34b634e240189208ba8713e2"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1003,
+          "sha256": "def79e34b2bd52724badaa53587c98efcb3861962c73ac3f231a0cc16d4f5b4b"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "e9717e63cabdc1232abd129bf81069890153807e9c00fecafc160d6ea597ce14"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "ad4d8e0b9898c33a8367f7f61a627d64745bee3f95553992473b74bae5af64f4"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "b38c612d3a2f2d9bd6f0e638bd328e6c24d1ae6d3867ffbd6c69a98d19b3b292"
+        }
+      },
+      "reference_description": "onnx.reference.ReferenceEvaluator",
+      "reference_versions": null
+    },
+    {
+      "name": "native-view-alias-tests-v2/reshape_chain_zero_inferred",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 327,
+          "sha256": "b625c7c2e49c6b3be8014d31868e543b6d051716544a10a6086854d5d0b891b5"
+        },
+        "plan.json": {
+          "bytes": 2198,
+          "sha256": "91d48b9f00bcba772ea1dc33a2181f5171172045d585858339f3f30e990782ea"
+        },
+        "kernel.ptx": {
+          "bytes": 1316,
+          "sha256": "f93758256d8d594dd755963570602476b34c5b33e197db98114ab64942a36efd"
+        },
+        "kernel.ll": {
+          "bytes": 1953,
+          "sha256": "a6390c9d865ac2cc9d96a1faed7fcc0e8890c33bb5e0e07072b95dccf0fd6610"
+        },
+        "kernel.mlir": {
+          "bytes": 3055,
+          "sha256": "1c5a91616c307f7099407a3c0008ae9a227d6daf4cebaf77ea0f5e97b2737265"
+        },
+        "kernel.cubin": {
+          "bytes": 2984,
+          "sha256": "7565090681a366e365faac415f5f2c93378416ba57f105cdb7e73cf798c9a8e7"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1063,
+          "sha256": "50bc7dfe82789107cd2301a20c7546c6c56b43933e79f2ffe92c68d71fa401d9"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "dc5a1edd91bc81b12356f9fa3d7c36d87d131323f32c84983347c897e0637891"
+        },
+        "reference": {
+          "bytes": 352,
+          "sha256": "3a1ccfe99d5c67ec7074d94fc582fedc024027fa62021d18f3b49f3d3b726c38"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "787979ee6a78d79a5c6cf1f3ede7cb1d40a6ae9e410062d0b57f848ca083edd6"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "1af9c7aaeea12ba642ca5f580e38dc6bf7e69da5abe10ea849ba3c3e1ae6a53b"
+        },
+        "value_3": {
+          "bytes": 24,
+          "sha256": "a03a15f03bb7083f2909cc8506d436922b1a6fd5a48d80f82a08f25037c7c8b5"
+        },
+        "value_4": {
+          "bytes": 8,
+          "sha256": "171ba42c613de433e8d9edb403546c15698683ab99549b3e2bb5855c44baf6f5"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/input_squeeze_unsqueeze_softmax",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 318,
+          "sha256": "c2ce67f8c69ba0afb56441056782abb0123df87950fa5b4baced94674257181c"
+        },
+        "plan.json": {
+          "bytes": 1966,
+          "sha256": "cd7665babdc1ca6cd46c238b74fc0ee58987bfaac45b3e0eb35083723786a8d3"
+        },
+        "kernel.ptx": {
+          "bytes": 3195,
+          "sha256": "9f6b29dbeb32a09151aefd5b5628c5d9f5866f236fcc2885e0144204b295d24f"
+        },
+        "kernel.ll": {
+          "bytes": 2967,
+          "sha256": "3f158a2a1a3ff9e0003e0500103ea02366f7ce8bae46f6dcd82e89563411d63d"
+        },
+        "kernel.mlir": {
+          "bytes": 3146,
+          "sha256": "535d11fe524c2e3a3c038ae70fab9170c914bd4f0b2659ec4013640561e86675"
+        },
+        "kernel.cubin": {
+          "bytes": 6192,
+          "sha256": "80f9c63410a903f4eed563c34cfabcf4b4e289ce0d4a075bf959a5fdbb6e8594"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1071,
+          "sha256": "1ebb2d97399a6a3a1b35581e5a1c9458821721709d3a473b9987f7a8be5838b3"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "32b82f280af1a01baa95ba913fff296338e49cd083c55764d4216c4973df8955"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "4e99b8226f66bb6a2c323b1de1339a4303c447a66040be4296c51ac09efbbd89"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "c571327cb01ac1de6972713cbf6cc1fc3c2cab8b581ee0bc3fe6d8b56963fd5b"
+        },
+        "value_2": {
+          "bytes": 8,
+          "sha256": "7c9fa136d4413fa6173637e883b6998d32e1d675f88cddff9dcbcf331820f4b8"
+        },
+        "value_3": {
+          "bytes": 16,
+          "sha256": "fe6d3d3bb5dd778af1128cc7b2b33668d51b9a52dfc8f2342be37ddc06a0072d"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/arena_fork_original_late",
+      "status": "compiled_only",
+      "dispatches": 4,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 721,
+          "sha256": "e56a96a58d4aa027062622ad3c88baf9a7c8a35dee77d2e84888fa20fa9a533c"
+        },
+        "plan.json": {
+          "bytes": 3796,
+          "sha256": "a07bcf5530b7857d0f66839d9bb24f4158902e3d9ae162264dced681fdb84eaa"
+        },
+        "kernel.ptx": {
+          "bytes": 5770,
+          "sha256": "a5fde3fe7fa0970da35eddf6b31adbd80b41b4d094f73730e4472a8eacf96e71"
+        },
+        "kernel.ll": {
+          "bytes": 5524,
+          "sha256": "586c3a37806c69fe42418a9d0639f0ea1207d6cb42affd9433555b6b3b94e056"
+        },
+        "kernel.mlir": {
+          "bytes": 9217,
+          "sha256": "606987d484c718b6e86eb427442c2a5a9ccd553e011ca7d5682325037c5a32d0"
+        },
+        "kernel.cubin": {
+          "bytes": 8296,
+          "sha256": "8dc908d9cfd16e743d911df1f1ddd24c1db956d21a97ebdda64cb68062020d7f"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1057,
+          "sha256": "829253dc6c296ee17a983020f3f00acb518e9b05ce7d32849ffba745ca9bd0b2"
+        },
+        "inputs": {
+          "bytes": 384,
+          "sha256": "4d80aa88422bb557f40dcb9e0fc23e6a493210d90e8981598fab98bd2e5df22d"
+        },
+        "reference": {
+          "bytes": 384,
+          "sha256": "3404ada96c631792553e216e19408aa93d6a2950c7ad3ab91b8c74348158f06e"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 256,
+          "sha256": "e323349de91a60b10b2cccd5168d8ac0e8106154f8ebee26439217adbe68d93c"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "6dfbf18ddab8270a3b5271ed78e7740a973cc100bf70740006fc9c55c63a8edc"
+        },
+        "value_3": {
+          "bytes": 16,
+          "sha256": "9e54f85a3a0cf72632f4099451c1b64049fd4a1c6f7e36825a199677252f54f7"
+        },
+        "value_4": {
+          "bytes": 64,
+          "sha256": "535515f5cb42d5e3c0d0599776cadd192f6cc430a136f4b10c3fc2f37a34e9bd"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/arena_fork_view_late",
+      "status": "compiled_only",
+      "dispatches": 5,
+      "arena_bytes": 384,
+      "artifacts": {
+        "model": {
+          "bytes": 891,
+          "sha256": "96bf066f8a55d586309f7f813e8c458757531be58ef754a0d055035efc2168da"
+        },
+        "plan.json": {
+          "bytes": 4105,
+          "sha256": "b33a95237f9d822e1af9ba6b8ebe9355d2f2fa96e7ab647bc9a4758e2ca5b625"
+        },
+        "kernel.ptx": {
+          "bytes": 7858,
+          "sha256": "33802cf74f2f021ed8b97ff6a1c4c0ee99b36c7b1ecdca2ae9b93f62fef1083c"
+        },
+        "kernel.ll": {
+          "bytes": 6754,
+          "sha256": "f77a261a7020dc8930550acabcbcd14085d5f16f1253b9c7c117c9132fdfcef0"
+        },
+        "kernel.mlir": {
+          "bytes": 10925,
+          "sha256": "8fe57c735950b74167d40b15e02921509986adfdb0b19c032e0e89f9722e1f69"
+        },
+        "kernel.cubin": {
+          "bytes": 10280,
+          "sha256": "1a02568d1b912ae9bc874daf6ef76d01e09555db4cbb9fd50b471c8ce224f34a"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1049,
+          "sha256": "5faa2377e21750eba7388c12fcb9d7d3071c40b75c6058c1fc5f56638be08681"
+        },
+        "inputs": {
+          "bytes": 384,
+          "sha256": "6946aeac7fad7d6ec8466e87d0c9104ec0693ccec39c89737bdb25c7038a2600"
+        },
+        "reference": {
+          "bytes": 384,
+          "sha256": "18558b294143978c0fc602e4b644b04cfcfb0f3b4dda33bb61e0753241f666f6"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 256,
+          "sha256": "da60d0265481d25898b8a9a15d7688350d8775a59f8b5e2f3813ec2ad5e03b60"
+        },
+        "value_2": {
+          "bytes": 256,
+          "sha256": "83f53a1d804a4a67e92019ffa07682373ef00ebbf4897a5348ee1d5eaa6fed22"
+        },
+        "value_3": {
+          "bytes": 16,
+          "sha256": "6dfbf18ddab8270a3b5271ed78e7740a973cc100bf70740006fc9c55c63a8edc"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/public_input_view",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 176,
+          "sha256": "5b97a3d30e5fc155170cc845265e2a4e96b711708d4c5fa7ccaaab1f3996d046"
+        },
+        "plan.json": {
+          "bytes": 1605,
+          "sha256": "4365d13fcc868363b1b60bac7ce49203103ec43cb26f25a3c4ef236af77cdacb"
+        },
+        "kernel.ptx": {
+          "bytes": 992,
+          "sha256": "a3eb54126711dbc8400a1cc392ea4729cb835c227ba19cbca12573a121edd547"
+        },
+        "kernel.ll": {
+          "bytes": 1465,
+          "sha256": "0d5ae2c56be8db44e44f94b0d771f5604c7e3b70af0c6c05d7bdd6a81d5e44a0"
+        },
+        "kernel.mlir": {
+          "bytes": 1284,
+          "sha256": "d80c8a642102c37301936e44b55a1c92821a4217f886a78f5fe479c50bc71cc5"
+        },
+        "kernel.cubin": {
+          "bytes": 2856,
+          "sha256": "6e7dbed02280eeaa882e5b452e6827754eb0867f34b634e240189208ba8713e2"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1043,
+          "sha256": "aa201005e44f99a0b94da6776d57a3814980fccba125a878266671c3fda8b23d"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "7e61d76f4e5873025752cc1ea069aae0d5f8cd9f557abd7ac1e2c326dffac177"
+        },
+        "reference": {
+          "bytes": 300,
+          "sha256": "6cb9ed8537e47a414e5a84684538bbae67bd69e696449cdd1484943c5bd2890a"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "b38c612d3a2f2d9bd6f0e638bd328e6c24d1ae6d3867ffbd6c69a98d19b3b292"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/public_multiple_views",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 291,
+          "sha256": "d52659e06c58e313c714552393cb6cbfaa8ecc934a9cc5b6af8028f026477484"
+        },
+        "plan.json": {
+          "bytes": 2348,
+          "sha256": "aa5b419eaed29407401c4581daab52b1f635af141a0fdd350cd2dd3bb002d8de"
+        },
+        "kernel.ptx": {
+          "bytes": 1894,
+          "sha256": "71a48de0783001f265c97d8e00a131bff0ba3eb9a66421127ddc940c0ee34c8f"
+        },
+        "kernel.ll": {
+          "bytes": 2151,
+          "sha256": "5736ea6fb6d14fbce7c740b67a2bcca655f704b561073e1483a7ff5c96e65909"
+        },
+        "kernel.mlir": {
+          "bytes": 2128,
+          "sha256": "a83667fd470308e3de0d86fe4fc36004f004d7053ea4e923c0712fd91f6059de"
+        },
+        "kernel.cubin": {
+          "bytes": 4328,
+          "sha256": "433676831f9b5bdaf0be45891439c648c9c03918e6902d53f11f8b72cc7d89d0"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1051,
+          "sha256": "43e7ccbb93c54217839e4044d71fdc7ee4adb81b8faf165c38f20fae61be3621"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "131a186516353d601170c8363fd3a5f0745e326695479c394b239bff00d0c9fe"
+        },
+        "reference": {
+          "bytes": 834,
+          "sha256": "c887ee9533abebb433a45fc57324749bc0f06da60e41ed0b8f8e09721967ce8d"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "b38c612d3a2f2d9bd6f0e638bd328e6c24d1ae6d3867ffbd6c69a98d19b3b292"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "e165902a1fcd97dda115b6198c9a46910c0eef5e723f526ea12e18bd7009f463"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/public_arena_view",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 375,
+          "sha256": "77427296f67f57fbe5480ace8090b60003e8808a6e41be4b77f794c3c619c0d7"
+        },
+        "plan.json": {
+          "bytes": 2410,
+          "sha256": "e5f49d917ae1fe162d2a636322870f96e0a656d50e52cf1f2407755f88ea3542"
+        },
+        "kernel.ptx": {
+          "bytes": 2667,
+          "sha256": "f4fe652983cc6b3bd441f38f83050315e505ef715b05113332dcd0326357db96"
+        },
+        "kernel.ll": {
+          "bytes": 2914,
+          "sha256": "daf31c373f9812c82d28fa2b37f089db98a3767c8059bb6e81ee5417a09ee6ab"
+        },
+        "kernel.mlir": {
+          "bytes": 3621,
+          "sha256": "a1c303d4f1525ec8984241091dde07320ff18dca37bfbc428779c48af101e5bb"
+        },
+        "kernel.cubin": {
+          "bytes": 4712,
+          "sha256": "fc84648dbb9094d9a7007ec811ccc8272749ef83b3622e0b0ca23ed4a68b329c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1043,
+          "sha256": "bafffa01e0fcc9f4e069d035c2e504ed4b6925fe54762a59f7c86b58adf966ed"
+        },
+        "inputs": {
+          "bytes": 288,
+          "sha256": "33fcf2fbc31368dbb38cea4734a25ddb28ecb170c750119f60cc50aa9b5ba3cf"
+        },
+        "reference": {
+          "bytes": 642,
+          "sha256": "291584a02facb7fed460e85e100f01a991f9aa1e845468cc7546b365a7942358"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 96,
+          "sha256": "e554257a99b49f4544cde9831354d23d9ba4e0f16980bcba5ffda7bf5f87a1ca"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "fd223b85f4dc20183fd595f90fc484d67a2242a9de5809cd3e844fa95954fc4a"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/nonidentity_transpose_materialized",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 300,
+          "sha256": "36fe073f675e92bdf426345276d990b1b3b2a036c21c540a5095f6ea7a0d9f53"
+        },
+        "plan.json": {
+          "bytes": 2280,
+          "sha256": "d773bf14f0fc66783ce0321fc26b00fe651d52701756d43519ed98fb0807a6bf"
+        },
+        "kernel.ptx": {
+          "bytes": 2033,
+          "sha256": "4df3bea26fe9f31c0fe1de8c776972562181b9107afa8f3db59d596deaadc105"
+        },
+        "kernel.ll": {
+          "bytes": 2532,
+          "sha256": "17f9a17d12ff0b0d375ab9ba7ce99baaee46f3b6bba6c3012ec7b17624ae4b5d"
+        },
+        "kernel.mlir": {
+          "bytes": 3618,
+          "sha256": "aad502ed420ae27c16f1edb80b71e63dc534a8e0ceb3533e1a2fc6eb35850248"
+        },
+        "kernel.cubin": {
+          "bytes": 4328,
+          "sha256": "acd58b4ddecb99e9d716e2a39c8b6e45f105921198f1c21658f145312ca4e482"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1077,
+          "sha256": "c7d94b8929117e7331292dfda16fb90ef9c268d7788b41c3aaddd3726ddee294"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "409d5861f1da22dbb6ee52ee09acac776b7e594f6a67c4bb0a781b5717b20769"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "624b685e1b13c5071330896aca99f4a87a94dd46a425b42d974473cc8b03c3b1"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 24,
+          "sha256": "e2e2033ae7e19d680599d4eb0a1359a2b48ec5baac75066c317fbf85159c54ef"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "b38c612d3a2f2d9bd6f0e638bd328e6c24d1ae6d3867ffbd6c69a98d19b3b292"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/fp16_cast_roundtrip_materialized",
+      "status": "compiled_only",
+      "dispatches": 3,
+      "arena_bytes": 128,
+      "artifacts": {
+        "model": {
+          "bytes": 355,
+          "sha256": "d099a9c73f24aa4ae52924d5db85cf0a9fb0d31c6ad5096f7b4f93a10e2876a4"
+        },
+        "plan.json": {
+          "bytes": 2972,
+          "sha256": "18b82f8b8424cbf3aa10ad4775e80c648a0f5431c5c4f97e4402a13db0ce0394"
+        },
+        "kernel.ptx": {
+          "bytes": 3023,
+          "sha256": "70eb23e4563b6239bfbada226a6c102686dbe5eef6e7e347c19e1956adae2169"
+        },
+        "kernel.ll": {
+          "bytes": 3272,
+          "sha256": "1830f76eb1dc7d00d65043fb7527f1b2e99ba6d6bc01bc903b16da01c50b7fbd"
+        },
+        "kernel.mlir": {
+          "bytes": 4291,
+          "sha256": "e8f319786025478e029d2b49663096579bfbeab61d85f50aef91a43567520329"
+        },
+        "kernel.cubin": {
+          "bytes": 5800,
+          "sha256": "2d365612bd8c52e50ff5474e078c92482044b01e4f313a0bfeb11081fcefb90a"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1073,
+          "sha256": "01fc2e2849791d00d3857ab4d64e6447ffdafbb64b8c041e450a1e21ff6943b7"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "2221243d5bab5799b147dcd82e5b421aca4ab5e1f3d2c20b7b55b43bd71d1d2e"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "7229fcd5cf525fb20d934b72f4360ac307445a0d85891735f07bc4226980412e"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 8,
+          "sha256": "12a3ae445661ce5dee78d0650d33362dec29c4f82af05e7e57fb595bbbacf0ca"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "fe6d3d3bb5dd778af1128cc7b2b33668d51b9a52dfc8f2342be37ddc06a0072d"
+        },
+        "value_3": {
+          "bytes": 24,
+          "sha256": "f6fbcd20088bcb7e9d10e4dfad6eac7694e577ffc6b94104c19b193c45ffef9c"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/shared_root_different_softmax_axes",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 256,
+      "artifacts": {
+        "model": {
+          "bytes": 341,
+          "sha256": "4fc47c8531086df43a333a2848d90ae7e4698b5ff804296f6d5f41c0114af47f"
+        },
+        "plan.json": {
+          "bytes": 2267,
+          "sha256": "ebbbc4a53a39494d9141c1dac9022e8f61727852a48f855c7eed03700c2e0636"
+        },
+        "kernel.ptx": {
+          "bytes": 6794,
+          "sha256": "39fe7c328b3d5bb74af3b969bde4fd8b62c3f0e75419218adc8c19624d1d1c03"
+        },
+        "kernel.ll": {
+          "bytes": 4988,
+          "sha256": "0cf6ebd3b77058ec5cd933ab5014fc4308a5e891eecbb15e4babb290012be856"
+        },
+        "kernel.mlir": {
+          "bytes": 5807,
+          "sha256": "59f7e08a17002580089a6dba4339f961a5a48cbb89adfb4c4cb3144a7aa7b175"
+        },
+        "kernel.cubin": {
+          "bytes": 10992,
+          "sha256": "0f319023b26e9eba2b667fd9b72e82f49cef23e754c5bd5e9889f617e0ae5498"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1077,
+          "sha256": "c8e1ac058e5db940883cbe839ec743b9032a4bff412b52dcb986302a223f1d54"
+        },
+        "inputs": {
+          "bytes": 352,
+          "sha256": "3a4086b92e0b0d4f8eb0dbbf47f42f1ddb7908b05e80d046f04e05b3ad099c35"
+        },
+        "reference": {
+          "bytes": 686,
+          "sha256": "ad9d486504ff5b8d938c0278d665337689099be3349e3b2c27abda2655048e42"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16,
+          "sha256": "ca8beba3dac4ddcf0168d29573862c29380c4685c5a5eeb73b076ac0d201a6cd"
+        },
+        "value_2": {
+          "bytes": 16,
+          "sha256": "1023a3096f045135026663e59f95b6c85d5489adb73d8ba9628f394038f6d56d"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/constant_root_runtime_add_gather",
+      "status": "compiled_only",
+      "dispatches": 2,
+      "arena_bytes": 16785472,
+      "artifacts": {
+        "model": {
+          "bytes": 16785788,
+          "sha256": "5c749509a8d5f46096d755214317fd9db0d461c1fa85fcb34fe78a575a3bc4b5"
+        },
+        "plan.json": {
+          "bytes": 2760,
+          "sha256": "349d2b3c0f85b06435a93c743df8f9d284e35761253f713656c4bbaf70575696"
+        },
+        "kernel.ptx": {
+          "bytes": 2502,
+          "sha256": "56f6b59075d5af339a56fdefe342356e6fbd69c0faee55d021000912e9a81a92"
+        },
+        "kernel.ll": {
+          "bytes": 2884,
+          "sha256": "3e53b20a1e54f43c983b0a499ed57b719f6a4d42f32cc612e8b6a777d2c901cb"
+        },
+        "kernel.mlir": {
+          "bytes": 4425,
+          "sha256": "a5c5a3c034026835348ba7660075ad139e41118e408ab532b9af44cc126da89f"
+        },
+        "kernel.cubin": {
+          "bytes": 4584,
+          "sha256": "6d7ddb3d1eda1348aa5148758485ccd0260c227c929d5ddb810f37b01e837f0c"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1073,
+          "sha256": "3201635a5e4796d36f62040dd3305abbda41c16e72e6596dede083563837de2c"
+        },
+        "inputs": {
+          "bytes": 278,
+          "sha256": "035b9662707270cce9d5047f13ed5d1234d3962d94bc4733447be704bc41dfd1"
+        },
+        "reference": {
+          "bytes": 304,
+          "sha256": "fa1d8c7a7b7af99b151db9a4206849a354e4d22ed76d9ae4968ed91d7323f1ed"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 16785408,
+          "sha256": "f6bf8f617cd4bb683eb8469b99136a849392b978c2af675d308d707e5db3fea8"
+        },
+        "value_2": {
+          "bytes": 8,
+          "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+        },
+        "value_3": {
+          "bytes": 16,
+          "sha256": "1af9c7aaeea12ba642ca5f580e38dc6bf7e69da5abe10ea849ba3c3e1ae6a53b"
+        },
+        "value_4": {
+          "bytes": 24,
+          "sha256": "ee3363c8bb0cb91eaa387fcb84b45ec7490008f16bdb96c78c73ee767da87225"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    },
+    {
+      "name": "native-view-alias-tests-v2/internal_identity_and_reshape",
+      "status": "compiled_only",
+      "dispatches": 1,
+      "arena_bytes": 64,
+      "artifacts": {
+        "model": {
+          "bytes": 245,
+          "sha256": "bb03565d583f9aea3833f202efd43407244a2d472a8d8de600a14592bde66230"
+        },
+        "plan.json": {
+          "bytes": 1752,
+          "sha256": "d5ff93a6c78cf6565d8b5dfb5fc4cf480656131d9cce901774575ae955888d9c"
+        },
+        "kernel.ptx": {
+          "bytes": 1156,
+          "sha256": "d013f070835a798f90299a969b40806c4a23b2c06f3bcbd9492ee22c321d3bed"
+        },
+        "kernel.ll": {
+          "bytes": 1668,
+          "sha256": "6140408eca5ec9698c94ee7d9b2b399f23e426aa00dffde8b5c2941d5624accb"
+        },
+        "kernel.mlir": {
+          "bytes": 2028,
+          "sha256": "e1bf6b526db457df2528036d4620447a1ae289e4e08b74288b55ff9ab4a22771"
+        },
+        "kernel.cubin": {
+          "bytes": 2984,
+          "sha256": "7d81836bebd718e84d608ed558bb9312d8bbf7d36c9c88a42e16198a7520a1a3"
+        },
+        "compile-provenance.txt": {
+          "bytes": 1067,
+          "sha256": "f284a06b7aa07c197577c3ae632802b4a871d045b7d8d061fd67a125bed7fb1b"
+        },
+        "inputs": {
+          "bytes": 280,
+          "sha256": "2c43693b081bf9ef138e314121a5ce450d1a5b82ec07083b4ff0d67550379c79"
+        },
+        "reference": {
+          "bytes": 280,
+          "sha256": "011481f07d85593d66222785fc7439a13f273119c979b1377f6ea14ae00a5148"
+        }
+      },
+      "constants": {
+        "value_1": {
+          "bytes": 8,
+          "sha256": "12a3ae445661ce5dee78d0650d33362dec29c4f82af05e7e57fb595bbbacf0ca"
+        },
+        "value_2": {
+          "bytes": 24,
+          "sha256": "d89413c2ac6849db3dfab60514ce931c7215add03b3402614c04835c07cc0a41"
+        }
+      },
+      "reference_description": "ONNX Runtime CPUExecutionProvider, graph optimizations disabled",
+      "reference_versions": {
+        "onnx": "1.21.0",
+        "onnxruntime": "1.23.2",
+        "numpy": "1.26.4"
+      }
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # BEVFormer 整图 Vortex 后端：十阶段实现
 
+> 本文记录此前的 Python Graph → 设备 MLIR 实现。新的 ONNX 默认编译路径已经迁入
+> [原生 C++ MLIR 核心](../native/README.md)：导入后即为注册 Operation，图优化在
+> MLIR PassManager 中执行。旧路径的全图能力和双缓冲不能自动算作新路径的能力。
+
 分支：`lg/bevformer-vortex-full-ops`。
 
 本实现按照 [V6 架构图](vortex-matmul-end-to-end-v6.html) 的十个模块，把现有完整

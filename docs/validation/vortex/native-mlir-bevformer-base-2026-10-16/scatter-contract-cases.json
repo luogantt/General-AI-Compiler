@@ -1,0 +1,359 @@
+{
+  "cases": [
+    {
+      "name": "full_ordered_identity",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "full_ordered_reshape",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "full_negative_indices",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      }
+    },
+    {
+      "name": "full_permuted_retained",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "partial_retained",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "duplicate_indices_rejected",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": true,
+      "expected_diagnostic": "duplicate",
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "reduction_add_retained",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": true,
+      "expected_diagnostic": "reduction",
+      "expect_cse": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "name": "broadcast_chain_complete",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "expect_optimized_contains": [
+        "\"gac.expand\"("
+      ]
+    },
+    {
+      "name": "broadcast_chain_negative",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "expect_optimized_contains": [
+        "\"gac.expand\"("
+      ]
+    },
+    {
+      "name": "broadcast_chain_reverse_stage_order",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "expect_optimized_contains": [
+        "\"gac.expand\"("
+      ]
+    },
+    {
+      "name": "broadcast_chain_zero_source_eliminated",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "expect_optimized_contains": [
+        "\"gac.expand\"("
+      ],
+      "expect_no_constant_shape": [
+        1,
+        3,
+        4,
+        2
+      ]
+    },
+    {
+      "name": "broadcast_chain_missing_camera",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "name": "broadcast_chain_overlap_across_stages",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "name": "broadcast_chain_permuted_update_mapping",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "name": "broadcast_chain_different_update_ssa",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U",
+        "U2"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      }
+    },
+    {
+      "name": "broadcast_chain_intermediate_public_output",
+      "valid": true,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "X",
+        "U"
+      ],
+      "outputs": [
+        "Y",
+        "stage0"
+      ],
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "expect_cse": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      }
+    }
+  ]
+}

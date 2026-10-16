@@ -1,0 +1,36 @@
+{
+  "dispatch_wall_ms": 104.83266399999999,
+  "dispatches": 1,
+  "download_ms": 7.3331770000000001,
+  "driver": "simx",
+  "execution": "vortex-device",
+  "host_operator_fallback": false,
+  "initialization_ms": 104.865379,
+  "inputs": [
+    {
+      "file": "input_0.bin",
+      "name": "X",
+      "tensor_index": 0
+    }
+  ],
+  "outputs": [
+    {
+      "dtype": "float32",
+      "file": "output_0.bin",
+      "name": "Y",
+      "shape": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "tensor_index": 3
+    }
+  ],
+  "schema_version": 1,
+  "threads_per_block": 16,
+  "timing_kind": "host_wall_clock",
+  "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+  "total_host_wall_ms": 230.083551,
+  "upload_ms": 13.052331000000001
+}

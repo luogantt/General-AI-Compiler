@@ -1,0 +1,19 @@
+target=sm_86
+ptx_features=+ptx80
+LLVM (http://llvm.org/):
+  LLVM version 20.1.8
+  Optimized build with assertions.
+  Default target: x86_64-unknown-linux-gnu
+  Host CPU: meteorlake
+
+  Registered Targets:
+    nvptx   - NVIDIA PTX 32-bit
+    nvptx64 - NVIDIA PTX 64-bit
+    riscv32 - 32-bit RISC-V
+    riscv64 - 64-bit RISC-V
+    x86     - 32-bit X86: Pentium-Pro and above
+    x86-64  - 64-bit X86: EM64T and AMD64
+dabfe3c5c0f93508cefe20586056e95cca13e70b8a5fdd2c072a9fd9394bac61  /home/thomas/gac-cuda-tools-dabfe3c5c0f9-20261017/gac-compile
+25498d6e3c64782833ff15a5f56665ff09e5d21177163148a1cf008c61733449  /home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc
+d32e0e9c43134d8e7afc4d1a158cc465512079b57896a7213dd754279174c748  /home/thomas/gac-base-cuda-final-20261017/plan.json
+23e73de0043358d1adbe02b876e351d55c371008ffd88a252824d6752dcbd605  /home/thomas/gac-base-cuda-final-20261017/kernel.ptx

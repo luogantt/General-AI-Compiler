@@ -1,0 +1,643 @@
+{
+  "scope": "Read-only raw ONNX and imported MLIR capability audit; not an optimized-graph or exhaustive executable-support result. Optimization may fold/remove operations, so raw counts do not equal remaining runtime dispatch counts.",
+  "model_sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070",
+  "backend_source_sha256": "e950225a35e0a20780f8a5ea789329a085601f8276d1b9c1519535c4f12319df",
+  "registered_but_no_direct_backend_lowering": {
+    "ConstantOfShape": {
+      "count": 384,
+      "mlir_op": "gac.constant_of_shape",
+      "example": "/pts_bbox_head/positional_encoding/ConstantOfShape"
+    },
+    "Shape": {
+      "count": 301,
+      "mlir_op": "gac.shape",
+      "example": "/pts_bbox_head/transformer/Shape"
+    }
+  },
+  "nonliteral_gather_indices_before_passes": {
+    "total_gather": 216,
+    "literal_index_count": 162,
+    "nonliteral_index_count": 54,
+    "indices_producer_counts": {
+      "Squeeze": 54
+    },
+    "indices_image_dependent_count": 0,
+    "nodes": [
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_7",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_9",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_10",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_14",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_17",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_21",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_24",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_28",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_31",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_35",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_38",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_42",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_45",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_49",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_52",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_55",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_58",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Gather_61",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_7",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_9",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_10",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_14",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_17",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_21",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_24",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_28",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_31",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_35",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_38",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_42",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_45",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_49",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_52",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_55",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_58",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Gather_61",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_7",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_9",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_10",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_14",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_17",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_21",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_24",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_28",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_31",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_35",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_38",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_42",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_45",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_6",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_49",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_7",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_52",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_8",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_55",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_9",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_58",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_10",
+        "indices_depends_on_images": false
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Gather_61",
+        "indices": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11_output_0",
+        "indices_producer_op": "Squeeze",
+        "indices_producer_name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/Squeeze_11",
+        "indices_depends_on_images": false
+      }
+    ],
+    "first_indices_upstream_example": [
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Squeeze_6",
+        "op": "Squeeze"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/Transpose",
+        "op": "Transpose"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero",
+        "op": "NonZero"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/ReduceSum",
+        "op": "ReduceSum"
+      }
+    ]
+  },
+  "onnx_explicit_fp64_constants": [
+    {
+      "kind": "Constant.value",
+      "name": "/pts_bbox_head/transformer/encoder/Constant_3",
+      "shape": [
+        50,
+        1
+      ]
+    },
+    {
+      "kind": "Constant.value",
+      "name": "/pts_bbox_head/transformer/encoder/Constant_4",
+      "shape": [
+        1,
+        50
+      ]
+    },
+    {
+      "kind": "Constant.value",
+      "name": "/pts_bbox_head/transformer/encoder/Constant_7",
+      "shape": []
+    },
+    {
+      "kind": "Constant.value",
+      "name": "/pts_bbox_head/transformer/encoder/Constant_10",
+      "shape": []
+    }
+  ],
+  "onnx_cast_to_fp64": [],
+  "imported_mlir_fp64_result_operations": [
+    {
+      "op": "gac.constant",
+      "source_name": "/pts_bbox_head/transformer/encoder/Constant_3",
+      "result_types": [
+        "50x1xf64"
+      ]
+    },
+    {
+      "op": "gac.expand",
+      "source_name": "/pts_bbox_head/transformer/encoder/Expand_1",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.constant",
+      "source_name": "/pts_bbox_head/transformer/encoder/Constant_4",
+      "result_types": [
+        "1x50xf64"
+      ]
+    },
+    {
+      "op": "gac.expand",
+      "source_name": "/pts_bbox_head/transformer/encoder/Expand_2",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.reshape",
+      "source_name": "/pts_bbox_head/transformer/encoder/Reshape",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsqueeze",
+      "source_name": "/pts_bbox_head/transformer/encoder/Unsqueeze",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.constant",
+      "source_name": "/pts_bbox_head/transformer/encoder/Constant_7",
+      "result_types": [
+        "f64"
+      ]
+    },
+    {
+      "op": "gac.div",
+      "source_name": "/pts_bbox_head/transformer/encoder/Div",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.reshape",
+      "source_name": "/pts_bbox_head/transformer/encoder/Reshape_1",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsqueeze",
+      "source_name": "/pts_bbox_head/transformer/encoder/Unsqueeze_1",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.constant",
+      "source_name": "/pts_bbox_head/transformer/encoder/Constant_10",
+      "result_types": [
+        "f64"
+      ]
+    },
+    {
+      "op": "gac.div",
+      "source_name": "/pts_bbox_head/transformer/encoder/Div_1",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsqueeze",
+      "source_name": "/pts_bbox_head/transformer/encoder/Unsqueeze_2",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsqueeze",
+      "source_name": "/pts_bbox_head/transformer/encoder/Unsqueeze_3",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.concat",
+      "source_name": "/pts_bbox_head/transformer/encoder/Concat",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.expand",
+      "source_name": "/pts_bbox_head/transformer/encoder/Expand_3",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsupported",
+      "source_name": "/pts_bbox_head/transformer/encoder/Tile_1",
+      "result_types": [
+        "*xf64"
+      ]
+    },
+    {
+      "op": "gac.unsqueeze",
+      "source_name": "/pts_bbox_head/transformer/encoder/Unsqueeze_4",
+      "result_types": [
+        "*xf64"
+      ]
+    }
+  ],
+  "imported_mlir_unranked_result_counts": {
+    "gac.identity": 18,
+    "gac.reshape": 313,
+    "gac.conv2d": 55,
+    "gac.relu": 96,
+    "gac.max_pool2d": 1,
+    "gac.add": 311,
+    "gac.constant_of_shape": 384,
+    "gac.expand": 495,
+    "gac.unsupported": 263,
+    "gac.concat": 317,
+    "gac.transpose": 131,
+    "gac.unsqueeze": 496,
+    "gac.cast": 32,
+    "gac.shape": 301,
+    "gac.slice": 363,
+    "gac.gemm": 8,
+    "gac.layer_norm": 40,
+    "gac.div": 44,
+    "gac.mul": 433,
+    "gac.equal": 376,
+    "gac.where": 376,
+    "gac.matmul": 152,
+    "gac.squeeze": 128,
+    "gac.greater": 6,
+    "gac.max": 1,
+    "gac.gather": 216,
+    "gac.and": 4,
+    "gac.less": 2,
+    "gac.softmax": 18,
+    "gac.sub": 30,
+    "gac.grid_sample": 12,
+    "gac.reduce_sum": 36,
+    "gac.reduce_mean": 3,
+    "gac.clamp": 57,
+    "gac.sigmoid": 19,
+    "gac.log": 18
+  },
+  "imported_mlir_ranked_dynamic_result_counts": {},
+  "imported_mlir_result_element_types": {
+    "f32": 2786,
+    "i64": 6387,
+    "f64": 18,
+    "i1": 447
+  },
+  "source_constraints": {
+    "backend_supported_set": "native/lib/VortexLowering.cpp:720",
+    "gather_constant_indices_requirement": "native/lib/VortexLowering.cpp:793",
+    "supported_dtype_and_static_shape_requirement": "native/lib/VortexLowering.cpp:825",
+    "shape_fold_scope": "native/lib/GraphPasses.cpp:75"
+  },
+  "fp64_branch_image_dependent_operations": 0,
+  "constant_of_shape_fill_dtypes": {
+    "INT64": 384
+  },
+  "omitted_middle_operand_nodes": [],
+  "remarks": [
+    "No Vortex execution was performed by this audit.",
+    "Imported MLIR unranked types before ShapeInference are expected and are not a count of irreducible dynamic shapes.",
+    "Source ONNX shape/index expressions can become compile-time constants; raw registered-without-direct-lowering counts are not final unsupported dispatch counts.",
+    "Fixed metadata in this export makes all 54 nonliteral Gather index values and the observed FP64 geometry branch independent of image values. This does not prove the current MLIR passes can fold them."
+  ]
+}

@@ -1,0 +1,118 @@
+{
+  "scope": "VOLT-generated fused MatMul+bias executed by C++ runtime on SimX",
+  "physical_device_performance": false,
+  "python_operator_fallback": false,
+  "compiler_sha256_at_start": "df0f1cdc73c48bf355dd5ae5382906c788025e1e91214a5c0ec01ab479bdc9a2",
+  "runner_sha256": "d1f238659abd9969cf7f9f565f4a647058324d00940e887234a1076e1cc25651",
+  "reference": "ONNX Runtime FP32 CPU fixtures, graph optimizations disabled",
+  "cases": [
+    {
+      "passed": true,
+      "physical_device_execution": false,
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "live_buffer_overlap_check": "passed",
+      "vxbin_sha256": "6d3bf61603efb1542307ebd25c9225129b1dd8ecb246ddc15210874f8095bc69",
+      "name": "bias_batched_middle_axis",
+      "model_sha256": "78676d68c4224dd67fae7df7a55e49c947f0988aab2c068904cb5806c301e8c1",
+      "dispatches": 1,
+      "arena_bytes": 128,
+      "manifest_sha256": "dd8a77c76b045306e4d746c563a1989ab85c7a81a968097f79dd33960db01ff4",
+      "runtime_report": {
+        "arena_bytes": 128,
+        "dispatch_wall_ms": 16.118699,
+        "dispatches": 1,
+        "download_ms": 7.428762,
+        "driver": "simx",
+        "embedded_constant_bytes": 0,
+        "execution": "vortex-device",
+        "host_operator_fallback": false,
+        "initialization_ms": 229.328227,
+        "inputs": [
+          {
+            "file": "input_0.bin",
+            "name": "X",
+            "tensor_index": 0
+          }
+        ],
+        "outputs": [
+          {
+            "dtype": "float32",
+            "file": "output_0.bin",
+            "name": "Y",
+            "shape": [
+              2,
+              3,
+              5
+            ],
+            "tensor_index": 3
+          }
+        ],
+        "schema_version": 1,
+        "threads_per_block": 16,
+        "timing_kind": "host_wall_clock",
+        "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+        "total_host_wall_ms": 266.628503,
+        "trace_dispatches": false,
+        "upload_ms": 13.752815
+      }
+    },
+    {
+      "passed": true,
+      "physical_device_execution": false,
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-07
+      },
+      "live_buffer_overlap_check": "passed",
+      "vxbin_sha256": "8b3200791fdd3ab0b89c3c7244b0cb24d3d969f95a094b8cd5009f12931c2a10",
+      "name": "bias_batch_broadcast",
+      "model_sha256": "b004aa37853d70fbfaab2a0d66c01d2e50656280f99f1c56aca5e285fbc25f74",
+      "dispatches": 1,
+      "arena_bytes": 512,
+      "manifest_sha256": "028a4e93d33f09bef64adbf9a324d6f3a333646b5b4b5f96cb68a5a5a945b6c9",
+      "runtime_report": {
+        "arena_bytes": 512,
+        "dispatch_wall_ms": 26.930288,
+        "dispatches": 1,
+        "download_ms": 9.010756,
+        "driver": "simx",
+        "embedded_constant_bytes": 0,
+        "execution": "vortex-device",
+        "host_operator_fallback": false,
+        "initialization_ms": 122.176689,
+        "inputs": [
+          {
+            "file": "input_0.bin",
+            "name": "X",
+            "tensor_index": 0
+          }
+        ],
+        "outputs": [
+          {
+            "dtype": "float32",
+            "file": "output_0.bin",
+            "name": "Y",
+            "shape": [
+              2,
+              4,
+              3,
+              5
+            ],
+            "tensor_index": 3
+          }
+        ],
+        "schema_version": 1,
+        "threads_per_block": 16,
+        "timing_kind": "host_wall_clock",
+        "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+        "total_host_wall_ms": 167.389754,
+        "trace_dispatches": false,
+        "upload_ms": 9.272021
+      }
+    }
+  ],
+  "compiler_sha256_at_end": "df0f1cdc73c48bf355dd5ae5382906c788025e1e91214a5c0ec01ab479bdc9a2",
+  "compiler_stable_during_run": true,
+  "passed": true
+}

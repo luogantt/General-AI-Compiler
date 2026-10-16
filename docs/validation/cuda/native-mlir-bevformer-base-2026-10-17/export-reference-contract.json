@@ -1,0 +1,173 @@
+{
+  "source": "original upstream PyTorch modules, not GAC Graph reconstruction",
+  "scope": "bevformer_base complete cold raw-head path; fixed calibration/CAN-bus; no box decoding",
+  "profile": {
+    "config_name": "bevformer_base",
+    "bev_h": 200,
+    "bev_w": 200,
+    "backbone_depth": 101,
+    "encoder_layers": 6,
+    "feature_levels": 4,
+    "normalization": {
+      "mean": [
+        103.53,
+        116.28,
+        123.675
+      ],
+      "std": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "to_rgb": false
+    },
+    "camera_batch_chunk": 1
+  },
+  "wrapper_boundary": "Tensor-only wrapper repeats extract_img_feat batch/camera reshape and calls the original mmdet backbone/FPN and upstream BEVFormerHead.forward. Evaluation-time GridMask is an identity and is omitted. Dataset image normalization/padding and final box decoding are external. Backbone/FPN executes independent camera batches sequentially with fixed eval BatchNorm statistics, then concatenates them in camera order.",
+  "config_sha256": "45905ac50a8afa841f0be43c81152277dd694de62054c3595dfd56efd33d6324",
+  "checkpoint": {
+    "state_tensors": 1089,
+    "strict_load": true,
+    "sha256": "5fda3ed3e0d2d1dc09baca337aa1ed64aece057fed7d8238525c5ed342649177"
+  },
+  "metadata": "synthetic fixed all-visible projection; zero CAN-bus; not a dataset accuracy fixture",
+  "input": {
+    "images": [
+      1,
+      6,
+      3,
+      928,
+      1600
+    ]
+  },
+  "versions": {
+    "torch": "2.0.1+cpu",
+    "onnx": "1.21.0"
+  },
+  "opset": 17,
+  "operator_reference_contract_tests": {
+    "passed": true,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "cases": [
+      {
+        "case": "dcn_groups_1_deform_groups_1",
+        "passed": true,
+        "max_abs_error": 1.430511474609375e-06
+      },
+      {
+        "case": "dcn_groups_2_deform_groups_2",
+        "passed": true,
+        "max_abs_error": 1.3113021850585938e-06
+      },
+      {
+        "case": "msda_1_levels_query_chunks",
+        "passed": true,
+        "max_abs_error": 0.0
+      },
+      {
+        "case": "msda_4_levels_query_chunks",
+        "passed": true,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ],
+    "dcn_offset_contract": "offset[:, deform_group*2*Kh*Kw + 2*(kh*Kw+kw) + {dy:0, dx:1}]"
+  },
+  "dcn_eager_reference": "torchvision compiled CPU deform_conv2d; original MMCV ONNX symbolic",
+  "dcn_adapter": {
+    "domain": "mmcv",
+    "op_type": "MMCVModulatedDeformConv2d",
+    "opset": 1,
+    "reference": "torchvision compiled CPU deform_conv2d",
+    "symbolic": "delegates unchanged to MMCV ModulatedDeformConv2dFunction.symbolic",
+    "reason": "Avoid PyTorch 2.0 tracing alias error in MMCV output-buffer copy adapter"
+  },
+  "attention_export": "gac",
+  "attention_adapter": {
+    "domain": "gac",
+    "op_type": "MSDeformAttn",
+    "opset": 1,
+    "query_chunk": 256,
+    "patched_original_call_sites": [
+      "projects.mmdet3d_plugin.bevformer.modules.temporal_self_attention.multi_scale_deformable_attn_pytorch",
+      "projects.mmdet3d_plugin.bevformer.modules.spatial_cross_attention.multi_scale_deformable_attn_pytorch",
+      "projects.mmdet3d_plugin.bevformer.modules.decoder.multi_scale_deformable_attn_pytorch"
+    ],
+    "reference": "PyTorch GridSample, query chunks, one level at a time; no activation precomputation",
+    "trace_boundary": "Outer custom Function symbolic retained; inner reference executes with tracing temporarily paused",
+    "reduction": "sum points per level, then accumulate levels; FP32 rounding checked with tolerance"
+  },
+  "reference_mode": "trace",
+  "reference_boundary": "Real upstream forward executed during ONNX tracing with explicit export adapters; no separate full-model comparison before/after tracer compatibility changes",
+  "upstream_sources": {
+    "projects/mmdet3d_plugin/bevformer/dense_heads/bevformer_head.py": "e655b6d8ee6fecc27724f70017362c2bf7abbe95a49319c1dbcfbbc3129243b0",
+    "projects/mmdet3d_plugin/bevformer/modules/custom_base_transformer_layer.py": "98887b6baeccada8b9981f757dbd8d342655388e69dbd11f67ae711040ca0173",
+    "projects/mmdet3d_plugin/bevformer/modules/decoder.py": "f6d270db1f5c6dc8751c9ca97effc534eb38e1daf14bc2d83eb9df06a3a41d91",
+    "projects/mmdet3d_plugin/bevformer/modules/encoder.py": "ebcf1e68f3807832c9fe7a45cbaf1d747cc2a196f14cd48019e06c751e849009",
+    "projects/mmdet3d_plugin/bevformer/modules/multi_scale_deformable_attn_function.py": "4ae517761d3f4d362a05722c134e2f005315dc3df41c4e5551eafe7757a57ccb",
+    "projects/mmdet3d_plugin/bevformer/modules/spatial_cross_attention.py": "045ac69d3baec715f2d73065ea50dd799b214b4de1d7e030e5907e36a82b47de",
+    "projects/mmdet3d_plugin/bevformer/modules/temporal_self_attention.py": "c4c893779f9ba61d1397c8e691ca730d22e0e83ba88eef6c4f583c6f3975cce2",
+    "projects/mmdet3d_plugin/bevformer/modules/transformer.py": "5bc369a36ec323c6e3d67f4fc8b0ca7628bb4748e336832a8cd50422fc01c62d",
+    "projects/mmdet3d_plugin/core/bbox/coders/nms_free_coder.py": "f9cd5871541d3074b29bcdb0a4f458cd2e1164fcefe3379890e6d59bb1ea66bb",
+    "projects/mmdet3d_plugin/core/bbox/util.py": "d24c61941209fa7a7be18d3b4c628dc06006f692fde0e7863fb54bca50282beb",
+    "projects/mmdet3d_plugin/models/utils/bricks.py": "62d1095bca8ac51c374a39f175db1d452b6670ef0bc4ab199fbec9315e584031",
+    "projects/mmdet3d_plugin/models/utils/visual.py": "af1108b82e6e8a02664810d1bac5feb097b7422ad4d747b9f6cba9217be0b247"
+  },
+  "export_compatibility": [
+    {
+      "attribute": "pts_bbox_head.transformer.use_can_bus",
+      "before": true,
+      "after": 1,
+      "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+    },
+    {
+      "attribute": "pts_bbox_head.transformer.use_shift",
+      "before": true,
+      "after": 1,
+      "reason": "PyTorch 2.0 ONNX/JIT Tensor-times-bool compatibility"
+    },
+    {
+      "attribute": "pts_bbox_head.transformer.encoder.get_reference_points",
+      "reason": "Make requested dtype explicit after original linspace/meshgrid construction",
+      "before": "original reference-point algorithm",
+      "after": "same algorithm plus dtype-preserving .to(dtype)"
+    }
+  ],
+  "outputs": {
+    "bev_embed": [
+      40000,
+      1,
+      256
+    ],
+    "all_cls_scores": [
+      6,
+      1,
+      900,
+      10
+    ],
+    "all_bbox_preds": [
+      6,
+      1,
+      900,
+      10
+    ]
+  },
+  "onnx": {
+    "file": "bevformer-base-cold.onnx",
+    "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+    "nodes": 22412,
+    "initializers": 777,
+    "checker_full_check": true,
+    "grid_sample_dtype_agreement": true,
+    "custom_operators": {
+      "mmcv::MMCVModulatedDeformConv2d": 156,
+      "gac::MSDeformAttn": 18
+    }
+  },
+  "images_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+  "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+  "fixed_metadata_sha256": "179b667ea77ebe72fa6b00574464d28d042cadc5de10890e2e0d77fc76620d75",
+  "export_report_sha256": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb",
+  "input_generation": "tools/export_bevformer_onnx.py generates torch.randn images with a fixed seed; the exact exported seed is not recorded in export-report.json",
+  "tested_input": "the frozen images.npy tensor, not a dataset sample"
+}

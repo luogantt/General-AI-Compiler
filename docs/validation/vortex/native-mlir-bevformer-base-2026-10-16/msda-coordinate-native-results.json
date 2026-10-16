@@ -1,0 +1,469 @@
+{
+  "scope": "Original ONNX Div/view/Add/view/MSDA graph -> native MLIR -> actual CPU machine code",
+  "reference": "Real PyTorch FP32 Div/Add/views and grid_sample bilinear zeros align_corners=False",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "python_operator_fallback": false,
+  "cases": [
+    {
+      "name": "temporal_reference_right",
+      "passed": true,
+      "model_sha256": "8e1498a4c89216917ac1649e5fb5ef73d7839da0944d7869ca18452656d10ea2",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "d3dc86073977a89180b81ffa9234f4b2db28dcd23957cb4d4391d00cae900a06",
+        "library_sha256": "07230a63d411e6bfb4075326755a155ab7f1cd1241788a0686c1de06b9caae64",
+        "inputs_sha256": "96b2b092972412f03702fec81e78fc3aeb815956cd617845f3c45e3e985ca5e8",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "temporal_reference_left",
+      "passed": true,
+      "model_sha256": "5288fa60500717f692e92eb0a294eb90a725ea0e910a8a5edc834d3c18ec0aee",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "d3dc86073977a89180b81ffa9234f4b2db28dcd23957cb4d4391d00cae900a06",
+        "library_sha256": "07230a63d411e6bfb4075326755a155ab7f1cd1241788a0686c1de06b9caae64",
+        "inputs_sha256": "c6730a49c653509afdf879f642c5814ae7c8aa8a3ed453ce748be7ae1f31449e",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "spatial_rank_seven_right",
+      "passed": true,
+      "model_sha256": "1781dcc298adff49ca038098522973503d3a4a1eafeba3e48ef68b3b840b3c14",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 7.450580596923828e-09,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "8b55ef74ca6224095ae1d8797ac709a3bceabc141a5cb315d2814c1dd20e409d",
+        "library_sha256": "64a35f5b5edd3d0cd17dc7f41f0850c70938f09f40d57a97488feeabc4b76a69",
+        "inputs_sha256": "c60bfe183a1c4c5453c030a9721729aac4499242a278dee5d7afd790d407abd2",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "spatial_rank_seven_left",
+      "passed": true,
+      "model_sha256": "614f9e629baaa098f0e7e243bb6142e8eb33beb61baf92ed71d60d782efb163e",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "8b55ef74ca6224095ae1d8797ac709a3bceabc141a5cb315d2814c1dd20e409d",
+        "library_sha256": "64a35f5b5edd3d0cd17dc7f41f0850c70938f09f40d57a97488feeabc4b76a69",
+        "inputs_sha256": "dfa96526a501fddf13adbd77af5a1a3f146f67f609b2a03eabcfe4e5ac1ce92d",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "spatial_single_use_view_chain",
+      "passed": true,
+      "model_sha256": "c8579d777dccf25c6f434c0b928487cb8dbb66a71847f34773eaac79f458f101",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "8b55ef74ca6224095ae1d8797ac709a3bceabc141a5cb315d2814c1dd20e409d",
+        "library_sha256": "64a35f5b5edd3d0cd17dc7f41f0850c70938f09f40d57a97488feeabc4b76a69",
+        "inputs_sha256": "3d03898e7d334e7e8e3ab6437f93c26dac1fd13a66f1a0f4c77779e3df537f46",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "temporal_full_shape_normalizer",
+      "passed": true,
+      "model_sha256": "20ef7938e640486a6c804ebbd4500d8f55add9a4cfc954dd1536eb473fee603d",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "641a7255e4205f4d3b95aa23fe92e49d1747eaa46bcfb23a344600c58e1b546e",
+        "library_sha256": "1172392b2c68d7659e1f3c111cba4b02c6fbe50e98e224498aa214142f74b591",
+        "inputs_sha256": "f62aace99b80a8d1f96f37dedf462526badf9ad4ba006a52475a096d0cb08f32",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "temporal_signed_and_infinite_normalizer",
+      "passed": true,
+      "model_sha256": "4661f1600b439aa47c64ca7efb2043c0814cff1ce9802bbabd435572a5e62d3c",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.ms_deform_attn_offsets": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 8.940696716308594e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "d3dc86073977a89180b81ffa9234f4b2db28dcd23957cb4d4391d00cae900a06",
+        "library_sha256": "07230a63d411e6bfb4075326755a155ab7f1cd1241788a0686c1de06b9caae64",
+        "inputs_sha256": "387f67d0db302fb0df66b440b5535f7e0d1f9178a2eb8193053ade40936e2b1c",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "public_locations_retained",
+      "passed": true,
+      "model_sha256": "81c593b25423579460a47b503695065d8c83a1c618491a8b0211befe463173f7",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.reshape": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 7.450580596923828e-09,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "locations_view": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "f6a8d8d170b97efae176fca1a03a84691f44f603f6f1e6feb6a0e61019f34abb",
+        "library_sha256": "ccc571beb16b6e0b24d479a7f31040821e1324b02c6335463e16ece8d07fb5b6",
+        "inputs_sha256": "83ef763861066463d518642aeea8b2cc1a38979aeed433cedb45bc0f2c7e6319",
+        "constants_sha256": "170341547cd50c9716f3d7cc35ca48e044980d59b91ae3e8571268747f7faea6"
+      }
+    },
+    {
+      "name": "public_division_retained",
+      "passed": true,
+      "model_sha256": "8f31cd981174eaca5e048b84a715832c4e86afd6a03898cfeb73cccb7a4781b6",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1728,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "divided": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "5534a49fc7f585a6bab341a43d5f3cd01f1886d9b87797f4c70d3798fab71793",
+        "library_sha256": "a430d033f2030fe26be5c923901114234c1410fbbbcb51d8ae650b2fdcabbd5c",
+        "inputs_sha256": "c2d52fdd56c44244567251dd0aebb0fcc63b7419f01d1c528fe565b402ae2131",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "division_extra_consumer",
+      "passed": true,
+      "model_sha256": "2306911cb73e1ea4b6fd0cc2254df92168a1c179f497e57adc63241dd598570c",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1728,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1,
+        "gac.mul": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "other": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "7ea765f470f77f09dc2e0c4490d96b6020cfae22658e6392d4f6586d33e6f990",
+        "library_sha256": "bff8af162e619d51cd935a089dc5dbde38f79af5d9bab912b242f042fe191f7e",
+        "inputs_sha256": "7dac59e1dc2e805c7d5e117a5f97cc30120af2d3d4cff02c3eeb245751c3665f",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "addition_extra_consumer",
+      "passed": true,
+      "model_sha256": "4905c74082753b65927827c5d581c4b047d20f0f03ab0d1b81743207efd788da",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 2304,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1,
+        "gac.mul": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "other": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "2dac28024dcbdf9941077bf655b119643b38680ba56ef8b52cbf8a6f6629ac35",
+        "library_sha256": "b1e41e3ef7f5d963ad1f0dd1a1881664dd053a47e9cdeaf4a0e8bee18cc36fad",
+        "inputs_sha256": "bd77dee042dd5e6d8f453e57419d8a44c10324c70f747b30ea80d6c03e61c541",
+        "constants_sha256": "170341547cd50c9716f3d7cc35ca48e044980d59b91ae3e8571268747f7faea6"
+      }
+    },
+    {
+      "name": "transpose_before_add_not_absorbed",
+      "passed": true,
+      "model_sha256": "2bd9ad50e5fc8a6f9abe3d91ebf4c3911b701b0839ff74b1e6ab422caeab903f",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.transpose": 1,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "8bfcbab588b23dd57a6ec72ca594ff20be089dcdd53a4895c64cf75b4b73a32c",
+        "library_sha256": "2d6e9eb2d2647453ab8ba4769305c4049c9e9922487b2f8248bf2f398f059fe7",
+        "inputs_sha256": "3f9c5b7db3d1a62800884a545e92b904a6b37c2b3fa9f7e854f6ad826672a1f2",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "transpose_after_add_not_absorbed",
+      "passed": true,
+      "model_sha256": "79c1a6463c6a3c4a0043c09b450017e9372cfcffcea1efc5fb7702c66254ac88",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.transpose": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "47c207ffa2de53c6f60518681191b2b0992939db378a0d01c28c139c2613eef5",
+        "library_sha256": "d7a3ff5f2d91b29c84c175b215394b8c681ff2010e9a14b4dc3f3dc281c23937",
+        "inputs_sha256": "ff56daba3f27c263ff88136c81a973e582f8c339a85241ce6379edad8268948d",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "cast_before_add_not_absorbed",
+      "passed": true,
+      "model_sha256": "a4d5036325e5c9306096f6045f930b46c880e69e97373c86cb43397e94a403f2",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.cast": 2,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "a1ebed1ad7183810d26f29f94e4126223a9483abdb1de981ede706b32914c230",
+        "library_sha256": "7979f45e4558e2c2dff8934b90331cf28527c0717eb072b973847987b19403d4",
+        "inputs_sha256": "549552d68f9d2ac4163d0e9509f055c07e9e110bc1a9a7a4eba50c03c2b94d31",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "cast_after_add_not_absorbed",
+      "passed": true,
+      "model_sha256": "cd7345d82715d8e2cf904bc780bcb0742ad6a436df49e10a52dbc96bbfbd228f",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.cast": 2,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.862645149230957e-09,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "da729dbb118edeb4660de9bcbce4eda213fd4672c971ef8716b9367462be0d81",
+        "library_sha256": "31cf267714d12a455c266c4e537c6803bbe4731f6f5ac97f0dcad8110d37b1d3",
+        "inputs_sha256": "6118d19c163ec9b861563467ebc6ddb874f78e7a715092fa36f3123d01951b0b",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    },
+    {
+      "name": "reversed_division_not_misidentified",
+      "passed": true,
+      "model_sha256": "1ed944286763ff65e7d058f986ca3e0fe87e31b05bafcef2e3f28a89c012273e",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 1536,
+      "dispatch_operation_counts": {
+        "gac.div": 1,
+        "gac.add": 1,
+        "gac.ms_deform_attn": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.4901161193847656e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "55e604f87620516e326b9c5b5c0e267784ab7a52251416c98b45df7fafdc9ab2",
+        "library_sha256": "efad7b3b67f2ace1b35f58ca97fe80061fd2b72626c5de867fa02e273d52a1cb",
+        "inputs_sha256": "9d1c147e12c8666cd02fc6bd52af8d9a6e311d3b95b9ad5c986036db6638efac",
+        "constants_sha256": "90f8a198614a7bb80a0d87a494914f60e35fe35fe9142317f85a0e9b0b42cfb0"
+      }
+    }
+  ],
+  "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "compiler_stable_during_run": true,
+  "passed": true
+}

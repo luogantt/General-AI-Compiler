@@ -1,0 +1,57 @@
+{
+  "scope": "Existing 73 native regression cases rerun after view/Range changes",
+  "started_at_utc": "2026-10-16T11:44:16.962293+00:00",
+  "python_operator_fallback": false,
+  "physical_device_benchmark": false,
+  "compiler_sha256_at_start": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "optimizer_sha256_at_start": "dd71c0a340cd1293a89dcbe26f01702bc5ccd98036eb2deb8fc3a9e1796c8856",
+  "groups": [
+    {
+      "name": "native",
+      "expected_cases": 31,
+      "passed": true,
+      "actual_cases": 31,
+      "live_overlap_manifests_checked": 19,
+      "report": "build/native-current-regressions/native/results.json",
+      "report_sha256": "81d6711cea150da2e96ebdf34a0600446d6668a57f0a8b426b2b5c64caeb0644",
+      "specification_sha256": "59e7ca43e35ed96e0ba898299736209b29e282a339600625357f7d86150dbefe"
+    },
+    {
+      "name": "geometry",
+      "expected_cases": 6,
+      "passed": true,
+      "actual_cases": 6,
+      "live_overlap_manifests_checked": 6,
+      "report": "build/native-current-regressions/geometry/results.json",
+      "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+      "specification_sha256": "5a38de304502df7141589ffcf9e47bf8a4d5cb5fdbea13a26347cfd8fbdd5132"
+    },
+    {
+      "name": "full-ops",
+      "expected_cases": 15,
+      "passed": true,
+      "actual_cases": 15,
+      "live_overlap_manifests_checked": 8,
+      "report": "build/native-current-regressions/full-ops/results.json",
+      "report_sha256": "a86bb79498feca671ebacb6be1c630bb601ffd5477bac8e808f57ff20277d6c3",
+      "specification_sha256": "e959241ffdac3d9a4d355eee09adc82e3a616d28a8c66203fe133f9a985d7f35"
+    },
+    {
+      "name": "base",
+      "expected_cases": 21,
+      "passed": true,
+      "actual_cases": 21,
+      "live_overlap_manifests_checked": 14,
+      "report": "build/native-current-regressions/base/results.json",
+      "report_sha256": "b320a144961c75d3175d3687021cbe2026e5682e925df8ad2939901d81af3e4b",
+      "specification_sha256": "4e156cfcc67800e3e5e908bf35aa663603da4ea623778cdf1b67357e3adb3cd7"
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "optimizer_sha256_at_end": "dd71c0a340cd1293a89dcbe26f01702bc5ccd98036eb2deb8fc3a9e1796c8856",
+  "compiler_stable_during_run": true,
+  "optimizer_stable_during_run": true,
+  "test_process_wall_seconds": 16.604437510000025,
+  "finished_at_utc": "2026-10-16T11:44:33.692114+00:00"
+}

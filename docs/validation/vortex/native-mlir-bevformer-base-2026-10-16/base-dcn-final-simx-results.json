@@ -1,0 +1,41 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_at_start": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "cases": [
+    {
+      "name": "dcn_mask_bias",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1666307674d071dc72943789e59a56a170e77c3ef19372db915b37b1c9bad94d",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      },
+      "library_sha256": "2e13ea00d9c4fa211ae182d2256a8246c5d8692338416e96a960cd13826cc418",
+      "simx": {
+        "passed": true,
+        "physical_device_execution": false,
+        "max_absolute_errors": {
+          "Y": 2.384185791015625e-07
+        },
+        "live_buffer_overlap_check": "passed",
+        "vxbin_sha256": "437fb67f8a972189da80dbdc2420f8aecc6ccfce11e668dea836213bd77d8de8"
+      },
+      "test_wall_seconds": 1.8157859490000021
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+  "compiler_stable_during_run": true
+}
