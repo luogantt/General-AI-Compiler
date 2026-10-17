@@ -1,0 +1,621 @@
+{
+  "schema_version": 1,
+  "purpose": "full BEVFormer-base Vortex template compilation integration, no model execution",
+  "started_utc": "2026-10-17T01:53:54.003141+00:00",
+  "compiler": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+  "compiler_sha256": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+  "model": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+  "model_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "hardware_profile": "/home/thomas/vortex-gac-native-tf32-build32-20261017",
+  "validation_scope": "C++ ONNX import, native MLIR passes, buffer/dispatch plan, target template emission and LLVM dialect lowering; no full-model numerical or latency claim",
+  "modes": [
+    {
+      "schedule": "dxa-double-buffer",
+      "command": [
+        "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--constant-fold-profile=bevformer-base",
+        "--vortex-matmul-schedule=dxa-double-buffer",
+        "--tile-m=4",
+        "--tile-n=4",
+        "--tile-k=16",
+        "--vortex-lanes=4",
+        "--lmem-budget=16384",
+        "--manifest=/home/thomas/gac-vortex-optimized-full-base-20261017/dxa-double-buffer/plan.json",
+        "--constants-dir=/home/thomas/gac-vortex-optimized-full-base-20261017/dxa-double-buffer",
+        "-o",
+        "/home/thomas/gac-vortex-optimized-full-base-20261017/dxa-double-buffer/kernel.mlir"
+      ],
+      "compiler_sha256_before": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "started_utc": "2026-10-17T01:53:58.098785+00:00",
+      "returncode": 0,
+      "elapsed_seconds": 157.683,
+      "compiler_sha256_after": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "compiler_unchanged": true,
+      "dispatch_count": 3224,
+      "schedule_counts": {
+        "scalar": 3079,
+        "dxa-double-buffer": 145
+      },
+      "fallback_counts": {
+        "operation has no Vortex MatMul template": 3043,
+        "DXA coordinates exceed the validated 16-bit descriptor range": 24,
+        "DXA 2D descriptors require one shared rank-2 right matrix": 12
+      },
+      "top_level_keys": [
+        "arena_bytes",
+        "compiler_backend",
+        "dispatches",
+        "double_buffer",
+        "embedded_constant_bytes",
+        "inputs",
+        "lmem_bytes",
+        "optimized_matmul_dispatches",
+        "outputs",
+        "schedule",
+        "schema_version",
+        "target",
+        "template",
+        "tensors",
+        "view_elision",
+        "vortex_matmul_schedule"
+      ],
+      "artifacts": {
+        "plan.json": {
+          "bytes": 2434200,
+          "sha256": "5a78859a3ef89773681de4d0b1e7ea607a325ee10bf3ca766b57d9f7e318863f"
+        },
+        "kernel.mlir": {
+          "bytes": 24293265,
+          "sha256": "3d99c418ef7c7d6105d84cc568df1bece2cf728fcdd957f34d9f32953e1f957c"
+        }
+      },
+      "arena_bytes": 1554944000,
+      "inputs": [
+        "images"
+      ],
+      "outputs": [
+        "bev_embed",
+        "all_cls_scores",
+        "all_bbox_preds"
+      ],
+      "matmul_fallback_counts": {
+        "DXA coordinates exceed the validated 16-bit descriptor range": 24,
+        "DXA 2D descriptors require one shared rank-2 right matrix": 12
+      },
+      "optimized_operator_counts": {
+        "gac.matmul_bias": 109,
+        "gac.matmul_bias_relu": 36
+      },
+      "scalar_operator_counts": {
+        "gac.slice": 594,
+        "gac.conv2d_relu": 246,
+        "gac.max_pool2d": 6,
+        "gac.conv2d": 420,
+        "gac.add_relu": 198,
+        "gac.concat": 177,
+        "gac.sigmoid": 175,
+        "gac.deform_conv2d": 156,
+        "gac.batch_norm": 156,
+        "gac.relu": 170,
+        "gac.resize": 12,
+        "gac.add": 152,
+        "gac.transpose": 76,
+        "gac.expand": 68,
+        "gac.tile": 2,
+        "gac.cast": 1,
+        "gac.gemm": 8,
+        "gac.layer_norm": 49,
+        "gac.matmul_bias": 24,
+        "gac.softmax": 24,
+        "gac.ms_deform_attn_offsets": 18,
+        "gac.reduce_mean": 6,
+        "gac.gather": 125,
+        "gac.div": 30,
+        "gac.matmul": 12,
+        "gac.clamp": 54,
+        "gac.sub": 18,
+        "gac.log": 18,
+        "gac.scatter_nd": 66,
+        "gac.mul": 18
+      },
+      "manifest_summary": {
+        "arena_bytes": 1554944000,
+        "compiler_backend": "native-mlir",
+        "double_buffer": true,
+        "embedded_constant_bytes": 2073600,
+        "inputs": [
+          "images"
+        ],
+        "lmem_bytes": 1024,
+        "optimized_matmul_dispatches": 145,
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ],
+        "schedule": "serialized dispatches; SSA last-use buffer reuse",
+        "schema_version": 1,
+        "target": "vortex",
+        "template": "per-dispatch Vortex MatMul templates; scalar for other operations",
+        "view_elision": {
+          "dispatches_removed": 331,
+          "logical_copy_bytes_removed": 16368553824,
+          "public_output_views_materialized": true
+        },
+        "vortex_matmul_schedule": "dxa-double-buffer"
+      },
+      "tensor_storage_bytes": {
+        "arena": 48715061696,
+        "constant": 368518572,
+        "input": 106905600
+      },
+      "tensor_storage_counts": {
+        "input": 1,
+        "constant": 859,
+        "arena": 3224
+      },
+      "optimized_shapes": {
+        "(1, 40000, 128, 512)": 6,
+        "(1, 40000, 64, 512)": 6,
+        "(1, 40000, 256, 256)": 18,
+        "(1, 40000, 512, 256)": 6,
+        "(1, 40000, 256, 512)": 6,
+        "(1, 900, 3, 256)": 1,
+        "(1, 900, 256, 256)": 60,
+        "(1, 900, 64, 256)": 6,
+        "(1, 900, 32, 256)": 6,
+        "(1, 900, 512, 256)": 6,
+        "(1, 900, 256, 512)": 6,
+        "(1, 900, 10, 256)": 18
+      },
+      "maximum_resident_set_kib": 1275856
+    },
+    {
+      "schedule": "lmem-tiled",
+      "command": [
+        "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--constant-fold-profile=bevformer-base",
+        "--vortex-matmul-schedule=lmem-tiled",
+        "--tile-m=4",
+        "--tile-n=4",
+        "--tile-k=16",
+        "--vortex-lanes=4",
+        "--lmem-budget=16384",
+        "--manifest=/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled/plan.json",
+        "--constants-dir=/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled",
+        "-o",
+        "/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled/kernel.mlir"
+      ],
+      "compiler_sha256_before": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "started_utc": "2026-10-17T01:56:35.940713+00:00",
+      "returncode": 0,
+      "elapsed_seconds": 156.474,
+      "compiler_sha256_after": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "compiler_unchanged": true,
+      "dispatch_count": 3224,
+      "schedule_counts": {
+        "scalar": 3043,
+        "lmem-tiled": 181
+      },
+      "fallback_counts": {
+        "operation has no Vortex MatMul template": 3043
+      },
+      "top_level_keys": [
+        "arena_bytes",
+        "compiler_backend",
+        "dispatches",
+        "double_buffer",
+        "embedded_constant_bytes",
+        "inputs",
+        "lmem_bytes",
+        "optimized_matmul_dispatches",
+        "outputs",
+        "schedule",
+        "schema_version",
+        "target",
+        "template",
+        "tensors",
+        "view_elision",
+        "vortex_matmul_schedule"
+      ],
+      "artifacts": {
+        "plan.json": {
+          "bytes": 2446839,
+          "sha256": "f3f282969308902fdfaff813c18ce1810f8c8397fa1252661a70f1e28441d979"
+        },
+        "kernel.mlir": {
+          "bytes": 24538567,
+          "sha256": "bade9c2da8133808cf15d6617735d020580dcfc1852dd29ffac339167d370301"
+        },
+        "kernel.ll": {
+          "bytes": 13907891,
+          "sha256": "435f79096413bbeae1e54a2b302c18648eff46aedfa6f64e9eddbdc89b7a4596"
+        }
+      },
+      "arena_bytes": 1554944000,
+      "inputs": [
+        "images"
+      ],
+      "outputs": [
+        "bev_embed",
+        "all_cls_scores",
+        "all_bbox_preds"
+      ],
+      "matmul_fallback_counts": {},
+      "optimized_operator_counts": {
+        "gac.matmul_bias": 133,
+        "gac.matmul_bias_relu": 36,
+        "gac.matmul": 12
+      },
+      "scalar_operator_counts": {
+        "gac.slice": 594,
+        "gac.conv2d_relu": 246,
+        "gac.max_pool2d": 6,
+        "gac.conv2d": 420,
+        "gac.add_relu": 198,
+        "gac.concat": 177,
+        "gac.sigmoid": 175,
+        "gac.deform_conv2d": 156,
+        "gac.batch_norm": 156,
+        "gac.relu": 170,
+        "gac.resize": 12,
+        "gac.add": 152,
+        "gac.transpose": 76,
+        "gac.expand": 68,
+        "gac.tile": 2,
+        "gac.cast": 1,
+        "gac.gemm": 8,
+        "gac.layer_norm": 49,
+        "gac.softmax": 24,
+        "gac.ms_deform_attn_offsets": 18,
+        "gac.reduce_mean": 6,
+        "gac.gather": 125,
+        "gac.div": 30,
+        "gac.clamp": 54,
+        "gac.sub": 18,
+        "gac.log": 18,
+        "gac.scatter_nd": 66,
+        "gac.mul": 18
+      },
+      "manifest_summary": {
+        "arena_bytes": 1554944000,
+        "compiler_backend": "native-mlir",
+        "double_buffer": false,
+        "embedded_constant_bytes": 2073600,
+        "inputs": [
+          "images"
+        ],
+        "lmem_bytes": 512,
+        "optimized_matmul_dispatches": 181,
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ],
+        "schedule": "serialized dispatches; SSA last-use buffer reuse",
+        "schema_version": 1,
+        "target": "vortex",
+        "template": "per-dispatch Vortex MatMul templates; scalar for other operations",
+        "view_elision": {
+          "dispatches_removed": 331,
+          "logical_copy_bytes_removed": 16368553824,
+          "public_output_views_materialized": true
+        },
+        "vortex_matmul_schedule": "lmem-tiled"
+      },
+      "tensor_storage_bytes": {
+        "arena": 48715061696,
+        "constant": 368518572,
+        "input": 106905600
+      },
+      "tensor_storage_counts": {
+        "input": 1,
+        "constant": 859,
+        "arena": 3224
+      },
+      "optimized_shapes": {
+        "(1, 80000, 256, 256)": 6,
+        "(1, 40000, 128, 512)": 6,
+        "(1, 40000, 64, 512)": 6,
+        "(1, 40000, 256, 256)": 18,
+        "(1, 184950, 256, 256)": 6,
+        "(1, 240000, 512, 256)": 6,
+        "(1, 240000, 256, 256)": 6,
+        "(1, 40000, 512, 256)": 6,
+        "(1, 40000, 256, 512)": 6,
+        "(1, 900, 3, 256)": 1,
+        "(1, 900, 256, 256)": 60,
+        "(8, 900, 900, 32)": 6,
+        "(8, 900, 32, 900)": 6,
+        "(1, 900, 64, 256)": 6,
+        "(1, 900, 32, 256)": 6,
+        "(1, 900, 512, 256)": 6,
+        "(1, 900, 256, 512)": 6,
+        "(1, 900, 10, 256)": 18
+      },
+      "maximum_resident_set_kib": 1275744,
+      "llvm_ir_checks": [
+        {
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled/kernel.ll"
+          ],
+          "returncode": 0,
+          "elapsed_seconds": 3.952,
+          "diagnostics": ""
+        },
+        {
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/lmem-tiled/kernel.ll"
+          ],
+          "returncode": 0,
+          "elapsed_seconds": 0.895,
+          "diagnostics": ""
+        }
+      ]
+    },
+    {
+      "schedule": "tcu",
+      "command": [
+        "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--constant-fold-profile=bevformer-base",
+        "--vortex-matmul-schedule=tcu",
+        "--tile-m=4",
+        "--tile-n=4",
+        "--tile-k=16",
+        "--vortex-lanes=4",
+        "--lmem-budget=16384",
+        "--manifest=/home/thomas/gac-vortex-optimized-full-base-20261017/tcu/plan.json",
+        "--constants-dir=/home/thomas/gac-vortex-optimized-full-base-20261017/tcu",
+        "-o",
+        "/home/thomas/gac-vortex-optimized-full-base-20261017/tcu/kernel.mlir"
+      ],
+      "compiler_sha256_before": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "started_utc": "2026-10-17T01:59:12.579675+00:00",
+      "returncode": 0,
+      "elapsed_seconds": 157.402,
+      "compiler_sha256_after": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+      "compiler_unchanged": true,
+      "dispatch_count": 3224,
+      "schedule_counts": {
+        "scalar": 3043,
+        "tcu": 181
+      },
+      "fallback_counts": {
+        "operation has no Vortex MatMul template": 3043
+      },
+      "top_level_keys": [
+        "arena_bytes",
+        "compiler_backend",
+        "dispatches",
+        "double_buffer",
+        "embedded_constant_bytes",
+        "inputs",
+        "lmem_bytes",
+        "optimized_matmul_dispatches",
+        "outputs",
+        "schedule",
+        "schema_version",
+        "target",
+        "template",
+        "tensors",
+        "view_elision",
+        "vortex_matmul_schedule"
+      ],
+      "artifacts": {
+        "plan.json": {
+          "bytes": 2453431,
+          "sha256": "2dc7769e57ce5db78ca178e4be97efc9ba35a576fb14241cec8bd4bf9ad0d72f"
+        },
+        "kernel.mlir": {
+          "bytes": 31645641,
+          "sha256": "2995e8464febd95ef275e1063e5926c2326c78c5cd2b27bd300ddc7dd9935e67"
+        },
+        "kernel.ll": {
+          "bytes": 19068720,
+          "sha256": "39c1be9f219d162fbc84fadf2aa069ee3e79f9f991c54cc84a9608d8258b6bf2"
+        }
+      },
+      "arena_bytes": 1554944000,
+      "inputs": [
+        "images"
+      ],
+      "outputs": [
+        "bev_embed",
+        "all_cls_scores",
+        "all_bbox_preds"
+      ],
+      "matmul_fallback_counts": {},
+      "optimized_operator_counts": {
+        "gac.matmul_bias": 133,
+        "gac.matmul_bias_relu": 36,
+        "gac.matmul": 12
+      },
+      "scalar_operator_counts": {
+        "gac.slice": 594,
+        "gac.conv2d_relu": 246,
+        "gac.max_pool2d": 6,
+        "gac.conv2d": 420,
+        "gac.add_relu": 198,
+        "gac.concat": 177,
+        "gac.sigmoid": 175,
+        "gac.deform_conv2d": 156,
+        "gac.batch_norm": 156,
+        "gac.relu": 170,
+        "gac.resize": 12,
+        "gac.add": 152,
+        "gac.transpose": 76,
+        "gac.expand": 68,
+        "gac.tile": 2,
+        "gac.cast": 1,
+        "gac.gemm": 8,
+        "gac.layer_norm": 49,
+        "gac.softmax": 24,
+        "gac.ms_deform_attn_offsets": 18,
+        "gac.reduce_mean": 6,
+        "gac.gather": 125,
+        "gac.div": 30,
+        "gac.clamp": 54,
+        "gac.sub": 18,
+        "gac.log": 18,
+        "gac.scatter_nd": 66,
+        "gac.mul": 18
+      },
+      "manifest_summary": {
+        "arena_bytes": 1554944000,
+        "compiler_backend": "native-mlir",
+        "double_buffer": false,
+        "embedded_constant_bytes": 2073600,
+        "inputs": [
+          "images"
+        ],
+        "lmem_bytes": 0,
+        "optimized_matmul_dispatches": 181,
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ],
+        "schedule": "serialized dispatches; SSA last-use buffer reuse",
+        "schema_version": 1,
+        "target": "vortex",
+        "template": "per-dispatch Vortex MatMul templates; scalar for other operations",
+        "view_elision": {
+          "dispatches_removed": 331,
+          "logical_copy_bytes_removed": 16368553824,
+          "public_output_views_materialized": true
+        },
+        "vortex_matmul_schedule": "tcu"
+      },
+      "tensor_storage_bytes": {
+        "arena": 48715061696,
+        "constant": 368518572,
+        "input": 106905600
+      },
+      "tensor_storage_counts": {
+        "input": 1,
+        "constant": 859,
+        "arena": 3224
+      },
+      "optimized_shapes": {
+        "(1, 80000, 256, 256)": 6,
+        "(1, 40000, 128, 512)": 6,
+        "(1, 40000, 64, 512)": 6,
+        "(1, 40000, 256, 256)": 18,
+        "(1, 184950, 256, 256)": 6,
+        "(1, 240000, 512, 256)": 6,
+        "(1, 240000, 256, 256)": 6,
+        "(1, 40000, 512, 256)": 6,
+        "(1, 40000, 256, 512)": 6,
+        "(1, 900, 3, 256)": 1,
+        "(1, 900, 256, 256)": 60,
+        "(8, 900, 900, 32)": 6,
+        "(8, 900, 32, 900)": 6,
+        "(1, 900, 64, 256)": 6,
+        "(1, 900, 32, 256)": 6,
+        "(1, 900, 512, 256)": 6,
+        "(1, 900, 256, 512)": 6,
+        "(1, 900, 10, 256)": 18
+      },
+      "maximum_resident_set_kib": 1276348,
+      "llvm_ir_checks": [
+        {
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/tcu/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/tcu/kernel.ll"
+          ],
+          "returncode": 0,
+          "elapsed_seconds": 4.741,
+          "diagnostics": ""
+        },
+        {
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/home/thomas/gac-vortex-optimized-full-base-20261017/tcu/kernel.ll"
+          ],
+          "returncode": 0,
+          "elapsed_seconds": 1.147,
+          "diagnostics": ""
+        }
+      ]
+    }
+  ],
+  "completed_utc": "2026-10-17T02:01:50.098703+00:00",
+  "cross_mode_graph_and_memory_match": true,
+  "tensor_storage_bytes_note": "Sum of logical tensor payload sizes by storage class. The arena class sum is cumulative, not peak allocated DDR; arena_bytes is the reusable arena allocation.",
+  "minimum_static_payload_bytes": 2032441772,
+  "minimum_static_payload_note": "Excludes executable image, stacks, runtime metadata, device allocator padding and simulator host memory.",
+  "dxa_machine_code_build": {
+    "command": [
+      "make",
+      "-C",
+      "/home/thomas/gac-vortex-optimized-full-base-20261017/dxa-double-buffer",
+      "-f",
+      "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/Vortex.mk",
+      "ROOT_DIR=/home/thomas/vortex-gac-native-tf32-build32-20261017",
+      "LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release",
+      "kernel.vxbin"
+    ],
+    "scope": "complete LLVM dialect to LLVM IR, VOLT ELF and vxbin packaging; no execution",
+    "returncode": 0,
+    "elapsed_seconds": 100.10075129999996,
+    "artifacts": {
+      "kernel.ll": {
+        "bytes": 13653104,
+        "sha256": "f44f0167c2ac1846005ae9fb4613704b1a59840a1336bbd932570d7eced42f98"
+      },
+      "kernel.elf": {
+        "bytes": 1424820,
+        "sha256": "9afb17ad96068872beda7bd3447bc961d2a6b18a2707726ac1d910d763dd518f"
+      },
+      "kernel.vxbin": {
+        "bytes": 1224654,
+        "sha256": "ed68b44434b4a8d2bb5a94941f671eafade5b4ff6d3a1680463094568d2bfc9a"
+      }
+    },
+    "configuration_provenance_note": "VORTEX_BUILD points to the TF32/DXA/TCU runtime build. This artifact make command did not override CONFIGS. Its logged Clang preprocessing flags report EXT_DXA_ENABLED=0, EXT_TCU_ENABLED=0 and TCU_TF32_ENABLED=0. Custom instructions originate in LLVM IR, not preprocessed kernel C++; no full-model execution was performed. Runtime profile provenance and a CONFIGS-controlled artifact comparison are separate validation.",
+    "llvm_collective_attributes": {
+      "helper_definition": [
+        "convergent",
+        "noinline",
+        "optnone"
+      ],
+      "callsite_convergent": true
+    },
+    "configuration_flags_audit": {
+      "report": "docs/validation/vortex/native-mlir-matmul-2026-10-17/config-flags-audit.json",
+      "sha256": "2fe6fe3ba4e99c2da74ccd80527c44145bff79698aad1af2f0fa840abd0a4901",
+      "scope": "Independent tail fixtures for all four schedules; explicit DXA/TCU/TF32/four-lane CONFIGS yielded byte-identical LLVM IR/ELF/vxbin and matching SimX cycles. This is not a full-base artifact equivalence check."
+    }
+  },
+  "llvm_tools": {
+    "mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a"
+    },
+    "opt": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+      "sha256": "45f50b5db8e2e2dd4e8eff4e59c0ba91bbde6136460ad62422edaedca6ac26c8"
+    }
+  }
+}

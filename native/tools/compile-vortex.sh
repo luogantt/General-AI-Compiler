@@ -15,6 +15,10 @@ gac_output="$(realpath -m -- "$2")"
 mkdir -p -- "$gac_output"
 "$GAC_NATIVE_BIN/gac-compile" "$gac_model" --emit=llvm --target=vortex \
   --constant-fold-profile "${GAC_CONSTANT_FOLD_PROFILE:-default}" \
+  --vortex-matmul-schedule "${GAC_VORTEX_MATMUL_SCHEDULE:-scalar}" \
+  --tile-m "${GAC_TILE_M:-4}" --tile-n "${GAC_TILE_N:-4}" \
+  --tile-k "${GAC_TILE_K:-16}" --vortex-lanes "${GAC_VORTEX_LANES:-4}" \
+  --lmem-budget "${GAC_LMEM_BUDGET:-16384}" \
   --save-stages "$gac_output" --manifest "$gac_output/plan.json" \
   --constants-dir "$gac_output" -o "$gac_output/kernel.mlir"
 make -C "$gac_output" -f "$gac_script_dir/Vortex.mk" \

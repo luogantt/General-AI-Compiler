@@ -1,6 +1,7 @@
 #include "gac/DeviceLowering.h"
 #include "gac/CudaLowering.h"
 #include "gac/VortexLowering.h"
+#include "gac/VortexMatmul.h"
 #include "gac/Dialect.h"
 #include "mlir/Conversion/ArithToLLVM/ArithToLLVM.h"
 #include "mlir/Conversion/ControlFlowToLLVM/ControlFlowToLLVM.h"
@@ -1429,9 +1430,16 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   Location loc = module.getLoc();
   Type ptr = LLVM::LLVMPointerType::get(module.getContext());
   llvm::json::Array dispatches;
+  int64_t maxLmemBytes = 0, optimizedMatmuls = 0;
+  bool usesDoubleBuffer = false;
   SmallVector<std::string> kernelNames;
   llvm::DenseMap<unsigned, int64_t> producer;
   for (auto [idx, op] : llvm::enumerate(nodes)) {
+    std::optional<VortexMatmulPlan> matmulPlan;
+    std::string matmulFallback;
+    if (vortex && options.vortexMatmulSchedule != "scalar" &&
+        failed(planVortexMatmul(op, options, matmulPlan, matmulFallback)))
+      return failure();
     std::string name = "gac_op_" + std::to_string(idx);
     kernelNames.push_back(name);
     b.setInsertionPointToEnd(module.getBody());
@@ -1474,7 +1482,15 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
       s.write(result, pointers.back(), tid,
               tensor(op->getResult(0)).getElementType());
     };
-    if (native) {
+    if (matmulPlan) {
+      // All CTA lanes must enter the collective template, including lanes
+      // whose output is outside an M/N tail. The template guards memory
+      // accesses and writes; an outer guard here would deadlock its barriers.
+      kernel->setAttr("passthrough", b.getArrayAttr(
+          {b.getStringAttr("vortex-kernel"), b.getStringAttr("convergent")}));
+      if (failed(emitVortexMatmul(b, op, pointers, *matmulPlan)))
+        return failure();
+    } else if (native) {
       Value begin = s.i(0), end = s.i(elements), step = s.i(1);
       b.create<scf::ForOp>(s.loc, begin, end, step, ValueRange{},
                            [&](OpBuilder &, Location, Value iv, ValueRange) {
@@ -1520,6 +1536,33 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
       dispatch["grid_size"] = (elements + blockSize - 1) / blockSize;
       dispatch["shared_memory_bytes"] = 0;
     }
+    if (matmulPlan) {
+      const auto &p = *matmulPlan;
+      auto logicalShape = [](ArrayRef<int64_t> dims) {
+        llvm::json::Array shape;
+        for (int64_t dim : dims)
+          shape.push_back(dim);
+        return shape;
+      };
+      dispatch["vortex"] = llvm::json::Object{
+          {"schedule", p.schedule}, {"m", p.m}, {"n", p.n}, {"k", p.k},
+          {"batches", p.batches}, {"tile_m", p.tileM}, {"tile_n", p.tileN},
+          {"tile_k", p.tileK}, {"block_size", p.blockSize},
+          {"grid_size", p.gridSize}, {"lmem_bytes", p.lmemBytes},
+          {"stages", p.stages}, {"lanes", options.vortexLanes},
+          {"a_shape", logicalShape(p.aShape)},
+          {"b_shape", logicalShape(p.bShape)},
+          {"bias_shape", logicalShape(p.biasShape)}};
+      if (p.schedule == "tcu")
+        (*dispatch.getObject("vortex"))["arithmetic"] =
+            "tf32x3-fp32-accumulate";
+      maxLmemBytes = std::max(maxLmemBytes, p.lmemBytes);
+      usesDoubleBuffer |= p.schedule == "dxa-double-buffer";
+      ++optimizedMatmuls;
+    } else if (!matmulFallback.empty()) {
+      dispatch["matmul_schedule"] = "scalar";
+      dispatch["fallback_reason"] = matmulFallback;
+    }
     dispatches.push_back(std::move(dispatch));
     producer[ids[op->getResult(0)]] = idx;
   }
@@ -1559,9 +1602,14 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
            // Cumulative logical copy volume, not a claim about peak memory.
            {"logical_copy_bytes_removed", elidedViewCopyBytes},
            {"public_output_views_materialized", true}}},
-      {"lmem_bytes", 0},
-      {"double_buffer", false},
+      {"lmem_bytes", maxLmemBytes},
+      {"double_buffer", usesDoubleBuffer},
       {"template", "one output per SIMT thread; serial reductions"}};
+  if (vortex && options.vortexMatmulSchedule != "scalar") {
+    manifest["vortex_matmul_schedule"] = options.vortexMatmulSchedule;
+    manifest["optimized_matmul_dispatches"] = optimizedMatmuls;
+    manifest["template"] = "per-dispatch Vortex MatMul templates; scalar for other operations";
+  }
   func.erase();
   if (vortex)
     configureVortexModule(module, kernelNames);

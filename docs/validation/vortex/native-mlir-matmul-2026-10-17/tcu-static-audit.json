@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "audit_utc": "2026-10-17T01:57:44.798259+00:00",
+  "scope": "Static LLVM IR and ELF disassembly audit of existing SimX tail artifact; this audit did not rerun device execution",
+  "artifact_directory": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu",
+  "artifacts": {
+    "kernel.ll": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/kernel.ll",
+      "bytes": 38186,
+      "sha256": "c2c1c6bb5e057aae7b72d3308731e42e8e7cb70071c3139cb64cea0a6a6580dd"
+    },
+    "kernel.mlir": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/kernel.mlir",
+      "bytes": 55489,
+      "sha256": "180e2b63e31b5aa3513830b58dcef759512a59b32dd38edbc7852b54028bb2ab"
+    },
+    "kernel.elf": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/kernel.elf",
+      "bytes": 8860,
+      "sha256": "e61223e93ce4b7fe476b1d4502e39a873bf3e936b4e301dae6e6c182a64d8e6a"
+    },
+    "kernel.vxbin": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/kernel.vxbin",
+      "bytes": 4172,
+      "sha256": "a183c66687daf9754eca0b7e3cffbc22133db099ed102558e30cccc18271ebaf"
+    },
+    "kernel.dump": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/kernel.dump",
+      "bytes": 35633,
+      "sha256": "dcd036a73171f158d8de568488e8c29571658f1dba135c047cd6e7d03e7c92f8"
+    },
+    "plan.json": {
+      "path": "/home/thomas/gac-vortex-tcu-tail-20261017/tail/tcu/plan.json",
+      "bytes": 2718,
+      "sha256": "5215a6de954e7796b89ff2906696253cee6812c6882158459fb3497abe2d55f4"
+    }
+  },
+  "helper": {
+    "name": "__gac_tcu_wmma_tf32_nt4",
+    "definition_line": 13,
+    "function_attributes": "convergent noinline optnone",
+    "callsite_count": 3,
+    "all_calls_convergent": true,
+    "callsite_lines": [
+      472,
+      481,
+      490
+    ],
+    "inline_asm": {
+      "line": 14,
+      "text": "%21 = call { float, float, float, float, float, float, float, float } asm sideeffect \".insn r 0x0b, 0, 2, x0, x1, x0\", \"={f0},={f1},={f2},={f3},={f4},={f5},={f6},={f7},0,1,2,3,4,5,6,7,{f10},{f11},{f12},{f13},{f14},{f15},{f16},{f17},{f28},{f29},{f30},{f31}\"(float %0, float %1, float %2, float %3, float %4, float %5, float %6, float %7, float %8, float %9, float %10, float %11, float %12, float %13, float %14, float %15, float %16, float %17, float %18, float %19)"
+    },
+    "machine_helper_calls": [
+      {
+        "line": 177,
+        "text": "80000298: 1c1000ef     \tjal\t0x80000c58 <__gac_tcu_wmma_tf32_nt4>"
+      },
+      {
+        "line": 200,
+        "text": "800002f4: 165000ef     \tjal\t0x80000c58 <__gac_tcu_wmma_tf32_nt4>"
+      },
+      {
+        "line": 220,
+        "text": "80000344: 115000ef     \tjal\t0x80000c58 <__gac_tcu_wmma_tf32_nt4>"
+      }
+    ]
+  },
+  "wmma_machine_instruction": {
+    "word": "0x0400800b",
+    "decoded_fields": {
+      "opcode": 11,
+      "rd_output_format": 0,
+      "funct3": 0,
+      "rs1_input_format": 1,
+      "rs2_sparse_selector": 0,
+      "funct7": 2
+    },
+    "meaning": "Vortex custom-0 WMMA_SYNC, dense TF32 input format 1, FP32 output format 0",
+    "static_instruction_sites": [
+      {
+        "line": 842,
+        "text": "80000cec: 0400800b     \t<unknown>"
+      }
+    ],
+    "disassembler_note": "Generic llvm-objdump prints <unknown>; the raw instruction word is checked against Vortex decoder, not inferred from the helper name."
+  },
+  "manifest_tcu": {
+    "a_shape": [
+      5,
+      9
+    ],
+    "arithmetic": "tf32x3-fp32-accumulate",
+    "b_shape": [
+      9,
+      7
+    ],
+    "batches": 1,
+    "bias_shape": [
+      7
+    ],
+    "block_size": 4,
+    "grid_size": 2,
+    "k": 9,
+    "lanes": 4,
+    "lmem_bytes": 0,
+    "m": 5,
+    "n": 7,
+    "schedule": "tcu",
+    "stages": 0,
+    "tile_k": 4,
+    "tile_m": 8,
+    "tile_n": 4
+  },
+  "architecture_sources": {
+    "sim/simx/decode.cpp": {
+      "path": "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/sim/simx/decode.cpp",
+      "bytes": 44184,
+      "sha256": "ce7410095b02dcbd6dcc4ecde78b9420a28f920b2525191d5f1935207813ec18"
+    },
+    "sw/common/tensor_cfg.h": {
+      "path": "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/sw/common/tensor_cfg.h",
+      "bytes": 12423,
+      "sha256": "8e57f622cc1154799528b3a708fd7c0b50d20dd8a57e4da5e2762d5fbad5e8da"
+    }
+  },
+  "limitations": [
+    "TCU uses explicit TF32x3 approximation with FP32 accumulation, not native FP32 multiplier arithmetic.",
+    "This static audit establishes instruction encoding and LLVM convergence markers; numerical validation is separately provided by the parent SimX harness.",
+    "The audited existing tail artifact is identified by its own hashes, not attributed solely to the current compiler path."
+  ]
+}

@@ -36,6 +36,8 @@ add_library(GACCompiler STATIC
   lib/OnnxImporter.cpp
   lib/DeviceLowering.cpp
   lib/CudaLowering.cpp
+  lib/VortexMatmul.cpp
+  lib/VortexTcu.cpp
   lib/VortexLowering.cpp)
 target_compile_options(GACCompiler PRIVATE -fno-rtti)
 target_link_libraries(GACCompiler PUBLIC GACOnnxProto
@@ -77,8 +79,13 @@ if(VORTEX_BUILD)
   find_library(VORTEX_RUNTIME NAMES vortex
     PATHS "${VORTEX_BUILD}/sw/runtime" REQUIRED NO_DEFAULT_PATH)
   add_executable(gac-vortex-run runtime/vortex-run.cpp)
+  option(GAC_VORTEX_TCU_TF32 "Runtime profile matches a Vortex build with TF32 TCU enabled" OFF)
+  target_compile_definitions(gac-vortex-run PRIVATE
+    GAC_VORTEX_TCU_TF32=$<BOOL:${GAC_VORTEX_TCU_TF32}>)
   target_compile_options(gac-vortex-run PRIVATE -fno-rtti)
-  target_include_directories(gac-vortex-run PRIVATE ${VORTEX_INCLUDE})
+  target_include_directories(gac-vortex-run PRIVATE ${VORTEX_INCLUDE}
+    "${VORTEX_BUILD}/sw" "${VORTEX_SOURCE}/sw/common"
+    "$ENV{VORTEX_HOME}/sw/common")
   target_link_libraries(gac-vortex-run PRIVATE LLVMSupport ${VORTEX_RUNTIME})
   install(TARGETS gac-vortex-run RUNTIME DESTINATION bin)
 endif()

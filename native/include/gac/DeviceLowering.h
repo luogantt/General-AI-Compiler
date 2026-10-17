@@ -5,6 +5,7 @@
 #include "mlir/Pass/Pass.h"
 #include "mlir/Pass/PassManager.h"
 #include "llvm/Support/JSON.h"
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -15,6 +16,12 @@ struct DeviceOptions {
   // Native is an explicit numerical test target, never an execution fallback.
   DeviceTarget target = DeviceTarget::Vortex;
   std::string constantsDirectory;
+  // Explicit target schedules keep the scalar baseline reproducible. Shapes
+  // outside a template's contract retain scalar code with a manifest reason.
+  std::string vortexMatmulSchedule = "scalar";
+  int64_t tileM = 4, tileN = 4, tileK = 16;
+  int64_t vortexLanes = 4;
+  int64_t lmemBudget = 16384;
 };
 
 // All targets share tensor semantics, static allocation and dispatch ordering.

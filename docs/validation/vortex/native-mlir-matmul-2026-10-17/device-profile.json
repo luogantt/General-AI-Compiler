@@ -1,0 +1,38 @@
+{
+  "profile": "/home/thomas/vortex-gac-native-tf32-build32-20261017",
+  "source": "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0",
+  "build_succeeded": true,
+  "verified_runtime_build_flags": [
+    "VX_CFG_EXT_DXA_ENABLED=1",
+    "VX_CFG_EXT_TCU_ENABLED=1",
+    "VX_CFG_TCU_TF32_ENABLED=1",
+    "VX_CFG_NUM_THREADS=4",
+    "VX_CFG_NUM_WARPS=4",
+    "VX_CFG_NUM_CORES=1",
+    "VX_CFG_LMEM_LOG_SIZE=14",
+    "VX_CFG_NUM_BARRIERS=8"
+  ],
+  "runner_build_tcu_tf32": true,
+  "runner_link_library": "/home/thomas/vortex-gac-native-tf32-build32-20261017/sw/runtime/libvortex.so",
+  "binary_sha256": {
+    "/home/thomas/vortex-gac-native-tf32-build32-20261017/sw/runtime/libvortex.so": "365870d5ee27687037c7b08c4a9cab1be91e1b5a97619f0475b6e3d0e6ab50ab",
+    "/home/thomas/vortex-gac-native-tf32-build32-20261017/sw/runtime/libvortex-simx.so": "03f0302efc6f5c3de97add16e30030bd21d067b41dd6ab4ac1ac44c627f43751",
+    "/home/thomas/vortex-gac-native-tf32-build32-20261017/sw/runtime/libsimx.so": "162df881c1e73cb0f9fe8880c7434bc898d49170b6395bfbacaa4e96bac0a967",
+    "/home/thomas/vortex-gac-native-tf32-build32-20261017/sw/kernel/libvortex2.a": "70a2936332865cdfa56081ae1913d836e136bfce24df45bd4c53ebca9a5bc59f",
+    "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-vortex-run": "6c8b4ed57b61aa61740868d01a841fb0218ad7da31159e24d3978960588dc96e"
+  },
+  "source_sha256": {
+    "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/VX_config.toml": "b0bba05aeef9bec1797c85f69978dc1f2a8bf5687e86834fc5bfe600333e1d0c",
+    "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/VX_types.toml": "363cbf95a0f55425da8fca2574290ea635c84f1304d114d42455242d4756ebe8",
+    "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/sim/simx/tcu/tcu_unit.cpp": "5d5e447673337c3c68b58b552a97aa5c57e7f87e4a9f679e14c09f354763acff",
+    "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/sw/common/rvfloats.cpp": "38b41646f2f6a318abbde25829bb73c91214a6749d768e68720e4ed9f882a282",
+    "/mnt/c/Users/Thomas/Desktop/project/vortex-3.0/sw/common/softfloat_ext.cpp": "4bc6beb8a4bd39407a440021d20bfd044ea32211fae1eea3504ab1c68daeb2f0"
+  },
+  "manifest_negative_cases": 21,
+  "manifest_negative_passed": true,
+  "notes": [
+    "TCU input TF32 support is a build-profile assertion; the device ISA capability word only reports TCU presence. Driver, simulator and RTL must match the selected profile.",
+    "This SimX implementation instantiates TF32 format cases unconditionally within TCU; enabling its TF32 configuration flag does not change the resulting simulator library hash. The configuration flag remains essential for matching hardware RTL.",
+    "No RTL or board execution was performed in this profile setup. Cycle measurements must be reported as SimX model counts, not measured hardware time."
+  ]
+}

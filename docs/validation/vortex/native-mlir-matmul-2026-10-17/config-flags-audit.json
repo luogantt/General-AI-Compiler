@@ -1,0 +1,42 @@
+{
+  "config_flags": "-DVX_CFG_EXT_DXA_ENABLE -DVX_CFG_EXT_TCU_ENABLE -DVX_CFG_TCU_TF32_ENABLE -DVX_CFG_NUM_THREADS=4",
+  "note": "Device runtime, libvortex2 and SimX profile already matched. This isolates additional CONFIGS preprocessor flags for the generated LLVM IR and startup assembly.",
+  "cases": [
+    {
+      "schedule": "scalar",
+      "llvm_equal": true,
+      "elf_equal": true,
+      "vxbin_equal": true,
+      "cycles": 4415,
+      "original_cycles": 4415,
+      "passed": true
+    },
+    {
+      "schedule": "lmem-tiled",
+      "llvm_equal": true,
+      "elf_equal": true,
+      "vxbin_equal": true,
+      "cycles": 15452,
+      "original_cycles": 15452,
+      "passed": true
+    },
+    {
+      "schedule": "dxa-double-buffer",
+      "llvm_equal": true,
+      "elf_equal": true,
+      "vxbin_equal": true,
+      "cycles": 8587,
+      "original_cycles": 8587,
+      "passed": true
+    },
+    {
+      "schedule": "tcu",
+      "llvm_equal": true,
+      "elf_equal": true,
+      "vxbin_equal": true,
+      "cycles": 17539,
+      "original_cycles": 17539,
+      "passed": true
+    }
+  ]
+}

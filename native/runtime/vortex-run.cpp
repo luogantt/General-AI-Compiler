@@ -20,6 +20,16 @@
 #include <string>
 #include <vector>
 #include <vortex2.h>
+#include <dxa.h>
+#include <VX_config.h>
+#include <VX_types.h>
+
+// Vortex's public caps expose TCU presence, but not its enabled input formats.
+// This is an explicit SDK/build-profile assertion, not a hardware format query.
+// The linked driver/simulator/RTL must be built with the matching TF32 feature.
+#ifndef GAC_VORTEX_TCU_TF32
+#define GAC_VORTEX_TCU_TF32 0
+#endif
 
 namespace {
 namespace fs = std::filesystem;
@@ -67,6 +77,20 @@ struct Device {
   // Destruction drains the queue before these vectors or device buffers die.
   std::vector<std::vector<uint64_t>> arguments;
   uint32_t threads = 1;
+  uint64_t isa = 0, lanes = 0, warps = 0, cores = 0, localMemory = 0;
+  bool physicalBuffers = false;
+
+  struct Counters { uint64_t cycles = 0, instructions = 0; };
+  std::vector<Counters> counters() {
+    std::vector<Counters> result(cores);
+    for (uint32_t core = 0; core < cores; ++core) {
+      CHECK(vx_device_mpm_query(device, 0, VX_CSR_MCYCLE, core,
+                                &result[core].cycles));
+      CHECK(vx_device_mpm_query(device, 0, VX_CSR_MINSTRET, core,
+                                &result[core].instructions));
+    }
+    return result;
+  }
 
   ~Device() {
     if (queue)
@@ -90,7 +114,8 @@ struct Device {
   size_t allocate(uint64_t bytes) {
     buffers.push_back(nullptr);
     CHECK(vx_buffer_create(device, std::max(uint64_t{1}, bytes),
-                           VX_MEM_READ_WRITE, &buffers.back()));
+                           VX_MEM_READ_WRITE | (physicalBuffers ? VX_MEM_PHYS : 0),
+                           &buffers.back()));
     uint64_t address = 0;
     CHECK(vx_buffer_address(buffers.back(), &address));
     if (address >= addressLimit || bytes > addressLimit - address)
@@ -107,14 +132,39 @@ struct Device {
   }
   void initialize(Plan &plan, const std::string &kernelFile) {
     CHECK(vx_device_open(0, &device));
-    uint64_t isa = 0, lanes = 0, warps = 0;
     CHECK(vx_device_query(device, VX_CAPS_ISA_FLAGS, &isa));
     if (VX_ISA_ARCH(isa) != 32)
       fail("native Vortex compiler artifact requires an RV32 device");
     CHECK(vx_device_query(device, VX_CAPS_NUM_THREADS, &lanes));
     CHECK(vx_device_query(device, VX_CAPS_NUM_WARPS, &warps));
+    CHECK(vx_device_query(device, VX_CAPS_NUM_CORES, &cores));
+    CHECK(vx_device_query(device, VX_CAPS_LOCAL_MEM_SIZE, &localMemory));
     if (!lanes || !warps || lanes > UINT32_MAX / warps)
       fail("invalid device thread capacity");
+    if (!cores || cores > UINT32_MAX)
+      fail("invalid device core count");
+    physicalBuffers = plan.doubleBuffer;
+    for (const auto &dispatch : plan.dispatches) {
+      if (dispatch.vortexSchedule.empty())
+        continue;
+      if (dispatch.lanes != lanes || dispatch.blockSize > lanes * warps)
+        fail("Vortex schedule lane/block size is incompatible with this device");
+      if (dispatch.lmemBytes > localMemory ||
+          (dispatch.lmemBytes && !(isa & VX_ISA_EXT_LMEM)))
+        fail("Vortex schedule LMEM requirement exceeds device capability");
+      if (dispatch.vortexSchedule == "dxa-double-buffer" &&
+          (!(isa & VX_ISA_EXT_DXA) || VX_CFG_NUM_BARRIERS < 2))
+        fail("DXA double buffering requires DXA and two transaction barrier slots");
+      if (dispatch.vortexSchedule == "tcu" && !(isa & VX_ISA_EXT_TCU))
+        fail("TCU schedule requires the Vortex TCU extension");
+      if (dispatch.vortexSchedule == "tcu" && !GAC_VORTEX_TCU_TF32)
+        fail("TCU TF32x3 schedule requires a matching TF32-enabled Vortex build "
+             "and runtime configured with GAC_VORTEX_TCU_TF32=ON");
+      // The device dispatcher may reduce resident CTAs when LMEM is large;
+      // do not reject a valid tile merely because it lowers occupancy.
+      if (vx_check_occupancy(device, dispatch.blockSize, dispatch.lmemBytes))
+        fail("Vortex tile cannot fit one CTA on this device");
+    }
     threads = uint32_t(std::min(uint64_t{32}, lanes * warps));
     vx_queue_info_t info = {};
     info.struct_size = sizeof(info);
@@ -132,6 +182,30 @@ struct Device {
       CHECK(vx_module_get_kernel(module, dispatch.kernel.c_str(),
                                  &kernels.back()));
     }
+  }
+  void programDxa(const Plan &plan, const Dispatch &dispatch,
+                  vx_event_h prior) {
+    if (dispatch.vortexSchedule != "dxa-double-buffer")
+      return;
+    // Descriptors are device-wide mutable DCR state, not kernel parameters.
+    // Wait before recycling slots 0/1. Vortex's launch completion includes
+    // its post-kernel cache flush, so an arena tensor written by the previous
+    // kernel is visible to DXA's physical-memory reader before the next copy.
+    if (prior)
+      CHECK(vx_event_wait_value(prior, 1, VX_TIMEOUT_INFINITE));
+    auto descriptor = [&](uint32_t slot, size_t tensor, uint32_t columns,
+                          uint32_t rows, uint32_t tileColumns,
+                          uint32_t tileRows) {
+      int result = vortex::dxa::program_2d(
+          device, slot, address(plan.tensors[tensor]), columns, rows,
+          columns * sizeof(float), tileColumns, tileRows, sizeof(float));
+      if (result)
+        fail("programming DXA physical 2D descriptor failed");
+    };
+    descriptor(0, dispatch.inputs[0], dispatch.k, dispatch.m,
+               dispatch.tileK, dispatch.tileM);
+    descriptor(1, dispatch.inputs[1], dispatch.n, dispatch.k,
+               dispatch.tileN, dispatch.tileK);
   }
   void transfer(const Tensor &tensor, Bytes &bytes, bool upload,
                 vx_event_h prior = nullptr) {
@@ -172,6 +246,7 @@ struct Device {
           fail("writing dispatch trace failed");
       };
       traceEvent("begin");
+      programDxa(plan, dispatch, prior);
       arguments.emplace_back();
       for (size_t input : dispatch.inputs)
         arguments.back().push_back(address(plan.tensors[input]));
@@ -182,9 +257,11 @@ struct Device {
       launch.args_host = arguments.back().data();
       launch.args_size = arguments.back().size() * sizeof(uint64_t);
       launch.ndim = 1;
-      launch.grid_dim[0] =
+      bool tiled = !dispatch.vortexSchedule.empty();
+      launch.grid_dim[0] = tiled ? dispatch.gridSize :
           uint32_t((uint64_t(dispatch.elements) + threads - 1) / threads);
-      launch.block_dim[0] = threads;
+      launch.block_dim[0] = tiled ? dispatch.blockSize : threads;
+      launch.lmem_size = dispatch.lmemBytes;
       events.push_back(nullptr);
       CHECK(vx_enqueue_launch(queue, &launch, prior ? 1 : 0,
                               prior ? &prior : nullptr, &events.back()));
@@ -208,11 +285,19 @@ double milliseconds(Clock::time_point start, Clock::time_point end) {
 } // namespace
 
 int main(int argc, char **argv) {
-  bool traceDispatches =
-      argc == 6 && llvm::StringRef(argv[5]) == "--trace-dispatches";
-  if (argc != 5 && !traceDispatches) {
+  bool traceDispatches = false, profileCounters = false;
+  bool validArguments = argc >= 5;
+  for (int i = 5; i < argc; ++i) {
+    if (llvm::StringRef(argv[i]) == "--trace-dispatches" && !traceDispatches)
+      traceDispatches = true;
+    else if (llvm::StringRef(argv[i]) == "--profile-counters" && !profileCounters)
+      profileCounters = true;
+    else
+      validArguments = false;
+  }
+  if (!validArguments) {
     llvm::errs() << "usage: gac-vortex-run MANIFEST.json KERNEL.vxbin DATA_DIR "
-                    "OUTPUT_DIR [--trace-dispatches]\n";
+                    "OUTPUT_DIR [--trace-dispatches] [--profile-counters]\n";
     return 1;
   }
   try {
@@ -245,8 +330,39 @@ int main(int argc, char **argv) {
       if (!trace)
         fail("cannot open dispatch trace");
     }
+    std::vector<Device::Counters> before;
+    if (profileCounters)
+      before = device.counters();
     vx_event_h done = device.launch(plan, traceDispatches ? &trace : nullptr);
     auto computed = Clock::now();
+    json::Object counterReport{{"available", profileCounters}};
+    if (profileCounters) {
+      auto after = device.counters();
+      json::Array perCore;
+      uint64_t maximumCycles = 0, totalInstructions = 0;
+      for (size_t core = 0; core < after.size(); ++core) {
+        if (after[core].cycles < before[core].cycles ||
+            after[core].instructions < before[core].instructions)
+          fail("device MPM counters reset during execution");
+        uint64_t cycles = after[core].cycles - before[core].cycles;
+        uint64_t instructions =
+            after[core].instructions - before[core].instructions;
+        maximumCycles = std::max(maximumCycles, cycles);
+        totalInstructions += instructions;
+        perCore.push_back(json::Object{{"core", int64_t(core)},
+                                       {"cycles", int64_t(cycles)},
+                                       {"instret", int64_t(instructions)}});
+      }
+      counterReport["kind"] = "device_mpm";
+      counterReport["cores"] = std::move(perCore);
+      counterReport["max_core_cycles"] = int64_t(maximumCycles);
+      counterReport["sum_core_instructions"] = int64_t(totalInstructions);
+      counterReport["measurement_note"] =
+          "Per-core cumulative MPM counter deltas around the complete dispatch "
+          "sequence, including device-side launch/flush overhead. Snapshots are "
+          "not simultaneous across cores. SimX cycles model this configuration; "
+          "they are not measured silicon time or application FPS.";
+    }
     for (size_t i = 0; i < plan.outputs.size(); ++i) {
       size_t id = plan.outputs[i];
       const auto &tensor = plan.tensors[id];
@@ -275,6 +391,21 @@ int main(int argc, char **argv) {
         {"arena_bytes", int64_t(plan.arenaBytes)},
         {"embedded_constant_bytes", int64_t(plan.embeddedConstantBytes)},
         {"trace_dispatches", traceDispatches},
+        {"profile_counters", profileCounters},
+        {"device_counters", std::move(counterReport)},
+        {"device_profile", json::Object{{"lanes", int64_t(device.lanes)},
+                                          {"warps_per_core", int64_t(device.warps)},
+                                          {"cores", int64_t(device.cores)},
+                                          {"lmem_bytes_per_core", int64_t(device.localMemory)},
+                                          {"isa_flags", int64_t(device.isa)},
+                                          {"build_barrier_slots", VX_CFG_NUM_BARRIERS},
+                                          {"build_tcu_tf32", bool(GAC_VORTEX_TCU_TF32)},
+                                          {"build_profile_note",
+                                           "Barrier count and TCU TF32 support are build-profile "
+                                           "assertions; the public device caps do not query them. "
+                                           "Use a driver/simulator/RTL built with the matching profile."}}},
+        {"max_dispatch_lmem_bytes", int64_t(plan.lmemBytes)},
+        {"dxa_physical_buffers", device.physicalBuffers},
         {"threads_per_block", int64_t(device.threads)},
         {"inputs", std::move(inputFiles)},
         {"outputs", std::move(outputFiles)},

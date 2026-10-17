@@ -1,0 +1,228 @@
+{
+  "scope": "Vortex SimX MatMul templates: independent numerical comparison and modeled counters",
+  "physical_device_execution": false,
+  "full_model_execution": false,
+  "compiler_sha256": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c",
+  "runner_sha256": "6c8b4ed57b61aa61740868d01a841fb0218ad7da31159e24d3978960588dc96e",
+  "simulator_sha256": "162df881c1e73cb0f9fe8880c7434bc898d49170b6395bfbacaa4e96bac0a967",
+  "tile": [
+    4,
+    4,
+    128
+  ],
+  "cases": [
+    {
+      "name": "ffn_width",
+      "schedule": "scalar",
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "compile": {
+        "argv": [
+          "bash",
+          "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-vortex.sh",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/fixtures/ffn_width/model.onnx",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 0.8904217540000445,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar-compile.log"
+      },
+      "selected_templates": [],
+      "arithmetic": [],
+      "execute": {
+        "argv": [
+          "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-vortex-run",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar/plan.json",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar/kernel.vxbin",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar/outputs",
+          "--profile-counters"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 24.673177952999822,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/scalar/execute.log"
+      },
+      "device_profile": {
+        "build_barrier_slots": 8,
+        "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+        "build_tcu_tf32": true,
+        "cores": 1,
+        "isa_flags": 6817196282144,
+        "lanes": 4,
+        "lmem_bytes_per_core": 16384,
+        "warps_per_core": 4
+      },
+      "device_counters": {
+        "available": true,
+        "cores": [
+          {
+            "core": 0,
+            "cycles": 7782295,
+            "instret": 2956023
+          }
+        ],
+        "kind": "device_mpm",
+        "max_core_cycles": 7782295,
+        "measurement_note": "Per-core cumulative MPM counter deltas around the complete dispatch sequence, including device-side launch/flush overhead. Snapshots are not simultaneous across cores. SimX cycles model this configuration; they are not measured silicon time or application FPS.",
+        "sum_core_instructions": 2956023
+      },
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "artifact_sha256": {
+        "kernel.mlir": "92bbbc72ff99dc4a5e2317d35ef69ab43f6f78ec225a42c4ac35ab78f98fef5c",
+        "kernel.ll": "4a772f026f55f423c08202636ea68fd6890f867a37593feee59fe614cf852747",
+        "kernel.elf": "8713b8c0a10a44f340e7cae71e9df0a826167f2f66143d091636ef7bc954d687",
+        "kernel.vxbin": "bfdf7019cd402e59e7f415d41f518f16e854d1a882fdc8ce11805d6ece2c53b1",
+        "plan.json": "333a7746e3a0448c39479b2a932e36d85e1c3d582f8fc078562b77894682596f"
+      },
+      "speedup_vs_scalar_cycles": 1.0
+    },
+    {
+      "name": "ffn_width",
+      "schedule": "lmem-tiled",
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "compile": {
+        "argv": [
+          "bash",
+          "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-vortex.sh",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/fixtures/ffn_width/model.onnx",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 0.9193016429999261,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled-compile.log"
+      },
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "arithmetic": [
+        "fp32-scalar"
+      ],
+      "execute": {
+        "argv": [
+          "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-vortex-run",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled/plan.json",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled/kernel.vxbin",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled/outputs",
+          "--profile-counters"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 48.02675609999983,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/lmem-tiled/execute.log"
+      },
+      "device_profile": {
+        "build_barrier_slots": 8,
+        "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+        "build_tcu_tf32": true,
+        "cores": 1,
+        "isa_flags": 6817196282144,
+        "lanes": 4,
+        "lmem_bytes_per_core": 16384,
+        "warps_per_core": 4
+      },
+      "device_counters": {
+        "available": true,
+        "cores": [
+          {
+            "core": 0,
+            "cycles": 15112867,
+            "instret": 5412599
+          }
+        ],
+        "kind": "device_mpm",
+        "max_core_cycles": 15112867,
+        "measurement_note": "Per-core cumulative MPM counter deltas around the complete dispatch sequence, including device-side launch/flush overhead. Snapshots are not simultaneous across cores. SimX cycles model this configuration; they are not measured silicon time or application FPS.",
+        "sum_core_instructions": 5412599
+      },
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "artifact_sha256": {
+        "kernel.mlir": "8d11c9f3a98d6fc54a9937308cdfaa38871d9d61ac15d3a1ecee55c899012182",
+        "kernel.ll": "45235c4f3bb7cf16f84ce102603ae55d42f83b28d056fc2c17e5dcbd28bef4de",
+        "kernel.elf": "0203165ebcd3658d62c2181e0fc8dacf6b0532f1094546c8a0839bc5c185b548",
+        "kernel.vxbin": "28c8e7c07df183bfe4c4368f5b1bf62a7ca52313268f6051ff79e414adf3df7a",
+        "plan.json": "e431888a6af52a76c074631c6c8430585d8fdff8b63fa38c4d0e74c18ad34a99"
+      },
+      "speedup_vs_scalar_cycles": 0.5149449803270286
+    },
+    {
+      "name": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "compile": {
+        "argv": [
+          "bash",
+          "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-vortex.sh",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/fixtures/ffn_width/model.onnx",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 1.0674049530000502,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer-compile.log"
+      },
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "arithmetic": [
+        "fp32-scalar"
+      ],
+      "execute": {
+        "argv": [
+          "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-vortex-run",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer/plan.json",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer/kernel.vxbin",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer",
+          "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer/outputs",
+          "--profile-counters"
+        ],
+        "exit_code": 0,
+        "host_wall_seconds": 26.57637094100005,
+        "log": "/home/thomas/gac-vortex-templates-final-k128-20261017/ffn_width/dxa-double-buffer/execute.log"
+      },
+      "device_profile": {
+        "build_barrier_slots": 8,
+        "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+        "build_tcu_tf32": true,
+        "cores": 1,
+        "isa_flags": 6817196282144,
+        "lanes": 4,
+        "lmem_bytes_per_core": 16384,
+        "warps_per_core": 4
+      },
+      "device_counters": {
+        "available": true,
+        "cores": [
+          {
+            "core": 0,
+            "cycles": 7590862,
+            "instret": 2762999
+          }
+        ],
+        "kind": "device_mpm",
+        "max_core_cycles": 7590862,
+        "measurement_note": "Per-core cumulative MPM counter deltas around the complete dispatch sequence, including device-side launch/flush overhead. Snapshots are not simultaneous across cores. SimX cycles model this configuration; they are not measured silicon time or application FPS.",
+        "sum_core_instructions": 2762999
+      },
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "artifact_sha256": {
+        "kernel.mlir": "a6d13f40558478bd856aa4f9a41c37ca5a10bbd3ce4f118b48875ddef87c624b",
+        "kernel.ll": "9f0caa3d19fa9c88e878a787338a58ebd0b5cf7564af67b397f013c0e98e51bf",
+        "kernel.elf": "eaf5b3a45f31b50127bc38c10b34d666e1ef15dfb00e6c9203f5526d5a75f7ed",
+        "kernel.vxbin": "926f68621cb6cacfb66b5f1f40e4c9520d856aacb8366643cfb4bba74f84c6be",
+        "plan.json": "18fd639b57a2460842010ebc55e53abb95c6bb706d4bc8e1be16180cae44895e"
+      },
+      "speedup_vs_scalar_cycles": 1.025218875010506
+    }
+  ],
+  "performance_note": "Same profile and inputs; cycles include kernel startup and synchronization. Simulator wall time is not hardware latency.",
+  "compiler_unchanged": true,
+  "runner_unchanged": true,
+  "passed": true
+}

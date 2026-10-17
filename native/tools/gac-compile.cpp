@@ -39,6 +39,15 @@ static llvm::cl::opt<std::string> stagesDir(
 static llvm::cl::opt<bool> allowUnsupported("allow-unsupported",
                                             llvm::cl::init(false));
 static llvm::cl::opt<bool> noOptimize("no-optimize", llvm::cl::init(false));
+static llvm::cl::opt<std::string> vortexMatmulSchedule(
+    "vortex-matmul-schedule", llvm::cl::init("scalar"),
+    llvm::cl::desc("Vortex MatMul template: scalar | lmem-tiled | dxa-double-buffer | tcu"));
+static llvm::cl::opt<int64_t> tileM("tile-m", llvm::cl::init(4));
+static llvm::cl::opt<int64_t> tileN("tile-n", llvm::cl::init(4));
+static llvm::cl::opt<int64_t> tileK("tile-k", llvm::cl::init(16));
+static llvm::cl::opt<int64_t> vortexLanes("vortex-lanes", llvm::cl::init(4));
+static llvm::cl::opt<int64_t> lmemBudget("lmem-budget", llvm::cl::init(16384),
+    llvm::cl::desc("Maximum LMEM bytes per tiled Vortex CTA"));
 static llvm::cl::opt<std::string> foldProfile(
     "constant-fold-profile", llvm::cl::init("default"),
     llvm::cl::desc(
@@ -54,6 +63,21 @@ int main(int argc, char **argv) {
   }
   if (target != "native" && target != "vortex" && target != "cuda") {
     llvm::errs() << "unknown --target value\n";
+    return 1;
+  }
+  if (vortexMatmulSchedule != "scalar" && vortexMatmulSchedule != "lmem-tiled" &&
+      vortexMatmulSchedule != "dxa-double-buffer" && vortexMatmulSchedule != "tcu") {
+    llvm::errs() << "unknown --vortex-matmul-schedule\n";
+    return 1;
+  }
+  if (vortexMatmulSchedule != "scalar" && target != "vortex") {
+    llvm::errs() << "Vortex MatMul schedules require --target=vortex\n";
+    return 1;
+  }
+  if (tileM <= 0 || tileN <= 0 || tileK <= 0 || vortexLanes <= 0 ||
+      lmemBudget <= 0 || lmemBudget > INT32_MAX) {
+    llvm::errs() << "tile dimensions, Vortex lanes and LMEM budget must be positive; "
+                   "LMEM budget must fit signed 32-bit addressing\n";
     return 1;
   }
   if (foldProfile != "default" && foldProfile != "bevformer-base") {
@@ -147,6 +171,12 @@ int main(int argc, char **argv) {
         : target == "cuda" ? gac::DeviceTarget::CUDA
                            : gac::DeviceTarget::Vortex,
         constantsDir};
+    options.vortexMatmulSchedule = vortexMatmulSchedule;
+    options.tileM = tileM;
+    options.tileN = tileN;
+    options.tileK = tileK;
+    options.vortexLanes = vortexLanes;
+    options.lmemBudget = lmemBudget;
     PassManager lowering(&context);
     lowering.enableVerifier(true);
     lowering.addPass(gac::createLowerToDevicePass(options, &plan));

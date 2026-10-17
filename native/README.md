@@ -84,6 +84,7 @@ DeviceLowering.cpp                     共享算子循环、SSA 依赖与静态 
 | 设备映射与 Buffer | [DeviceLowering.cpp](lib/DeviceLowering.cpp) | 共享静态资源检查、dispatch、按生命周期回收及合并/拆分空闲区间 |
 | Kernel Lowering | [DeviceLowering.cpp](lib/DeviceLowering.cpp) | 共享算子语义，真正创建 SCF/Arith/Math/LLVM 操作；不拼接 Kernel 文本 |
 | Vortex 方言与 ABI | [VortexLowering.cpp](lib/VortexLowering.cpp) | thread/block CSR、uniform、RV32 参数槽、入口 annotation |
+| Vortex MatMul 模板 | [VortexMatmul.cpp](lib/VortexMatmul.cpp)、[VortexTcu.cpp](lib/VortexTcu.cpp) | C++ MLIR LMEM 分块、DXA 双缓冲、TF32×3 WMMA；显式选择，独立验收 |
 | CUDA ABI 与数学库 | [CudaLowering.cpp](lib/CudaLowering.cpp) | NVVM 线程映射、64 位指针、设备 libdevice 数学函数 |
 | 编译入口 | [gac-compile.cpp](tools/gac-compile.cpp) | 原生 ONNX 导入和 PassManager 流水线，可逐层输出 IR |
 | MLIR 优化入口 | [gac-opt.cpp](tools/gac-opt.cpp) | 带 `gac`/`vortex` 注册的 `MlirOptMain` |
@@ -119,9 +120,10 @@ Vortex 环境设置见下方“构建与执行”，CUDA 见 [CUDA 使用说明]
 | 当前标量算子语义、全局 Buffer 生命周期算法 | LMEM / CUDA shared memory 容量与布局、硬件矩阵指令 |
 | manifest 通用校验与数值测试方法 | VOLT / NVPTX 机器码生成、设备加载与同步 API |
 
-LMEM、DXA 双缓冲、TCU 与 CUDA Tensor Core 是后续各目标的优化工作；
-当前共享标量路径没有因此获得这些功能。硬件限制、Tiling / Schedule 参数和
-Runtime 同步方式应保持各自的实现，不能把 Vortex 的参数直接作为 CUDA 配置。
+Vortex 已增加显式可选的 LMEM、DXA 双缓冲和 TCU MatMul 模板，设计、限制和
+使用方式见 [Vortex MatMul 优化](README.vortex-matmul.md)。TCU 使用 TF32×3 分解、
+FP32 累加，不能宣称原生 FP32 矩阵乘法。默认仍是标量路径，CUDA Tensor Core
+尚未实现；Vortex 的资源参数和同步方式不直接套用于 CUDA。
 
 `gac-opt` 必须用于包含 `gac.*` 或 `vortex.*` 的 IR，因为普通上游 `mlir-opt`
 没有注册本项目的方言。降成标准 LLVM Dialect 后，可以使用同版本的上游工具。
@@ -151,9 +153,10 @@ Operation 类采用 MLIR 正式支持的手写 C++ 注册方式；并非带陌�
   提交前校验地址范围，设备端解包并转换为 RV32 指针。各 Kernel 的 shape 已静态特化。
 - CUDA 设备入口直接接收 64 位指针参数，依次为输入、输出；不会使用 RV32 参数解包。
 
-当前原生 Kernel 是标量正确性基线：每个 SIMT 线程负责一个输出，归约在寄存器内
-循环。**LMEM=0、无 DXA、无双缓冲、无 TCU**。这里已有全局 Buffer，不能说没有
-Buffer；但不能把全局 arena 复用当成 LMEM 双缓冲。
+默认原生 Kernel 是标量正确性基线：每个 SIMT 线程负责一个输出，归约在寄存器内
+循环，LMEM=0。选择新的 Vortex MatMul 模板后，每个 dispatch 的 LMEM、stages、
+grid/block 和逻辑 operand shape 写入 manifest，由 Runtime 校验并执行。
+全局 arena 复用与 Kernel 内部 LMEM 缓冲是不同层次，不能混为一谈。
 
 ## 3. 已实现的优化与明确边界
 

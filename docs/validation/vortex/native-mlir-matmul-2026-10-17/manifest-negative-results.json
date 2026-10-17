@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "zero_tile",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: invalid Vortex schedule dimension: tile_k"
+    },
+    {
+      "name": "oversized_tile",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex LMEM tile dimensions exceed supported range"
+    },
+    {
+      "name": "wrong_grid",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex tile/grid/lane dimensions disagree"
+    },
+    {
+      "name": "wrong_lmem",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex LMEM allocation does not match tile/stage geometry"
+    },
+    {
+      "name": "zero_stages",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex LMEM allocation does not match tile/stage geometry"
+    },
+    {
+      "name": "wrong_root_lmem",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: root LMEM/buffer summary disagrees with dispatch schedules"
+    },
+    {
+      "name": "wrong_root_double_buffer",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: root LMEM/buffer summary disagrees with dispatch schedules"
+    },
+    {
+      "name": "unknown_schedule",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: unknown Vortex compute schedule"
+    },
+    {
+      "name": "wrong_matrix_size",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex matrix dimensions disagree with output elements"
+    },
+    {
+      "name": "wrong_inner_dimension",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex matrix template requires compatible FP32 matrix operands"
+    },
+    {
+      "name": "wrong_dtype",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex matrix template requires compatible FP32 matrix operands"
+    },
+    {
+      "name": "missing_logical_shape",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: missing array: a_shape"
+    },
+    {
+      "name": "logical_shape_too_large",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex logical operand shape exceeds physical storage"
+    },
+    {
+      "name": "logical_shape_too_small",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex logical operand shape differs from physical byte count"
+    },
+    {
+      "name": "unexpected_bias_shape",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex matrix without a bias cannot carry a bias shape"
+    },
+    {
+      "name": "wrong_projection_output_rank",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: Vortex flattened projection output shape disagrees with A"
+    },
+    {
+      "name": "wrong_tcu_stages",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: unsupported Vortex FP32 WMMA geometry"
+    },
+    {
+      "name": "wrong_tcu_lanes",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: unsupported Vortex FP32 WMMA geometry"
+    },
+    {
+      "name": "wrong_tcu_arithmetic",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: TCU schedule requires explicit TF32x3 arithmetic with FP32 accumulation"
+    },
+    {
+      "name": "missing_tcu_arithmetic",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: missing string: arithmetic"
+    },
+    {
+      "name": "insufficient_dxa_lanes",
+      "passed": true,
+      "diagnostic": "gac-vortex-run: DXA requires a 2D matrix with 16-bit tile coordinates and four lanes"
+    }
+  ]
+}

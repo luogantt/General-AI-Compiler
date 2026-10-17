@@ -20,5 +20,23 @@ unpackVortexKernelPointers(mlir::OpBuilder &builder, mlir::Location location,
                           mlir::Value blob, unsigned count);
 mlir::Value createVortexGlobalThreadId(mlir::OpBuilder &builder,
                                       mlir::Location location);
+mlir::Value createVortexLocalThreadId(mlir::OpBuilder &, mlir::Location);
+mlir::Value createVortexBlockId(mlir::OpBuilder &, mlir::Location);
+mlir::Value createVortexCTAId(mlir::OpBuilder &, mlir::Location);
+mlir::Value createVortexWarpRank(mlir::OpBuilder &, mlir::Location);
+mlir::Value createVortexWarpCount(mlir::OpBuilder &, mlir::Location);
+mlir::Value createVortexLMEMAddress(mlir::OpBuilder &, mlir::Location);
+// Collective calls carry convergent semantics and a memory clobber. The
+// noinline wrappers also prevent LLVM from speculating their inline assembly.
+// Pass the already attached module explicitly: SCF builder callbacks may be
+// constructing a region whose parent operation has not been inserted yet.
+void createVortexBarrier(mlir::OpBuilder &, mlir::Location, mlir::ModuleOp,
+                         mlir::Value barrier, mlir::Value warps);
+void createVortexDxaExpectTwo(mlir::OpBuilder &, mlir::Location, mlir::ModuleOp,
+                              mlir::Value barrier);
+void createVortexDxaIssue2D(mlir::OpBuilder &, mlir::Location, mlir::ModuleOp,
+                           mlir::Value destination, mlir::Value barrier,
+                           mlir::Value descriptor, mlir::Value coord0,
+                           mlir::Value coord1);
 } // namespace gac
 #endif

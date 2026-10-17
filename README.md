@@ -26,6 +26,10 @@ Vortex ELF/vxbin 已生成并核对全部 1,548 个入口；主机生成的机�
 PyTorch 参考对齐，见[最终验证记录](docs/validation/vortex/native-mlir-bevformer-base-2026-10-16/README.md)。
 尚无整网 Vortex 执行或 30 FPS 结论。
 
+原生 Vortex 路径新增可显式选择的 [LMEM 分块、DXA 双缓冲与 TCU MatMul 模板](native/README.vortex-matmul.md)，
+由 C++ MLIR Lowering 生成设备指令。TCU 使用 TF32×3 分解与 FP32 累加，默认仍为
+标量 FP32；新模板的正确性、周期收益和整网启用范围单独验证，不沿用旧 FFN 性能数据。
+
 统一分支包含 [原生 CUDA PTX 后端](native/README.cuda.md)：
 复用 C++ ONNX 导入、MLIR Pass 和算子/Buffer 规划，通过 NVVM 与 LLVM NVPTX
 生成 PTX，C++ Runtime 调用 CUDA Driver JIT 和启动 Kernel。62 个小模型已在

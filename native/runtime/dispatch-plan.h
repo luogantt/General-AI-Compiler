@@ -65,12 +65,19 @@ struct Dispatch {
   size_t output;
   uint32_t elements;
   uint32_t blockSize = 0, gridSize = 0;
+  // Empty schedule preserves the original scalar global-memory contract.
+  std::string vortexSchedule;
+  uint32_t m = 0, n = 0, k = 0, batches = 0;
+  uint32_t tileM = 0, tileN = 0, tileK = 0;
+  uint32_t lmemBytes = 0, stages = 0, lanes = 0;
 };
 struct Plan {
   std::vector<Tensor> tensors;
   std::vector<Dispatch> dispatches;
   std::vector<size_t> inputs, outputs;
   uint64_t arenaBytes, embeddedConstantBytes;
+  uint64_t lmemBytes = 0;
+  bool doubleBuffer = false;
 };
 
 enum class Target { Vortex, CUDA };
@@ -89,9 +96,12 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
       string(root, "compiler_backend") != "native-mlir")
     fail("expected schema 1, native-mlir compiler, and " +
          std::string(cuda ? "cuda" : "vortex") + " target");
-  if (nonnegative(root, "lmem_bytes") != 0 ||
-      root.getBoolean("double_buffer").value_or(true))
-    fail("this runtime supports the scalar global-memory template only");
+  uint64_t lmemBytes = nonnegative(root, "lmem_bytes");
+  auto doubleBuffer = root.getBoolean("double_buffer");
+  if (!doubleBuffer || lmemBytes > UINT32_MAX)
+    fail("invalid root LMEM/buffer contract");
+  if (cuda && (lmemBytes != 0 || *doubleBuffer))
+    fail("CUDA runtime supports the scalar global-memory template only");
   if (cuda) {
     auto *abi = root.getObject("cuda");
     if (!abi || string(*abi, "kernel_abi") != "direct-pointers" ||
@@ -101,6 +111,8 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
       fail("unsupported CUDA kernel ABI");
   }
   Plan plan;
+  plan.lmemBytes = lmemBytes;
+  plan.doubleBuffer = *doubleBuffer;
   plan.arenaBytes = nonnegative(root, "arena_bytes");
   plan.embeddedConstantBytes =
       root.get("embedded_constant_bytes")
@@ -189,6 +201,8 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
   for (const auto &output : array(root, "outputs"))
     plan.outputs.push_back(tensorID(output));
 
+  uint64_t maximumLmem = 0;
+  bool usesDoubleBuffer = false;
   for (const auto &item : array(root, "dispatches")) {
     const auto &row = object(item);
     int64_t index = plan.dispatches.size();
@@ -235,9 +249,148 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
         fail("invalid CUDA scalar kernel launch dimensions");
       dispatch.blockSize = uint32_t(block);
       dispatch.gridSize = uint32_t(grid);
+      if (row.get("vortex"))
+        fail("CUDA dispatch cannot carry a Vortex schedule");
+    } else if (auto *vortex = row.get("vortex")) {
+      const auto &schedule = object(*vortex);
+      auto dimension = [&](llvm::StringRef name, bool allowZero = false) {
+        uint64_t value = nonnegative(schedule, name);
+        if ((!allowZero && !value) || value > INT32_MAX)
+          fail("invalid Vortex schedule dimension: " + name.str());
+        return uint32_t(value);
+      };
+      dispatch.vortexSchedule = string(schedule, "schedule");
+      dispatch.m = dimension("m");
+      dispatch.n = dimension("n");
+      dispatch.k = dimension("k");
+      dispatch.batches = dimension("batches");
+      dispatch.tileM = dimension("tile_m");
+      dispatch.tileN = dimension("tile_n");
+      dispatch.tileK = dimension("tile_k");
+      dispatch.blockSize = dimension("block_size");
+      dispatch.gridSize = dimension("grid_size");
+      dispatch.lmemBytes = dimension("lmem_bytes", true);
+      dispatch.stages = dimension("stages", true);
+      dispatch.lanes = dimension("lanes");
+      bool dxa = dispatch.vortexSchedule == "dxa-double-buffer";
+      bool tcu = dispatch.vortexSchedule == "tcu";
+      if (!dxa && !tcu && dispatch.vortexSchedule != "lmem-tiled")
+        fail("unknown Vortex compute schedule");
+      uint64_t mn = uint64_t(dispatch.m) * dispatch.n;
+      if (mn > INT32_MAX || dispatch.batches > INT32_MAX / mn ||
+          mn * dispatch.batches != elements)
+        fail("Vortex matrix dimensions disagree with output elements");
+      uint64_t rows = (uint64_t(dispatch.m) + dispatch.tileM - 1) / dispatch.tileM;
+      uint64_t cols = (uint64_t(dispatch.n) + dispatch.tileN - 1) / dispatch.tileN;
+      if (rows * cols * dispatch.batches != dispatch.gridSize ||
+          dispatch.blockSize % dispatch.lanes)
+        fail("Vortex tile/grid/lane dimensions disagree");
+      if (dispatch.inputs.size() < 2 || dispatch.inputs.size() > 3)
+        fail("Vortex matrix template requires A, B, and optional bias");
+      // Views such as Reshape share their producer's physical allocation.
+      // Its storage shape may differ from the logical shape used by this
+      // kernel. Prove byte identity before validating the logical MatMul ABI.
+      auto logicalOperand = [&](size_t id, llvm::StringRef name) {
+        Tensor operand = plan.tensors[id];
+        operand.shape.clear();
+        uint64_t elements = 1;
+        for (const auto &dim : array(schedule, name)) {
+          auto size = dim.getAsInteger();
+          if (!size || *size <= 0 ||
+              uint64_t(*size) > operand.elements / elements)
+            fail("Vortex logical operand shape exceeds physical storage");
+          elements *= uint64_t(*size);
+          operand.shape.push_back(*size);
+        }
+        if (elements != operand.elements)
+          fail("Vortex logical operand shape differs from physical byte count");
+        return operand;
+      };
+      const auto a = logicalOperand(dispatch.inputs[0], "a_shape");
+      const auto b = logicalOperand(dispatch.inputs[1], "b_shape");
+      if (a.dtype != "float32" || b.dtype != "float32" ||
+          result.dtype != "float32" || a.shape.size() < 2 ||
+          b.shape.size() < 2 || result.shape.size() < 2 ||
+          a.shape.back() != dispatch.k ||
+          b.shape[b.shape.size() - 2] != dispatch.k ||
+          b.shape.back() != dispatch.n || result.shape.back() != dispatch.n)
+        fail("Vortex matrix template requires compatible FP32 matrix operands");
+      if (dispatch.batches == 1 && b.shape.size() == 2) {
+        if (a.elements != uint64_t(dispatch.m) * dispatch.k)
+          fail("Vortex flattened projection shape disagrees with A");
+        if (result.shape.size() != a.shape.size() ||
+            !std::equal(a.shape.begin(), a.shape.end() - 1, result.shape.begin()))
+          fail("Vortex flattened projection output shape disagrees with A");
+      } else {
+        if (a.shape[a.shape.size() - 2] != dispatch.m ||
+            result.shape[result.shape.size() - 2] != dispatch.m)
+          fail("Vortex batch matrix shape disagrees with M");
+        auto checkBroadcast = [&](const Tensor &operand) {
+          if (operand.shape.size() > result.shape.size())
+            fail("Vortex operand batch rank exceeds output rank");
+          size_t pad = result.shape.size() - operand.shape.size();
+          for (size_t i = 0; i + 2 < operand.shape.size(); ++i)
+            if (operand.shape[i] != 1 &&
+                operand.shape[i] != result.shape[pad + i])
+              fail("Vortex matrix batch dimensions cannot broadcast");
+        };
+        checkBroadcast(a);
+        checkBroadcast(b);
+        if (result.shape.size() != std::max(a.shape.size(), b.shape.size()))
+          fail("Vortex matrix output batch rank disagrees with operands");
+        for (size_t axis = 0; axis + 2 < result.shape.size(); ++axis) {
+          auto dim = [&](const Tensor &operand) -> int64_t {
+            size_t pad = result.shape.size() - operand.shape.size();
+            return axis < pad ? 1 : operand.shape[axis - pad];
+          };
+          if (result.shape[axis] != std::max(dim(a), dim(b)))
+            fail("Vortex output batch shape disagrees with broadcast operands");
+        }
+      }
+      if (dispatch.inputs.size() == 3) {
+        const auto bias = logicalOperand(dispatch.inputs[2], "bias_shape");
+        if (bias.dtype != "float32" || bias.shape.size() > result.shape.size())
+          fail("Vortex matrix bias must be broadcastable FP32");
+        size_t pad = result.shape.size() - bias.shape.size();
+        for (size_t i = 0; i < bias.shape.size(); ++i)
+          if (bias.shape[i] != 1 && bias.shape[i] != result.shape[pad + i])
+            fail("Vortex matrix bias shape cannot broadcast");
+      } else if (!array(schedule, "bias_shape").empty()) {
+        fail("Vortex matrix without a bias cannot carry a bias shape");
+      }
+      if (tcu) {
+        if (string(schedule, "arithmetic") != "tf32x3-fp32-accumulate")
+          fail("TCU schedule requires explicit TF32x3 arithmetic with FP32 accumulation");
+        if (dispatch.lanes != 4 || dispatch.blockSize != 4 ||
+            dispatch.tileM != 8 || dispatch.tileN != 4 || dispatch.tileK != 4 ||
+            dispatch.lmemBytes || dispatch.stages)
+          fail("unsupported Vortex FP32 WMMA geometry");
+      } else {
+        if (dispatch.tileM > 65535 || dispatch.tileN > 65535 ||
+            dispatch.tileK > 65535)
+          fail("Vortex LMEM tile dimensions exceed supported range");
+        uint64_t tileElements = uint64_t(dispatch.tileM) * dispatch.tileN;
+        uint64_t stageBytes = 4 * uint64_t(dispatch.tileK) *
+                              (uint64_t(dispatch.tileM) + dispatch.tileN);
+        if (tileElements != dispatch.blockSize ||
+            dispatch.stages != (dxa ? 2u : 1u) ||
+            stageBytes > INT32_MAX / dispatch.stages ||
+            stageBytes * dispatch.stages != dispatch.lmemBytes)
+          fail("Vortex LMEM allocation does not match tile/stage geometry");
+        if (dxa && (dispatch.batches != 1 || b.shape.size() != 2 ||
+                    dispatch.lanes != 4 || dispatch.tileM > 65535 ||
+                    dispatch.tileN > 65535 || dispatch.tileK > 65535 ||
+                    dispatch.m > 65535 || dispatch.n > 65535 || dispatch.k > 65535))
+          fail("DXA requires a 2D matrix with 16-bit tile coordinates and four lanes");
+      }
+      maximumLmem = std::max(maximumLmem, uint64_t(dispatch.lmemBytes));
+      usesDoubleBuffer |= dxa;
     }
     plan.dispatches.push_back(std::move(dispatch));
   }
+  if (!cuda && (maximumLmem != plan.lmemBytes ||
+                usesDoubleBuffer != plan.doubleBuffer))
+    fail("root LMEM/buffer summary disagrees with dispatch schedules");
   for (size_t output : plan.outputs)
     plan.tensors[output].lastUse = plan.dispatches.size();
   for (const auto &tensor : plan.tensors)

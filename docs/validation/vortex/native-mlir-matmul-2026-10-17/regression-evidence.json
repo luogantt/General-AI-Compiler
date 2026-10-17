@@ -1,0 +1,371 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-17T01:56:22.095022+00:00",
+  "scope": "Native host numerical regression and CUDA sm_86 offline compile regression after Vortex template changes",
+  "source_fixture_directory": "/home/thomas/gac-unified-smoke-20261017/fixtures",
+  "work_directory": "/home/thomas/gac-vortex-optimized-regression-20261017",
+  "compiler_binaries_before": {
+    "gac-compile": {
+      "path": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+      "bytes": 39235032,
+      "sha256": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c"
+    },
+    "gac-opt": {
+      "path": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-opt",
+      "bytes": 41700784,
+      "sha256": "2e1b649ec57c91d2fc6872593f85f8bc5a98b6b04e55187efcadcf541c9f8fbf"
+    }
+  },
+  "fixtures": {
+    "matmul_bias_relu": {
+      "model.onnx": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/matmul_bias_relu/model.onnx",
+        "bytes": 266,
+        "sha256": "0258c36e8b15f12b6f337af62ee23082fe443f64ac83c9a3eacdf7396b27e845"
+      },
+      "inputs.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/matmul_bias_relu/inputs.npz",
+        "bytes": 280,
+        "sha256": "09271f91dca150e017babd32bb3b7c7aa8eff50676b922858cc61c5295b497a6"
+      },
+      "expected.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/matmul_bias_relu/expected.npz",
+        "bytes": 288,
+        "sha256": "7aaa92d8e759ed919e1acbb71b415fa35647cfb252de5f43c45f3d8453734726"
+      }
+    },
+    "conv_bias_relu": {
+      "model.onnx": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/conv_bias_relu/model.onnx",
+        "bytes": 464,
+        "sha256": "03d8ceee30a917813a9cc5baccf4bd2a7b040406ab033b4dec2928f1ce2c347a"
+      },
+      "inputs.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/conv_bias_relu/inputs.npz",
+        "bytes": 416,
+        "sha256": "2b1ed408d0d57844a8fe678f7b1c5e1ab81bce072242b411ce381a3abc129154"
+      },
+      "expected.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/conv_bias_relu/expected.npz",
+        "bytes": 496,
+        "sha256": "39fcbd0e742e1742e0c243b6afbb6f78662d6262e3d5279f23a4022e4a4120d0"
+      }
+    },
+    "softmax": {
+      "model.onnx": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/softmax/model.onnx",
+        "bytes": 141,
+        "sha256": "91e7de25fa4cc3fe101b5e18826319994661a515fe1e5bd8e47629d4ea525bd7"
+      },
+      "inputs.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/softmax/inputs.npz",
+        "bytes": 288,
+        "sha256": "7684826ac8a53cf585c485dd79337387b305c70f0a17112da09628dbcac8c767"
+      },
+      "expected.npz": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/softmax/expected.npz",
+        "bytes": 288,
+        "sha256": "90b1b7a2824e37778751f7dcf15af77fb4350b266162a33f4514da0cc80faa40"
+      }
+    }
+  },
+  "tolerance": {
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  "cuda_device_execution": false,
+  "cuda_numerical_validation": false,
+  "commands": [
+    {
+      "name": "native-tests",
+      "argv": [
+        "/home/thomas/gac-native-reference-venv/bin/python",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_tests.py",
+        "--compiler",
+        "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+        "--optimizer",
+        "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-opt",
+        "--mlir-translate",
+        "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+        "--clang",
+        "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+        "--fixtures",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures"
+      ],
+      "environment_overrides": null,
+      "exit_code": 0,
+      "elapsed_wall_seconds": 1.4335051969999313,
+      "log": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/native-tests.log",
+        "bytes": 173,
+        "sha256": "ffadcd3ede2edcc31d1352d536a683ac9a319d7fa50ceb3c2e81f9cc0ec035c9"
+      }
+    },
+    {
+      "name": "cuda-matmul_bias_relu",
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/matmul_bias_relu/model.onnx",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/matmul_bias_relu"
+      ],
+      "environment_overrides": {
+        "GAC_NATIVE_BIN": "/home/thomas/gac-vortex-optimized-native-build-20261017",
+        "LLVM_PATH": "/home/thomas/gac-volt-llvm20/build-release",
+        "CUDA_LIBDEVICE": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc",
+        "CUDA_PTXAS": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas",
+        "GAC_CUDA_ARCH": "sm_86"
+      },
+      "exit_code": 0,
+      "elapsed_wall_seconds": 0.7687063880000551,
+      "log": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda-matmul_bias_relu.log",
+        "bytes": 114,
+        "sha256": "7a3710e107bb35522edb926799b641e0af90280cdcdde10accbbd8c325660c5a"
+      }
+    },
+    {
+      "name": "cuda-conv_bias_relu",
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/conv_bias_relu/model.onnx",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/conv_bias_relu"
+      ],
+      "environment_overrides": {
+        "GAC_NATIVE_BIN": "/home/thomas/gac-vortex-optimized-native-build-20261017",
+        "LLVM_PATH": "/home/thomas/gac-volt-llvm20/build-release",
+        "CUDA_LIBDEVICE": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc",
+        "CUDA_PTXAS": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas",
+        "GAC_CUDA_ARCH": "sm_86"
+      },
+      "exit_code": 0,
+      "elapsed_wall_seconds": 0.4676085379999222,
+      "log": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda-conv_bias_relu.log",
+        "bytes": 112,
+        "sha256": "39fac7272469c24284a030156a4f597408a5fba1ff3859bcc50f1f44b172302b"
+      }
+    },
+    {
+      "name": "cuda-softmax",
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/fixtures/softmax/model.onnx",
+        "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/softmax"
+      ],
+      "environment_overrides": {
+        "GAC_NATIVE_BIN": "/home/thomas/gac-vortex-optimized-native-build-20261017",
+        "LLVM_PATH": "/home/thomas/gac-volt-llvm20/build-release",
+        "CUDA_LIBDEVICE": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc",
+        "CUDA_PTXAS": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas",
+        "GAC_CUDA_ARCH": "sm_86"
+      },
+      "exit_code": 0,
+      "elapsed_wall_seconds": 0.41638346900003853,
+      "log": {
+        "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda-softmax.log",
+        "bytes": 105,
+        "sha256": "03e4935293b34412633752f62ac0e56c1579a6ce5aa5d0294b6768d97874b232"
+      }
+    }
+  ],
+  "status": "passed",
+  "native_numerical_validation": {
+    "compiler": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+    "target": "native",
+    "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+    "vortex_device_execution": false,
+    "cases": [
+      {
+        "name": "matmul_bias_relu",
+        "operation_counts": [
+          5,
+          3
+        ],
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "conv_bias_relu",
+        "operation_counts": [
+          4,
+          3
+        ],
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 1.9073486328125e-06
+        },
+        "passed": true
+      },
+      {
+        "name": "softmax",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 2.9802322387695312e-08
+        },
+        "passed": true
+      }
+    ]
+  },
+  "cuda_offline_compilation": [
+    {
+      "name": "matmul_bias_relu",
+      "status": "compile_only_passed",
+      "target": "sm_86",
+      "dispatches": 1,
+      "gpu_executed": false,
+      "artifacts": {
+        "plan.json": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/matmul_bias_relu/plan.json",
+          "bytes": 1813,
+          "sha256": "1614de7acbf5b5af0fa8fdf97c3a10b226ec3b1e6ff843f2485ff3bbe232e1bc"
+        },
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/matmul_bias_relu/kernel.ptx",
+          "bytes": 1944,
+          "sha256": "2ae61af6623dbf66069ae7f07c275c0b70d088d817ca8841586771326463c7f0"
+        },
+        "kernel.cubin": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/matmul_bias_relu/kernel.cubin",
+          "bytes": 3240,
+          "sha256": "3d3227a0538678cdf3d0b0ddd3e0d253c21ad72ed2dfd9d20d46c787ddb0f73c"
+        },
+        "compile-provenance.txt": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/matmul_bias_relu/compile-provenance.txt",
+          "bytes": 993,
+          "sha256": "6ae8176971629cd7685291be11d1bd34697195ac99dfea261829bf721d3fd28e"
+        }
+      }
+    },
+    {
+      "name": "conv_bias_relu",
+      "status": "compile_only_passed",
+      "target": "sm_86",
+      "dispatches": 1,
+      "gpu_executed": false,
+      "artifacts": {
+        "plan.json": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/conv_bias_relu/plan.json",
+          "bytes": 1879,
+          "sha256": "ba0eaf990885a5452e5bcc5a3e50671314cc50d73b0f3e6e404772d52e0eb2b6"
+        },
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/conv_bias_relu/kernel.ptx",
+          "bytes": 3181,
+          "sha256": "d02a423e5a5f684c74f8660fcdaafc780af361e17167f7ced58303a2acd5dad6"
+        },
+        "kernel.cubin": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/conv_bias_relu/kernel.cubin",
+          "bytes": 7848,
+          "sha256": "152216e72b376a6de4c317ee7d6658118195c61e78a37299c0eb8b57357d104d"
+        },
+        "compile-provenance.txt": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/conv_bias_relu/compile-provenance.txt",
+          "bytes": 989,
+          "sha256": "6fd3104ed5c7f39cae8a16ca3c0a71222dcf1e5ba24c258c4a5510e592c84017"
+        }
+      }
+    },
+    {
+      "name": "softmax",
+      "status": "compile_only_passed",
+      "target": "sm_86",
+      "dispatches": 1,
+      "gpu_executed": false,
+      "artifacts": {
+        "plan.json": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/softmax/plan.json",
+          "bytes": 1360,
+          "sha256": "9e819fc5e237ca24f5789abc8bf76fda9dd6b710f252ff1b4c10170842c153f6"
+        },
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/softmax/kernel.ptx",
+          "bytes": 3771,
+          "sha256": "e6f8ddb7900b9b7e2bea2249bfe7b455d9a251adb683534a7be1539582346054"
+        },
+        "kernel.cubin": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/softmax/kernel.cubin",
+          "bytes": 6448,
+          "sha256": "5d4309610bf5bd158f4828e13dc1331b8d9929a90dd0186b810e4e55209de282"
+        },
+        "compile-provenance.txt": {
+          "path": "/home/thomas/gac-vortex-optimized-regression-20261017/cuda/softmax/compile-provenance.txt",
+          "bytes": 975,
+          "sha256": "7f4cf083841ff077b250487fe5aaa19ab768890eb764f7b647e1bffd328d5bb8"
+        }
+      }
+    }
+  ],
+  "tool_identities": {
+    "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "bytes": 51580488,
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a"
+    },
+    "/home/thomas/gac-volt-llvm20/build-release/bin/clang": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+      "bytes": 177879328,
+      "sha256": "f1af489a7b7a2a51b9743c8f8796b6cef0fb3ecd2d4f0bf4a0196d7b0aa3b9a4"
+    },
+    "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+      "bytes": 7602216,
+      "sha256": "50c13a0248596f1cd215eba694ffff61a993aedaf2d51e90f14de2f4c1422db2"
+    },
+    "/home/thomas/gac-volt-llvm20/build-release/bin/opt": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+      "bytes": 104745800,
+      "sha256": "45f50b5db8e2e2dd4e8eff4e59c0ba91bbde6136460ad62422edaedca6ac26c8"
+    },
+    "/home/thomas/gac-volt-llvm20/build-release/bin/llc": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+      "bytes": 104994480,
+      "sha256": "2663cc571f4b13937e68c1183db5e29c60315ff01a466afe058e534fd8c2f7e9"
+    },
+    "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas": {
+      "path": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas",
+      "bytes": 31912192,
+      "sha256": "c960a4f238b17d5c5d3c01ad2bbc1ebd2c5aecc459cb4d223bff10b45f9b8fca"
+    },
+    "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc": {
+      "path": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc",
+      "bytes": 484900,
+      "sha256": "25498d6e3c64782833ff15a5f56665ff09e5d21177163148a1cf008c61733449"
+    },
+    "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_tests.py": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_tests.py",
+      "bytes": 10539,
+      "sha256": "b14dde02b3c0bde223a95088f3cafa0bb2fa0dff3276d70022e1bfb54084dddb"
+    },
+    "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+      "bytes": 3973,
+      "sha256": "626be69b11ea3743e786843f2b07460924097eeabee69c83b043be2f18d4035b"
+    }
+  },
+  "compiler_binaries_after": {
+    "gac-compile": {
+      "path": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-compile",
+      "bytes": 39235032,
+      "sha256": "6628d2e6be30abc676dabb98ec946256ba35219e4eb77b42a6c7b81eda57455c"
+    },
+    "gac-opt": {
+      "path": "/home/thomas/gac-vortex-optimized-native-build-20261017/gac-opt",
+      "bytes": 41700784,
+      "sha256": "2e1b649ec57c91d2fc6872593f85f8bc5a98b6b04e55187efcadcf541c9f8fbf"
+    }
+  },
+  "native_passed_cases": 3,
+  "cuda_compile_only_passed_cases": 3,
+  "completed_utc": "2026-10-17T01:56:25.862495+00:00",
+  "tcu_static_audit": {
+    "path": "/home/thomas/gac-vortex-optimized-regression-20261017/tcu-static-audit.json",
+    "bytes": 4736,
+    "sha256": "d3b1f22cbf8954417baff27a1bad39281030bfc27b290c1f6a64e67f8762e642"
+  }
+}

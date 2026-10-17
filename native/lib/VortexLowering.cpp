@@ -39,13 +39,18 @@ public:
 GAC_TARGET_OP(ThreadIdOp, "vortex.thread_id")
 GAC_TARGET_OP(BlockIdOp, "vortex.block_id")
 GAC_TARGET_OP(BlockDimOp, "vortex.block_dim")
+GAC_TARGET_OP(CTAIdOp, "vortex.cta_id")
+GAC_TARGET_OP(WarpRankOp, "vortex.warp_rank")
+GAC_TARGET_OP(WarpCountOp, "vortex.warp_count")
+GAC_TARGET_OP(LMEMAddressOp, "vortex.lmem_address")
 GAC_TARGET_OP(UniformOp, "vortex.uniform")
 #undef GAC_TARGET_OP
 class VortexDialect : public Dialect {
 public:
   explicit VortexDialect(MLIRContext *ctx)
       : Dialect(getDialectNamespace(), ctx, TypeID::get<VortexDialect>()) {
-    addOperations<ThreadIdOp, BlockIdOp, BlockDimOp, UniformOp>();
+    addOperations<ThreadIdOp, BlockIdOp, BlockDimOp, CTAIdOp, WarpRankOp,
+                  WarpCountOp, LMEMAddressOp, UniformOp>();
   }
   static StringRef getDialectNamespace() { return "vortex"; }
 };
@@ -170,6 +175,92 @@ Value createVortexGlobalThreadId(OpBuilder &b, Location loc) {
   return b.create<arith::AddIOp>(loc, base, tid);
 }
 
+#define GAC_CSR_HELPER(FUNCTION, NAME)                                        \
+  Value FUNCTION(OpBuilder &b, Location loc) {                               \
+    return targetValue(b, loc, NAME, b.getI32Type());                         \
+  }
+GAC_CSR_HELPER(createVortexLocalThreadId, "vortex.thread_id")
+GAC_CSR_HELPER(createVortexBlockId, "vortex.block_id")
+GAC_CSR_HELPER(createVortexCTAId, "vortex.cta_id")
+GAC_CSR_HELPER(createVortexWarpRank, "vortex.warp_rank")
+GAC_CSR_HELPER(createVortexWarpCount, "vortex.warp_count")
+GAC_CSR_HELPER(createVortexLMEMAddress, "vortex.lmem_address")
+#undef GAC_CSR_HELPER
+
+namespace {
+enum class Collective { Barrier, ExpectTwo, Issue2D };
+// See vx_barrier.h/vx_dxa.h. Keep WGATHER and its DXA consumer in one asm
+// expression: x31 holds four lanes, which must not be copied to another reg.
+static void collectiveCall(OpBuilder &b, Location loc, ModuleOp module, Collective kind,
+                           ValueRange arguments) {
+  StringRef name = kind == Collective::Barrier ? "__gac_cta_barrier"
+                   : kind == Collective::ExpectTwo ? "__gac_dxa_expect_two"
+                                                    : "__gac_dxa_issue_2d";
+  auto fn = module.lookupSymbol<LLVM::LLVMFuncOp>(name);
+  if (!fn) {
+    OpBuilder::InsertionGuard guard(b);
+    b.setInsertionPointToStart(module.getBody());
+    auto type = LLVM::LLVMFunctionType::get(
+        LLVM::LLVMVoidType::get(b.getContext()),
+        SmallVector<Type>(arguments.size(), b.getI32Type()));
+    fn = b.create<LLVM::LLVMFuncOp>(loc, name, type, LLVM::Linkage::Internal);
+    fn->setAttr("convergent", b.getUnitAttr());
+    fn->setAttr("passthrough", b.getArrayAttr(
+        {b.getStringAttr("convergent"), b.getStringAttr("noinline"),
+         b.getStringAttr("optnone")}));
+    Block *entry = fn.addEntryBlock(b);
+    b.setInsertionPointToStart(entry);
+    auto c = [&](int32_t n) -> Value {
+      return b.create<LLVM::ConstantOp>(loc, b.getI32Type(),
+                                         b.getI32IntegerAttr(n));
+    };
+    OperationState asmState(loc, "llvm.inline_asm");
+    asmState.addAttribute("has_side_effects", b.getUnitAttr());
+    if (kind == Collective::Barrier) {
+      asmState.addOperands({c(11), entry->getArgument(0), entry->getArgument(1)});
+      asmState.addAttribute("asm_string",
+                            b.getStringAttr(".insn r $0, 4, 0, x0, $1, $2"));
+      asmState.addAttribute("constraints", b.getStringAttr("i,r,r,~{memory}"));
+    } else if (kind == Collective::ExpectTwo) {
+      asmState.addTypes(b.getI32Type());
+      asmState.addOperands({c(11), entry->getArgument(0), c(int32_t(0x80000002u))});
+      asmState.addAttribute("asm_string",
+                            b.getStringAttr(".insn r $1, 6, 0, $0, $2, $3"));
+      asmState.addAttribute("constraints", b.getStringAttr("=r,i,r,r,~{memory}"));
+    } else {
+      Value shifted = b.create<LLVM::ShlOp>(loc, entry->getArgument(1), c(4));
+      Value metadata = b.create<LLVM::OrOp>(loc, shifted, entry->getArgument(2));
+      asmState.addTypes(b.getI32Type());
+      asmState.addOperands({c(43), entry->getArgument(0), metadata,
+                            entry->getArgument(3), entry->getArgument(4), c(11)});
+      asmState.addAttribute("asm_string", b.getStringAttr(
+          ".insn r4 $1, 0, 0, $0, $3, $4, $5\n\t.insn r $6, 0, 3, x0, $0, x0"));
+      asmState.addAttribute("constraints",
+                            b.getStringAttr("={x31},i,0,r,r,r,i,~{memory}"));
+    }
+    b.create(asmState);
+    b.create<LLVM::ReturnOp>(loc, ValueRange{});
+  }
+  auto call = b.create<LLVM::CallOp>(loc, fn, arguments);
+  call->setAttr("convergent", b.getUnitAttr());
+}
+} // namespace
+
+void createVortexBarrier(OpBuilder &b, Location loc, ModuleOp module,
+                         Value barrier, Value warps) {
+  collectiveCall(b, loc, module, Collective::Barrier, {barrier, warps});
+}
+void createVortexDxaExpectTwo(OpBuilder &b, Location loc, ModuleOp module,
+                              Value barrier) {
+  collectiveCall(b, loc, module, Collective::ExpectTwo, {barrier});
+}
+void createVortexDxaIssue2D(OpBuilder &b, Location loc, ModuleOp module, Value destination,
+                           Value barrier, Value descriptor, Value coord0,
+                           Value coord1) {
+  collectiveCall(b, loc, module, Collective::Issue2D,
+                  {destination, barrier, descriptor, coord0, coord1});
+}
+
 namespace {
 struct VortexToLLVM : PassWrapper<VortexToLLVM, OperationPass<ModuleOp>> {
   MLIR_DEFINE_EXPLICIT_INTERNAL_INLINE_TYPE_ID(VortexToLLVM)
@@ -202,6 +293,10 @@ struct VortexToLLVM : PassWrapper<VortexToLLVM, OperationPass<ModuleOp>> {
         int64_t csr = name == "vortex.thread_id"   ? 0xCD3
                       : name == "vortex.block_id"  ? 0xCD6
                       : name == "vortex.block_dim" ? 0xCD9
+                      : name == "vortex.cta_id" ? 0xCD0
+                      : name == "vortex.warp_rank" ? 0xCD1
+                      : name == "vortex.warp_count" ? 0xCD2
+                      : name == "vortex.lmem_address" ? 0xCDF
                                                    : 0;
         if (!csr) {
           op->emitError("unimplemented Vortex operation");
