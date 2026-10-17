@@ -1,0 +1,2375 @@
+{
+  "scope": "Native C++ MLIR Vortex register tiling, actual ELF/vxbin execution on SimX",
+  "physical_device_execution": false,
+  "full_model_execution": false,
+  "tolerances": {
+    "atol": 2e-05,
+    "rtol": 2e-05,
+    "equal_nan": true
+  },
+  "reference": "Independent NumPy, seed 20261017; never the device implementation",
+  "measurements": [
+    {
+      "variant": "r2-bk16",
+      "case": "tail",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 4415,
+      "instructions": 1134,
+      "artifact_sha256": {
+        "kernel.mlir": "273e010737ea6554eebadb44578b1a5cf6adf1de12965b30649f1304cd8129f9",
+        "kernel.ll": "b3dcca69e5519d26206a061a0546df5287cc16f8e925c849af813e96047b7da5",
+        "kernel.elf": "cdd6eebd7083acd09f5a576125e90b789f584d0c52db89ad963e1d598a217650",
+        "kernel.vxbin": "f0b736490bc2042a14b95103ce8a02bcb3457e4ec0aab26427fe81088111034e",
+        "plan.json": "bf2754eb5e0eb75bb0c53e1d40e68f6ec32cbe791bd515a985811ce04259a060"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "tail",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 8954,
+      "instructions": 2545,
+      "artifact_sha256": {
+        "kernel.mlir": "644d2a9ec0e4ea4aa17706d0c383bb3fc110cacd7e250a68e50de2e991b55dad",
+        "kernel.ll": "9bc598286aa71a4e8cb50f891adff281504e76f444fc7c2217e5a211b6006fe2",
+        "kernel.elf": "9ae3b949b712f5935beabcb86a67a51455583838fde8e94fa5a6b171853e9e1d",
+        "kernel.vxbin": "f10b3cf28bf27d0b56c2f0f6b46b55a2e9d19856c7197824b48367f61d14e0bf",
+        "plan.json": "bbd356355cdf4714ea9b3ffa1db0492147076b17749d4b4df68dc2e71a7a3d68"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "tail",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 5586,
+      "instructions": 1391,
+      "artifact_sha256": {
+        "kernel.mlir": "763a775da7d3498726e5e2392ef8f5316e8db6d4b67c2b1dc640256ed2174216",
+        "kernel.ll": "9c2cba215457e8df66d7a4cfa215c21d54cf4ec801771916931b5580fb1f2a24",
+        "kernel.elf": "fde60ea03b0f2b6c313a6cbfab9aa0ccac89ecee89cfef46cf43719178397fb1",
+        "kernel.vxbin": "e7aaaa346a8d3aef1b6d8fbc6c11c584f9644cf007c9e3922d313d03c40fabbc",
+        "plan.json": "8b8d31c85afbeaa4b57ead2d9660ba82ec88f9b6df36604058f0fdbe3d33bb71"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "aligned",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "input_sha256": {
+        "A": "6011d93fe02cf32503b1305f736ce900b8f4f2cba26237d0b9b8ff176f96d5e9"
+      },
+      "output_sha256": "d27294c03e45fba5f198ec6667aac0dae3a7efb8288d3acd495efeeb1edae69e",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "cycles": 237787,
+      "instructions": 88736,
+      "artifact_sha256": {
+        "kernel.mlir": "86359bae8539b683dace04cb013fa661db6f107298b4ce03f419319b3e91930c",
+        "kernel.ll": "14c83e4499fc343e0cc0677a9a655968ae0f57b479b3c6bcc30ea71f79585141",
+        "kernel.elf": "492c7c17d9516e3dce823e2cc2a2114821c759fcc936ebcc5bbb57deccb13ad9",
+        "kernel.vxbin": "b85a355d5f5c2d9b759ddfd0650ad1f6f45476379385bbad51a9a60e5a5eaa34",
+        "plan.json": "a67e95af529a09e4af70328f49a762052c038d078fad4e8625e451457f05e042"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "aligned",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "input_sha256": {
+        "A": "6011d93fe02cf32503b1305f736ce900b8f4f2cba26237d0b9b8ff176f96d5e9"
+      },
+      "output_sha256": "d27294c03e45fba5f198ec6667aac0dae3a7efb8288d3acd495efeeb1edae69e",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "cycles": 269433,
+      "instructions": 85536,
+      "artifact_sha256": {
+        "kernel.mlir": "07b7dc3149f1fb17b046fee2613a2ae85c13729a840a579ae79d052c90ee6e4a",
+        "kernel.ll": "3a2d742a31cad298a9e6d86598e2d8eb34260ea22deb5a1e692900419614c9d3",
+        "kernel.elf": "0d876ad191a812b82b19693f9a37306fa207a53f6477c532da6033d8e5a9c179",
+        "kernel.vxbin": "1d3d66662cc6a5b4a675c4d299c536450c8dd89ed5145e876c393753ae1264e7",
+        "plan.json": "66be791b07e4d397c369c12687c17a6d4cae308efa1cdc4c2d6e4448b513e714"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "aligned",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "input_sha256": {
+        "A": "6011d93fe02cf32503b1305f736ce900b8f4f2cba26237d0b9b8ff176f96d5e9"
+      },
+      "output_sha256": "d27294c03e45fba5f198ec6667aac0dae3a7efb8288d3acd495efeeb1edae69e",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "cycles": 159396,
+      "instructions": 45184,
+      "artifact_sha256": {
+        "kernel.mlir": "7001b9975faa7a095caf86a57980b3ffd93887e0631fe9a7299e4829b661cefb",
+        "kernel.ll": "ca37244df6c0b06d3a1527edc937bf3602b4c0bb5a892ff1a55a8f8e9865ed03",
+        "kernel.elf": "b68b2576966cfdb32f4d3cd09c640b8640513f47ad6f96a4a57e811893cbfab8",
+        "kernel.vxbin": "49bf16ad818274bb80cd0f9f472e47399bc5ef8d97003dcb28a3704d61f298f5",
+        "plan.json": "249c28b009a184d7a17388e5c292d9413b2caaaf5a3284c8452c50758be0aa66"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "projection_3d",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "input_sha256": {
+        "A": "f35cdc43079564c49e45d384de77f1deb3789aee32764440e792fec9209e65b4"
+      },
+      "output_sha256": "d9eba66a2c0a45b20f4767690067ed4c2afc9f1d1e3de8c128b65a15a8695777",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "cycles": 7665,
+      "instructions": 2124,
+      "artifact_sha256": {
+        "kernel.mlir": "5d69334729c558da1b67e310fae89d8a5417454ffa6c17915f2676dc4156c4cc",
+        "kernel.ll": "d2bad794011628d8ac9f2b31bbc8b6807db59801aefd3899f96562c34997fd60",
+        "kernel.elf": "200fac6f2810b16ecc22d84875b83c70f5eef63531a1a833cc5663416b4f8bf9",
+        "kernel.vxbin": "26657822908687a575c5e68aa5b66c0ea89782036e7a509366f6e99a7f43cfef",
+        "plan.json": "24151d28d75cd410fa9ca7f13c91ba475fffba7f821fccda469907e0b976a6d7"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "projection_3d",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "input_sha256": {
+        "A": "f35cdc43079564c49e45d384de77f1deb3789aee32764440e792fec9209e65b4"
+      },
+      "output_sha256": "d9eba66a2c0a45b20f4767690067ed4c2afc9f1d1e3de8c128b65a15a8695777",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "cycles": 28893,
+      "instructions": 8602,
+      "artifact_sha256": {
+        "kernel.mlir": "7c60b11efe3ca576e750d0976cdd8147592729e32b9d166b4dfb850caa26d84f",
+        "kernel.ll": "db58059181e4c9190727c7dcf10600a6e1f88bd072c0c85e8fd81c1df236fae5",
+        "kernel.elf": "e6b88f3e87ffc68a046ada3eef8733989567ef58d509dab103f06bd4ce6bd914",
+        "kernel.vxbin": "c980606909773f906729b4e2adb01a1027ad78829565ad811373b1197108a355",
+        "plan.json": "163a4ec59041013a340e4d521a7c11f7404adac393225ea62fccbe8322c761b2"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "projection_3d",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "input_sha256": {
+        "A": "f35cdc43079564c49e45d384de77f1deb3789aee32764440e792fec9209e65b4"
+      },
+      "output_sha256": "d9eba66a2c0a45b20f4767690067ed4c2afc9f1d1e3de8c128b65a15a8695777",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "cycles": 15090,
+      "instructions": 4268,
+      "artifact_sha256": {
+        "kernel.mlir": "5ada3a0f1b36be67273baeba242dff1dc523a82de3de6d0e05311908f3159c0c",
+        "kernel.ll": "00893b2f52c9b3f9c52e5132398facb249873bf1c333a99442a219f4940a7c6f",
+        "kernel.elf": "e4464c6df7cf2487864f42a1e982599779d48fc8922bd4054b2dd2d39568c73f",
+        "kernel.vxbin": "52cfe675a65788da7460acaf82ccdebf79d844eba0d26d98335a7774a8ffad40",
+        "plan.json": "be905678f89d04fb35f9fa7a85dac3b949738d8cf7445d00579986656cd7fb58"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "batched",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "input_sha256": {
+        "A": "8a7ea12c867e9abe69233f8509fe66797645bcf04fce33a1b32d8cb15a56e6de"
+      },
+      "output_sha256": "e05894d6d8b84156e2c677be94451f98a850e7152249741c6598f2c244269b5a",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 4304,
+      "instructions": 1259,
+      "artifact_sha256": {
+        "kernel.mlir": "edd77e130b57883f444793770cc82936cf163edbe1fb24442dfee75050cc4ffb",
+        "kernel.ll": "db73a2356965f8d862614340e9fad6efe850685639e8783cf4175f7519d4a100",
+        "kernel.elf": "34cde40d6dbdb2fa1fafa1625bb69e0c4a4fc0cd406627d5fe2794655b44b1c2",
+        "kernel.vxbin": "96cc53ff71f63b6ba79506e8114d432b8c6f3c5554daf3e97048b77c39028503",
+        "plan.json": "bbd58bdced1c6239759f458a0a1a4093e85907a8fc8996b46006ac7aff05444c"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "batched",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "input_sha256": {
+        "A": "8a7ea12c867e9abe69233f8509fe66797645bcf04fce33a1b32d8cb15a56e6de"
+      },
+      "output_sha256": "e05894d6d8b84156e2c677be94451f98a850e7152249741c6598f2c244269b5a",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 11973,
+      "instructions": 3717,
+      "artifact_sha256": {
+        "kernel.mlir": "794940a5372658a6d777c0ee6d21d50b5790e8aed3a810ab81464a8b3b2f60c0",
+        "kernel.ll": "36104f5dfb5c5ddc8ed05a5bfaa623f09b73ae8da5d21bed1dd3d072ce6a2b1f",
+        "kernel.elf": "1942f7710b791c460c4191386e6a2b91b889679d565a6a2cd18de4175959b389",
+        "kernel.vxbin": "fac175df21b446acb02b5e0ccc80dcee037cb055f1ca37c2f240849a23afad92",
+        "plan.json": "e3385bae8e86ff7332b562b7a3e58a03c20477312db9aafd005836b3a7c3aebf"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "batched",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "input_sha256": {
+        "A": "8a7ea12c867e9abe69233f8509fe66797645bcf04fce33a1b32d8cb15a56e6de"
+      },
+      "output_sha256": "e05894d6d8b84156e2c677be94451f98a850e7152249741c6598f2c244269b5a",
+      "selected_templates": [],
+      "fallback_reasons": [
+        "DXA 2D descriptors require one shared rank-2 right matrix",
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 4304,
+      "instructions": 1259,
+      "artifact_sha256": {
+        "kernel.mlir": "edd77e130b57883f444793770cc82936cf163edbe1fb24442dfee75050cc4ffb",
+        "kernel.ll": "db73a2356965f8d862614340e9fad6efe850685639e8783cf4175f7519d4a100",
+        "kernel.elf": "34cde40d6dbdb2fa1fafa1625bb69e0c4a4fc0cd406627d5fe2794655b44b1c2",
+        "kernel.vxbin": "96cc53ff71f63b6ba79506e8114d432b8c6f3c5554daf3e97048b77c39028503",
+        "plan.json": "55b4c4721c388569e6d0a7a6c364787c052ce0381b734daf8120a4297c9ad89c"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "broadcast",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 8753,
+      "instructions": 2657,
+      "artifact_sha256": {
+        "kernel.mlir": "7580b9c040c00f25c351612f8034eb02fa988200d3884a8f626c0db58f0b90ee",
+        "kernel.ll": "49c795672b373fd1f0315a6ac807eb4352ec34c5b7c9871a43f7c3bc56b5ecab",
+        "kernel.elf": "5ae518b199289361b8fdb63d650f7fc5194a792d8351eec41cbc8823ab8926c2",
+        "kernel.vxbin": "cc7369afeec69be4f8a2057921fddf9ed38c8c00325bfe36f56c421f38d3247a",
+        "plan.json": "6f75c314daf8495affaaf9938aa05a02ffab4949ff6a44b7f4ce60afb6ca81ba"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "broadcast",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 23448,
+      "instructions": 7393,
+      "artifact_sha256": {
+        "kernel.mlir": "27576528f5dbcb7d65acf3f22e4db728abf0212a5b65419dc98ba81b7e039e5e",
+        "kernel.ll": "524035d7f2f2779faee949f2f3f581d12025f74935946280ce48632cc7474402",
+        "kernel.elf": "cd9628c95adb01c570d25c5686df4fedad7adaaaabc1755d497e256135749276",
+        "kernel.vxbin": "a85d9030702363e0fdf7f3c15d4becca59a4fd201bdb913e5e6e958505bc44fb",
+        "plan.json": "e14c3e5ac3647bdfab1522be2d5494f307be1aac2c81f316e38fdb6de929ca75"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "broadcast",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [],
+      "fallback_reasons": [
+        "DXA 2D descriptors require one shared rank-2 right matrix",
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 8753,
+      "instructions": 2657,
+      "artifact_sha256": {
+        "kernel.mlir": "7580b9c040c00f25c351612f8034eb02fa988200d3884a8f626c0db58f0b90ee",
+        "kernel.ll": "49c795672b373fd1f0315a6ac807eb4352ec34c5b7c9871a43f7c3bc56b5ecab",
+        "kernel.elf": "5ae518b199289361b8fdb63d650f7fc5194a792d8351eec41cbc8823ab8926c2",
+        "kernel.vxbin": "cc7369afeec69be4f8a2057921fddf9ed38c8c00325bfe36f56c421f38d3247a",
+        "plan.json": "e8a75adc44a331cd54c1cdd1f94ee70d1350a88f83e256dcdbb41bbe7cc790ec"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_chain",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 247228,
+      "instructions": 91327,
+      "artifact_sha256": {
+        "kernel.mlir": "78416dcc1fe934f9dc6f8eb96db36b86f7f0fa49bae170c5dcb27f588ef8805f",
+        "kernel.ll": "bc4ddf15710828ececcb0d7b8c8f80940043aed501fd82c59c6d58ab140d9ca3",
+        "kernel.elf": "c6a5ded4e8b6df0dd305ba3f0fd11b43994b665ab9c3c107b418c6ff89ed8750",
+        "kernel.vxbin": "cd3acc433cf70dc40e89a8c1dedbbacbccb6603c1d7fb45ce90e405b5a6d165b",
+        "plan.json": "85f8532c815e012fbc5616bc81d915790b959b38237a023ccf05cefce6e2dfb3"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_chain",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "lmem-tiled",
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 280712,
+      "instructions": 90569,
+      "artifact_sha256": {
+        "kernel.mlir": "bc76bf3d0c9ed715ec7c564351f6ae04956639b99d3b7fa159a441b6e7ebcb53",
+        "kernel.ll": "412937b0cdf6b6be90b8055ef237913172cd017e1541885835455431b1aa2a38",
+        "kernel.elf": "1ba5df522f6cdeec134cd69f0e72ec78460e21e13cc6d33957bfd94e2166a406",
+        "kernel.vxbin": "c70cc18a2b0dc6045a139e28ab509679a14f46bfb3d85a7a062caeb873ee56e3",
+        "plan.json": "888c0f5ab3ea7fe360f1952d59d20eccfe3867b7dab2a1738c21125c89c36170"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_chain",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "dxa-double-buffer",
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 169419,
+      "instructions": 49941,
+      "artifact_sha256": {
+        "kernel.mlir": "328bf411ffa2c3033c5d47d6931429e02e5af3942ca570367947e602538f5d89",
+        "kernel.ll": "62181c43edadbef86bd8eaea36c33603c5a15ee3023baf257bac6684545f5fd8",
+        "kernel.elf": "025c4f1b309f7f9bb14b54a9ac421afa52b0d3f75611eec97fba460c95d3b372",
+        "kernel.vxbin": "5d9fa62cf1e2ff2f3810ff8b681fcacab11f0c12480de3d9accedf71a2f02bb4",
+        "plan.json": "0cfb2e6201f226fbae1e46c898b1ded80ea1776ef18e7b755bff4b0652d6f0f0"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_width",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 7782295,
+      "instructions": 2956023,
+      "artifact_sha256": {
+        "kernel.mlir": "572f08ac239c45df9e7abd6b99a5280be642d0521b418d2630d052bcbc256623",
+        "kernel.ll": "4a772f026f55f423c08202636ea68fd6890f867a37593feee59fe614cf852747",
+        "kernel.elf": "8713b8c0a10a44f340e7cae71e9df0a826167f2f66143d091636ef7bc954d687",
+        "kernel.vxbin": "bfdf7019cd402e59e7f415d41f518f16e854d1a882fdc8ce11805d6ece2c53b1",
+        "plan.json": "333a7746e3a0448c39479b2a932e36d85e1c3d582f8fc078562b77894682596f"
+      },
+      "kernel_static_stack_frame_bytes": 0,
+      "kernel_static_sp_reference_sites": 0,
+      "speedup_vs_scalar_cycles": 1.0
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 8291554,
+      "instructions": 2614235,
+      "artifact_sha256": {
+        "kernel.mlir": "075a08fb1d9a141cb07f27672cbf67ee48cac555de3fd31367eb6d43f9f008e0",
+        "kernel.ll": "9cd2c6fabb3c619fd16a97ade52a09736a9a97db34440c765dd46ea16b9ec6bd",
+        "kernel.elf": "61dbfba3e2097f3d72054aad4e9a4eeeb707bca7cf23bc378d6e71c67dea2fe8",
+        "kernel.vxbin": "3c7269134a93d941343e7abbee89eb4664984d0e7f0317aa6e81bca05544768d",
+        "plan.json": "0998b33c0d0f698cbadd2b53ff30bf31c39e68d5dbdba265747dfd61183700a3"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 20,
+      "speedup_vs_scalar_cycles": 0.9385809945879867
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 4980980,
+      "instructions": 1388443,
+      "artifact_sha256": {
+        "kernel.mlir": "0c1993ba91f5e79e522cd6c9c5f00bb10360448f131a873813fafd166266b657",
+        "kernel.ll": "29e82032dba5e32d092d6818c3f2b7b5036ae9dfd596c606bcbbfbec74dbbd83",
+        "kernel.elf": "73ad96223fd0b22fe10672d0337ad81309a91ca2060495be7f790a523de52a09",
+        "kernel.vxbin": "2845e98e63d4f7524030c74822443616fc7370926cb986ce3c32dfbcef84c366",
+        "plan.json": "f5e0052bc2dcfa5c8d80804bdb2f40914eceebf19e27bfe843fa27a7f09a5f58"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 25,
+      "speedup_vs_scalar_cycles": 1.5624023786483785
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "reshape_projection",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "input_sha256": {
+        "A": "2d6299e29ef97be8cad12295257917953cc8fffad58f9dcae2da1b9e8d33fc81"
+      },
+      "output_sha256": "f880afd1dd750ecbd250c799e6866dd76f2a1f7b65ffa807b3fd301853449550",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 1490,
+      "instructions": 392,
+      "artifact_sha256": {
+        "kernel.mlir": "c3476267328ce1e0d4131ec627a39c75470df738d64e5bf932ce59f9a9079a7e",
+        "kernel.ll": "4c7c6d1d255ac6c3971aa269db45953867a0cc0b17c946fbdf3a706db4018c20",
+        "kernel.elf": "9773ed4a29184a620bb11c51ff08f426009ae9f66c9f3a2df0bd1bcec17c6dbd",
+        "kernel.vxbin": "00f545766492f759eb096a4a0ca5ac1770bfad54b5f0b4603d8512040cca5c91",
+        "plan.json": "69198b3b7caf3abf8a0d45389ff04be6974b2e87da9ec9a3650b2ea2485cedb3"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "reshape_projection",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "input_sha256": {
+        "A": "2d6299e29ef97be8cad12295257917953cc8fffad58f9dcae2da1b9e8d33fc81"
+      },
+      "output_sha256": "f880afd1dd750ecbd250c799e6866dd76f2a1f7b65ffa807b3fd301853449550",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 5025,
+      "instructions": 1460,
+      "artifact_sha256": {
+        "kernel.mlir": "708b743d85216b6f4428d2cfbee4214be9752738808a5bc8b1f039c7a9ddace9",
+        "kernel.ll": "40076073b4c210d0afa98f36e4bcf31d6a8d8c6053fa2b0ba5514a0109fd3c11",
+        "kernel.elf": "831656eca91f5e40bbfe9d7b9ae522fbed71f15e85ace1821d822799e8ac68d6",
+        "kernel.vxbin": "6de74cf76a4670bb2263c1df57bb0033d4a640e8008f66f528c75d660d605fcc",
+        "plan.json": "1274a10ebfa43bde1c2accd1a12d622ee4d3bb34196ec69723b9e2d77f9599dd"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "reshape_projection",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "input_sha256": {
+        "A": "2d6299e29ef97be8cad12295257917953cc8fffad58f9dcae2da1b9e8d33fc81"
+      },
+      "output_sha256": "f880afd1dd750ecbd250c799e6866dd76f2a1f7b65ffa807b3fd301853449550",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 2120,
+      "instructions": 485,
+      "artifact_sha256": {
+        "kernel.mlir": "e7cc7eff1376f1f5a2acf71fdc30ae4484e9e5565ec8a730bcb8e014595e8788",
+        "kernel.ll": "1cb0f6af54efe1edaf8a6193e1f99d45a899475071be412a562589e2add9ccd4",
+        "kernel.elf": "c42e5197db6a4e038671d19c37e19fc9c5a99540644881af8a0e9fa936773fff",
+        "kernel.vxbin": "9d43c525d354d7e5f966f6c7edaeef745f9f4c7e0763a4f3e1b1fbb081739d99",
+        "plan.json": "35e108eaa9ccf2134f26983e8200e7881f5193d5044d806d7c51e2eec601a267"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "nonfinite",
+      "schedule": "scalar",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "input_sha256": {
+        "A": "838dea83672eeff269bf05d2143edd251f30ba092420bcf84599375ebc82f7c2"
+      },
+      "output_sha256": "fd77d8da5e0c9f85d0bfbe1f283f79508eb2dae25658114ab90b307b23e3243e",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 1515,
+      "instructions": 396,
+      "artifact_sha256": {
+        "kernel.mlir": "0078986f8fd6b3344d8d953bfb04a7174e1d2b731d83285cfdc6992c24b89948",
+        "kernel.ll": "8835ef901b4ebd3a910f057e86ff00d6b0d02eb578efac50da5d23fe17c6c4cf",
+        "kernel.elf": "ea9f047d51925703896ef4cc6949a299eeb6c328d78ae3886b678016697ca02b",
+        "kernel.vxbin": "4fb16a55012e39655219eb750450af0b5e0d8d0b5c58d901bb6bb194c418971d",
+        "plan.json": "c76cec164b5187ed4640ce59756dfa804c73a603ec6fc0067de8722ae5852486"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "nonfinite",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "input_sha256": {
+        "A": "838dea83672eeff269bf05d2143edd251f30ba092420bcf84599375ebc82f7c2"
+      },
+      "output_sha256": "fd77d8da5e0c9f85d0bfbe1f283f79508eb2dae25658114ab90b307b23e3243e",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 5321,
+      "instructions": 1533,
+      "artifact_sha256": {
+        "kernel.mlir": "2192402184f709b5028d4b96a5c4819bf9b3773c6dde5bd155a5591a30a8024b",
+        "kernel.ll": "fdf439c864fcbbbfdc788f3600840375577f842f456d1516442e0932db6773ba",
+        "kernel.elf": "8dbebef552044716aa31ba1bf24f42bf8d0e07ff3178838f1231989f4bd50d1b",
+        "kernel.vxbin": "1b864d40d4102d98b31d6110dc070c4a95ec950930a70b4f23c25b86359c3c9b",
+        "plan.json": "6231058cb5f9e74ff1952bf07bc6bd12267e005e0dc5ce4ecfb1e64674e6da33"
+      }
+    },
+    {
+      "variant": "r2-bk16",
+      "case": "nonfinite",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "input_sha256": {
+        "A": "838dea83672eeff269bf05d2143edd251f30ba092420bcf84599375ebc82f7c2"
+      },
+      "output_sha256": "fd77d8da5e0c9f85d0bfbe1f283f79508eb2dae25658114ab90b307b23e3243e",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 2196,
+      "instructions": 517,
+      "artifact_sha256": {
+        "kernel.mlir": "0b8bd0ac1dd3bdcc2a537b21f12eee1f1267fa55ee47c99d699d274b4dc087d3",
+        "kernel.ll": "d5289a22bde1072ff21e0939b1e91ff5cc323877197f4bb4bca21e53e9f43de6",
+        "kernel.elf": "bf1d071e499e03e7b835cde238cf14068b7aa446ca883a504fe41023365966ed",
+        "kernel.vxbin": "a39200d3b10ffd629f7e6fb5af49a1f88634338b2fc5c656610a05d2d356d051",
+        "plan.json": "ea4c898c83e2cc38c371f419d1380bcfccebe57f54397c1a1b227e9910e4be28"
+      }
+    },
+    {
+      "variant": "r2-bk64",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        64
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 8043386,
+      "instructions": 2571483,
+      "artifact_sha256": {
+        "kernel.mlir": "7e33373c3222523179ae04d87dc7510b7c4711a0b6032d44d18d69521ba91117",
+        "kernel.ll": "d747a95b6538c9e7891969c4651901e303812287be393e19f1a609b2ce96f617",
+        "kernel.elf": "110835242a0c17ed6ed892f65ddad2b26d780d2d67dd768d2761ada9e98f55c5",
+        "kernel.vxbin": "d23d0e1e6ed2b1ca9f507df9977f02409a49dec0436f36783e0aef347084bb93",
+        "plan.json": "ef5e763ce854c00305a4ad46cde5071acde75c58e469a51fc3775c0b7a0e15ab"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 38,
+      "speedup_vs_scalar_cycles": 0.9675396655090281
+    },
+    {
+      "variant": "r2-bk64",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        64
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 4361697,
+      "instructions": 1266715,
+      "artifact_sha256": {
+        "kernel.mlir": "0049252824fcadd0b5ced353bb598b6d854e00f0011e823b69a6f9c3788a09e6",
+        "kernel.ll": "615d79002e899e5e33bc1e3870b434e319cfe4bcc65ed184f06cea0f4af86b37",
+        "kernel.elf": "401d4391d3eaff85403b4fb23513db85b7fb69f135e667b6028cfea44361caee",
+        "kernel.vxbin": "e6a23204be8c8c080a9e2b429bbeedfe4714f4b3820e4d13edae9a5533709413",
+        "plan.json": "fbcefd839fd0e36dc12f694aceacc934bf29710d4917fe1f3b0d56b5950cde4e"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 27,
+      "speedup_vs_scalar_cycles": 1.7842355853696394
+    },
+    {
+      "variant": "r2-bk128",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        128
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 8334462,
+      "instructions": 2748379,
+      "artifact_sha256": {
+        "kernel.mlir": "047391de6529ae6834e496169cb9f718f5b7ed9f8bd32e4df62d649b7f748241",
+        "kernel.ll": "57c6c8e72cea3c367144fa9692bdecad12b554f3edf8c719c929e2b1c792ce75",
+        "kernel.elf": "8e5506f99e890bf196de95ac25437da31388801c2dfcdb3cdd48a5aa0860d535",
+        "kernel.vxbin": "75cb0b398eed5c728e4ddf6e0434943051ff48f4281b512a97cd4203c467a72a",
+        "plan.json": "e76d589e056239c5c605b8eafbde6998b1d0d153194c19160222bb831e28fdca"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 26,
+      "speedup_vs_scalar_cycles": 0.9337489330445085
+    },
+    {
+      "variant": "r2-bk128",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        128
+      ],
+      "thread_tile": [
+        2,
+        2
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 4628008,
+      "instructions": 1445467,
+      "artifact_sha256": {
+        "kernel.mlir": "ac31d64e94ec32db6caea8b7bd0a9403f7d22f60c68ba45da15316efcc5dc974",
+        "kernel.ll": "c8e2bc3fafd2c70af6e281358f246521ae6f4d50e0246726b1b7fc2e41a986da",
+        "kernel.elf": "8592f7fd815fb89b56a8728650870c5c9b0b14f6781715f8777ccae4c5282c16",
+        "kernel.vxbin": "6d695afa0d1723bf6b00ccbec3348afc6a9638db2ae148fead305d5f374a4f1c",
+        "plan.json": "dcdb98a3502980490833c34582d23cc98b09d1f627905d9127114ea50f8c7e9f"
+      },
+      "kernel_static_stack_frame_bytes": 16,
+      "kernel_static_sp_reference_sites": 6,
+      "speedup_vs_scalar_cycles": 1.681564725039369
+    },
+    {
+      "variant": "r1-bk16",
+      "case": "ffn_width",
+      "schedule": "scalar",
+      "tile": [
+        4,
+        4,
+        16
+      ],
+      "thread_tile": [
+        1,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [],
+      "fallback_reasons": [],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 7782295,
+      "instructions": 2956023,
+      "artifact_sha256": {
+        "kernel.mlir": "75d3a3cc19ecfc227795d10015d536573109325a4ee0dfc55a3c259b6afb6903",
+        "kernel.ll": "4a772f026f55f423c08202636ea68fd6890f867a37593feee59fe614cf852747",
+        "kernel.elf": "8713b8c0a10a44f340e7cae71e9df0a826167f2f66143d091636ef7bc954d687",
+        "kernel.vxbin": "bfdf7019cd402e59e7f415d41f518f16e854d1a882fdc8ce11805d6ece2c53b1",
+        "plan.json": "333a7746e3a0448c39479b2a932e36d85e1c3d582f8fc078562b77894682596f"
+      },
+      "kernel_static_stack_frame_bytes": 0,
+      "kernel_static_sp_reference_sites": 0,
+      "speedup_vs_scalar_cycles": 1.0
+    },
+    {
+      "variant": "r1-bk16",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        4,
+        4,
+        16
+      ],
+      "thread_tile": [
+        1,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 12845850,
+      "instructions": 4122359,
+      "artifact_sha256": {
+        "kernel.mlir": "3aced0c61a94d66e34df2a58bf77743beb436d3bbaef2acc7a51c8ae8ded7645",
+        "kernel.ll": "94e04a787bdfb610e5133ba9cf22cf6f595851436a8dd9d58e7a6194cf5b09ec",
+        "kernel.elf": "ba1603295be9d800854960535ea028c0651d38522a4b5e2ace35bf70c5f7faf5",
+        "kernel.vxbin": "7dc6361c0ea956ce84686a4fb384c48ba6164e10189526cef03e5d96eb869a7b",
+        "plan.json": "06abbd1a2d309236059836065701408be26e6a174ab82c381266ddd3f03ac25a"
+      },
+      "kernel_static_stack_frame_bytes": 32,
+      "kernel_static_sp_reference_sites": 16,
+      "speedup_vs_scalar_cycles": 0.6058217245258196
+    },
+    {
+      "variant": "r1-bk16",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        4,
+        4,
+        16
+      ],
+      "thread_tile": [
+        1,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 8552239,
+      "instructions": 2271479,
+      "artifact_sha256": {
+        "kernel.mlir": "d6a2c66ea878c58ea3c938016dea6e2047449b1caac3d6f1c5f3cdfa983c50bb",
+        "kernel.ll": "b67585e77c35eec30c54d77bde6b48ddfab9ee726aaec81215ef4c2c63e5e2b2",
+        "kernel.elf": "bdd8c7c9d5e50d3268c8677400805e37922f0b115b49da00d03e650c324e1d46",
+        "kernel.vxbin": "c480aee0685e8bfeebe22047ad4b027109efca774ea32431053c72840f448a49",
+        "plan.json": "64d42127e32303494a855f0df9c7f0ee2009ba7c18c4348c04b77dbe286ba10f"
+      },
+      "kernel_static_stack_frame_bytes": 112,
+      "kernel_static_sp_reference_sites": 59,
+      "speedup_vs_scalar_cycles": 0.9099716460215856
+    },
+    {
+      "variant": "r1-bk128",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        4,
+        4,
+        128
+      ],
+      "thread_tile": [
+        1,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 15113886,
+      "instructions": 5412599,
+      "artifact_sha256": {
+        "kernel.mlir": "a64224710c62aac9e7aa05a9197dcb665ccd0645df652745ddffaee296d5fe9f",
+        "kernel.ll": "9a8c840ba7fd32bec626e5e86f439b1abfabda126dc7499f6d15c4d241d2dfe7",
+        "kernel.elf": "97e17156c2d61dd34b8df867560a7530fe860b34682e85be949c00e79ba92240",
+        "kernel.vxbin": "bba2d86bf7e026d522802fd918b0b0027207e3e0f3a5d7b8ae920ca830428a62",
+        "plan.json": "ac8bf820969009066531968d57d68e5e228d71e3003a24c540d72fb9675cdb32"
+      },
+      "kernel_static_stack_frame_bytes": 32,
+      "kernel_static_sp_reference_sites": 22,
+      "speedup_vs_scalar_cycles": 0.5149102619935072
+    },
+    {
+      "variant": "r1-bk128",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        4,
+        4,
+        128
+      ],
+      "thread_tile": [
+        1,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 7594572,
+      "instructions": 2762999,
+      "artifact_sha256": {
+        "kernel.mlir": "4e73d165bcb7b8a64ae0d7f63232355d935b3caa5b43d2bc19c30ffa1e294725",
+        "kernel.ll": "f6268149612e4eca68512888b2d47ba42d60d406e526b6b102bfe96c10f1854a",
+        "kernel.elf": "65b2849065be6af67112026e1330c3e1ff8c2cdfe5611e3d990f1cc45d5da0a0",
+        "kernel.vxbin": "4b214366c639f7a0b3004efeede4d3f26086fe344c6bee191a4c4985228ce28f",
+        "plan.json": "0197ad7899ce41f97171bfc942eefdd2dbcb5869ba817a03db1c44cf844ebbfc"
+      },
+      "kernel_static_stack_frame_bytes": 16,
+      "kernel_static_sp_reference_sites": 6,
+      "speedup_vs_scalar_cycles": 1.0247180486273617
+    },
+    {
+      "variant": "r4x1",
+      "case": "tail",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 8320,
+      "instructions": 2465,
+      "artifact_sha256": {
+        "kernel.mlir": "e481b3c36c142c4a851bdd97ce7f0386639abc39695d1075fb8b6bbeb8d9278e",
+        "kernel.ll": "4aa61e567f9eb2a5e931a3bf25bee14017ad24dcf4eb84cec2e46def73c40034",
+        "kernel.elf": "f24afde9c644f1710f700a40aad51568037b08a93db4c273abdc893d2a1215df",
+        "kernel.vxbin": "367d3ce4280beee3eaf2ef381b5e8488d284974e71bbee80c69233eb61adfb69",
+        "plan.json": "87da9052807505b337f5c94e3485ac6548cc61743a57ec7f6e6524c06945f4bc"
+      }
+    },
+    {
+      "variant": "r4x1",
+      "case": "tail",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 4980,
+      "instructions": 1315,
+      "artifact_sha256": {
+        "kernel.mlir": "60c9473510eb9d3f7c29424e3a092fa6ff715d16bb2e63b72891c13f728b6b9e",
+        "kernel.ll": "79bbe6aad6595207609e4f1e769d17a599676a0e95aca9db4792474ae457d266",
+        "kernel.elf": "531381591cf2a4b475531870f30d768d43918c4f04104b18630b91ce8a71cadd",
+        "kernel.vxbin": "2e6e06abf06124388ea211fec73e8e5f4a29c365b1a14645c7b283a145148dec",
+        "plan.json": "d43b735af27b94a104e23e803fddaf459bad73ac8b7d790a0c8920056aa0261f"
+      }
+    },
+    {
+      "variant": "r4x1",
+      "case": "broadcast",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 23747,
+      "instructions": 7581,
+      "artifact_sha256": {
+        "kernel.mlir": "e0b00f05d669dcbe30e8979f85ce81d630789670df714bc7391a8235228e79cf",
+        "kernel.ll": "5accaca1f415df640111e36a8d7ba2b478051860ad3ca7d9ede54dac502a96c0",
+        "kernel.elf": "ec0fa52d33442c7bc6345c936adf95cf117cb1dd5e5fab9f7a353a019c6524fb",
+        "kernel.vxbin": "706c8fa2c1872075962aaf0417c045d5761f44a252c2fee7bd459632b7623c7c",
+        "plan.json": "eed87d2339b0dbd1f56c4d7ab2804d2c7a546d28cb568464f7ac3c409a8e9025"
+      }
+    },
+    {
+      "variant": "r4x1",
+      "case": "broadcast",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [],
+      "fallback_reasons": [
+        "DXA 2D descriptors require one shared rank-2 right matrix",
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 8753,
+      "instructions": 2657,
+      "artifact_sha256": {
+        "kernel.mlir": "175c5f102e09be474a662e167f6343e2906fac3460d4894eb5db3601bec1b7b0",
+        "kernel.ll": "49c795672b373fd1f0315a6ac807eb4352ec34c5b7c9871a43f7c3bc56b5ecab",
+        "kernel.elf": "5ae518b199289361b8fdb63d650f7fc5194a792d8351eec41cbc8823ab8926c2",
+        "kernel.vxbin": "cc7369afeec69be4f8a2057921fddf9ed38c8c00325bfe36f56c421f38d3247a",
+        "plan.json": "e8a75adc44a331cd54c1cdd1f94ee70d1350a88f83e256dcdbb41bbe7cc790ec"
+      }
+    },
+    {
+      "variant": "r4x1",
+      "case": "ffn_chain",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "lmem-tiled",
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 293282,
+      "instructions": 89503,
+      "artifact_sha256": {
+        "kernel.mlir": "4139b332453e394c6705f64da27439110ec0a4112b99581873ef6dbc83a76bf4",
+        "kernel.ll": "979d6d2971ec0ae634432e0578fdc58482336a1c4212b5ce359070ce2bb0d367",
+        "kernel.elf": "35da29989d15eba91960f8118cb85febd3a2d28c08820568b87d174546dc31e4",
+        "kernel.vxbin": "f411a665858970ec982fcd70fba3ae5d6442a152e5cf144e9fc37b64478d5776",
+        "plan.json": "ebf605d9724461f54bc26a0eb8045895d67879ad06a09f376248fea2e80df289"
+      }
+    },
+    {
+      "variant": "r4x1",
+      "case": "ffn_chain",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        8,
+        16
+      ],
+      "thread_tile": [
+        4,
+        1
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "dxa-double-buffer",
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 183130,
+      "instructions": 48951,
+      "artifact_sha256": {
+        "kernel.mlir": "89d66eb96c0b50c39377ae1a70891696f35fcb00eed6b9a290da8b692874d791",
+        "kernel.ll": "b19a095b1bedf21ff46f0ae3f45f2d9b994080e5448b8f9e5c3daaa23ff58911",
+        "kernel.elf": "2b169a77c2daad49e289d753a46936fe36cd57ec172d7bd31f4ce352e6887324",
+        "kernel.vxbin": "d20d2e5b8db1d2571c63c6f940416a0bef1f27e26ecc7026117e48b56b1f2710",
+        "plan.json": "7dd84e3a44f8596ecf804c4e64ecbc069bc5b4290bd0516483a3af4a146e0ded"
+      }
+    },
+    {
+      "variant": "r2x4",
+      "case": "ffn_width",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 6317970,
+      "instructions": 1954383,
+      "artifact_sha256": {
+        "kernel.mlir": "448ab48011c1691210d0e196bbee0b23aac4b698373f25941f2681b366a29bd0",
+        "kernel.ll": "ec00d397e7b0fb08a612923acf5ebda2024446082369c5bf351af778c6519c21",
+        "kernel.elf": "e8b996027936ecfe0b7a31b3431f64a9fb459811180f286257d678436d505f0c",
+        "kernel.vxbin": "a13402cf413946fbd2e23347a097ddba5e3ce16e258719781024e5d58352c5ba",
+        "plan.json": "4a839eeee6fd1bb0a5dbc9202340a9097d8a70c8d3c1934753753add1b7761a6"
+      },
+      "kernel_static_stack_frame_bytes": 48,
+      "kernel_static_sp_reference_sites": 20,
+      "speedup_vs_scalar_cycles": 1.2317714392439343
+    },
+    {
+      "variant": "r2x4",
+      "case": "ffn_width",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "input_sha256": {
+        "A": "6282a18bd24feac409eab2d76b9e68dd7f0ed881922928a8de873ce700f2027a"
+      },
+      "output_sha256": "e577ef23c9d8172e1d17e68476d605c0ae49c98bc7260c010343a46206008679",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-06
+      },
+      "cycles": 3578862,
+      "instructions": 990127,
+      "artifact_sha256": {
+        "kernel.mlir": "3295c6850201992b311258be650e99e0258dd3f2bf155398ee4342cc4bd92252",
+        "kernel.ll": "6c3435300a61351480d6fb7be25290c0de31e60b9a2a57ec15ee232554749327",
+        "kernel.elf": "c2a7ae1f927107884cb6c40981eefb24a89b31267beb7e753a81ac9cf649f8ba",
+        "kernel.vxbin": "d62f963ed5f72de186e519fe49e8869a24d8d601b6689cbb4e6f0e7c7eb1fa14",
+        "plan.json": "23f8cf4f0ce229542c446428a27211a43a864d249c512e3f3811d4a6c37a2ebc"
+      },
+      "kernel_static_stack_frame_bytes": 64,
+      "kernel_static_sp_reference_sites": 29,
+      "speedup_vs_scalar_cycles": 2.1745166480294573
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "tail",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 23261,
+      "instructions": 7206,
+      "artifact_sha256": {
+        "kernel.mlir": "0c2d24b79bab8d541a4aacd1e550010ca5d031362e1616e485e2dafa4f820e53",
+        "kernel.ll": "a1e439839f9e0ac5b5f7fc9acdd830368c142cd8da6d76fb762e11f0decc1d5c",
+        "kernel.elf": "dcde52f2e8659041c7d1cf6dd5b28efed8321cef9fb4a031f880237bb19e6d4a",
+        "kernel.vxbin": "efa8cbc138a8fa0871e3a73941811af7eb00d10180359d46660b49ff7dc780ad",
+        "plan.json": "83a022e53b289b257e6f3788b2320eaba206c19dffdc8b02c84af7d2915d0588"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "tail",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "input_sha256": {
+        "A": "294986b5bda7eaa0742d3f81f65dcca68660e2742165d495d60b66e1831eabee"
+      },
+      "output_sha256": "3fe0c6a13aa4abc8185978bd38440914617dbf47ae5fac2288efaeae3dd00574",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.1175870895385742e-08
+      },
+      "cycles": 6232,
+      "instructions": 1600,
+      "artifact_sha256": {
+        "kernel.mlir": "3282c936a205026414fd7ebbdb81388b483ad5cb9ddc19c5e5d16c77ee360b61",
+        "kernel.ll": "e055a9514bda15353e9e4c0e231e3592a8ab32717dd057519170b7a6e9ed03f8",
+        "kernel.elf": "f307c938159791b254b861e7eb4090fe018c7ece10032cd044749c8fd5bb2b0b",
+        "kernel.vxbin": "d1502e4733d46e81db0714e9647c119375891b62c0576266fe94090a41592586",
+        "plan.json": "ea509d55d4c468988654212adae232cf6ec771915857ab6ef368b15ffb069781"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "aligned",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "input_sha256": {
+        "A": "6011d93fe02cf32503b1305f736ce900b8f4f2cba26237d0b9b8ff176f96d5e9"
+      },
+      "output_sha256": "d27294c03e45fba5f198ec6667aac0dae3a7efb8288d3acd495efeeb1edae69e",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "cycles": 206875,
+      "instructions": 63984,
+      "artifact_sha256": {
+        "kernel.mlir": "f787fb1340dc88f2751699c0202d1ac6b1c51be457bf72be4d4aa8c150933db1",
+        "kernel.ll": "e4c6e7886f98533d65f16ce5b138ae3381ee4ada30b6fb299aedbd5e65b6198e",
+        "kernel.elf": "78dad3b14f5ba8b305fdc32be984f2dc56adea0bc366c4312f162e3d25dba4e1",
+        "kernel.vxbin": "449ade909463974e0f4bed626df5133d9272c5c862a5bc60033ad4576477508d",
+        "plan.json": "76e6931c8351790639e0944124e523449ec3783e94215cc1567087f003f2c825"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "aligned",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "input_sha256": {
+        "A": "6011d93fe02cf32503b1305f736ce900b8f4f2cba26237d0b9b8ff176f96d5e9"
+      },
+      "output_sha256": "d27294c03e45fba5f198ec6667aac0dae3a7efb8288d3acd495efeeb1edae69e",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.980232238769531e-07
+      },
+      "cycles": 122114,
+      "instructions": 33532,
+      "artifact_sha256": {
+        "kernel.mlir": "115b39e7f2be58620be32e4ad84cf57102f1f5ba94944d2285943b41cd3fac5e",
+        "kernel.ll": "d5ff8c6de07dcd465800f832966ebd8326204865208a3b5bab24c138c1aca3f4",
+        "kernel.elf": "5ac1708802245d3331ce019f32c1c95208dc18a09380d5648bbf5ff2dc0a2575",
+        "kernel.vxbin": "dade43a67207eb9874885a083abe149e37004ebbe03cbc696c05029839b252b0",
+        "plan.json": "108846feb44c799290e347e8850a09cfb0ce3b2132e310dfb86188e2e5053af5"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "projection_3d",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "input_sha256": {
+        "A": "f35cdc43079564c49e45d384de77f1deb3789aee32764440e792fec9209e65b4"
+      },
+      "output_sha256": "d9eba66a2c0a45b20f4767690067ed4c2afc9f1d1e3de8c128b65a15a8695777",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "cycles": 29824,
+      "instructions": 9360,
+      "artifact_sha256": {
+        "kernel.mlir": "53ab3904073629d6fa1582a2a27ee8ced64cae67cfb8a5286d814f3026ec4718",
+        "kernel.ll": "c6733c5dfd62403a5a666e13d9dbf30e3eb179b1ba3eafd3b096862f27040aaf",
+        "kernel.elf": "4f86b204a36dd1f720ba581fe7607d6d5527bd23d9a859cc486f19a6a1c0bea9",
+        "kernel.vxbin": "dbe6475fb659abfb460c1c1aefd4419f5d6c54dd3c81beb321780f57ec73766d",
+        "plan.json": "dcf72e62814f369b713804cc863068eb84293308ad46e91e55f5b88525ffd259"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "projection_3d",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "input_sha256": {
+        "A": "f35cdc43079564c49e45d384de77f1deb3789aee32764440e792fec9209e65b4"
+      },
+      "output_sha256": "d9eba66a2c0a45b20f4767690067ed4c2afc9f1d1e3de8c128b65a15a8695777",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "cycles": 11789,
+      "instructions": 3452,
+      "artifact_sha256": {
+        "kernel.mlir": "e59ccb7e8cffc0144dbcf892a3dc3b543cb06b02d099c7290901844ad0417cef",
+        "kernel.ll": "250b7f2b184bd03de260e0e0867b5e3ed87b00af133f4b84530beac84aa40802",
+        "kernel.elf": "b825f94d8a27ffa51aa8ce33b4882b6b98918c67c430f85300ed2b626b3750a4",
+        "kernel.vxbin": "65723ee43acf3bb60823581d40687d7fa6471a85411048aa2991944496a1e6d5",
+        "plan.json": "2aef76e531f0dc92ab2577ccefe35950260423c027ef72adf424c9a36bc76509"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "batched",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "input_sha256": {
+        "A": "8a7ea12c867e9abe69233f8509fe66797645bcf04fce33a1b32d8cb15a56e6de"
+      },
+      "output_sha256": "e05894d6d8b84156e2c677be94451f98a850e7152249741c6598f2c244269b5a",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 40565,
+      "instructions": 13003,
+      "artifact_sha256": {
+        "kernel.mlir": "fafd8ccc88f43535785e7f6913431b4a5d3dda5d22bc70ea144e08c503151bfc",
+        "kernel.ll": "a8889eef971380ad63d76a64ece90620997673cb05a6ff55870aa4bbce65c6fb",
+        "kernel.elf": "46aa7c1609d4a0c57acb7981b817a5d9b70be51a3e8358e60d985cfec3018f8c",
+        "kernel.vxbin": "19eff04f10efb02f549c17a085019295294ee6cb4dd13fd5d6114d761d5080fe",
+        "plan.json": "13a184729e110d940d5cda03b9d3887e4e44d22140fb707ac9d4bc8b3f03fa8c"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "batched",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "input_sha256": {
+        "A": "8a7ea12c867e9abe69233f8509fe66797645bcf04fce33a1b32d8cb15a56e6de"
+      },
+      "output_sha256": "e05894d6d8b84156e2c677be94451f98a850e7152249741c6598f2c244269b5a",
+      "selected_templates": [],
+      "fallback_reasons": [
+        "DXA 2D descriptors require one shared rank-2 right matrix",
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 4304,
+      "instructions": 1259,
+      "artifact_sha256": {
+        "kernel.mlir": "44c1272b21287b6cf0dcf7143ed5900971af9b93a6963f7eb29276b54b51d6a0",
+        "kernel.ll": "db73a2356965f8d862614340e9fad6efe850685639e8783cf4175f7519d4a100",
+        "kernel.elf": "34cde40d6dbdb2fa1fafa1625bb69e0c4a4fc0cd406627d5fe2794655b44b1c2",
+        "kernel.vxbin": "96cc53ff71f63b6ba79506e8114d432b8c6f3c5554daf3e97048b77c39028503",
+        "plan.json": "55b4c4721c388569e6d0a7a6c364787c052ce0381b734daf8120a4297c9ad89c"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "broadcast",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 80462,
+      "instructions": 25965,
+      "artifact_sha256": {
+        "kernel.mlir": "4a0c05238823863efbe3dffb468b74360769f45586b97e1f51e1c63f22ba48ca",
+        "kernel.ll": "cf00566320eb7b1abb7f2b86e2285a361dd195da4b0144583a6d31ce36c94d9b",
+        "kernel.elf": "b43659917dc7fe77ce802aaf577c2f1b0e413c7aa98a5a463b4bfca41ebc1229",
+        "kernel.vxbin": "8daea99dd428018b1215b70167d89c3c620b530a6ed9a9f142bfd36aa8b8a3f7",
+        "plan.json": "92c2b3d3cda19470400ee6f20ebd39036f51b8aa3bc62e27f21d62ac4b85a46e"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "broadcast",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "input_sha256": {
+        "A": "4cea7e744132ff6d25eb8bd282e78819bcb8f16bb385d590e0fa447e29d804dd"
+      },
+      "output_sha256": "d2df91b7820784dd70e8f3d1b8ca1d4cac7c70d185fc711be6b3b094b5ec24ee",
+      "selected_templates": [],
+      "fallback_reasons": [
+        "DXA 2D descriptors require one shared rank-2 right matrix",
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 8753,
+      "instructions": 2657,
+      "artifact_sha256": {
+        "kernel.mlir": "0ce46907cde6984454d84dfbf7077536f8a7f1237974bb52a38070caad105399",
+        "kernel.ll": "49c795672b373fd1f0315a6ac807eb4352ec34c5b7c9871a43f7c3bc56b5ecab",
+        "kernel.elf": "5ae518b199289361b8fdb63d650f7fc5194a792d8351eec41cbc8823ab8926c2",
+        "kernel.vxbin": "cc7369afeec69be4f8a2057921fddf9ed38c8c00325bfe36f56c421f38d3247a",
+        "plan.json": "e8a75adc44a331cd54c1cdd1f94ee70d1350a88f83e256dcdbb41bbe7cc790ec"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "ffn_chain",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "lmem-tiled",
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 252831,
+      "instructions": 81008,
+      "artifact_sha256": {
+        "kernel.mlir": "5a2642b11085a33d0fb3a94f6037f45a9c32e10b7e8e8f58f7c75743133dd79b",
+        "kernel.ll": "94eb99ecb9fa427ef0a9eb5e75e0268e489e743669d4002e2f56ef8546ad8c75",
+        "kernel.elf": "1d45468af21f9e76b3b6cd63bf0a224c4cdfac44a12f81fa3c1b5e0f07faab60",
+        "kernel.vxbin": "a69d733557d22c2a7d3ed54e730aef1e7f634f9b6cc6588406e4a60ae64d3ab3",
+        "plan.json": "9b7ab1666de12b2088db4f89e70d30432261a729d5d3c3f48932befeee82ad98"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "ffn_chain",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "input_sha256": {
+        "A": "d107f6af0fe034e987df8ecebcd1893f16d065a0d2680f7dac0ebd0cadacaa41"
+      },
+      "output_sha256": "c7fc570286b5145a87e99f3bf555c30c5bce319ecdc8ea97a16222410f686e69",
+      "selected_templates": [
+        "dxa-double-buffer",
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      },
+      "cycles": 138819,
+      "instructions": 41190,
+      "artifact_sha256": {
+        "kernel.mlir": "0d6c0901d785044b7bac5ad27c2e2f082d0e4330be7b1a1f85e20de7772f5146",
+        "kernel.ll": "88cd055a717382028522245853d2976b9ebafb2cf00ab866cabf72e9615728da",
+        "kernel.elf": "7feb27bf0c85f85fa913966579cdf921eb8f6f6f58ef5b2f3714d27dfa28548d",
+        "kernel.vxbin": "1513d4677c3f09c53ae22afe6cbe64ece0fdb741d04640651eb952e4f9456c7c",
+        "plan.json": "de63e6a11a10cf9f1ecf9db0aa9c62a99f82848c66f4e0f8cc258c3a21bcc851"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "reshape_projection",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "input_sha256": {
+        "A": "2d6299e29ef97be8cad12295257917953cc8fffad58f9dcae2da1b9e8d33fc81"
+      },
+      "output_sha256": "f880afd1dd750ecbd250c799e6866dd76f2a1f7b65ffa807b3fd301853449550",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 18800,
+      "instructions": 5984,
+      "artifact_sha256": {
+        "kernel.mlir": "2d1838b54aff2b6115de980f2f7e1664bfad08a6daf6af0c2cd2888390dc21dd",
+        "kernel.ll": "d7cb49cfaa669005fb1c0712c67ffe62b7200beb59137f5bb99f8ab655059494",
+        "kernel.elf": "624f3e26f02ffbc39bc35956f21311982ad1e4b69ea460ec67ca824b3ac5c6f5",
+        "kernel.vxbin": "58538da7f496128cddc6eeb5500a9ec19f5f7a28bad6181ee5b0f9a4b0d5882e",
+        "plan.json": "1e44e3cf35023aada965f19ca9528229b4352cf6af370d0c50ef261f4abcd69c"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "reshape_projection",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "input_sha256": {
+        "A": "2d6299e29ef97be8cad12295257917953cc8fffad58f9dcae2da1b9e8d33fc81"
+      },
+      "output_sha256": "f880afd1dd750ecbd250c799e6866dd76f2a1f7b65ffa807b3fd301853449550",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "cycles": 2421,
+      "instructions": 574,
+      "artifact_sha256": {
+        "kernel.mlir": "b89075d8f137bdc74d2e7d3397d86c40513435bb63df968cce4b5d1059a2967a",
+        "kernel.ll": "55a22a0f214248d0d42952086f52cad97933a56d4c26c790142b48bfafdfd486",
+        "kernel.elf": "8503ae0f87ff04eea1abb1b164dfa2c1463a1515618514b4984e2208ab011a91",
+        "kernel.vxbin": "ec7f36f37ac9f222973e1dc598f615be1986846d631720108c5a84111a6d07e2",
+        "plan.json": "bc075839f308471c0acdf9888d956e085f0c1170a4b9f5e20468caf6b681a541"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "nonfinite",
+      "schedule": "lmem-tiled",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "input_sha256": {
+        "A": "838dea83672eeff269bf05d2143edd251f30ba092420bcf84599375ebc82f7c2"
+      },
+      "output_sha256": "fd77d8da5e0c9f85d0bfbe1f283f79508eb2dae25658114ab90b307b23e3243e",
+      "selected_templates": [
+        "lmem-tiled"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 18987,
+      "instructions": 6076,
+      "artifact_sha256": {
+        "kernel.mlir": "5d9a82ecf30901c4a0f26809d4d4a4571e3a931a5823bb9c142362cb5454f8c5",
+        "kernel.ll": "6f2f3140bb2a0d474e3871da1ef574f30eb1b5b4e01bbcf456fb941d916877d2",
+        "kernel.elf": "c7067de4e3b5f06c4e934c353dcf0922b5ee22c0a9d350440ca27eec1d87a3c4",
+        "kernel.vxbin": "530f8f36b389551d6d0ddc1d30ffcb8bf26649913a7e4fb52be040d60edaa6d5",
+        "plan.json": "c08098ceb02b76573b95f5cdcce36b278d4825efda1f6b2b83c6f790f3780c48"
+      }
+    },
+    {
+      "variant": "r2x4-rest",
+      "case": "nonfinite",
+      "schedule": "dxa-double-buffer",
+      "tile": [
+        8,
+        16,
+        64
+      ],
+      "thread_tile": [
+        2,
+        4
+      ],
+      "passed": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "input_sha256": {
+        "A": "838dea83672eeff269bf05d2143edd251f30ba092420bcf84599375ebc82f7c2"
+      },
+      "output_sha256": "fd77d8da5e0c9f85d0bfbe1f283f79508eb2dae25658114ab90b307b23e3243e",
+      "selected_templates": [
+        "dxa-double-buffer"
+      ],
+      "fallback_reasons": [
+        "operation has no Vortex MatMul template"
+      ],
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "cycles": 2528,
+      "instructions": 618,
+      "artifact_sha256": {
+        "kernel.mlir": "9b3803133e4973d50c85e7c1ba1e23a4b1ada8cdd30550f2c0a8b9bdc55ff10f",
+        "kernel.ll": "ad4d956f2d01613ecf6558bc94d3e8662fb0eb3a175afe5a7cc38038252d45d4",
+        "kernel.elf": "4be7593f4e3c75816e965cb76894133b73c836e21cb3807f0314dea10e360d44",
+        "kernel.vxbin": "f3123f47457bf9f963bd9d8026f184e13d7f5d7b0c08a700c0c585c4fa72a539",
+        "plan.json": "bce73144959617424755cefa6ee5b35dd524af6463601963f3cccb5a786337bd"
+      }
+    }
+  ],
+  "artifacts": [
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/tail/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/tail/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/tail/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/aligned/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/aligned/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/aligned/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/projection_3d/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/projection_3d/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/projection_3d/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/batched/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/batched/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/batched/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/broadcast/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/broadcast/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/broadcast/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_chain/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_chain/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_chain/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_width/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/reshape_projection/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/reshape_projection/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/reshape_projection/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/nonfinite/scalar",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/nonfinite/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk16-20261017/nonfinite/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk64-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk64-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2-bk128-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2-bk128-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r1-bk16-20261017/ffn_width/scalar",
+    "/home/thomas/gac-vortex-register-r1-bk16-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r1-bk16-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r1-bk128-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r1-bk128-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/tail/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/tail/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/broadcast/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/broadcast/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/ffn_chain/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r4x1-20261017/ffn_chain/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-20261017/ffn_width/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-20261017/ffn_width/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/tail/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/tail/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/aligned/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/aligned/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/projection_3d/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/projection_3d/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/batched/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/batched/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/broadcast/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/broadcast/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/ffn_chain/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/ffn_chain/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/reshape_projection/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/reshape_projection/dxa-double-buffer",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/nonfinite/lmem-tiled",
+    "/home/thomas/gac-vortex-register-r2x4-rest-20261017/nonfinite/dxa-double-buffer"
+  ],
+  "compiler_sha256": "4c2538adf43e5fd8b6520c6b1ef2f4340189571c5fadcd34b19b9c933bdd85c1",
+  "runner_sha256": "16201fb4fd406e8caa2273b50474a6a8937af4a029c90dc1f95b39c9de6bc08e",
+  "simulator_sha256": "162df881c1e73cb0f9fe8880c7434bc898d49170b6395bfbacaa4e96bac0a967",
+  "device_profile": {
+    "build_barrier_slots": 8,
+    "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+    "build_tcu_tf32": true,
+    "cores": 1,
+    "isa_flags": 6817196282144,
+    "lanes": 4,
+    "lmem_bytes_per_core": 16384,
+    "warps_per_core": 4
+  },
+  "same_ffn_input_and_output_bits": true,
+  "passed": true,
+  "positive_numerical_count": 60,
+  "measurement_note": "MCYCLE/MINSTRET deltas include device launch/flush/synchronization. Static stack references include ABI traffic, not a measurement of dynamic register spilling. No inference of physical FPS or full-model latency."
+}

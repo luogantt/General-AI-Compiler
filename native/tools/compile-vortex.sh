@@ -18,6 +18,9 @@ mkdir -p -- "$gac_output"
   --vortex-matmul-schedule "${GAC_VORTEX_MATMUL_SCHEDULE:-scalar}" \
   --tile-m "${GAC_TILE_M:-4}" --tile-n "${GAC_TILE_N:-4}" \
   --tile-k "${GAC_TILE_K:-16}" --vortex-lanes "${GAC_VORTEX_LANES:-4}" \
+  --vortex-thread-tile-m "${GAC_VORTEX_THREAD_TILE_M:-1}" \
+  --vortex-thread-tile-n "${GAC_VORTEX_THREAD_TILE_N:-1}" \
+  --vortex-tcu-combined="${GAC_VORTEX_TCU_COMBINED:-0}" \
   --lmem-budget "${GAC_LMEM_BUDGET:-16384}" \
   --save-stages "$gac_output" --manifest "$gac_output/plan.json" \
   --constants-dir "$gac_output" -o "$gac_output/kernel.mlir"

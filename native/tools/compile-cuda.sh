@@ -46,6 +46,13 @@ gac_check_compiler() {
   fi
 }
 "$gac_compiler" "$gac_model" --emit=llvm --target=cuda \
+  --cuda-matmul-schedule "${GAC_CUDA_MATMUL_SCHEDULE:-scalar}" \
+  --cuda-tile-m "${GAC_CUDA_TILE_M:-32}" --cuda-tile-n "${GAC_CUDA_TILE_N:-32}" \
+  --cuda-tile-k "${GAC_CUDA_TILE_K:-16}" \
+  --cuda-thread-tile-m "${GAC_CUDA_THREAD_TILE_M:-2}" \
+  --cuda-thread-tile-n "${GAC_CUDA_THREAD_TILE_N:-2}" \
+  --cuda-reduction-schedule "${GAC_CUDA_REDUCTION_SCHEDULE:-scalar}" \
+  --cuda-conv-channel-tile "${GAC_CUDA_CONV_CHANNEL_TILE:-1}" \
   --constant-fold-profile "${GAC_CONSTANT_FOLD_PROFILE:-default}" \
   --save-stages "$gac_output" --manifest "$gac_output/plan.json" \
   --constants-dir "$gac_output" -o "$gac_output/kernel.mlir"

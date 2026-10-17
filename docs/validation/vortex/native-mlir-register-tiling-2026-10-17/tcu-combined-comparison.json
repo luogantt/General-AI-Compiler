@@ -1,0 +1,269 @@
+{
+  "scope": "Optional combined TCU helper versus original separate calls; Vortex SimX micrographs only",
+  "physical_device_execution": false,
+  "full_model_execution": false,
+  "tolerances": {
+    "atol": 2e-05,
+    "rtol": 2e-05
+  },
+  "reference": "Independent NumPy MatMul/Bias/ReLU/Residual, deterministic fixture seed 20261017",
+  "default_tcu_call_mode": "separate",
+  "arithmetic": "tf32x3-fp32-accumulate; Ahi*Blo, Alo*Bhi, Ahi*Bhi order retained",
+  "device_profile": {
+    "build_barrier_slots": 8,
+    "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+    "build_tcu_tf32": true,
+    "cores": 1,
+    "isa_flags": 6817196282144,
+    "lanes": 4,
+    "lmem_bytes_per_core": 16384,
+    "warps_per_core": 4
+  },
+  "compiler_sha256": "4c2538adf43e5fd8b6520c6b1ef2f4340189571c5fadcd34b19b9c933bdd85c1",
+  "runner_sha256": "16201fb4fd406e8caa2273b50474a6a8937af4a029c90dc1f95b39c9de6bc08e",
+  "simulator_sha256": "162df881c1e73cb0f9fe8880c7434bc898d49170b6395bfbacaa4e96bac0a967",
+  "cases": [
+    {
+      "case": "tail",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "22b6b88df2503154b69945b329d07b0807399eae59c3af137428c8c8dcb720ce",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "9257f7a10120964849a593a18b0cb90641eafdf4b270bf6c8fd2b40caf36b1f6",
+        "combined": "9257f7a10120964849a593a18b0cb90641eafdf4b270bf6c8fd2b40caf36b1f6"
+      },
+      "max_absolute_error": 1.1920928955078125e-07,
+      "separate_cycles": 17539,
+      "combined_cycles": 13947,
+      "cycle_reduction_percent": 20.48007298021552,
+      "speedup_by_modeled_cycles": 1.2575464257546425,
+      "separate_instructions": 3561,
+      "combined_instructions": 2813
+    },
+    {
+      "case": "aligned",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "53a191f8ed7dc0406c15cc9ee46e5a5e1d61037c6fffd8fba0da9bd3500c28fd",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "f5f14ce96d89ffa9a31f9fe327b3c419cd878f2be7220187cc1a8d947118d4ca",
+        "combined": "f5f14ce96d89ffa9a31f9fe327b3c419cd878f2be7220187cc1a8d947118d4ca"
+      },
+      "max_absolute_error": 5.960464477539062e-07,
+      "separate_cycles": 290416,
+      "combined_cycles": 215186,
+      "cycle_reduction_percent": 25.904220153159606,
+      "speedup_by_modeled_cycles": 1.3496045281756248,
+      "separate_instructions": 124000,
+      "combined_instructions": 93264
+    },
+    {
+      "case": "projection_3d",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "477150232f78e70157a3ac8da9f24340f675bc1377b9559c845602c4764219ac",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "5e3ca4f274d78ad20d890df9b729efc0139ec11395a34617c3100f7199baeeea",
+        "combined": "5e3ca4f274d78ad20d890df9b729efc0139ec11395a34617c3100f7199baeeea"
+      },
+      "max_absolute_error": 1.7881393432617188e-07,
+      "separate_cycles": 24270,
+      "combined_cycles": 18443,
+      "cycle_reduction_percent": 24.009064688916357,
+      "speedup_by_modeled_cycles": 1.3159464295396628,
+      "separate_instructions": 7607,
+      "combined_instructions": 5729
+    },
+    {
+      "case": "batched",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "38a6094bbeb48e29af8b4facf508a9c1a6bce09eb199e3a2a74ca43aa802c10c",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "98b350f15b998e054434c9f86968608d90785f2dc0f3c278c58b2a1c785f78e0",
+        "combined": "98b350f15b998e054434c9f86968608d90785f2dc0f3c278c58b2a1c785f78e0"
+      },
+      "max_absolute_error": 5.960464477539063e-08,
+      "separate_cycles": 14361,
+      "combined_cycles": 11289,
+      "cycle_reduction_percent": 21.391268017547524,
+      "speedup_by_modeled_cycles": 1.2721233058729737,
+      "separate_instructions": 5739,
+      "combined_instructions": 4323
+    },
+    {
+      "case": "broadcast",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "9d166863dd318559265d29ee04920b53ae08f9fdbd6deefb194f0211a3536d37",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "afae1e3fcb56cc6dd23eebf34198f9e8ba50179b82f524b131f58428bb6e1e92",
+        "combined": "afae1e3fcb56cc6dd23eebf34198f9e8ba50179b82f524b131f58428bb6e1e92"
+      },
+      "max_absolute_error": 1.6391277313232422e-07,
+      "separate_cycles": 27733,
+      "combined_cycles": 21501,
+      "cycle_reduction_percent": 22.47142393538384,
+      "speedup_by_modeled_cycles": 1.2898469838612157,
+      "separate_instructions": 11437,
+      "combined_instructions": 8605
+    },
+    {
+      "case": "ffn_chain",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "0f87d690777df40ef6f9b7ccd758a0f26354e2e45c1d887a84832e04c09f4190",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "3474cf3470e0b4f07683281692490ed7db249556446d4123db2c18565da334e1",
+        "combined": "3474cf3470e0b4f07683281692490ed7db249556446d4123db2c18565da334e1"
+      },
+      "max_absolute_error": 5.960464477539062e-07,
+      "separate_cycles": 299241,
+      "combined_cycles": 225044,
+      "cycle_reduction_percent": 24.79506484739725,
+      "speedup_by_modeled_cycles": 1.3296999697836867,
+      "separate_instructions": 126232,
+      "combined_instructions": 95488
+    },
+    {
+      "case": "ffn_width",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "dff09966bea65c937bb6d038fa8dbea950c700cc3dda1fc856f50677b7c3f8d6",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "5c669fe2a32ac777e84cebdf0da87d782bfbdf99013a1cfe4721c5d3428b2e1a",
+        "combined": "5c669fe2a32ac777e84cebdf0da87d782bfbdf99013a1cfe4721c5d3428b2e1a"
+      },
+      "max_absolute_error": 1.7881393432617188e-06,
+      "separate_cycles": 9092481,
+      "combined_cycles": 6704995,
+      "cycle_reduction_percent": 26.257805762805553,
+      "speedup_by_modeled_cycles": 1.3560757316000982,
+      "separate_instructions": 3945212,
+      "combined_instructions": 2961404
+    },
+    {
+      "case": "reshape_projection",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "c4b3c6c8ca7f916bd8d1bc503de160202e391649fb9e23f4961b1249c9bfe953",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "c47ed8472b82e4560b73c2a1551e65f24fcf4753f1a6c265fefc4c1eba3f8697",
+        "combined": "c47ed8472b82e4560b73c2a1551e65f24fcf4753f1a6c265fefc4c1eba3f8697"
+      },
+      "max_absolute_error": 1.1920928955078125e-07,
+      "separate_cycles": 9417,
+      "combined_cycles": 7243,
+      "cycle_reduction_percent": 23.085908463417223,
+      "speedup_by_modeled_cycles": 1.3001518707717796,
+      "separate_instructions": 1020,
+      "combined_instructions": 767
+    },
+    {
+      "case": "nonfinite",
+      "golden_passed_separate": true,
+      "golden_passed_combined": true,
+      "model_sha256": "344e94df019bcd9a9fd3e4249381a0410f324cf1a9fdb6f86b94e1a4294b8df2",
+      "same_input_bits": true,
+      "same_finite_output_bits": true,
+      "same_nan_inf_masks_and_inf_signs": true,
+      "output_sha256": {
+        "separate": "78f5511d69499718ad312ec4bdfd62610905beeefb0987ceebfa0460437b8031",
+        "combined": "78f5511d69499718ad312ec4bdfd62610905beeefb0987ceebfa0460437b8031"
+      },
+      "max_absolute_error": 1.043081283569336e-07,
+      "separate_cycles": 13793,
+      "combined_cycles": 10481,
+      "cycle_reduction_percent": 24.012180091350686,
+      "speedup_by_modeled_cycles": 1.316000381642973,
+      "separate_instructions": 1493,
+      "combined_instructions": 1139
+    }
+  ],
+  "ffn_width_instruction_audit": {
+    "separate": {
+      "kernel_elf_sha256": "120e60c48f7b2afe95231cdc8e787a13ebcf3481f2635803e7f4ef9b19252afa",
+      "kernel_ll_sha256": "855d3fca9cbc534612f2cfef6723ad6b746dd5822e4ed6ae1d8a42fdd5f69542",
+      "kernel_dump_sha256": "b86c3828738b4e2ca0e449600fe621c48e9d60c24aee6cc6308749a13b7f9d01",
+      "helper_symbol": "__gac_tcu_wmma_tf32_nt4",
+      "helper_attributes": "{ convergent noinline optnone }",
+      "calls_per_static_k_loop_body": 3,
+      "wmma_instructions_in_helper": 1,
+      "wmma_instructions_per_k_iteration": 3,
+      "nested_calls_in_helper": false,
+      "call_sites": [
+        "80000328: 07d000ef     \tjal\t0x80000ba4 <__gac_tcu_wmma_tf32_nt4>",
+        "80000390: 015000ef     \tjal\t0x80000ba4 <__gac_tcu_wmma_tf32_nt4>",
+        "800003e8: 7bc000ef     \tjal\t0x80000ba4 <__gac_tcu_wmma_tf32_nt4>"
+      ],
+      "wmma_sites": [
+        "80000c28: 0400800b     \t<unknown>"
+      ],
+      "caller_stack_frame_bytes": 208,
+      "helper_stack_frame_bytes": 32,
+      "caller_static_sp_reference_sites": 83,
+      "helper_static_sp_reference_sites": 16,
+      "stack_note": "Static stack-reference sites include argument ABI and callee saves. These are not measured spills or dynamic memory transactions; the combined helper has a larger frame."
+    },
+    "combined": {
+      "kernel_elf_sha256": "1a1242cebaab0800e14ed3ed50e416236a16f3718105a65db1435d7b672fa8b5",
+      "kernel_ll_sha256": "7bd886261f0c5426d87eeeb597968b5d6d7a992f16c4086ac9c1675effafd4d0",
+      "kernel_dump_sha256": "778061841bed750dc6292516cfe51dfa4086e083a92c84195906b88d4b9f5ab8",
+      "helper_symbol": "__gac_tcu_wmma_tf32x3_nt4",
+      "helper_attributes": "{ convergent noinline optnone }",
+      "calls_per_static_k_loop_body": 1,
+      "wmma_instructions_in_helper": 3,
+      "wmma_instructions_per_k_iteration": 3,
+      "nested_calls_in_helper": false,
+      "call_sites": [
+        "800002b4: 7a8000ef     \tjal\t0x80000a5c <__gac_tcu_wmma_tf32x3_nt4>"
+      ],
+      "wmma_sites": [
+        "80000b60: 0400800b     \t<unknown>",
+        "80000b94: 0400800b     \t<unknown>",
+        "80000bc0: 0400800b     \t<unknown>"
+      ],
+      "caller_stack_frame_bytes": 144,
+      "helper_stack_frame_bytes": 112,
+      "caller_static_sp_reference_sites": 46,
+      "helper_static_sp_reference_sites": 68,
+      "stack_note": "Static stack-reference sites include argument ABI and callee saves. These are not measured spills or dynamic memory transactions; the combined helper has a larger frame."
+    }
+  },
+  "measured_counters": [
+    "MCYCLE",
+    "MINSTRET"
+  ],
+  "limitations": [
+    "No measured silicon latency, full-BEVFormer performance, DDR traffic, LMEM bank conflicts, TCU utilization or stall attribution.",
+    "Convergent inline-assembly helper experiment, not a formal LLVM intrinsic.",
+    "Three WMMA instructions and TF32 approximation are unchanged. No LMEM/DXA/TCU combination.",
+    "Counter deltas include device-side launch/synchronization overhead on the identical one-core four-lane four-warp profile.",
+    "Combined helper stack frame grows; static instruction/stack references do not identify or count dynamic spills."
+  ],
+  "passed": true
+}

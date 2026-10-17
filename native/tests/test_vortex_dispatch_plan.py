@@ -77,6 +77,12 @@ def cases():
     add("wrong_tcu_arithmetic", "requires explicit TF32x3 arithmetic", lambda p, v: v.update(arithmetic="fp32"), "tcu")
     add("missing_tcu_arithmetic", "missing string: arithmetic", lambda p, v: v.pop("arithmetic"), "tcu")
     add("insufficient_dxa_lanes", "DXA requires", lambda p, v: v.update(lanes=2), "dxa-double-buffer")
+    add("zero_register_tile", "invalid Vortex schedule dimension", lambda p, v: v.update(thread_tile_m=0))
+    add("oversized_register_tile", "register tile dimensions exceed", lambda p, v: v.update(thread_tile_n=5))
+    add("nondivisible_register_tile", "divisible by the register tile", lambda p, v: v.update(thread_tile_m=3))
+    add("register_block_mismatch", "LMEM allocation", lambda p, v: v.update(thread_tile_m=2))
+    add("register_tcu_mismatch", "unsupported Vortex FP32 WMMA", lambda p, v: v.update(thread_tile_n=2), "tcu")
+    add("unknown_tcu_call_mode", "unsupported Vortex TCU call mode", lambda p, v: v.update(tcu_call_mode="inline-unchecked"), "tcu")
     return rows
 
 

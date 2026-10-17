@@ -1,0 +1,1376 @@
+{
+  "status": "passed",
+  "runner_sha256": "fb2a29656b53727d982d4d5bbd3baf3cafce050bcd010a21617b2b7806d18531",
+  "deployment_id": "9fcc79188aa142e58525ba80156c8a1e",
+  "metadata_sha256": "bbeca97502b0b48b088d6128caa8185ae7ad3553ce0943830ea35aebaac51285",
+  "gpu_report_sha256": "d0255fa6a218f310438ce10140fa7c12ae6c1b5d1be3f5a46085f3bda46c3211",
+  "nonfinite_policy": "Exact NaN and signed Inf masks only for explicitly marked fixtures; finite values retain normal tolerance",
+  "scope": "CUDA Softmax/LayerNorm fixtures only; not full-model FPS",
+  "source_report_sha256": "fbf30aa27cddac7998563375e07633d2cc7487e853aa0b40f5f291afcb8d4af1",
+  "source_identity": {
+    "native/include/gac/CudaReduction.h": "687d084aaa55d96470bc088aadd2bcbaa12b90c88e2c6c4cd83b931bab9dddf6",
+    "native/lib/CudaReduction.cpp": "377f0ee47e4ed7ec5284640b6dcdbf0106b7410ff3ab0e281e44aa73a383a8bd",
+    "native/tests/generate_cuda_reduction_models.py": "dfe27a542ae845ca14961ccbe2988bc0d612d6b8cb261b26b15de731660efaeb",
+    "native/tests/check_cuda_reduction_results.py": "924ae177c462875af74ae518ea3d618eb483f7fd6652976b464797a73ad08015",
+    "/home/thomas/gac-cuda-reduction-frozen-20261017/gac-compile": "91641cd43f6efd860d280d992acf95425e21601de731627503e8dd89e46d4414",
+    "/home/thomas/gac-cuda-reduction-frozen-20261017/gac-cuda-run": "fb2a29656b53727d982d4d5bbd3baf3cafce050bcd010a21617b2b7806d18531"
+  },
+  "excluded_case": "The 30th fixture is FP16 LayerNorm rejected during legalization; it is not counted as a numerical pass.",
+  "comparison_note": "This final report replaces the generic finite-only comparison for the two deliberately nonfinite fixtures. Original failed finite-only reports remain in the workspace.",
+  "cases": [
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_1",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "d339823b8828a33da5b77f268a3bd956e35b97b2c53d1483ca0297ff521d6bd8",
+      "reference_sha256": "18ad941cc6410d8c5089ebae2d23072e2146f3738780d249f5012fc9ab6357ec",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            1
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "8a31a40ecac0ceb4d87b30bd156ca7a547e8e33dc071454b765fbc777d1c34a1"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 15,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_17",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "557f873e47b223a868a974704fb0b5cb1179d51ae8a89a6a115847c3a8bb6070",
+      "reference_sha256": "9a34a5cc44a06fda23f3037bf310490ad068413d13c81e423dcc0bb5a0ce8043",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            17
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.9802322387695312e-08,
+          "mean_abs_error": 3.889641341041116e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "e4c259dd73247df0c1e5b26f4f0d7dc3d04ce78bb530e1b48dbd088ab5e40d8b"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_33",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "e83f706fdd4f6f33c2cfeaa0199ed96959f88693c90b8d48430245deb7cd6466",
+      "reference_sha256": "37c8b63412e13779aaf5194fdfa74437edb14bb4c0b6aa843bde1a57a809ece0",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            33
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 7.450580596923828e-09,
+          "mean_abs_error": 1.7500515425145023e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "02581203a1e9d98c901e4853f3a55b1e02a09e16c77b8cdaf46ee199eabb2397"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 17,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_127",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "53861519b9597e83d3303a8e35a66f0f6b779c8ed0e50dcb385bc9d81dbb8db8",
+      "reference_sha256": "cb193861b27c1d46a65391725979dd6b278e5af16d5a15c78cea513f308643f8",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            127
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 7.450580596923828e-09,
+          "mean_abs_error": 3.978478345834208e-10,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "a8b108dca08156024b74cf3e4944854e0707a9f5f1f83303d5fc2b0d070f54eb"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 17,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_257",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "0c78673bcdc4a782388a9bab74f1549da0e2268c544984c2d07bfb6c3a630ff8",
+      "reference_sha256": "3f8c57595b7924d063706aea77876db96e302dc9a5fd23934fde10c8c7a79f51",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            257
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 3.725290298461914e-09,
+          "mean_abs_error": 2.5919773259554083e-10,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "0373172e32d8011758a7a29057e203b28aa96d39fc9c2935b5b5769ffbeb8d72"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 19,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_900",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "4770c94bada9e8b06a5e291381953285efa32592c262fcf02f7eeb77f46d67be",
+      "reference_sha256": "ceed19bc02c51887452ec8d5c45793cf988070db62ec1a1497823dd293841ff2",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            900
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 9.313225746154785e-10,
+          "mean_abs_error": 4.2845958550633104e-11,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "54f591e36fed179edf6765c88efcea53077e2c5bab81a24250161e30ca335655"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 20,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_2049",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "b76b2a36b0f6c1d9d8883426af45ea17dfb40a38c1c60692970c57db0305074b",
+      "reference_sha256": "342b3fe01658ccec8ababba06bf263cd5e7507cd616eb3954ce31117b6c09381",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            2049
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 1.862645149230957e-09,
+          "mean_abs_error": 3.923536766164716e-11,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "aac4eed112ef1ab3e672fd364f026f4e1bbb65d8d3a454a448e4dec849431ccc"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 20,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_1",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "e46a6c317352af79606f074bab5084d613539796c9f75d6bd68a8ef2814740ab",
+      "reference_sha256": "d7ddfc2c81aed47c2ecef017bad2e2f1a9ecb6b4b7a30938b338b309e923e347",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            1
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "e9472333100659dba869d9ac588a43db11a2d5944db7bf2606939399cf12cd2d"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 16,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_17",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "dd7b184154e8d634d202e589357333893f67a0dfb3c45147c277b2b962220aa2",
+      "reference_sha256": "e210185bb6a9662c765e3380c5002593f0488d1e5b7d485092da52d6c91eb3d1",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            17
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 3.5762786865234375e-07,
+          "mean_abs_error": 5.025489657532935e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "60c77d6d39c69706eb7666f7ffa291655301667e688da5142f320fdab1fbb72b"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 23,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_33",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "a8aa3112a6dcbf05aad20c3f5364eae2b13fd343a93251f35cb072f053c0fc93",
+      "reference_sha256": "1bf2fcced4649d529d9b362484d888089c28b8fee5cda9b9f60ed0ff2268ce82",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            33
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.384185791015625e-07,
+          "mean_abs_error": 4.3339425265186966e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "8a40f2556e598d9953e3ab6b1784872d1dbd7c3849d68aae38f1762781f7d5c6"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_127",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "774e0cc2a9ca62d46983253c521fd20af9b843dc2969b37bfa1b25b52a1083bc",
+      "reference_sha256": "5501d12354a2298c671f12159522a5b4fcb08c6e2e013c40001e3c744fec05a5",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            127
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.384185791015625e-07,
+          "mean_abs_error": 4.947498401631833e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "2a5c56e6bbeaa177bdd8777943ca82ca94f79dabafdd35e9f6cefc0175337b64"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_257",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "797ce6633078b45355e538b8e2989cad10c62a912ccb072bbcd45557492cb814",
+      "reference_sha256": "d6d1396dbe6747274c5ed9a9f5db511b377f3cc2b1c16099dc4bd5a6cae5e03e",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            257
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 1.1920928955078125e-07,
+          "mean_abs_error": 4.735129043440565e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "bbc3a85c5672f79b92c2a8b501b1c21de801a90fcce5b5d5184f9ec0bd97fe89"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 23,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_768",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "fe6045daedb6d24955dee29c9329d9d6a2bae40c50806bebe337fca278815e7f",
+      "reference_sha256": "b5d716556962eeee92a9184100322af91fb702478ff1fa8cf92892f0af87b738",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            768
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 1.1920928955078125e-07,
+          "mean_abs_error": 7.542742726703485e-10,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "997788a7cdf349710da8d27d66489d0e7786e5f6e93465d435d38a3536d743d6"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 27,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_4097",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "3d2710e2164b57b826d23f7434e63c2a7858cadf6c849baa198f37ed19a18cde",
+      "reference_sha256": "612b57f111cf8cccaa7542825063a000e52de247f6514fd5925d3c77afc0bd06",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            4097
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 4.76837158203125e-07,
+          "mean_abs_error": 3.325846796359322e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "d40ea5783d555b03a884a4caf2c74be061b755d3c22b6a7647782170f3eb024a"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 26,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_axis_zero",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "3c91511181f9d910d4f3f6e006ec568382e95fa40475dc0f4145387639a3a8b2",
+      "reference_sha256": "feec677f1b9c34c06088e12a9b75a44acad2e9c8e5d4dc6a75e1b8cea3a1166c",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            17,
+            3,
+            4
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 8.940696716308594e-08,
+          "mean_abs_error": 4.53905622456588e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "859b877dcad8a3ea7559c08465543e52c86385fb0642905fb2327fae23844818"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            12,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_axis_middle",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "55577d8d99e1f039be87c94279f910f180a1964a1ff317167c2f1b8624070c95",
+      "reference_sha256": "db1e49e77b1dd6f18d1318bb9863eedc89adf80d988e0756993ce26729db0708",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            33,
+            5
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.9802322387695312e-08,
+          "mean_abs_error": 2.0185711257385486e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "f36a9ab90c91ef6d9ad62d4b66eab036753c67d0f93dcbb5f9f0eba55c2057b2"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            15,
+            1,
+            1
+          ],
+          "registers_per_thread": 17,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_high_magnitude",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "b59fe8a2da9f615eb8a645f37ea697e825de7d4cbb5c5f769214cf0ecc11592d",
+      "reference_sha256": "d1e3655131d70272c499bc71de7e6b1621ff85aa285e00e79a926497a63da497",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            2,
+            4
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 5.960464477539063e-08,
+          "mean_abs_error": 2.2817403078079224e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "4720dfe066a03879589e7393ad6092ca85ed45e37556b04a9af64cc7850a159e"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_shared_view",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "6f87ed8a9af5fb42aa736fa0459dea7af6d5aee3c554fddf3b18b749260f7a78",
+      "reference_sha256": "f343b5a49131d94d38c32c5d7cc7231f6103a6fe7130f517faeec72b2d39a79e",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            5,
+            12
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 5.960464477539063e-08,
+          "mean_abs_error": 6.922831137975057e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "861b57a344f20ed06a54ea76577d7094d77fb80db64ecee70c7e855e0617c5c6"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            12,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_suffix_axes",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "822e69f4cbcd08c9f41efefb0f73a9575572ae91a130e63d54f77bbded306d3c",
+      "reference_sha256": "b4f6eb226f55a51997039c0b9134d923a6721e477527b9c13c6d4d800ff558d0",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            5,
+            7
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 4.76837158203125e-07,
+          "mean_abs_error": 9.661362994284856e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "c2961876fd649763290ca76a5261188a2543b15b45af7bfad659c3b4455a99da"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_scalar_scale_bias",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "3be08f158c6397460009dcbaa32ac223893c1d84a2cc38709ea35dd1c87eed2a",
+      "reference_sha256": "4c3fef9e7416d213e702d164564cc827122210fed55f38cd7faafea419f7c563",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            5,
+            33
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 4.76837158203125e-07,
+          "mean_abs_error": 7.938254963267933e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "a4a85f069f4394b3616c2a7b86eabcd04608c9c58718ff43944dfb8a9079f82f"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            5,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_no_bias",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "352ae4304702e09be18f94e26265ff322fdd68c327532cd217adaf44e9f52021",
+      "reference_sha256": "3d465fe9426cf04a80fcf43a7cd3b3360a5206f1f5d95541a83d98cf7a8cb387",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            257
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.384185791015625e-07,
+          "mean_abs_error": 1.8316614604645665e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "a7b1ab8216cb17916dbe490fb31c7dcae61c6dc9c56c3c2b08287338c8b44a3f"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_shared_view",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "188956e71ef5c86e11fa8460b676f9ed13088b1f119a0ded6441a9e3d916d78f",
+      "reference_sha256": "7b3283872cae6dcd074846f50b5179cfa11f8b5cfe29359b0488787b10bb7e94",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            5,
+            12
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 1.1920928955078125e-07,
+          "mean_abs_error": 1.142422358194987e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "1c26a53977804c07d596b7f28ee8f9a144fd174fdf8927b9aa9395e65baa9791"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            5,
+            1,
+            1
+          ],
+          "registers_per_thread": 23,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_constant_rows",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "352ae4304702e09be18f94e26265ff322fdd68c327532cd217adaf44e9f52021",
+      "reference_sha256": "474fc51e65d0f4a4c7673f6545c8cc1dcbc10cfc8c81d18b91e3313be9cf3287",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            257
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "24a415968bc1f7080f9966e338ad2f0072e7a36c8f9814d9c1ae875c740c7f31"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_centered_variance",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "352ae4304702e09be18f94e26265ff322fdd68c327532cd217adaf44e9f52021",
+      "reference_sha256": "2d350c260a8fc953f1a5294ceab8c96ae0d116e356da902a17102c5b63afeab1",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            257
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 2.384185791015625e-07,
+          "mean_abs_error": 2.940339984519627e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "0160c7fe58fee9dc3a2746dea748a7ce8c3d02b68a3322ed05d436a7c4ac12bb"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_nonfinite",
+      "expected_nonfinite": true,
+      "numerical_passed": true,
+      "manifest_sha256": "47d6d3315006ba008a94f872c56a33b1a3ab66475be301e3bccce3c76607a9d3",
+      "reference_sha256": "e4ce6801113f8863eb7af06454d746aa9bb4296ce741749c080be7ac44e174c1",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "nan_mask_equal": true,
+          "positive_inf_mask_equal": true,
+          "negative_inf_mask_equal": true,
+          "finite_values_allclose": true,
+          "finite_elements": 33,
+          "output_sha256": "a8c59c31eeeffe6a9ff79b6182082e45bb52db407db3df59c684db4857bcb2b7"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            5,
+            1,
+            1
+          ],
+          "registers_per_thread": 17,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_nonfinite",
+      "expected_nonfinite": true,
+      "numerical_passed": true,
+      "manifest_sha256": "c0f5de5783041c6f68b02bb9f83507080fae45e8a0158278278a52375c6ea598",
+      "reference_sha256": "4dd169fb5e337bc4f1c29bff8ddb623dccb47b2b4d6f929b76b23906121f121c",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "nan_mask_equal": true,
+          "positive_inf_mask_equal": true,
+          "negative_inf_mask_equal": true,
+          "finite_values_allclose": true,
+          "finite_elements": 0,
+          "output_sha256": "f3ac027066e08ba86d7f39f8e8cc1bd06b8e6025669343687ccae459897258f8"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            5,
+            1,
+            1
+          ],
+          "registers_per_thread": 21,
+          "static_shared_bytes_per_block": 512,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_fp16_fallback",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "024d731e9b56ca3c7ee9edf3071454f8dd9e66f1cd6886987fc25bf31ae8d269",
+      "reference_sha256": "f9c4fe52deae4f7db7290d52b819c92802983655d4d7c903d124dbb8d318a5a9",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            3,
+            17
+          ],
+          "actual_dtype": "float16",
+          "expected_dtype": "float16",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 0.0,
+          "mean_abs_error": 0.0,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "e7583c47110407af43e3e4130e350363fa6548aa08b3233baa9ac8686a27535a"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "registers_per_thread": 40,
+          "static_shared_bytes_per_block": 0,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_bev_attention",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "953ead25fe57ae7462a6834199210ee742e2b73687e40b52cd4aacb87ebeebb4",
+      "reference_sha256": "bbf8b0e7117d0bbada236673bab8ff832fb1d2501791550a0feb3800a5c317ef",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            4096,
+            32
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 5.960464477539063e-08,
+          "mean_abs_error": 1.6931491764182738e-09,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "f38cec6835945950d28903d25790643db2326cadf59ccc41124bc3d992c1d99d"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.softmax",
+          "schedule": "row-reduction",
+          "block": [
+            32,
+            1,
+            1
+          ],
+          "grid": [
+            4096,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 128,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_bev_embedding",
+      "expected_nonfinite": false,
+      "numerical_passed": true,
+      "manifest_sha256": "c858070f87226093d6cf605716cd81fc6b864e5b9f46ff923cfa7554290bbd1c",
+      "reference_sha256": "9f982b04e9e4a57adb2939e83aa37ec38bd1af087e2510bc19007f83415dff00",
+      "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            4096,
+            256
+          ],
+          "actual_dtype": "float32",
+          "expected_dtype": "float32",
+          "finite": true,
+          "mismatched_elements": 0,
+          "max_abs_error": 7.152557373046875e-07,
+          "mean_abs_error": 2.5037579332834632e-08,
+          "dtype_matches": true,
+          "rtol": 2e-05,
+          "atol": 2e-05,
+          "output_sha256": "00214c1e2aaa8d5379ee6359fd78df319ccb11c0922cf8b02d2688769b5d2bae"
+        }
+      },
+      "resources": [
+        {
+          "kernel": "gac_op_0",
+          "op": "gac.layer_norm",
+          "schedule": "row-reduction",
+          "block": [
+            256,
+            1,
+            1
+          ],
+          "grid": [
+            4096,
+            1,
+            1
+          ],
+          "registers_per_thread": 18,
+          "static_shared_bytes_per_block": 1024,
+          "local_bytes_per_thread": 0
+        }
+      ]
+    }
+  ]
+}

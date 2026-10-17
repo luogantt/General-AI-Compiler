@@ -6,7 +6,7 @@
 编译器、图优化、设备 Lowering、Buffer 规划与 Runtime 使用 C++；不调用原有
 Python `Graph`、Python 图 Pass 或 Python MLIR 文本发射器。
 
-当前统一分支：**`lg/bevformer-full-ops`**，同时维护 CUDA PTX 和 Vortex 后端。
+当前主分支：**`main`**（已合入 `lg/bevformer-full-ops`），同时维护 CUDA PTX 和 Vortex 后端。
 `DeviceOptions::target` 选择设备；`native` 目标只用于显式的 CPU 数值验证。
 Vortex 路径已经用小模型完成真实
 `ONNX → MLIR → VOLT → ELF → vxbin → SimX` 数值闭环。完整 BEVFormer-tiny cold
@@ -86,6 +86,7 @@ DeviceLowering.cpp                     共享算子循环、SSA 依赖与静态 
 | Vortex 方言与 ABI | [VortexLowering.cpp](lib/VortexLowering.cpp) | thread/block CSR、uniform、RV32 参数槽、入口 annotation |
 | Vortex MatMul 模板 | [VortexMatmul.cpp](lib/VortexMatmul.cpp)、[VortexTcu.cpp](lib/VortexTcu.cpp) | C++ MLIR LMEM 分块、DXA 双缓冲、TF32×3 WMMA；显式选择，独立验收 |
 | CUDA ABI 与数学库 | [CudaLowering.cpp](lib/CudaLowering.cpp) | NVVM 线程映射、64 位指针、设备 libdevice 数学函数 |
+| CUDA 计算模板 | [CudaMatmul.cpp](lib/CudaMatmul.cpp)、[CudaReduction.cpp](lib/CudaReduction.cpp) | shared memory、寄存器分块、CTA 协作归约；按形状生成 launch |
 | 编译入口 | [gac-compile.cpp](tools/gac-compile.cpp) | 原生 ONNX 导入和 PassManager 流水线，可逐层输出 IR |
 | MLIR 优化入口 | [gac-opt.cpp](tools/gac-opt.cpp) | 带 `gac`/`vortex` 注册的 `MlirOptMain` |
 | 机器码构建 | [compile-vortex.sh](tools/compile-vortex.sh)、[Vortex.mk](tools/Vortex.mk) | 调用同版本 MLIR/VOLT，复用 Vortex startup/linker/封装工具 |
@@ -125,6 +126,10 @@ Vortex 已增加显式可选的 LMEM、DXA 双缓冲和 TCU MatMul 模板，设�
 FP32 累加，不能宣称原生 FP32 矩阵乘法。默认仍是标量路径，CUDA Tensor Core
 尚未实现；Vortex 的资源参数和同步方式不直接套用于 CUDA。
 
+CUDA 已增加可选的 shared-memory MatMul、每线程寄存器分块、Softmax/LayerNorm
+协作归约和 Conv/DCNv2 通道分块。模板选择与参数见 [CUDA 使用说明](README.cuda.md#选择优化模板)。
+`auto` MatMul 仅为形状启发式；具体设备上仍需数值和性能对比，不能等同于实测自动调优。
+
 `gac-opt` 必须用于包含 `gac.*` 或 `vortex.*` 的 IR，因为普通上游 `mlir-opt`
 没有注册本项目的方言。降成标准 LLVM Dialect 后，可以使用同版本的上游工具。
 Operation 类采用 MLIR 正式支持的手写 C++ 注册方式；并非带陌生名字的未注册操作。
@@ -156,6 +161,8 @@ Operation 类采用 MLIR 正式支持的手写 C++ 注册方式；并非带陌�
 默认原生 Kernel 是标量正确性基线：每个 SIMT 线程负责一个输出，归约在寄存器内
 循环，LMEM=0。选择新的 Vortex MatMul 模板后，每个 dispatch 的 LMEM、stages、
 grid/block 和逻辑 operand shape 写入 manifest，由 Runtime 校验并执行。
+CUDA 优化模板同样声明实际 grid/block 和静态 shared memory；动态 shared 字段为零
+不表示 Kernel 没有使用静态 shared memory。
 全局 arena 复用与 Kernel 内部 LMEM 缓冲是不同层次，不能混为一谈。
 
 ## 3. 已实现的优化与明确边界

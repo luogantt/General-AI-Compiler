@@ -89,15 +89,15 @@ struct TileBuilder {
           nested.create<scf::YieldOp>(l);
         });
   }
-  Value reduce(Value stop, Value initial,
-               const std::function<Value(TileBuilder &, Value, Value)> &body) {
-    auto loop = b.create<scf::ForOp>(loc, i(0), stop, i(1), ValueRange{initial},
+  SmallVector<Value> reduce(Value stop, ValueRange initial,
+      const std::function<SmallVector<Value>(TileBuilder &, Value, ValueRange)> &body) {
+    auto loop = b.create<scf::ForOp>(loc, i(0), stop, i(1), initial,
         [&](OpBuilder &nested, Location l, Value iv, ValueRange carry) {
           TileBuilder s{nested, l};
-          Value next = body(s, iv, carry[0]);
+          SmallVector<Value> next = body(s, iv, carry);
           nested.create<scf::YieldOp>(l, next);
         });
-    return loop.getResult(0);
+    return SmallVector<Value>(loop.getResults());
   }
   // A full linear output coordinate also handles scalar/channel/full-tensor
   // bias correctly after flattening a higher-rank linear projection.
@@ -145,6 +145,12 @@ LogicalResult planVortexMatmul(Operation *op, const DeviceOptions &options,
       options.vortexLanes <= 0 || options.vortexLanes > 32 ||
       options.lmemBudget <= 0)
     return op->emitError("invalid Vortex tile, lanes or LMEM budget");
+  if (options.vortexThreadTileM <= 0 || options.vortexThreadTileM > 4 ||
+      options.vortexThreadTileN <= 0 || options.vortexThreadTileN > 4)
+    return op->emitError("Vortex register tile dimensions must be in 1..4");
+  if (options.vortexMatmulSchedule == "tcu" &&
+      (options.vortexThreadTileM != 1 || options.vortexThreadTileN != 1))
+    return op->emitError("TCU uses a fixed fragment layout; LMEM register tile options do not apply");
   bool bias = kind != "gac.matmul";
   if (op->getNumOperands() != (bias ? 3u : 2u) || op->getNumResults() != 1)
     return fallback("template requires two matrices and an optional bias");
@@ -201,9 +207,13 @@ LogicalResult planVortexMatmul(Operation *op, const DeviceOptions &options,
   p.tileM = options.tileM;
   p.tileN = options.tileN;
   p.tileK = options.tileK;
+  p.threadTileM = options.vortexThreadTileM;
+  p.threadTileN = options.vortexThreadTileN;
+  if (p.tileM % p.threadTileM || p.tileN % p.threadTileN)
+    return op->emitError("Vortex block tile must be divisible by its register tile");
   if (p.tileM > maxIndex / p.tileN)
     return fallback("tile thread count exceeds RV32 indexing");
-  p.blockSize = p.tileM * p.tileN;
+  p.blockSize = (p.tileM / p.threadTileM) * (p.tileN / p.threadTileN);
   if (p.blockSize % p.lanes)
     return fallback("collective template requires complete hardware warps");
   p.stages = p.schedule == "dxa-double-buffer" ? 2 : 1;
@@ -248,9 +258,10 @@ LogicalResult emitVortexMatmul(OpBuilder &builder, Operation *op,
   Value batch = s.div(block, s.i(tilesM * tilesN));
   Value rowBase = s.mul(s.rem(s.div(block, s.i(tilesN)), s.i(tilesM)), s.i(p.tileM));
   Value colBase = s.mul(s.rem(block, s.i(tilesN)), s.i(p.tileN));
-  Value localRow = s.div(tid, s.i(p.tileN));
-  Value localCol = s.rem(tid, s.i(p.tileN));
-  Value row = s.add(rowBase, localRow), col = s.add(colBase, localCol);
+  int64_t threadRows = p.tileM / p.threadTileM;
+  int64_t threadCols = p.tileN / p.threadTileN;
+  Value localRow = s.div(tid, s.i(threadCols));
+  Value localCol = s.rem(tid, s.i(threadCols));
   Value aBase = s.i(0), bBase = s.i(0);
   if (!p.flattenedProjection) {
     auto outBatch = ArrayRef<int64_t>(p.outShape).drop_back(2);
@@ -278,10 +289,12 @@ LogicalResult emitVortexMatmul(OpBuilder &builder, Operation *op,
   if (dxa)
     issue(s, s.i(0), s.i(0));
 
-  // One carried FP32 accumulator per lane, never a whole intermediate matrix.
-  // Its K order stays 0..K-1 even across tile boundaries and tail tiles.
-  Value total = s.reduce(s.i(ceilDiv(p.k, p.tileK)), s.zero(),
-      [&](TileBuilder &t, Value tile, Value carried) {
+  // Each lane keeps RM*RN SSA accumulators in registers. Interleaving its
+  // output cells preserves contiguous B accesses across adjacent lanes.
+  // Every accumulator's K order stays 0..K-1, including partial final tiles.
+  SmallVector<Value> initial(p.threadTileM * p.threadTileN, s.zero());
+  SmallVector<Value> total = s.reduce(s.i(ceilDiv(p.k, p.tileK)), initial,
+      [&](TileBuilder &t, Value tile, ValueRange carried) {
         Value kBase = t.mul(tile, t.i(p.tileK));
         Value stage = dxa ? t.rem(tile, t.i(2)) : t.i(0);
         Value offset = t.mul(stage, t.i(stageElements));
@@ -317,36 +330,56 @@ LogicalResult emitVortexMatmul(OpBuilder &builder, Operation *op,
         createVortexBarrier(t.b, t.loc, module, bar, warps);
         Value remaining = t.b.create<arith::SubIOp>(t.loc, t.i(p.k), kBase);
         Value validK = t.b.create<arith::MinUIOp>(t.loc, remaining, t.i(p.tileK));
-        Value sum = t.reduce(validK, carried,
-            [&](TileBuilder &u, Value k, Value acc) {
-              Value ai = u.add(offset, u.add(u.mul(localRow, u.i(p.tileK)), k));
-              Value bi = u.add(offset, u.add(u.i(aElements),
-                                             u.add(u.mul(k, u.i(p.tileN)), localCol)));
-              Value product = u.b.create<arith::MulFOp>(
-                  u.loc, u.load(lmem, ai), u.load(lmem, bi));
-              return Value(u.b.create<arith::AddFOp>(u.loc, acc, product));
+        SmallVector<Value> sum = t.reduce(validK, carried,
+            [&](TileBuilder &u, Value k, ValueRange acc) {
+              SmallVector<Value> aValues, bValues, next;
+              // Load each A/B fragment only once per K. A value participates
+              // in RN products and a B value in RM products in this thread.
+              for (int64_t r = 0; r < p.threadTileM; ++r) {
+                Value row = u.add(localRow, u.i(r * threadRows));
+                Value ai = u.add(offset, u.add(u.mul(row, u.i(p.tileK)), k));
+                aValues.push_back(u.load(lmem, ai));
+              }
+              for (int64_t c = 0; c < p.threadTileN; ++c) {
+                Value col = u.add(localCol, u.i(c * threadCols));
+                Value bi = u.add(offset, u.add(u.i(aElements),
+                                               u.add(u.mul(k, u.i(p.tileN)), col)));
+                bValues.push_back(u.load(lmem, bi));
+              }
+              for (int64_t r = 0; r < p.threadTileM; ++r)
+                for (int64_t c = 0; c < p.threadTileN; ++c) {
+                  Value product = u.b.create<arith::MulFOp>(u.loc, aValues[r], bValues[c]);
+                  next.push_back(u.b.create<arith::AddFOp>(
+                      u.loc, acc[r * p.threadTileN + c], product));
+                }
+              return next;
             });
         // No writer may reuse this stage while another warp still reads it.
         createVortexBarrier(t.b, t.loc, module, bar, warps);
         return sum;
       });
-  Value validOutput = s.both(s.lt(row, s.i(p.m)), s.lt(col, s.i(p.n)));
-  s.when(validOutput, [&](TileBuilder &t) {
-    Value flat = t.add(t.mul(batch, t.i(p.m * p.n)),
-                       t.add(t.mul(row, t.i(p.n)), col));
-    Value result = total;
-    if (op->getNumOperands() == 3) {
-      Value bias = t.load(pointers[2], t.broadcastIndex(flat, p.biasShape, p.outShape));
-      result = p.biasFirst ? t.b.create<arith::AddFOp>(t.loc, bias, result)
-                           : t.b.create<arith::AddFOp>(t.loc, result, bias);
+  for (int64_t r = 0; r < p.threadTileM; ++r)
+    for (int64_t c = 0; c < p.threadTileN; ++c) {
+      Value row = s.add(rowBase, s.add(localRow, s.i(r * threadRows)));
+      Value col = s.add(colBase, s.add(localCol, s.i(c * threadCols)));
+      Value validOutput = s.both(s.lt(row, s.i(p.m)), s.lt(col, s.i(p.n)));
+      s.when(validOutput, [&](TileBuilder &t) {
+        Value flat = t.add(t.mul(batch, t.i(p.m * p.n)),
+                           t.add(t.mul(row, t.i(p.n)), col));
+        Value result = total[r * p.threadTileN + c];
+        if (op->getNumOperands() == 3) {
+          Value bias = t.load(pointers[2], t.broadcastIndex(flat, p.biasShape, p.outShape));
+          result = p.biasFirst ? t.b.create<arith::AddFOp>(t.loc, bias, result)
+                               : t.b.create<arith::AddFOp>(t.loc, result, bias);
+        }
+        if (p.relu) {
+          Value negative = t.b.create<arith::CmpFOp>(
+              t.loc, arith::CmpFPredicate::OLT, result, t.zero());
+          result = t.b.create<arith::SelectOp>(t.loc, negative, t.zero(), result);
+        }
+        t.store(result, pointers.back(), flat);
+      });
     }
-    if (p.relu) {
-      Value negative = t.b.create<arith::CmpFOp>(
-          t.loc, arith::CmpFPredicate::OLT, result, t.zero());
-      result = t.b.create<arith::SelectOp>(t.loc, negative, t.zero(), result);
-    }
-    t.store(result, pointers.back(), flat);
-  });
   return success();
 }
 } // namespace gac

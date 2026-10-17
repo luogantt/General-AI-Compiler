@@ -1,6 +1,6 @@
 # General AI Compiler（GAC）
 
-统一开发分支：**`lg/bevformer-full-ops`**。CUDA PTX 与 Vortex 共用一套 C++ MLIR
+当前主分支：**`main`**（已合入 `lg/bevformer-full-ops`）。CUDA PTX 与 Vortex 共用一套 C++ MLIR
 前端、图优化和算子语义，通过 `gac-compile --target=cuda` 或 `--target=vortex`
 选择设备后端；每次编译生成一个目标的产物，不要求同时使用两种设备。
 源码分层、后端接口与使用方式见 [原生编译器架构](native/README.md#1-实际架构与代码)。
@@ -37,8 +37,18 @@ RTX 3070 Ti Laptop 上完成数值验证；完整 base 已生成全部 3,224 个
 并在该 GPU 上完整执行，三个输出通过 PyTorch 参考比对（固定输入的 FP32 cold
 raw-head 路径）。显存采样最高约 2.11 GiB；预热后 3 次设备执行平均约 18.05 秒，
 尚未达到 30 FPS，见[完整 CUDA 验证记录](docs/validation/cuda/native-mlir-bevformer-base-2026-10-17/README.md)。
-当前是标量 FP32 正确性基线，没有将旧路径的
-cuBLAS、Tensor Core 或 FFN 性能数字移用到本路径。
+上述为最初的标量 FP32 基线。后续已增加 C++ MLIR 的 CUDA shared-memory MatMul、
+寄存器分块、Conv/DCNv2 通道复用、Softmax/LayerNorm 协作归约和独立 profiling。
+优化组合完整执行 base，三个输出最大绝对误差约 `5.95e-5`；最终 `auto MatMul +
+cooperative reduction + Conv 通道块8` 四次设备序列为 **6.426–6.439 秒**。
+同轮标量为 18.279–45.033 秒，存在明显温度/频率变化，不据此承诺固定加速倍数或
+持续 FPS。首次最快 4.20 秒与全部较慢测量都单独保留。配置、范围和证据见
+[原生 CUDA 性能优化](docs/validation/cuda/native-mlir-performance-2026-10-17/README.md)。
+没有将旧路径的 cuBLAS、Tensor Core 或 FFN 性能数字移用到本路径。
+
+Vortex 同时完成 [寄存器分块与 TCU 调用合并](docs/validation/vortex/native-mlir-register-tiling-2026-10-17/README.md)：
+指定 FFN MatMul 的 DXA 模板在 SimX 上相对标量快约 2.175×；TCU 合并辅助调用相对
+旧 TCU 快约 1.356×。这是单个投影的建模周期，不代表完整 Vortex 模型帧率。
 
 旧 Python Graph 路径作为兼容实现保留；以下历史能力
 与新原生路径的支持范围分别记录，不能混算。

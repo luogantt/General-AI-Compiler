@@ -45,6 +45,10 @@ static llvm::cl::opt<std::string> vortexMatmulSchedule(
 static llvm::cl::opt<int64_t> tileM("tile-m", llvm::cl::init(4));
 static llvm::cl::opt<int64_t> tileN("tile-n", llvm::cl::init(4));
 static llvm::cl::opt<int64_t> tileK("tile-k", llvm::cl::init(16));
+static llvm::cl::opt<int64_t> vortexThreadTileM("vortex-thread-tile-m", llvm::cl::init(1));
+static llvm::cl::opt<int64_t> vortexThreadTileN("vortex-thread-tile-n", llvm::cl::init(1));
+static llvm::cl::opt<bool> vortexTcuCombined("vortex-tcu-combined", llvm::cl::init(false),
+    llvm::cl::desc("Keep the three TF32 WMMA instructions in one convergent helper"));
 static llvm::cl::opt<int64_t> vortexLanes("vortex-lanes", llvm::cl::init(4));
 static llvm::cl::opt<int64_t> lmemBudget("lmem-budget", llvm::cl::init(16384),
     llvm::cl::desc("Maximum LMEM bytes per tiled Vortex CTA"));
@@ -52,6 +56,20 @@ static llvm::cl::opt<std::string> foldProfile(
     "constant-fold-profile", llvm::cl::init("default"),
     llvm::cl::desc(
         "Bounded constant geometry evaluation: default | bevformer-base"));
+static llvm::cl::opt<std::string> cudaMatmulSchedule(
+    "cuda-matmul-schedule", llvm::cl::init("scalar"),
+    llvm::cl::desc("CUDA MatMul template: scalar | shared-tiled | auto (shape heuristic, not autotuning)"));
+static llvm::cl::opt<int64_t> cudaTileM("cuda-tile-m", llvm::cl::init(32));
+static llvm::cl::opt<int64_t> cudaTileN("cuda-tile-n", llvm::cl::init(32));
+static llvm::cl::opt<int64_t> cudaTileK("cuda-tile-k", llvm::cl::init(16));
+static llvm::cl::opt<int64_t> cudaThreadTileM("cuda-thread-tile-m", llvm::cl::init(2));
+static llvm::cl::opt<int64_t> cudaThreadTileN("cuda-thread-tile-n", llvm::cl::init(2));
+static llvm::cl::opt<std::string> cudaReductionSchedule(
+    "cuda-reduction-schedule", llvm::cl::init("scalar"),
+    llvm::cl::desc("CUDA Softmax/LayerNorm template: scalar | cooperative"));
+static llvm::cl::opt<int64_t> cudaConvChannelTile(
+    "cuda-conv-channel-tile", llvm::cl::init(1),
+    llvm::cl::desc("CUDA Conv/DCNv2 output channels per thread: 1 | 2 | 4 | 8"));
 
 int main(int argc, char **argv) {
   llvm::cl::ParseCommandLineOptions(argc, argv,
@@ -72,6 +90,41 @@ int main(int argc, char **argv) {
   }
   if (vortexMatmulSchedule != "scalar" && target != "vortex") {
     llvm::errs() << "Vortex MatMul schedules require --target=vortex\n";
+    return 1;
+  }
+  if (vortexThreadTileM <= 0 || vortexThreadTileM > 4 ||
+      vortexThreadTileN <= 0 || vortexThreadTileN > 4) {
+    llvm::errs() << "Vortex register tile dimensions must be in 1..4\n";
+    return 1;
+  }
+  if (vortexMatmulSchedule == "tcu" &&
+      (vortexThreadTileM != 1 || vortexThreadTileN != 1)) {
+    llvm::errs() << "TCU has a fixed fragment layout; register tiles apply to LMEM/DXA\n";
+    return 1;
+  }
+  if (vortexTcuCombined && (target != "vortex" || vortexMatmulSchedule != "tcu")) {
+    llvm::errs() << "--vortex-tcu-combined requires --target=vortex and the tcu schedule\n";
+    return 1;
+  }
+  if ((cudaMatmulSchedule != "scalar" && cudaMatmulSchedule != "shared-tiled" && cudaMatmulSchedule != "auto") ||
+      (cudaReductionSchedule != "scalar" && cudaReductionSchedule != "cooperative")) {
+    llvm::errs() << "unknown CUDA MatMul or reduction schedule\n";
+    return 1;
+  }
+  if (target != "cuda" && (cudaMatmulSchedule != "scalar" || cudaReductionSchedule != "scalar" || cudaConvChannelTile != 1)) {
+    llvm::errs() << "CUDA schedules require --target=cuda\n";
+    return 1;
+  }
+  if (cudaConvChannelTile != 1 && cudaConvChannelTile != 2 &&
+      cudaConvChannelTile != 4 && cudaConvChannelTile != 8) {
+    llvm::errs() << "CUDA channel tile must be 1, 2, 4 or 8\n";
+    return 1;
+  }
+  if (cudaTileM <= 0 || cudaTileN <= 0 || cudaTileK <= 0 || cudaTileM > 128 ||
+      cudaTileN > 128 || cudaTileK > 128 || cudaThreadTileM <= 0 ||
+      cudaThreadTileN <= 0 || cudaThreadTileM > 8 || cudaThreadTileN > 8 ||
+      cudaTileM % cudaThreadTileM || cudaTileN % cudaThreadTileN) {
+    llvm::errs() << "invalid CUDA output/reduction or per-thread tile\n";
     return 1;
   }
   if (tileM <= 0 || tileN <= 0 || tileK <= 0 || vortexLanes <= 0 ||
@@ -175,8 +228,19 @@ int main(int argc, char **argv) {
     options.tileM = tileM;
     options.tileN = tileN;
     options.tileK = tileK;
+    options.vortexThreadTileM = vortexThreadTileM;
+    options.vortexThreadTileN = vortexThreadTileN;
+    options.vortexTcuCombined = vortexTcuCombined;
     options.vortexLanes = vortexLanes;
     options.lmemBudget = lmemBudget;
+    options.cudaMatmulSchedule = cudaMatmulSchedule;
+    options.cudaTileM = cudaTileM;
+    options.cudaTileN = cudaTileN;
+    options.cudaTileK = cudaTileK;
+    options.cudaThreadTileM = cudaThreadTileM;
+    options.cudaThreadTileN = cudaThreadTileN;
+    options.cudaReductionSchedule = cudaReductionSchedule;
+    options.cudaConvChannelTile = cudaConvChannelTile;
     PassManager lowering(&context);
     lowering.enableVerifier(true);
     lowering.addPass(gac::createLowerToDevicePass(options, &plan));

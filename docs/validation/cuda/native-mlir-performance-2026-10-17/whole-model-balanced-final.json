@@ -1,0 +1,293 @@
+{
+  "runner_sha256": "7729e806c3dba4a6a2a235fb340d440dc11944b713e81f8ceba484b9627935b7",
+  "order": [
+    "scalar",
+    "tile32-channel4",
+    "auto-channel8",
+    "auto-channel8",
+    "tile32-channel4",
+    "scalar"
+  ],
+  "warmup_per_process": 1,
+  "repeat_per_process": 2,
+  "runs": [
+    {
+      "variant": "scalar",
+      "ordinal": 0,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model/plan.json",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/0-scalar",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 58, 1410 MHz, 752.07 W, 7 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 87, 1080 MHz, 77.84 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          18279.09375,
+          21108.607421875
+        ],
+        "gpu_dispatch_ms": 19693.8505859375,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 330.575711,
+        "upload_ms": 59.14248000000002,
+        "download_ms": 5.743549,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "d32e0e9c43134d8e7afc4d1a158cc465512079b57896a7213dd754279174c748",
+      "ptx_sha256": "23e73de0043358d1adbe02b876e351d55c371008ffd88a252824d6752dcbd605",
+      "output_sha256": {
+        "output_0.bin": "d0da6f0782bdf0612773abad20d70e4996fb58b25b142c683b393e16515c5dcd",
+        "output_1.bin": "df531c947979519ae95aa2c136713cf2aa5ad8a3cec9941f43d75342fcf28030",
+        "output_2.bin": "d21284509b68fe26353df227009bf74d14089fead863ce894128da8306724495"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "tile32-channel4",
+      "ordinal": 1,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-perf-20261017/full-optimized/plan.json",
+        "/home/robot/project/gac-cuda-perf-20261017/full-optimized/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/1-tile32-channel4",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 84, 1080 MHz, 75.36 W, 0 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 85, 1770 MHz, 72.07 W, 33 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          8371.33203125,
+          8825.775390625
+        ],
+        "gpu_dispatch_ms": 8598.5537109375,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 333.455276,
+        "upload_ms": 57.34098900000005,
+        "download_ms": 5.726411000000001,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "732267c17bf0a49a9ecd8d8ce29a109b691c0db7180ae65bdba64ea13f0db1be",
+      "ptx_sha256": "d4d44d34928f6ed50426633e488b7a5325674e02415409ef8b7a95a01b0a997e",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "auto-channel8",
+      "ordinal": 2,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/plan.json",
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/2-auto-channel8",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 85, 1770 MHz, 69.35 W, 33 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 1755 MHz, 77.05 W, 22 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          6430.3310546875,
+          6426.013671875
+        ],
+        "gpu_dispatch_ms": 6428.17236328125,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 321.05745,
+        "upload_ms": 58.213307000000036,
+        "download_ms": 5.87873,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "9140ddf8383c292a04fffc689ff5ac6fec22de86e8834e11004bbe26a40ef92a",
+      "ptx_sha256": "6f6b23349d9491d256f45f286c239e7573cb5b61ba96e8a33e3fb673c3c3d59b",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "auto-channel8",
+      "ordinal": 3,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/plan.json",
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/3-auto-channel8",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 1755 MHz, 72.31 W, 22 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 89, 915 MHz, 74.40 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          6430.4013671875,
+          6438.52587890625
+        ],
+        "gpu_dispatch_ms": 6434.463623046875,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 344.655488,
+        "upload_ms": 57.432144,
+        "download_ms": 5.776172,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "9140ddf8383c292a04fffc689ff5ac6fec22de86e8834e11004bbe26a40ef92a",
+      "ptx_sha256": "6f6b23349d9491d256f45f286c239e7573cb5b61ba96e8a33e3fb673c3c3d59b",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "tile32-channel4",
+      "ordinal": 4,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-perf-20261017/full-optimized/plan.json",
+        "/home/robot/project/gac-cuda-perf-20261017/full-optimized/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/4-tile32-channel4",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 85, 915 MHz, 66.95 W, 100 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 915 MHz, 63.36 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          10307.626953125,
+          11228.7119140625
+        ],
+        "gpu_dispatch_ms": 10768.16943359375,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 358.60898,
+        "upload_ms": 60.95465699999992,
+        "download_ms": 5.584035,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "732267c17bf0a49a9ecd8d8ce29a109b691c0db7180ae65bdba64ea13f0db1be",
+      "ptx_sha256": "d4d44d34928f6ed50426633e488b7a5325674e02415409ef8b7a95a01b0a997e",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "scalar",
+      "ordinal": 5,
+      "command": [
+        "/home/robot/project/gac-cuda-perf-20261017/full-auto/gac-cuda-run",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model/plan.json",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model/kernel.ptx",
+        "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model",
+        "/home/robot/project/gac-cuda-perf-20261017/balanced-final/5-scalar",
+        "--warmup",
+        "1",
+        "--repeat",
+        "2"
+      ],
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 915 MHz, 57.03 W, 100 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 89, 585 MHz, 54.86 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          40788.81640625,
+          45032.62109375
+        ],
+        "gpu_dispatch_ms": 42910.71875,
+        "warmup_runs": 1,
+        "measured_runs": 2,
+        "completed_dispatches": 3224,
+        "initialization_ms": 350.945007,
+        "upload_ms": 58.809418000000065,
+        "download_ms": 5.861618999999999,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "d32e0e9c43134d8e7afc4d1a158cc465512079b57896a7213dd754279174c748",
+      "ptx_sha256": "23e73de0043358d1adbe02b876e351d55c371008ffd88a252824d6752dcbd605",
+      "output_sha256": {
+        "output_0.bin": "d0da6f0782bdf0612773abad20d70e4996fb58b25b142c683b393e16515c5dcd",
+        "output_1.bin": "df531c947979519ae95aa2c136713cf2aa5ad8a3cec9941f43d75342fcf28030",
+        "output_2.bin": "d21284509b68fe26353df227009bf74d14089fead863ce894128da8306724495"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    }
+  ],
+  "summary": {
+    "scalar": {
+      "samples": 4,
+      "min_ms": 18279.09375,
+      "max_ms": 45032.62109375,
+      "median_ms": 30948.7119140625,
+      "mean_ms": 31302.28466796875
+    },
+    "tile32-channel4": {
+      "samples": 4,
+      "min_ms": 8371.33203125,
+      "max_ms": 11228.7119140625,
+      "median_ms": 9566.701171875,
+      "mean_ms": 9683.361572265625
+    },
+    "auto-channel8": {
+      "samples": 4,
+      "min_ms": 6426.013671875,
+      "max_ms": 6438.52587890625,
+      "median_ms": 6430.3662109375,
+      "mean_ms": 6431.3179931640625
+    },
+    "observed_scalar_to_auto_median_speedup": 4.812900369720997,
+    "observed_tile32_to_auto_median_speedup": 1.4877381564370105
+  },
+  "caveat": "Balanced ABC/CBA process order. Each process has 1 warmup and 2 measured runs. Temperature/clock vary and power.draw has implausible readings; these do not establish a fixed-clock speedup or sustained FPS. Only final outputs of each process were saved."
+}

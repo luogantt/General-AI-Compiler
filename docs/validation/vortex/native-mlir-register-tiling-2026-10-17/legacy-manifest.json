@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "schedule": "lmem-tiled",
+      "fields_absent": [
+        "thread_tile_m",
+        "thread_tile_n"
+      ],
+      "passed": true,
+      "identical_output_bytes": true,
+      "cycles": 12845850
+    },
+    {
+      "schedule": "dxa-double-buffer",
+      "fields_absent": [
+        "thread_tile_m",
+        "thread_tile_n"
+      ],
+      "passed": true,
+      "identical_output_bytes": true,
+      "cycles": 8552239
+    }
+  ]
+}

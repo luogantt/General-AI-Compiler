@@ -1,0 +1,412 @@
+{
+  "passed": true,
+  "scope": "manifest parser only; no GPU kernels executed",
+  "cases": [
+    {
+      "name": "matrix_tail",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "batch_broadcast",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "fused_bias",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "view_physical_shape",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "softmax_strided_axis",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "layer_norm_multi_axis",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "zero_tile",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "invalid CUDA schedule dimension: tile_k"
+    },
+    {
+      "name": "oversized_tile",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "nondivisible_thread_tile",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "wrong_thread_count",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "partial_warp_matrix",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "wrong_grid",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "row_schedule_launch_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA schedule resource/launch contract disagrees"
+    },
+    {
+      "name": "wrong_shared_bytes",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "excessive_shared_bytes",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA schedule resource/launch contract disagrees"
+    },
+    {
+      "name": "dynamic_shared_bytes",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "invalid CUDA kernel launch dimensions or dynamic shared allocation"
+    },
+    {
+      "name": "wrong_matrix_n",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "wrong_matrix_k",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix operand dimensions disagree"
+    },
+    {
+      "name": "wrong_matrix_op",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix template requires MatMul with optional fused bias"
+    },
+    {
+      "name": "missing_matrix_op",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix template requires MatMul with optional fused bias"
+    },
+    {
+      "name": "missing_operand",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix template requires MatMul with optional fused bias"
+    },
+    {
+      "name": "logical_storage_overflow",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA logical shape exceeds physical storage"
+    },
+    {
+      "name": "logical_storage_shortfall",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA template requires byte-identical FP32 logical operands"
+    },
+    {
+      "name": "matrix_dtype",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA template requires byte-identical FP32 logical operands"
+    },
+    {
+      "name": "output_dtype",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA schedule resource/launch contract disagrees"
+    },
+    {
+      "name": "batch_broadcast_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix batch broadcasting disagrees"
+    },
+    {
+      "name": "wrong_batch_count",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix tile/storage geometry disagrees"
+    },
+    {
+      "name": "wrong_projection_rank",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA flattened matrix projection shape disagrees"
+    },
+    {
+      "name": "unexpected_bias",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA matrix without bias has a bias shape"
+    },
+    {
+      "name": "incompatible_bias",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA operand shape cannot broadcast to output"
+    },
+    {
+      "name": "unknown_schedule",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "unknown CUDA compute schedule"
+    },
+    {
+      "name": "vortex_schedule_spoof",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA dispatch cannot carry a Vortex schedule"
+    },
+    {
+      "name": "vortex_root_memory_spoof",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA kernels cannot use a Vortex LMEM/buffer contract"
+    },
+    {
+      "name": "reduction_wrong_kind",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction template does not match its operator"
+    },
+    {
+      "name": "reduction_wrong_op",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction template does not match its operator"
+    },
+    {
+      "name": "reduction_negative_axis",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction axis or shape disagrees"
+    },
+    {
+      "name": "reduction_axis_out_of_rank",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction axis or shape disagrees"
+    },
+    {
+      "name": "reduction_shape_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction axis or shape disagrees"
+    },
+    {
+      "name": "reduction_width_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_stride_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_rows_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_grid_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_thread_count",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_shared_mismatch",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "reduction_absent_scale",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction has a shape for an absent affine input"
+    },
+    {
+      "name": "layer_norm_wrong_width",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA reduction row/launch geometry disagrees"
+    },
+    {
+      "name": "layer_norm_affine_shape",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA operand shape cannot broadcast to output"
+    },
+    {
+      "name": "channel_tiled_grouped_conv",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "channel_tiled_grouped_dcn",
+      "passed": true,
+      "manifest_accepted": true,
+      "failure_stage": "driver-initialization-and-ptx-jit",
+      "diagnostic": "CUDA driver library unavailable; install an NVIDIA driver on a machine with a supported GPU (no host operator fallback)"
+    },
+    {
+      "name": "channel_tile_group_crossing",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA channel tile/group/launch geometry disagrees"
+    },
+    {
+      "name": "channel_wrong_groups",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA channel tile/group/launch geometry disagrees"
+    },
+    {
+      "name": "channel_wrong_thread_count",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA channel tile/group/launch geometry disagrees"
+    },
+    {
+      "name": "channel_wrong_kind",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA channel tile does not match convolution operator"
+    },
+    {
+      "name": "channel_wrong_shared",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA channel tile does not match convolution operator"
+    },
+    {
+      "name": "channel_wrong_shape",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA convolution channel/group dimensions disagree"
+    },
+    {
+      "name": "channel_wrong_output_shape",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA convolution output shape disagrees"
+    },
+    {
+      "name": "channel_wrong_bias",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA convolution bias shape disagrees"
+    },
+    {
+      "name": "dcn_wrong_sampling",
+      "passed": true,
+      "manifest_accepted": false,
+      "failure_stage": "manifest-validation",
+      "diagnostic": "CUDA deformable convolution sampling shapes disagree"
+    }
+  ]
+}

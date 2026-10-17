@@ -61,14 +61,18 @@ struct Tensor {
 };
 struct Dispatch {
   std::string kernel;
+  std::string op, source;
   std::vector<size_t> inputs;
   size_t output;
   uint32_t elements;
   uint32_t blockSize = 0, gridSize = 0;
+  std::string cudaSchedule;
+  uint32_t staticSharedBytes = 0;
   // Empty schedule preserves the original scalar global-memory contract.
   std::string vortexSchedule;
   uint32_t m = 0, n = 0, k = 0, batches = 0;
   uint32_t tileM = 0, tileN = 0, tileK = 0;
+  uint32_t vortexThreadTileM = 1, vortexThreadTileN = 1;
   uint32_t lmemBytes = 0, stages = 0, lanes = 0;
 };
 struct Plan {
@@ -81,6 +85,187 @@ struct Plan {
 };
 
 enum class Target { Vortex, CUDA };
+
+// Optimized launch geometry is part of the compiled kernel ABI. Validate it
+// against logical operand shapes (views may share a differently shaped buffer),
+// rather than accepting arbitrary block/grid numbers from the manifest.
+inline void validateCudaSchedule(const json::Object &schedule,
+                                 Dispatch &dispatch, const Plan &plan) {
+  const Tensor &output = plan.tensors[dispatch.output];
+  auto positive = [&](llvm::StringRef name) -> uint64_t {
+    uint64_t value = nonnegative(schedule, name);
+    if (!value || value > INT32_MAX)
+      fail("invalid CUDA schedule dimension: " + name.str());
+    return value;
+  };
+  auto logical = [&](size_t operand, llvm::StringRef name) {
+    if (operand >= dispatch.inputs.size())
+      fail("CUDA schedule has a missing input");
+    Tensor value = plan.tensors[dispatch.inputs[operand]];
+    value.shape.clear();
+    uint64_t count = 1;
+    for (const auto &dim : array(schedule, name)) {
+      auto size = dim.getAsInteger();
+      if (!size || *size <= 0 || uint64_t(*size) > value.elements / count)
+        fail("CUDA logical shape exceeds physical storage");
+      count *= uint64_t(*size);
+      value.shape.push_back(*size);
+    }
+    if (count != value.elements || value.dtype != "float32")
+      fail("CUDA template requires byte-identical FP32 logical operands");
+    return value;
+  };
+  auto broadcasts = [&](const Tensor &value) {
+    if (value.shape.size() > output.shape.size())
+      fail("CUDA broadcast operand rank exceeds output rank");
+    size_t pad = output.shape.size() - value.shape.size();
+    for (size_t i = 0; i < value.shape.size(); ++i)
+      if (value.shape[i] != 1 && value.shape[i] != output.shape[pad + i])
+        fail("CUDA operand shape cannot broadcast to output");
+  };
+  dispatch.cudaSchedule = string(schedule, "schedule");
+  uint64_t shared = nonnegative(schedule, "static_shared_memory_bytes");
+  if (shared > 48 * 1024 || output.dtype != "float32" ||
+      positive("block_size") != dispatch.blockSize ||
+      positive("grid_size") != dispatch.gridSize)
+    fail("CUDA schedule resource/launch contract disagrees");
+  dispatch.staticSharedBytes = uint32_t(shared);
+  if (dispatch.cudaSchedule == "shared-tiled") {
+    uint64_t m = positive("m"), n = positive("n"), k = positive("k");
+    uint64_t batches = positive("batches");
+    uint64_t tm = positive("tile_m"), tn = positive("tile_n"), tk = positive("tile_k");
+    uint64_t rm = positive("thread_tile_m"), rn = positive("thread_tile_n");
+    // Bound dimensions before multiplying; these are supported template
+    // resources, not an estimate of the hardware's theoretical maximum.
+    if (tm > 128 || tn > 128 || tk > 128 || rm > 8 || rn > 8 ||
+        dispatch.blockSize < 32 || dispatch.blockSize % 32 ||
+        tm % rm || tn % rn || (tm / rm) * (tn / rn) != dispatch.blockSize ||
+        4 * tk * (tm + tn) != shared ||
+        m * n > INT32_MAX || batches > uint64_t(INT32_MAX) / (m * n) ||
+        m * n * batches != output.elements ||
+        ((m + tm - 1) / tm) * ((n + tn - 1) / tn) * batches != dispatch.gridSize)
+      fail("CUDA matrix tile/storage geometry disagrees");
+    bool bias = dispatch.op == "gac.matmul_bias" || dispatch.op == "gac.matmul_bias_relu";
+    if ((!bias && dispatch.op != "gac.matmul") ||
+        dispatch.inputs.size() != (bias ? 3u : 2u))
+      fail("CUDA matrix template requires MatMul with optional fused bias");
+    Tensor a = logical(0, "a_shape"), b = logical(1, "b_shape");
+    if (a.shape.size() < 2 || b.shape.size() < 2 || output.shape.size() < 2 ||
+        a.shape.back() != int64_t(k) || b.shape[b.shape.size()-2] != int64_t(k) ||
+        b.shape.back() != int64_t(n) || output.shape.back() != int64_t(n))
+      fail("CUDA matrix operand dimensions disagree");
+    if (b.shape.size() == 2) {
+      if (batches != 1 || a.elements != m * k || output.shape.size() != a.shape.size() ||
+          !std::equal(a.shape.begin(), a.shape.end()-1, output.shape.begin()))
+        fail("CUDA flattened matrix projection shape disagrees");
+    } else {
+      if (a.shape[a.shape.size()-2] != int64_t(m) ||
+          output.shape[output.shape.size()-2] != int64_t(m) ||
+          output.shape.size() != std::max(a.shape.size(), b.shape.size()))
+        fail("CUDA batch matrix dimensions disagree");
+      for (size_t axis = 0; axis + 2 < output.shape.size(); ++axis) {
+        auto dim = [&](const Tensor &value) {
+          size_t pad = output.shape.size() - value.shape.size();
+          return axis < pad ? int64_t(1) : value.shape[axis-pad];
+        };
+        int64_t av = dim(a), bv = dim(b);
+        if ((av != 1 && bv != 1 && av != bv) || output.shape[axis] != std::max(av,bv))
+          fail("CUDA matrix batch broadcasting disagrees");
+      }
+    }
+    if (bias)
+      broadcasts(logical(2, "bias_shape"));
+    else if (!array(schedule, "bias_shape").empty())
+      fail("CUDA matrix without bias has a bias shape");
+  } else if (dispatch.cudaSchedule == "channel-tiled") {
+    std::string kind = string(schedule, "kind");
+    bool deform = kind == "deform_conv2d";
+    if ((!deform && kind != "conv2d" && kind != "conv2d_relu") ||
+        dispatch.op != "gac." + kind || output.shape.size() != 4 || shared)
+      fail("CUDA channel tile does not match convolution operator");
+    uint64_t tile = positive("channel_tile"), groups = positive("groups");
+    uint64_t channels = positive("channels_per_group");
+    if ((tile != 2 && tile != 4 && tile != 8) || channels % tile ||
+        groups * channels != uint64_t(output.shape[1]) || output.elements % tile ||
+        positive("logical_threads") != output.elements / tile || dispatch.blockSize != 256 ||
+        dispatch.gridSize != (output.elements / tile + 255) / 256)
+      fail("CUDA channel tile/group/launch geometry disagrees");
+    const auto &shapes = array(schedule, "input_shapes");
+    if (shapes.size() != dispatch.inputs.size() ||
+        dispatch.inputs.size() < (deform ? 4u : 2u) ||
+        dispatch.inputs.size() > (deform ? 5u : 3u))
+      fail("CUDA convolution operand count disagrees");
+    std::vector<std::vector<int64_t>> logicalShapes;
+    for (size_t i = 0; i < shapes.size(); ++i) {
+      auto *shape = shapes[i].getAsArray();
+      const Tensor &tensor = plan.tensors[dispatch.inputs[i]];
+      if (!shape || tensor.dtype != "float32")
+        fail("CUDA convolution requires FP32 logical operand shapes");
+      uint64_t elements = 1;
+      std::vector<int64_t> dims;
+      for (const auto &dim : *shape) {
+        auto value = dim.getAsInteger();
+        if (!value || *value <= 0 || uint64_t(*value) > tensor.elements / elements)
+          fail("CUDA convolution logical shape exceeds storage");
+        elements *= uint64_t(*value);
+        dims.push_back(*value);
+      }
+      if (elements != tensor.elements)
+        fail("CUDA convolution logical shape differs from storage");
+      logicalShapes.push_back(std::move(dims));
+    }
+    const auto &x = logicalShapes[0], &weight = logicalShapes[deform ? 3 : 1];
+    if (x.size() != 4 || weight.size() != 4 || x[0] != output.shape[0] ||
+        weight[0] != output.shape[1] || uint64_t(weight[1]) * groups != uint64_t(x[1]))
+      fail("CUDA convolution channel/group dimensions disagree");
+    const auto &outShape = array(schedule, "output_shape");
+    if (outShape.size() != output.shape.size())
+      fail("CUDA convolution output rank disagrees");
+    for (size_t i = 0; i < outShape.size(); ++i)
+      if (outShape[i].getAsInteger() != output.shape[i])
+        fail("CUDA convolution output shape disagrees");
+    if (dispatch.inputs.size() == (deform ? 5u : 3u) &&
+        logicalShapes.back() != std::vector<int64_t>{output.shape[1]})
+      fail("CUDA convolution bias shape disagrees");
+    if (deform) {
+      const auto &offset = logicalShapes[1], &mask = logicalShapes[2];
+      if (offset.size() != 4 || mask.size() != 4 ||
+          offset[0] != x[0] || mask[0] != x[0] || offset[1] != 2 * mask[1] ||
+          offset[2] != output.shape[2] || offset[3] != output.shape[3] ||
+          mask[2] != output.shape[2] || mask[3] != output.shape[3] ||
+          mask[1] % (weight[2] * weight[3]) ||
+          x[1] % (mask[1] / (weight[2] * weight[3])))
+        fail("CUDA deformable convolution sampling shapes disagree");
+    }
+  } else if (dispatch.cudaSchedule == "row-reduction") {
+    std::string kind = string(schedule, "kind");
+    bool layerNorm = kind == "layer_norm";
+    if ((!layerNorm && kind != "softmax") || dispatch.op != "gac." + kind ||
+        dispatch.inputs.empty() || dispatch.inputs.size() > (layerNorm ? 3u : 1u))
+      fail("CUDA reduction template does not match its operator");
+    Tensor input = logical(0, "input_shape");
+    int64_t axis = integer(schedule, "axis");
+    if (input.shape != output.shape || axis < 0 || axis >= int64_t(input.shape.size()))
+      fail("CUDA reduction axis or shape disagrees");
+    uint64_t width = layerNorm ? 1 : uint64_t(input.shape[axis]), stride = 1;
+    for (size_t i = size_t(axis) + (layerNorm ? 0 : 1); i < input.shape.size(); ++i)
+      (layerNorm ? width : stride) *= uint64_t(input.shape[i]);
+    if (positive("width") != width || positive("stride") != stride ||
+        positive("rows") != input.elements / width ||
+        dispatch.gridSize != input.elements / width || shared != 4 * dispatch.blockSize ||
+        (dispatch.blockSize != 32 && dispatch.blockSize != 128 && dispatch.blockSize != 256))
+      fail("CUDA reduction row/launch geometry disagrees");
+    for (size_t index = 1; index <= 2; ++index) {
+      llvm::StringRef field = index == 1 ? "scale_shape" : "bias_shape";
+      if (index < dispatch.inputs.size())
+        broadcasts(logical(index, field));
+      else if (!array(schedule, field).empty())
+        fail("CUDA reduction has a shape for an absent affine input");
+    }
+  } else {
+    fail("unknown CUDA compute schedule");
+  }
+}
 
 inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
   auto buffer = llvm::MemoryBuffer::getFile(path.string());
@@ -101,7 +286,7 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
   if (!doubleBuffer || lmemBytes > UINT32_MAX)
     fail("invalid root LMEM/buffer contract");
   if (cuda && (lmemBytes != 0 || *doubleBuffer))
-    fail("CUDA runtime supports the scalar global-memory template only");
+    fail("CUDA kernels cannot use a Vortex LMEM/buffer contract");
   if (cuda) {
     auto *abi = root.getObject("cuda");
     if (!abi || string(*abi, "kernel_abi") != "direct-pointers" ||
@@ -210,6 +395,10 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
       fail("arena reuse requires the compiler's serialized dispatch order");
     Dispatch dispatch;
     dispatch.kernel = string(row, "kernel");
+    if (auto op = row.getString("op"))
+      dispatch.op = op->str();
+    if (auto source = row.getString("source_node"))
+      dispatch.source = source->str();
     if (dispatch.kernel.empty())
       fail("empty kernel entry name");
     std::set<int64_t> dependencies;
@@ -244,11 +433,15 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
     if (cuda) {
       uint64_t block = nonnegative(row, "block_size");
       uint64_t grid = nonnegative(row, "grid_size");
-      if (!block || block > 1024 || grid != (elements + block - 1) / block ||
-          grid > INT32_MAX || nonnegative(row, "shared_memory_bytes") != 0)
-        fail("invalid CUDA scalar kernel launch dimensions");
+      if (!block || block > 1024 || !grid || grid > INT32_MAX ||
+          nonnegative(row, "shared_memory_bytes") != 0)
+        fail("invalid CUDA kernel launch dimensions or dynamic shared allocation");
       dispatch.blockSize = uint32_t(block);
       dispatch.gridSize = uint32_t(grid);
+      if (auto *schedule = row.get("cuda_schedule"))
+        validateCudaSchedule(object(*schedule), dispatch, plan);
+      else if (grid != (elements + block - 1) / block)
+        fail("invalid CUDA scalar kernel launch dimensions");
       if (row.get("vortex"))
         fail("CUDA dispatch cannot carry a Vortex schedule");
     } else if (auto *vortex = row.get("vortex")) {
@@ -267,6 +460,13 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
       dispatch.tileM = dimension("tile_m");
       dispatch.tileN = dimension("tile_n");
       dispatch.tileK = dimension("tile_k");
+      // Older manifests are the one-output-per-thread template.
+      dispatch.vortexThreadTileM = schedule.get("thread_tile_m")
+          ? dimension("thread_tile_m") : 1;
+      dispatch.vortexThreadTileN = schedule.get("thread_tile_n")
+          ? dimension("thread_tile_n") : 1;
+      if (dispatch.vortexThreadTileM > 4 || dispatch.vortexThreadTileN > 4)
+        fail("Vortex register tile dimensions exceed supported range");
       dispatch.blockSize = dimension("block_size");
       dispatch.gridSize = dimension("grid_size");
       dispatch.lmemBytes = dimension("lmem_bytes", true);
@@ -363,16 +563,26 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
           fail("TCU schedule requires explicit TF32x3 arithmetic with FP32 accumulation");
         if (dispatch.lanes != 4 || dispatch.blockSize != 4 ||
             dispatch.tileM != 8 || dispatch.tileN != 4 || dispatch.tileK != 4 ||
-            dispatch.lmemBytes || dispatch.stages)
+            dispatch.lmemBytes || dispatch.stages ||
+            dispatch.vortexThreadTileM != 1 || dispatch.vortexThreadTileN != 1)
           fail("unsupported Vortex FP32 WMMA geometry");
+        if (schedule.get("tcu_call_mode")) {
+          std::string mode = string(schedule, "tcu_call_mode");
+          if (mode != "separate" && mode != "combined")
+            fail("unsupported Vortex TCU call mode");
+        }
       } else {
         if (dispatch.tileM > 65535 || dispatch.tileN > 65535 ||
             dispatch.tileK > 65535)
           fail("Vortex LMEM tile dimensions exceed supported range");
-        uint64_t tileElements = uint64_t(dispatch.tileM) * dispatch.tileN;
+        if (dispatch.tileM % dispatch.vortexThreadTileM ||
+            dispatch.tileN % dispatch.vortexThreadTileN)
+          fail("Vortex block tile must be divisible by the register tile");
+        uint64_t tileThreads = uint64_t(dispatch.tileM / dispatch.vortexThreadTileM) *
+                               (dispatch.tileN / dispatch.vortexThreadTileN);
         uint64_t stageBytes = 4 * uint64_t(dispatch.tileK) *
                               (uint64_t(dispatch.tileM) + dispatch.tileN);
-        if (tileElements != dispatch.blockSize ||
+        if (tileThreads != dispatch.blockSize ||
             dispatch.stages != (dxa ? 2u : 1u) ||
             stageBytes > INT32_MAX / dispatch.stages ||
             stageBytes * dispatch.stages != dispatch.lmemBytes)

@@ -2,6 +2,8 @@
 #include "gac/CudaLowering.h"
 #include "gac/VortexLowering.h"
 #include "gac/VortexMatmul.h"
+#include "gac/CudaMatmul.h"
+#include "gac/CudaReduction.h"
 #include "gac/Dialect.h"
 #include "mlir/Conversion/ArithToLLVM/ArithToLLVM.h"
 #include "mlir/Conversion/ControlFlowToLLVM/ControlFlowToLLVM.h"
@@ -595,6 +597,151 @@ static Value emitElement(Scalar &s, Operation *op, ArrayRef<Value> ptrs,
   return emitSpatial(s, op, ptrs, tid);
 }
 
+// Consecutive output channels in one convolution group share the same input
+// sample at each reduction step. Keep a small vector of FP32 accumulators in
+// SSA registers, sharing address calculation and (for DCNv2) bilinear sampling.
+// Tile=1 is the scalar implementation used by every target. The CUDA planner
+// only selects a larger tile when it cannot cross a convolution group.
+static SmallVector<Value> emitConvolutionOutputs(
+    Scalar &s, Operation *op, ArrayRef<Value> ptrs, ArrayRef<Value> c,
+    int64_t channelTile) {
+  bool deform = opKind(op) == "deform_conv2d";
+  unsigned weightOperand = deform ? 3 : 1;
+  auto xs = tensor(op->getOperand(0)).getShape();
+  auto ws = tensor(op->getOperand(weightOperand)).getShape();
+  auto os = tensor(op->getResult(0)).getShape();
+  auto strides = ints(op, deform ? "stride" : "strides", {1, 1});
+  auto dilation = ints(op, deform ? "dilation" : "dilations", {1, 1});
+  auto pads = ints(op, deform ? "padding" : "pads", {0, 0});
+  int64_t groups = integer(op, deform ? "groups" : "group", 1);
+  int64_t points = ws[2] * ws[3];
+  auto read = [&](unsigned operand, Value index) {
+    return s.read(ptrs[operand], index,
+                  tensor(op->getOperand(operand)).getElementType());
+  };
+  SmallVector<Value> initial(channelTile, s.f(0));
+  Value begin = s.i(0), end = s.i(ws[1] * points), step = s.i(1);
+  auto reduction = s.b.create<scf::ForOp>(
+      s.loc, begin, end, step, initial,
+      [&](OpBuilder &, Location, Value k, ValueRange carry) {
+        auto r = s.coords(k, {ws[1], ws[2], ws[3]});
+        Value channel = s.add(
+            s.mul(s.div(c[1], s.i(os[1] / groups)), s.i(ws[1])), r[0]);
+        Value y = s.sub(s.add(s.mul(c[2], s.i(strides[0])),
+                              s.mul(r[1], s.i(dilation[0]))), s.i(pads[0]));
+        Value x = s.sub(s.add(s.mul(c[3], s.i(strides[1])),
+                              s.mul(r[2], s.i(dilation[1]))), s.i(pads[1]));
+        auto accumulate = [&](Value sample) {
+          SmallVector<Value> next;
+          for (int64_t tile = 0; tile < channelTile; ++tile) {
+            Value outputChannel = s.add(c[1], s.i(tile));
+            Value weight = read(weightOperand,
+                s.linear({outputChannel, r[0], r[1], r[2]}, ws));
+            next.push_back(s.add(carry[tile], s.mul(sample, weight)));
+          }
+          return next;
+        };
+        SmallVector<Value> next;
+        if (deform) {
+          auto offsets = tensor(op->getOperand(1)).getShape();
+          auto masks = tensor(op->getOperand(2)).getShape();
+          int64_t deformGroups = integer(op, "deform_groups", 1);
+          Value deformGroup = s.div(channel, s.i(xs[1] / deformGroups));
+          Value point = s.add(s.mul(r[1], s.i(ws[3])), r[2]);
+          Value maskChannel = s.add(s.mul(deformGroup, s.i(points)), point);
+          Value offsetChannel = s.mul(maskChannel, s.i(2));
+          Value dy = read(1, s.linear({c[0], offsetChannel, c[2], c[3]}, offsets));
+          Value dx = read(1, s.linear(
+              {c[0], s.add(offsetChannel, s.i(1)), c[2], c[3]}, offsets));
+          y = s.add(s.cvt(y, s.b.getF32Type()), dy);
+          x = s.add(s.cvt(x, s.b.getF32Type()), dx);
+          Value sample = s.bilinear(x, y, xs[2], xs[3], [&](Value xx, Value yy) {
+            return read(0, s.linear({c[0], channel, yy, xx}, xs));
+          });
+          Value mask = read(2, s.linear({c[0], maskChannel, c[2], c[3]}, masks));
+          // Keep sample*mask before multiplication by weight, including the
+          // original FP32 rounding and nonfinite behavior.
+          next = accumulate(s.mul(sample, mask));
+        } else {
+          Value valid = s.binary(
+              "and", s.binary("and", s.cmp("ge", y, s.i(0)),
+                               s.cmp("lt", y, s.i(xs[2]))),
+              s.binary("and", s.cmp("ge", x, s.i(0)),
+                       s.cmp("lt", x, s.i(xs[3]))));
+          SmallVector<Type> types(channelTile, s.b.getF32Type());
+          auto guarded = s.b.create<scf::IfOp>(s.loc, types, valid, true);
+          {
+            OpBuilder::InsertionGuard guard(s.b);
+            s.b.setInsertionPointToStart(guarded.thenBlock());
+            Value sample = read(0, s.linear({c[0], channel, y, x}, xs));
+            s.b.create<scf::YieldOp>(s.loc, accumulate(sample));
+          }
+          {
+            OpBuilder::InsertionGuard guard(s.b);
+            s.b.setInsertionPointToStart(guarded.elseBlock());
+            // Padding skips the multiply entirely. Multiplying a zero-filled
+            // sample by an Inf/NaN weight would change the scalar semantics.
+            s.b.create<scf::YieldOp>(s.loc, carry);
+          }
+          next.assign(guarded.getResults().begin(), guarded.getResults().end());
+        }
+        s.b.create<scf::YieldOp>(s.loc, next);
+      });
+  SmallVector<Value> result(reduction.getResults());
+  for (int64_t tile = 0; tile < channelTile; ++tile) {
+    if (ptrs.size() > weightOperand + 1)
+      result[tile] = s.add(result[tile], read(weightOperand + 1, s.add(c[1], s.i(tile))));
+    if (opKind(op) == "conv2d_relu")
+      result[tile] = s.relu(result[tile]);
+  }
+  return result;
+}
+
+static int64_t selectCudaConvChannelTile(Operation *op, int64_t requested,
+                                         std::string &reason) {
+  StringRef kind = opKind(op);
+  if (requested == 1 || (kind != "conv2d" && kind != "conv2d_relu" &&
+                         kind != "deform_conv2d"))
+    return 1;
+  if (!tensor(op->getResult(0)).getElementType().isF32() ||
+      llvm::any_of(op->getOperands(), [](Value input) {
+        return !tensor(input).getElementType().isF32();
+      })) {
+    reason = "output-channel register tiling currently requires FP32 operands";
+    return 1;
+  }
+  int64_t groups = integer(op, kind == "deform_conv2d" ? "groups" : "group", 1);
+  int64_t channelsPerGroup = tensor(op->getResult(0)).getShape()[1] / groups;
+  if (channelsPerGroup % requested) {
+    reason = "output channels per group are not divisible by the requested register tile";
+    return 1;
+  }
+  return requested;
+}
+
+static void emitCudaChannelTile(Scalar &s, Operation *op,
+                                 ArrayRef<Value> pointers, int64_t channelTile) {
+  auto output = tensor(op->getResult(0));
+  SmallVector<int64_t> workShape(output.getShape());
+  workShape[1] /= channelTile;
+  Value tid = createCudaGlobalThreadId(s.b, s.loc);
+  Value valid = s.binary("and", s.cmp("ge", tid, s.i(0)),
+                         s.cmp("lt", tid, s.i(product(workShape))));
+  s.b.create<scf::IfOp>(s.loc, valid, [&](OpBuilder &, Location) {
+    auto coordinates = s.coords(tid, workShape);
+    coordinates[1] = s.mul(coordinates[1], s.i(channelTile));
+    auto values = emitConvolutionOutputs(s, op, pointers.drop_back(),
+                                         coordinates, channelTile);
+    for (int64_t tile = 0; tile < channelTile; ++tile) {
+      auto destination = coordinates;
+      destination[1] = s.add(coordinates[1], s.i(tile));
+      s.write(values[tile], pointers.back(),
+              s.linear(destination, output.getShape()), output.getElementType());
+    }
+    s.b.create<scf::YieldOp>(s.loc);
+  });
+}
+
 // Spatial implementations and target/runtime boundaries follow below.
 static Value emitSpatial(Scalar &s, Operation *op, ArrayRef<Value> ptrs,
                          Value tid) {
@@ -603,51 +750,8 @@ static Value emitSpatial(Scalar &s, Operation *op, ArrayRef<Value> ptrs,
   auto read = [&](unsigned p, Value idx) {
     return s.read(ptrs[p], idx, tensor(op->getOperand(p)).getElementType());
   };
-  if (kind == "deform_conv2d") {
-    auto xs = tensor(op->getOperand(0)).getShape();
-    auto offsets = tensor(op->getOperand(1)).getShape();
-    auto masks = tensor(op->getOperand(2)).getShape();
-    auto ws = tensor(op->getOperand(3)).getShape();
-    auto strides = ints(op, "stride", {1, 1});
-    auto pads = ints(op, "padding", {0, 0});
-    auto dilation = ints(op, "dilation", {1, 1});
-    int64_t groups = integer(op, "groups", 1);
-    int64_t deformGroups = integer(op, "deform_groups", 1);
-    int64_t points = ws[2] * ws[3];
-    auto c = s.coords(tid, os);
-    // Each output owns its accumulator. Sample directly from the feature map;
-    // no im2col activation or host implementation is materialized.
-    Value acc = s.loop(ws[1] * points, s.f(0), [&](Value k, Value sum) {
-      auto r = s.coords(k, {ws[1], ws[2], ws[3]});
-      Value channel =
-          s.add(s.mul(s.div(c[1], s.i(os[1] / groups)), s.i(ws[1])), r[0]);
-      Value deformGroup = s.div(channel, s.i(xs[1] / deformGroups));
-      Value point = s.add(s.mul(r[1], s.i(ws[3])), r[2]);
-      Value maskChannel = s.add(s.mul(deformGroup, s.i(points)), point);
-      Value offsetChannel = s.mul(maskChannel, s.i(2));
-      Value dy = read(1, s.linear({c[0], offsetChannel, c[2], c[3]}, offsets));
-      Value dx =
-          read(1, s.linear({c[0], s.add(offsetChannel, s.i(1)), c[2], c[3]},
-                           offsets));
-      Value y = s.add(s.cvt(s.sub(s.add(s.mul(c[2], s.i(strides[0])),
-                                        s.mul(r[1], s.i(dilation[0]))),
-                                  s.i(pads[0])),
-                            s.b.getF32Type()),
-                      dy);
-      Value x = s.add(s.cvt(s.sub(s.add(s.mul(c[3], s.i(strides[1])),
-                                        s.mul(r[2], s.i(dilation[1]))),
-                                  s.i(pads[1])),
-                            s.b.getF32Type()),
-                      dx);
-      Value sample = s.bilinear(x, y, xs[2], xs[3], [&](Value xx, Value yy) {
-        return read(0, s.linear({c[0], channel, yy, xx}, xs));
-      });
-      Value mask = read(2, s.linear({c[0], maskChannel, c[2], c[3]}, masks));
-      Value weight = read(3, s.linear({c[1], r[0], r[1], r[2]}, ws));
-      return s.add(sum, s.mul(s.mul(sample, mask), weight));
-    });
-    return ptrs.size() == 5 ? s.add(acc, read(4, c[1])) : acc;
-  }
+  if (kind == "deform_conv2d" || kind == "conv2d" || kind == "conv2d_relu")
+    return emitConvolutionOutputs(s, op, ptrs, s.coords(tid, os), 1).front();
   if (kind == "ms_deform_attn" || kind == "ms_deform_attn_offsets") {
     bool fusedCoordinates = kind == "ms_deform_attn_offsets";
     auto vs = tensor(op->getOperand(0)).getShape();
@@ -761,25 +865,17 @@ static Value emitSpatial(Scalar &s, Operation *op, ArrayRef<Value> ptrs,
                        read(1, channel)),
                  read(2, channel));
   }
-  if (kind == "conv2d" || kind == "conv2d_relu" || kind == "max_pool2d") {
-    bool conv = kind != "max_pool2d";
+  if (kind == "max_pool2d") {
     auto xs = tensor(op->getOperand(0)).getShape();
-    auto ws = conv ? tensor(op->getOperand(1)).getShape() : ArrayRef<int64_t>();
-    auto kernel =
-        conv ? SmallVector<int64_t>{ws[2], ws[3]} : ints(op, "kernel_shape");
+    auto kernel = ints(op, "kernel_shape");
     auto strides = ints(op, "strides", {1, 1}),
          dilation = ints(op, "dilations", {1, 1}),
          pads = ints(op, "pads", {0, 0, 0, 0});
     auto c = s.coords(tid, os);
-    int64_t groups = integer(op, "group", 1);
-    int64_t cin = conv ? ws[1] : 1, count = cin * kernel[0] * kernel[1];
+    int64_t count = kernel[0] * kernel[1];
     Value accum =
-        s.loop(count, s.f(conv ? 0 : -INFINITY), [&](Value k, Value a) {
-          auto rc = s.coords(k, {cin, kernel[0], kernel[1]});
-          Value channel =
-              conv ? s.add(s.mul(s.div(c[1], s.i(os[1] / groups)), s.i(cin)),
-                           rc[0])
-                   : c[1];
+        s.loop(count, s.f(-INFINITY), [&](Value k, Value a) {
+          auto rc = s.coords(k, {1, kernel[0], kernel[1]});
           Value y = s.sub(s.add(s.mul(c[2], s.i(strides[0])),
                                 s.mul(rc[1], s.i(dilation[0]))),
                           s.i(pads[0]));
@@ -795,19 +891,12 @@ static Value emitSpatial(Scalar &s, Operation *op, ArrayRef<Value> ptrs,
           return s.branch(
               valid, s.b.getF32Type(),
               [&] {
-                Value value = read(0, s.linear({c[0], channel, y, x}, xs));
-                if (conv)
-                  return s.add(
-                      a,
-                      s.mul(value, read(1, s.linear({c[1], rc[0], rc[1], rc[2]},
-                                                    ws))));
+                Value value = read(0, s.linear({c[0], c[1], y, x}, xs));
                 return s.maximum(a, value);
               },
               [&] { return a; });
         });
-    if (conv && ptrs.size() > 2)
-      accum = s.add(accum, read(2, c[1]));
-    return kind == "conv2d_relu" ? s.relu(accum) : accum;
+    return accum;
   }
   if (kind == "slice") {
     auto shape = tensor(op->getOperand(0)).getShape();
@@ -1188,6 +1277,11 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   const bool native = options.target == DeviceTarget::Native;
   const bool cuda = options.target == DeviceTarget::CUDA;
   const bool vortex = options.target == DeviceTarget::Vortex;
+  if (options.cudaConvChannelTile != 1 && options.cudaConvChannelTile != 2 &&
+      options.cudaConvChannelTile != 4 && options.cudaConvChannelTile != 8)
+    return module.emitError("CUDA convolution channel tile must be 1, 2, 4, or 8");
+  if (!cuda && options.cudaConvChannelTile != 1)
+    return module.emitError("CUDA convolution channel tiling requires the CUDA target");
   SmallVector<func::FuncOp> functions(module.getOps<func::FuncOp>());
   if (functions.size() != 1)
     return module.emitError(
@@ -1431,14 +1525,28 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   Type ptr = LLVM::LLVMPointerType::get(module.getContext());
   llvm::json::Array dispatches;
   int64_t maxLmemBytes = 0, optimizedMatmuls = 0;
+  int64_t cudaOptimizedMatmuls = 0, cudaOptimizedReductions = 0;
+  int64_t cudaOptimizedConvolutions = 0;
   bool usesDoubleBuffer = false;
   SmallVector<std::string> kernelNames;
   llvm::DenseMap<unsigned, int64_t> producer;
   for (auto [idx, op] : llvm::enumerate(nodes)) {
     std::optional<VortexMatmulPlan> matmulPlan;
+    std::optional<CudaMatmulPlan> cudaMatmulPlan;
+    std::optional<CudaReductionPlan> cudaReductionPlan;
     std::string matmulFallback;
+    std::string reductionFallback;
+    std::string convolutionFallback;
+    int64_t channelTile = cuda ? selectCudaConvChannelTile(
+        op, options.cudaConvChannelTile, convolutionFallback) : 1;
     if (vortex && options.vortexMatmulSchedule != "scalar" &&
         failed(planVortexMatmul(op, options, matmulPlan, matmulFallback)))
+      return failure();
+    if (cuda && options.cudaMatmulSchedule != "scalar" &&
+        failed(planCudaMatmul(op, options, cudaMatmulPlan, matmulFallback)))
+      return failure();
+    if (cuda && options.cudaReductionSchedule != "scalar" &&
+        failed(planCudaReduction(op, cudaReductionPlan, reductionFallback)))
       return failure();
     std::string name = "gac_op_" + std::to_string(idx);
     kernelNames.push_back(name);
@@ -1490,6 +1598,16 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
           {b.getStringAttr("vortex-kernel"), b.getStringAttr("convergent")}));
       if (failed(emitVortexMatmul(b, op, pointers, *matmulPlan)))
         return failure();
+    } else if (cudaMatmulPlan) {
+      kernel->setAttr("passthrough", b.getArrayAttr({b.getStringAttr("convergent")}));
+      if (failed(emitCudaMatmul(b, op, pointers, *cudaMatmulPlan)))
+        return failure();
+    } else if (cudaReductionPlan) {
+      kernel->setAttr("passthrough", b.getArrayAttr({b.getStringAttr("convergent")}));
+      if (failed(emitCudaReduction(b, op, pointers, *cudaReductionPlan)))
+        return failure();
+    } else if (channelTile > 1) {
+      emitCudaChannelTile(s, op, pointers, channelTile);
     } else if (native) {
       Value begin = s.i(0), end = s.i(elements), step = s.i(1);
       b.create<scf::ForOp>(s.loc, begin, end, step, ValueRange{},
@@ -1536,6 +1654,65 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
       dispatch["grid_size"] = (elements + blockSize - 1) / blockSize;
       dispatch["shared_memory_bytes"] = 0;
     }
+    if (cudaMatmulPlan) {
+      const auto &p = *cudaMatmulPlan;
+      auto shape = [](ArrayRef<int64_t> dimensions) {
+        llvm::json::Array result;
+        for (int64_t dimension : dimensions) result.push_back(dimension);
+        return result;
+      };
+      dispatch["block_size"] = p.blockSize;
+      dispatch["grid_size"] = p.gridSize;
+      dispatch["cuda_schedule"] = llvm::json::Object{
+          {"schedule", p.schedule}, {"m", p.m}, {"n", p.n}, {"k", p.k},
+          {"batches", p.batches}, {"tile_m", p.tileM}, {"tile_n", p.tileN},
+          {"tile_k", p.tileK}, {"thread_tile_m", p.threadTileM},
+          {"thread_tile_n", p.threadTileN}, {"block_size", p.blockSize},
+          {"grid_size", p.gridSize}, {"static_shared_memory_bytes", p.sharedMemoryBytes},
+          {"a_shape", shape(p.aShape)}, {"b_shape", shape(p.bShape)},
+          {"bias_shape", shape(p.biasShape)}};
+      ++cudaOptimizedMatmuls;
+    }
+    if (cudaReductionPlan) {
+      const auto &p = *cudaReductionPlan;
+      dispatch["block_size"] = p.blockSize;
+      dispatch["grid_size"] = p.gridSize;
+      dispatch["cuda_schedule"] = cudaReductionMetadata(p);
+      ++cudaOptimizedReductions;
+    } else if (!reductionFallback.empty()) {
+      dispatch["reduction_schedule"] = "scalar";
+      dispatch["reduction_fallback_reason"] = reductionFallback;
+    }
+    if (channelTile > 1) {
+      auto shape = [](ArrayRef<int64_t> dimensions) {
+        llvm::json::Array result;
+        for (int64_t dimension : dimensions)
+          result.push_back(dimension);
+        return result;
+      };
+      llvm::json::Array inputShapes;
+      for (Value operand : op->getOperands())
+        inputShapes.push_back(shape(tensor(operand).getShape()));
+      auto outputShape = tensor(op->getResult(0)).getShape();
+      int64_t groups = integer(op, opKind(op) == "deform_conv2d" ? "groups" : "group", 1);
+      int64_t logicalThreads = elements / channelTile;
+      constexpr int64_t block = 256;
+      int64_t grid = (logicalThreads + block - 1) / block;
+      dispatch["grid_size"] = grid;
+      dispatch["cuda_schedule"] = llvm::json::Object{
+          {"schedule", "channel-tiled"}, {"kind", opKind(op).str()},
+          {"channel_tile", channelTile}, {"groups", groups},
+          {"channels_per_group", outputShape[1] / groups},
+          {"logical_threads", logicalThreads},
+          {"block_size", block}, {"grid_size", grid},
+          {"static_shared_memory_bytes", 0},
+          {"input_shapes", std::move(inputShapes)},
+          {"output_shape", shape(outputShape)}};
+      ++cudaOptimizedConvolutions;
+    } else if (!convolutionFallback.empty()) {
+      dispatch["convolution_schedule"] = "scalar";
+      dispatch["convolution_fallback_reason"] = convolutionFallback;
+    }
     if (matmulPlan) {
       const auto &p = *matmulPlan;
       auto logicalShape = [](ArrayRef<int64_t> dims) {
@@ -1549,13 +1726,17 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
           {"batches", p.batches}, {"tile_m", p.tileM}, {"tile_n", p.tileN},
           {"tile_k", p.tileK}, {"block_size", p.blockSize},
           {"grid_size", p.gridSize}, {"lmem_bytes", p.lmemBytes},
+          {"thread_tile_m", p.threadTileM}, {"thread_tile_n", p.threadTileN},
           {"stages", p.stages}, {"lanes", options.vortexLanes},
           {"a_shape", logicalShape(p.aShape)},
           {"b_shape", logicalShape(p.bShape)},
           {"bias_shape", logicalShape(p.biasShape)}};
-      if (p.schedule == "tcu")
+      if (p.schedule == "tcu") {
         (*dispatch.getObject("vortex"))["arithmetic"] =
             "tf32x3-fp32-accumulate";
+        (*dispatch.getObject("vortex"))["tcu_call_mode"] =
+            p.tcuCombined ? "combined" : "separate";
+      }
       maxLmemBytes = std::max(maxLmemBytes, p.lmemBytes);
       usesDoubleBuffer |= p.schedule == "dxa-double-buffer";
       ++optimizedMatmuls;
@@ -1609,6 +1790,20 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
     manifest["vortex_matmul_schedule"] = options.vortexMatmulSchedule;
     manifest["optimized_matmul_dispatches"] = optimizedMatmuls;
     manifest["template"] = "per-dispatch Vortex MatMul templates; scalar for other operations";
+  }
+  if (cuda && options.cudaMatmulSchedule != "scalar") {
+    manifest["cuda_matmul_schedule"] = options.cudaMatmulSchedule;
+    manifest["optimized_matmul_dispatches"] = cudaOptimizedMatmuls;
+    manifest["template"] = "per-dispatch CUDA shared-memory/register MatMul; scalar for other operations";
+  }
+  if (cuda && options.cudaReductionSchedule != "scalar") {
+    manifest["cuda_reduction_schedule"] = options.cudaReductionSchedule;
+    manifest["optimized_reduction_dispatches"] = cudaOptimizedReductions;
+  }
+  if (cuda && options.cudaConvChannelTile > 1) {
+    manifest["cuda_conv_channel_tile"] = options.cudaConvChannelTile;
+    manifest["optimized_convolution_dispatches"] = cudaOptimizedConvolutions;
+    manifest["template"] = "per-dispatch CUDA compute templates; scalar for unsupported shapes";
   }
   func.erase();
   if (vortex)

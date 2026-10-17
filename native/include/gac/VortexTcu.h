@@ -20,6 +20,9 @@ struct VortexMatmulPlan;
 // finite approximate results are not guaranteed bit-identical to scalar FP32.
 // The default scalar schedule is unchanged.
 // Register fragments are used, not LMEM/WGMMA or an emulated FPU reduction.
+// Optional tcuCombined keeps the same three instructions and arithmetic order
+// inside one convergent noinline/optnone helper. It reduces function ABI
+// crossings; it does not introduce a new LLVM intrinsic or a new precision.
 bool configureVortexTcuMatmul(const DeviceOptions &options,
                              VortexMatmulPlan &plan,
                              std::string &fallbackReason);

@@ -1,0 +1,1147 @@
+{
+  "scope": "CUDA MatMul fixtures only; not full-model latency or FPS",
+  "source_report_sha256": "0f47628785907628110f09e8148e622c4af2192e5b6ac0f2cd151984d70d9bdc",
+  "compiler_sha256": "91641cd43f6efd860d280d992acf95425e21601de731627503e8dd89e46d4414",
+  "runner_sha256": "3115e8db00a8f858ba63367a113893c4a613255784a748ede863801bf07e447a",
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "rtol": 2e-05,
+  "atol": 2e-05,
+  "passed": true,
+  "case_count": 15,
+  "timing_note": "CUDA events cover the complete fixture dispatch sequence including any host submission gaps; excludes JIT, transfers and warmup. One process per case/mode, warmup 1, repeat 5; not a paired long-run benchmark.",
+  "reference": "Independent NumPy FP32 MatMul + Bias/ReLU as applicable",
+  "cases": [
+    {
+      "case": "projection1024",
+      "schedule": "scalar",
+      "exit_code": 0,
+      "plan_sha256": "1a5215fabfea45dc5595efda2f2c69a86e894136b3642313b6586c9829a6df25",
+      "ptx_sha256": "691e5c02d83328fab9b74ee11fc45a6bda9777ef05fbc5bf845862dd96f47b32",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.16665599942207338,
+        "gpu_dispatch_samples_ms": [
+          0.1658879965543747,
+          0.16896000504493713,
+          0.17203199863433838,
+          0.1584639996290207,
+          0.16793599724769592
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              1024,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 0,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.430511474609375e-06,
+        "mean_abs_error": 3.730598763240778e-08,
+        "output_sha256": "8f38e0456555bcbd0cd91b12dd256dd7eca0b7d9fb46280381205137dd7c1f07",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 262144
+      },
+      "inputs_sha256": "31dc6f49bbde7cedffabd3b46da5cede1937ddad553543bf347b609051125da3",
+      "reference_sha256": "5407b6c8d24522f24a9d11a7c4f5ae6c64fb419e8c146c4b9643ab7a9e3739e8",
+      "model_sha256": "55003fd3629d0fb11ffec1bd233c3d93bddf61f4f9d1f9e07a5c6d3652f396fb",
+      "selected_schedules": [
+        {
+          "schedule": "scalar"
+        }
+      ]
+    },
+    {
+      "case": "projection1024",
+      "schedule": "tile32",
+      "exit_code": 0,
+      "plan_sha256": "d051081b5b590d9d8dc88d96f15a14acc01aca35978adccfe3df27b1094e2c17",
+      "ptx_sha256": "1363f798919f43a31a962fa0e2c09b4b319eec52f0265fb84cda8770cc14fa3e",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.0922752007842064,
+        "gpu_dispatch_samples_ms": [
+          0.09318400174379349,
+          0.09283199906349182,
+          0.09216000139713287,
+          0.09206400066614151,
+          0.09113600105047226
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              256,
+              1,
+              1
+            ],
+            "registers_per_thread": 32,
+            "static_shared_bytes_per_block": 4096,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.430511474609375e-06,
+        "mean_abs_error": 3.730598763240778e-08,
+        "output_sha256": "8f38e0456555bcbd0cd91b12dd256dd7eca0b7d9fb46280381205137dd7c1f07",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 262144
+      },
+      "inputs_sha256": "31dc6f49bbde7cedffabd3b46da5cede1937ddad553543bf347b609051125da3",
+      "reference_sha256": "5407b6c8d24522f24a9d11a7c4f5ae6c64fb419e8c146c4b9643ab7a9e3739e8",
+      "model_sha256": "55003fd3629d0fb11ffec1bd233c3d93bddf61f4f9d1f9e07a5c6d3652f396fb",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            1024,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 256,
+          "k": 256,
+          "m": 1024,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 4096,
+          "thread_tile_m": 2,
+          "thread_tile_n": 2,
+          "tile_k": 16,
+          "tile_m": 32,
+          "tile_n": 32
+        }
+      ]
+    },
+    {
+      "case": "projection1024",
+      "schedule": "tile64",
+      "exit_code": 0,
+      "plan_sha256": "bd91dcf4d19b8600c45b1602a927e1129b3014517723eda053432cb358be0cc9",
+      "ptx_sha256": "64c285c172b859e80d1deefa56c285d49c2518915798d5973ad7a0823d3721a4",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.06900480091571808,
+        "gpu_dispatch_samples_ms": [
+          0.06860800087451935,
+          0.06956800073385239,
+          0.06963200122117996,
+          0.06860800087451935,
+          0.06860800087451935
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              64,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 8192,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.430511474609375e-06,
+        "mean_abs_error": 3.730598763240778e-08,
+        "output_sha256": "8f38e0456555bcbd0cd91b12dd256dd7eca0b7d9fb46280381205137dd7c1f07",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 262144
+      },
+      "inputs_sha256": "31dc6f49bbde7cedffabd3b46da5cede1937ddad553543bf347b609051125da3",
+      "reference_sha256": "5407b6c8d24522f24a9d11a7c4f5ae6c64fb419e8c146c4b9643ab7a9e3739e8",
+      "model_sha256": "55003fd3629d0fb11ffec1bd233c3d93bddf61f4f9d1f9e07a5c6d3652f396fb",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            1024,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 64,
+          "k": 256,
+          "m": 1024,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 8192,
+          "thread_tile_m": 4,
+          "thread_tile_n": 4,
+          "tile_k": 16,
+          "tile_m": 64,
+          "tile_n": 64
+        }
+      ]
+    },
+    {
+      "case": "projection40000",
+      "schedule": "scalar",
+      "exit_code": 0,
+      "plan_sha256": "57e6fe9a07cbf896561edee39ba084d7eff34be5fdd92118a116906987039fdb",
+      "ptx_sha256": "b622e5143961524967cc5eed6bacf1f47059882ed7961db2a9e0d8ec455a2963",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 7.332473564147949,
+        "gpu_dispatch_samples_ms": [
+          7.305503845214844,
+          7.444479942321777,
+          7.4403839111328125,
+          7.026688098907471,
+          7.445312023162842
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              40000,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 0,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.9073486328125e-06,
+        "mean_abs_error": 3.707102180783295e-08,
+        "output_sha256": "a84ab68dd1eff77f438a766481803ee9db95e0491ca98b38dd26b90b1e3922d2",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8418a7e9888ebe432464522c772872dcb0cf68d335041e1d605fe2736a03a6a8",
+      "reference_sha256": "ec3ddde726171842327ba8a51357ecf67853e59643dba437860a4d12019fdb3a",
+      "model_sha256": "765c4eeb3829b90ce3f5a337b2c02bb9bb3052c0523920385ebb7dfa2df1e9f8",
+      "selected_schedules": [
+        {
+          "schedule": "scalar"
+        }
+      ]
+    },
+    {
+      "case": "projection40000",
+      "schedule": "tile32",
+      "exit_code": 0,
+      "plan_sha256": "9c609b75f96477c680d2e07cd4ee8cd3c267653333e0596f111f16c974f312cb",
+      "ptx_sha256": "d5763f471e62336ba5d9b2a7f4afa1d8acd5855266ea3e65611ed99d512236dc",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 2.9165056228637694,
+        "gpu_dispatch_samples_ms": [
+          2.9163520336151123,
+          2.9163520336151123,
+          2.9163520336151123,
+          2.915328025817871,
+          2.9181439876556396
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              10000,
+              1,
+              1
+            ],
+            "registers_per_thread": 30,
+            "static_shared_bytes_per_block": 4096,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.9073486328125e-06,
+        "mean_abs_error": 3.707102180783295e-08,
+        "output_sha256": "a84ab68dd1eff77f438a766481803ee9db95e0491ca98b38dd26b90b1e3922d2",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8418a7e9888ebe432464522c772872dcb0cf68d335041e1d605fe2736a03a6a8",
+      "reference_sha256": "ec3ddde726171842327ba8a51357ecf67853e59643dba437860a4d12019fdb3a",
+      "model_sha256": "765c4eeb3829b90ce3f5a337b2c02bb9bb3052c0523920385ebb7dfa2df1e9f8",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 10000,
+          "k": 256,
+          "m": 40000,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 4096,
+          "thread_tile_m": 2,
+          "thread_tile_n": 2,
+          "tile_k": 16,
+          "tile_m": 32,
+          "tile_n": 32
+        }
+      ]
+    },
+    {
+      "case": "projection40000",
+      "schedule": "tile64",
+      "exit_code": 0,
+      "plan_sha256": "7a4f9c183f9824e9f3862c68c9f73c8169f45bd4fea2c9c97e3221a8191cc789",
+      "ptx_sha256": "223401cc2e3426ce610eed2f86119dedb5f186577df3bfec9926bd574019ecd1",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 1.5044095993041993,
+        "gpu_dispatch_samples_ms": [
+          1.504256010055542,
+          1.5040639638900757,
+          1.5062400102615356,
+          1.5032320022583008,
+          1.504256010055542
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              2500,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 8192,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.9073486328125e-06,
+        "mean_abs_error": 3.707102180783295e-08,
+        "output_sha256": "a84ab68dd1eff77f438a766481803ee9db95e0491ca98b38dd26b90b1e3922d2",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8418a7e9888ebe432464522c772872dcb0cf68d335041e1d605fe2736a03a6a8",
+      "reference_sha256": "ec3ddde726171842327ba8a51357ecf67853e59643dba437860a4d12019fdb3a",
+      "model_sha256": "765c4eeb3829b90ce3f5a337b2c02bb9bb3052c0523920385ebb7dfa2df1e9f8",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 2500,
+          "k": 256,
+          "m": 40000,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 8192,
+          "thread_tile_m": 4,
+          "thread_tile_n": 4,
+          "tile_k": 16,
+          "tile_m": 64,
+          "tile_n": 64
+        }
+      ]
+    },
+    {
+      "case": "ffn_up40000",
+      "schedule": "scalar",
+      "exit_code": 0,
+      "plan_sha256": "1ec16969f5599f92831ad125e457faa09015197cb76012281edd054812dcec64",
+      "ptx_sha256": "bdc3ab3f06d26c6ab088a8d4e3bddba731652b507b24edce5c71c6421f834d00",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 15.075545501708984,
+        "gpu_dispatch_samples_ms": [
+          15.071231842041016,
+          15.070176124572754,
+          15.078432083129883,
+          15.08351993560791,
+          15.07436752319336
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              80000,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 0,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 2.6226043701171875e-06,
+        "mean_abs_error": 3.6691826466039856e-08,
+        "output_sha256": "30d0db626cb0b18c0fcfb0d79d2420e2493f26be724139a64b90424d62769505",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 20480000
+      },
+      "inputs_sha256": "fd73501d5c5c8cac5b49f0edde8a16a312cf10982daedc7e645e3f3446f9b015",
+      "reference_sha256": "f33634d6c1857b344d29015ab101ecf440a17fb3a238796d254ee58526d231fa",
+      "model_sha256": "adeb5390da21bf601423b4a28cf2efde2a97b10541e03bf44551791e51f9c64a",
+      "selected_schedules": [
+        {
+          "schedule": "scalar"
+        }
+      ]
+    },
+    {
+      "case": "ffn_up40000",
+      "schedule": "tile32",
+      "exit_code": 0,
+      "plan_sha256": "88d46b422454458666d1fa3236327ac43a8555759b385fc7623f5acec753cdc2",
+      "ptx_sha256": "c1da377f48a96f28c7580a5c478bdef1fa22e49e3ba2051f5924eade3da1406d",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 5.800499153137207,
+        "gpu_dispatch_samples_ms": [
+          5.800960063934326,
+          5.803008079528809,
+          5.801727771759033,
+          5.797887802124023,
+          5.798912048339844
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              20000,
+              1,
+              1
+            ],
+            "registers_per_thread": 30,
+            "static_shared_bytes_per_block": 4096,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 2.6226043701171875e-06,
+        "mean_abs_error": 3.6691826466039856e-08,
+        "output_sha256": "30d0db626cb0b18c0fcfb0d79d2420e2493f26be724139a64b90424d62769505",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 20480000
+      },
+      "inputs_sha256": "fd73501d5c5c8cac5b49f0edde8a16a312cf10982daedc7e645e3f3446f9b015",
+      "reference_sha256": "f33634d6c1857b344d29015ab101ecf440a17fb3a238796d254ee58526d231fa",
+      "model_sha256": "adeb5390da21bf601423b4a28cf2efde2a97b10541e03bf44551791e51f9c64a",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            256
+          ],
+          "b_shape": [
+            256,
+            512
+          ],
+          "batches": 1,
+          "bias_shape": [
+            512
+          ],
+          "block_size": 256,
+          "grid_size": 20000,
+          "k": 256,
+          "m": 40000,
+          "n": 512,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 4096,
+          "thread_tile_m": 2,
+          "thread_tile_n": 2,
+          "tile_k": 16,
+          "tile_m": 32,
+          "tile_n": 32
+        }
+      ]
+    },
+    {
+      "case": "ffn_up40000",
+      "schedule": "tile64",
+      "exit_code": 0,
+      "plan_sha256": "fe723293293cf0748175c80346d36e69f6db7abe78b9bc1662fbc08282c34af2",
+      "ptx_sha256": "e41258b687c897ce2ed38cdf5d22cf9966e51b14fb2baecdcb6b6c4e98401b1e",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 2.9562304973602296,
+        "gpu_dispatch_samples_ms": [
+          2.9573121070861816,
+          2.955264091491699,
+          2.9562880992889404,
+          2.957024097442627,
+          2.955264091491699
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              5000,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 8192,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 2.6226043701171875e-06,
+        "mean_abs_error": 3.6691826466039856e-08,
+        "output_sha256": "30d0db626cb0b18c0fcfb0d79d2420e2493f26be724139a64b90424d62769505",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 20480000
+      },
+      "inputs_sha256": "fd73501d5c5c8cac5b49f0edde8a16a312cf10982daedc7e645e3f3446f9b015",
+      "reference_sha256": "f33634d6c1857b344d29015ab101ecf440a17fb3a238796d254ee58526d231fa",
+      "model_sha256": "adeb5390da21bf601423b4a28cf2efde2a97b10541e03bf44551791e51f9c64a",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            256
+          ],
+          "b_shape": [
+            256,
+            512
+          ],
+          "batches": 1,
+          "bias_shape": [
+            512
+          ],
+          "block_size": 256,
+          "grid_size": 5000,
+          "k": 256,
+          "m": 40000,
+          "n": 512,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 8192,
+          "thread_tile_m": 4,
+          "thread_tile_n": 4,
+          "tile_k": 16,
+          "tile_m": 64,
+          "tile_n": 64
+        }
+      ]
+    },
+    {
+      "case": "ffn_down40000",
+      "schedule": "scalar",
+      "exit_code": 0,
+      "plan_sha256": "738dbaf2abf653b4146f22e7a3b9a4733c644b65d1e42ecd43d300c217efaa4f",
+      "ptx_sha256": "67ff87f0418b5faafabdc090c3d4e8999cb91708a908b7bc6f1fde65d219231d",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 15.643756675720216,
+        "gpu_dispatch_samples_ms": [
+          15.825823783874512,
+          15.475711822509766,
+          15.824895858764648,
+          15.827712059020996,
+          15.264639854431152
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              40000,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 0,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 4.5299530029296875e-06,
+        "mean_abs_error": 1.296904343917049e-07,
+        "output_sha256": "60fab44a3ffecf8408de31db13059f70bf7cc938a700566fd3f4b8dbb0c98bde",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8e1a3718c3b638ad686ce761d52427ae5b9e5ae2801fed514951cb3f77e3bfa1",
+      "reference_sha256": "ea7b71bc31f64fadcc6033ccfacc10a5bb5251942f1a97f343ef6668566943b8",
+      "model_sha256": "7ccc3ee4e135c22c37e14708619e85908ba377cc9fb59effe842017bac28399b",
+      "selected_schedules": [
+        {
+          "schedule": "scalar"
+        }
+      ]
+    },
+    {
+      "case": "ffn_down40000",
+      "schedule": "tile32",
+      "exit_code": 0,
+      "plan_sha256": "83ce22a7e48d29f798de1589c76b04676acd2e89784290da91f0bdc084897f6b",
+      "ptx_sha256": "b86883e6c6da2d60daee4590366032f589bfe45eb7ed6f17d259b1c9de743f1b",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 4.912896060943604,
+        "gpu_dispatch_samples_ms": [
+          4.91212797164917,
+          4.91596794128418,
+          4.91212797164917,
+          4.911104202270508,
+          4.91315221786499
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              10000,
+              1,
+              1
+            ],
+            "registers_per_thread": 30,
+            "static_shared_bytes_per_block": 4096,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 4.5299530029296875e-06,
+        "mean_abs_error": 1.296904343917049e-07,
+        "output_sha256": "60fab44a3ffecf8408de31db13059f70bf7cc938a700566fd3f4b8dbb0c98bde",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8e1a3718c3b638ad686ce761d52427ae5b9e5ae2801fed514951cb3f77e3bfa1",
+      "reference_sha256": "ea7b71bc31f64fadcc6033ccfacc10a5bb5251942f1a97f343ef6668566943b8",
+      "model_sha256": "7ccc3ee4e135c22c37e14708619e85908ba377cc9fb59effe842017bac28399b",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            512
+          ],
+          "b_shape": [
+            512,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 10000,
+          "k": 512,
+          "m": 40000,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 4096,
+          "thread_tile_m": 2,
+          "thread_tile_n": 2,
+          "tile_k": 16,
+          "tile_m": 32,
+          "tile_n": 32
+        }
+      ]
+    },
+    {
+      "case": "ffn_down40000",
+      "schedule": "tile64",
+      "exit_code": 0,
+      "plan_sha256": "ad026ed983936b0e98347b8414d198b48435ba0a2199f8abcbb1f2f9efe7c6f6",
+      "ptx_sha256": "a8bed9abdc60441af07f880b4042068710df995e5aeb4d1ee96664a86b12454e",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 2.525708770751953,
+        "gpu_dispatch_samples_ms": [
+          2.527168035507202,
+          2.53110408782959,
+          2.5241599082946777,
+          2.5231359004974365,
+          2.5229759216308594
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              2500,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 8192,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 4.5299530029296875e-06,
+        "mean_abs_error": 1.296904343917049e-07,
+        "output_sha256": "60fab44a3ffecf8408de31db13059f70bf7cc938a700566fd3f4b8dbb0c98bde",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 10240000
+      },
+      "inputs_sha256": "8e1a3718c3b638ad686ce761d52427ae5b9e5ae2801fed514951cb3f77e3bfa1",
+      "reference_sha256": "ea7b71bc31f64fadcc6033ccfacc10a5bb5251942f1a97f343ef6668566943b8",
+      "model_sha256": "7ccc3ee4e135c22c37e14708619e85908ba377cc9fb59effe842017bac28399b",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            40000,
+            512
+          ],
+          "b_shape": [
+            512,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 2500,
+          "k": 512,
+          "m": 40000,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 8192,
+          "thread_tile_m": 4,
+          "thread_tile_n": 4,
+          "tile_k": 16,
+          "tile_m": 64,
+          "tile_n": 64
+        }
+      ]
+    },
+    {
+      "case": "projection900",
+      "schedule": "scalar",
+      "exit_code": 0,
+      "plan_sha256": "bd11338ced82a57222cb4c9692796233736f2c144c4e03f5f20366541cc653bb",
+      "ptx_sha256": "f2e5b999dadf0ba640b62c76f2a11ea024683cc94f41e4a3bbcb6b090dd2b878",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.12510719895362854,
+        "gpu_dispatch_samples_ms": [
+          0.12470400333404541,
+          0.1228799968957901,
+          0.12569600343704224,
+          0.1255359947681427,
+          0.12671999633312225
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              900,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 0,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.6093254089355469e-06,
+        "mean_abs_error": 3.788338176491379e-08,
+        "output_sha256": "9e90b6b610b822abb83923d4d679c13be2d4d6bb4b545bab888692ac2b3dd092",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 230400
+      },
+      "inputs_sha256": "b6c08e35799e4ac8777fe6ea264715855e8e9fa8adc87afba9f3df326f41c172",
+      "reference_sha256": "b1498284a162436da0b8445efb5ac04b289d87a2208753fef3a0a661b3f5830d",
+      "model_sha256": "eb2d27b9078f7da89ec9eefc52376df7de92391c61776acd3cbe4d59ddc36114",
+      "selected_schedules": [
+        {
+          "schedule": "scalar"
+        }
+      ]
+    },
+    {
+      "case": "projection900",
+      "schedule": "tile32",
+      "exit_code": 0,
+      "plan_sha256": "8c0b6a62ecd76674adb5831e461598f0dabe05e09f9008d665e05c691b76bc2a",
+      "ptx_sha256": "99faca245387f936fa073f4bfb692e8e9cf950e46fd757f8997e88e0c60027a1",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.07807999849319458,
+        "gpu_dispatch_samples_ms": [
+          0.07884799689054489,
+          0.0788159966468811,
+          0.0791039988398552,
+          0.07683199644088745,
+          0.07680000364780426
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              232,
+              1,
+              1
+            ],
+            "registers_per_thread": 31,
+            "static_shared_bytes_per_block": 4096,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.6093254089355469e-06,
+        "mean_abs_error": 3.788338176491379e-08,
+        "output_sha256": "9e90b6b610b822abb83923d4d679c13be2d4d6bb4b545bab888692ac2b3dd092",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 230400
+      },
+      "inputs_sha256": "b6c08e35799e4ac8777fe6ea264715855e8e9fa8adc87afba9f3df326f41c172",
+      "reference_sha256": "b1498284a162436da0b8445efb5ac04b289d87a2208753fef3a0a661b3f5830d",
+      "model_sha256": "eb2d27b9078f7da89ec9eefc52376df7de92391c61776acd3cbe4d59ddc36114",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            900,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 232,
+          "k": 256,
+          "m": 900,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 4096,
+          "thread_tile_m": 2,
+          "thread_tile_n": 2,
+          "tile_k": 16,
+          "tile_m": 32,
+          "tile_n": 32
+        }
+      ]
+    },
+    {
+      "case": "projection900",
+      "schedule": "tile64",
+      "exit_code": 0,
+      "plan_sha256": "1ae0d104f382581ce8421eb3f992143c2f2ed0979b6a547f942d427f14b1955f",
+      "ptx_sha256": "a92447384609d3bc9167a1227d5a1c67254ffa9f7a05aafc7cfea691901bed6f",
+      "passed": true,
+      "runtime": {
+        "execution": "cuda-device",
+        "host_operator_fallback": false,
+        "completed_dispatches": 1,
+        "warmup_runs": 1,
+        "measured_runs": 5,
+        "gpu_dispatch_ms": 0.07124480158090592,
+        "gpu_dispatch_samples_ms": [
+          0.07155200093984604,
+          0.07168000191450119,
+          0.07168000191450119,
+          0.06995200365781784,
+          0.07135999947786331
+        ],
+        "resources": [
+          {
+            "kernel": "gac_op_0",
+            "op": "gac.matmul_bias_relu",
+            "schedule": "shared-tiled",
+            "block": [
+              256,
+              1,
+              1
+            ],
+            "grid": [
+              60,
+              1,
+              1
+            ],
+            "registers_per_thread": 40,
+            "static_shared_bytes_per_block": 8192,
+            "local_bytes_per_thread": 0
+          }
+        ]
+      },
+      "numerical": {
+        "passed": true,
+        "max_abs_error": 1.6093254089355469e-06,
+        "mean_abs_error": 3.788338176491379e-08,
+        "output_sha256": "9e90b6b610b822abb83923d4d679c13be2d4d6bb4b545bab888692ac2b3dd092",
+        "all_finite": true,
+        "all_elements_byte_equal_to_scalar": true,
+        "elements": 230400
+      },
+      "inputs_sha256": "b6c08e35799e4ac8777fe6ea264715855e8e9fa8adc87afba9f3df326f41c172",
+      "reference_sha256": "b1498284a162436da0b8445efb5ac04b289d87a2208753fef3a0a661b3f5830d",
+      "model_sha256": "eb2d27b9078f7da89ec9eefc52376df7de92391c61776acd3cbe4d59ddc36114",
+      "selected_schedules": [
+        {
+          "a_shape": [
+            900,
+            256
+          ],
+          "b_shape": [
+            256,
+            256
+          ],
+          "batches": 1,
+          "bias_shape": [
+            256
+          ],
+          "block_size": 256,
+          "grid_size": 60,
+          "k": 256,
+          "m": 900,
+          "n": 256,
+          "schedule": "shared-tiled",
+          "static_shared_memory_bytes": 8192,
+          "thread_tile_m": 4,
+          "thread_tile_n": 4,
+          "tile_k": 16,
+          "tile_m": 64,
+          "tile_n": 64
+        }
+      ]
+    }
+  ],
+  "reference_location": "Full NumPy reference was recomputed on the execution host from original raw inputs/weights; every output element was checked there. Windows/WSL expected.npz hashes identify independently generated equivalent fixture references.",
+  "all_optimized_outputs_byte_equal_to_scalar": true
+}

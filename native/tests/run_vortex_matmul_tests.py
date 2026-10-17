@@ -124,6 +124,9 @@ def main():
     parser.add_argument("--tile-m", type=int, default=4)
     parser.add_argument("--tile-n", type=int, default=4)
     parser.add_argument("--tile-k", type=int, default=16)
+    parser.add_argument("--thread-tile-m", type=int, default=1)
+    parser.add_argument("--thread-tile-n", type=int, default=1)
+    parser.add_argument("--tcu-combined", action="store_true")
     parser.add_argument("--timeout", type=int, default=300)
     args = parser.parse_args()
     output = args.output.resolve()
@@ -145,12 +148,16 @@ def main():
                VORTEX_DRIVER="simx", GAC_VORTEX_LANES="4",
                GAC_TILE_M=str(args.tile_m), GAC_TILE_N=str(args.tile_n),
                GAC_TILE_K=str(args.tile_k), GAC_LMEM_BUDGET="16384")
+    env.update(GAC_VORTEX_THREAD_TILE_M=str(args.thread_tile_m),
+               GAC_VORTEX_THREAD_TILE_N=str(args.thread_tile_n))
     env["LD_LIBRARY_PATH"] = str(args.vortex_build.resolve() / "sw/runtime") + ":" + env.get("LD_LIBRARY_PATH", "")
     report = {"scope": "Vortex SimX MatMul templates: independent numerical comparison and modeled counters",
               "physical_device_execution": False, "full_model_execution": False,
               "compiler_sha256": sha256(args.compiler), "runner_sha256": sha256(args.runner),
               "simulator_sha256": sha256(args.vortex_build / "sw/runtime/libsimx.so"),
               "tile": [args.tile_m, args.tile_n, args.tile_k], "cases": [],
+              "thread_tile": [args.thread_tile_m, args.thread_tile_n],
+              "tcu_call_mode": "combined" if args.tcu_combined else "separate",
               "performance_note": "Same profile and inputs; cycles include kernel startup and synchronization. Simulator wall time is not hardware latency."}
     report_file = output / "results.json"
     try:
@@ -159,6 +166,7 @@ def main():
                 artifact = output / case["name"] / schedule
                 artifact.parent.mkdir(parents=True, exist_ok=True)
                 env["GAC_VORTEX_MATMUL_SCHEDULE"] = schedule
+                env["GAC_VORTEX_TCU_COMBINED"] = "1" if args.tcu_combined and schedule == "tcu" else "0"
                 entry = {"name": case["name"], "schedule": schedule, "passed": False,
                          "model_sha256": sha256(case["directory"] / "model.onnx")}
                 report["cases"].append(entry)

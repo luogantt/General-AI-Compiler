@@ -1,0 +1,1073 @@
+{
+  "all_three_output_files_byte_identical_to_pytorch_checked_optimized_run": true,
+  "output_sha256": {
+    "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+    "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+    "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+  },
+  "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+  "numerical_reference": "whole-model-output-validation.json",
+  "runtime": {
+    "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "compute_capability": "8.6",
+    "driver_version": 13000,
+    "status": "completed",
+    "completed_dispatches": 3224,
+    "warmup_runs": 1,
+    "measured_runs": 1,
+    "gpu_dispatch_samples_ms": [
+      4201.34423828125
+    ],
+    "initialization_ms": 22786.086438,
+    "upload_ms": 60.04109100000007,
+    "download_ms": 5.857573,
+    "kernel_resources_note": "CUDA Driver function attributes after PTX JIT. Local-memory size can include stack, spills and compiler-managed arrays; it does not measure executed spill traffic or achieved occupancy.",
+    "profile": {
+      "by_op": [
+        {
+          "dispatch_count": 156,
+          "invocations": 156,
+          "mean_ms_per_invocation": 11.246772533807999,
+          "mean_total_ms_per_sequence": 1754.4965152740479,
+          "op": "gac.deform_conv2d",
+          "share_of_profiled_dispatch_time": 0.41321037769513297
+        },
+        {
+          "dispatch_count": 420,
+          "invocations": 420,
+          "mean_ms_per_invocation": 2.4618206580479938,
+          "mean_total_ms_per_sequence": 1033.9646763801575,
+          "op": "gac.conv2d",
+          "share_of_profiled_dispatch_time": 0.2435142679002336
+        },
+        {
+          "dispatch_count": 246,
+          "invocations": 246,
+          "mean_ms_per_invocation": 2.4696913174981994,
+          "mean_total_ms_per_sequence": 607.544064104557,
+          "op": "gac.conv2d_relu",
+          "share_of_profiled_dispatch_time": 0.14308578558554033
+        },
+        {
+          "dispatch_count": 18,
+          "invocations": 18,
+          "mean_ms_per_invocation": 18.12191992128889,
+          "mean_total_ms_per_sequence": 326.1945585832,
+          "op": "gac.ms_deform_attn_offsets",
+          "share_of_profiled_dispatch_time": 0.07682373580161135
+        },
+        {
+          "dispatch_count": 133,
+          "invocations": 133,
+          "mean_ms_per_invocation": 2.2124530466035344,
+          "mean_total_ms_per_sequence": 294.2562551982701,
+          "op": "gac.matmul_bias",
+          "share_of_profiled_dispatch_time": 0.06930178389704046
+        },
+        {
+          "dispatch_count": 198,
+          "invocations": 198,
+          "mean_ms_per_invocation": 0.22905793906462313,
+          "mean_total_ms_per_sequence": 45.35347193479538,
+          "op": "gac.add_relu",
+          "share_of_profiled_dispatch_time": 0.010681426326478163
+        },
+        {
+          "dispatch_count": 24,
+          "invocations": 24,
+          "mean_ms_per_invocation": 1.356066662662973,
+          "mean_total_ms_per_sequence": 32.54559990391135,
+          "op": "gac.softmax",
+          "share_of_profiled_dispatch_time": 0.007664979389548301
+        },
+        {
+          "dispatch_count": 125,
+          "invocations": 125,
+          "mean_ms_per_invocation": 0.2328683527894318,
+          "mean_total_ms_per_sequence": 29.108544098678976,
+          "op": "gac.gather",
+          "share_of_profiled_dispatch_time": 0.006855500935145396
+        },
+        {
+          "dispatch_count": 36,
+          "invocations": 36,
+          "mean_ms_per_invocation": 0.6274844517724382,
+          "mean_total_ms_per_sequence": 22.589440263807774,
+          "op": "gac.matmul_bias_relu",
+          "share_of_profiled_dispatch_time": 0.0053201537090951006
+        },
+        {
+          "dispatch_count": 152,
+          "invocations": 152,
+          "mean_ms_per_invocation": 0.14140589451294786,
+          "mean_total_ms_per_sequence": 21.493695965968072,
+          "op": "gac.add",
+          "share_of_profiled_dispatch_time": 0.005062089409037537
+        },
+        {
+          "dispatch_count": 49,
+          "invocations": 49,
+          "mean_ms_per_invocation": 0.27069844685646954,
+          "mean_total_ms_per_sequence": 13.264223895967007,
+          "op": "gac.layer_norm",
+          "share_of_profiled_dispatch_time": 0.0031239246804826114
+        },
+        {
+          "dispatch_count": 594,
+          "invocations": 594,
+          "mean_ms_per_invocation": 0.018735676812970704,
+          "mean_total_ms_per_sequence": 11.128992026904598,
+          "op": "gac.slice",
+          "share_of_profiled_dispatch_time": 0.002621045387533916
+        },
+        {
+          "dispatch_count": 76,
+          "invocations": 76,
+          "mean_ms_per_invocation": 0.12577894601456233,
+          "mean_total_ms_per_sequence": 9.559199897106737,
+          "op": "gac.transpose",
+          "share_of_profiled_dispatch_time": 0.0022513356769647257
+        },
+        {
+          "dispatch_count": 68,
+          "invocations": 68,
+          "mean_ms_per_invocation": 0.12920093894867665,
+          "mean_total_ms_per_sequence": 8.785663848510012,
+          "op": "gac.expand",
+          "share_of_profiled_dispatch_time": 0.0020691562767670983
+        },
+        {
+          "dispatch_count": 177,
+          "invocations": 177,
+          "mean_ms_per_invocation": 0.040824045337694514,
+          "mean_total_ms_per_sequence": 7.225856024771929,
+          "op": "gac.concat",
+          "share_of_profiled_dispatch_time": 0.0017017980207844907
+        },
+        {
+          "dispatch_count": 8,
+          "invocations": 8,
+          "mean_ms_per_invocation": 0.8106239831540734,
+          "mean_total_ms_per_sequence": 6.484991865232587,
+          "op": "gac.gemm",
+          "share_of_profiled_dispatch_time": 0.0015273133429758137
+        },
+        {
+          "dispatch_count": 12,
+          "invocations": 12,
+          "mean_ms_per_invocation": 0.46032533297936123,
+          "mean_total_ms_per_sequence": 5.523903995752335,
+          "op": "gac.matmul",
+          "share_of_profiled_dispatch_time": 0.001300962661689841
+        },
+        {
+          "dispatch_count": 170,
+          "invocations": 170,
+          "mean_ms_per_invocation": 0.028033882086439168,
+          "mean_total_ms_per_sequence": 4.7657599546946585,
+          "op": "gac.relu",
+          "share_of_profiled_dispatch_time": 0.0011224083112961476
+        },
+        {
+          "dispatch_count": 156,
+          "invocations": 156,
+          "mean_ms_per_invocation": 0.028297641314566135,
+          "mean_total_ms_per_sequence": 4.414432045072317,
+          "op": "gac.batch_norm",
+          "share_of_profiled_dispatch_time": 0.001039665292449391
+        },
+        {
+          "dispatch_count": 6,
+          "invocations": 6,
+          "mean_ms_per_invocation": 0.29680533210436505,
+          "mean_total_ms_per_sequence": 1.7808319926261902,
+          "op": "gac.reduce_mean",
+          "share_of_profiled_dispatch_time": 0.0004194127796085734
+        },
+        {
+          "dispatch_count": 6,
+          "invocations": 6,
+          "mean_ms_per_invocation": 0.2815999984741211,
+          "mean_total_ms_per_sequence": 1.6895999908447266,
+          "op": "gac.max_pool2d",
+          "share_of_profiled_dispatch_time": 0.0003979262679023286
+        },
+        {
+          "dispatch_count": 30,
+          "invocations": 30,
+          "mean_ms_per_invocation": 0.0433375998865813,
+          "mean_total_ms_per_sequence": 1.300127996597439,
+          "op": "gac.div",
+          "share_of_profiled_dispatch_time": 0.0003061997421192546
+        },
+        {
+          "dispatch_count": 175,
+          "invocations": 175,
+          "mean_ms_per_invocation": 0.003912045718835933,
+          "mean_total_ms_per_sequence": 0.6846080007962883,
+          "op": "gac.sigmoid",
+          "share_of_profiled_dispatch_time": 0.00016123550438511866
+        },
+        {
+          "dispatch_count": 12,
+          "invocations": 12,
+          "mean_ms_per_invocation": 0.050175998359918594,
+          "mean_total_ms_per_sequence": 0.6021119803190231,
+          "op": "gac.resize",
+          "share_of_profiled_dispatch_time": 0.00014180644796751065
+        },
+        {
+          "dispatch_count": 2,
+          "invocations": 2,
+          "mean_ms_per_invocation": 0.19763199985027313,
+          "mean_total_ms_per_sequence": 0.39526399970054626,
+          "op": "gac.tile",
+          "share_of_profiled_dispatch_time": 9.309063037953105e-05
+        },
+        {
+          "dispatch_count": 66,
+          "invocations": 66,
+          "mean_ms_per_invocation": 0.00405333332618642,
+          "mean_total_ms_per_sequence": 0.26751999952830374,
+          "op": "gac.scatter_nd",
+          "share_of_profiled_dispatch_time": 6.300499264817622e-05
+        },
+        {
+          "dispatch_count": 54,
+          "invocations": 54,
+          "mean_ms_per_invocation": 0.0036983703892609038,
+          "mean_total_ms_per_sequence": 0.1997120010200888,
+          "op": "gac.clamp",
+          "share_of_profiled_dispatch_time": 4.703518682046044e-05
+        },
+        {
+          "dispatch_count": 1,
+          "invocations": 1,
+          "mean_ms_per_invocation": 0.19865599274635315,
+          "mean_total_ms_per_sequence": 0.19865599274635315,
+          "op": "gac.cast",
+          "share_of_profiled_dispatch_time": 4.678648095308439e-05
+        },
+        {
+          "dispatch_count": 18,
+          "invocations": 18,
+          "mean_ms_per_invocation": 0.003800888882122106,
+          "mean_total_ms_per_sequence": 0.06841599987819791,
+          "op": "gac.mul",
+          "share_of_profiled_dispatch_time": 1.6112999315729387e-05
+        },
+        {
+          "dispatch_count": 18,
+          "invocations": 18,
+          "mean_ms_per_invocation": 0.003587555592983133,
+          "mean_total_ms_per_sequence": 0.0645760006736964,
+          "op": "gac.log",
+          "share_of_profiled_dispatch_time": 1.5208621616584606e-05
+        },
+        {
+          "dispatch_count": 18,
+          "invocations": 18,
+          "mean_ms_per_invocation": 0.00341333340232571,
+          "mean_total_ms_per_sequence": 0.061440001241862774,
+          "op": "gac.sub",
+          "share_of_profiled_dispatch_time": 1.4470046476424075e-05
+        }
+      ],
+      "host_wall_ms": 4251.38813,
+      "measured_runs": 1,
+      "sequence_samples_ms": [
+        4250.4970703125
+      ],
+      "sum_dispatch_mean_ms": 4246.012709217379,
+      "timing_kind": "cuda-events-per-dispatch-separate-instrumented-runs",
+      "timing_note": "Profiling runs execute after uninstrumented timing. Two timing events bracket each dispatch on the same stream; only the final sequence event is synchronized. Event and submission overhead can perturb short kernels. These are elapsed intervals, not hardware cycle, occupancy, bank-conflict or bandwidth counters. Use gpu_dispatch_ms for uninstrumented sequence comparisons."
+    },
+    "resources": [
+      {
+        "op": "gac.slice",
+        "schedule": "",
+        "dispatches": 594,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 10
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.conv2d_relu",
+        "schedule": "channel-tiled",
+        "dispatches": 246,
+        "registers_per_thread": {
+          "min": 39,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.max_pool2d",
+        "schedule": "",
+        "dispatches": 6,
+        "registers_per_thread": {
+          "min": 24,
+          "max": 24
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.conv2d",
+        "schedule": "channel-tiled",
+        "dispatches": 264,
+        "registers_per_thread": {
+          "min": 39,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.add_relu",
+        "schedule": "",
+        "dispatches": 198,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.conv2d",
+        "schedule": "",
+        "dispatches": 156,
+        "registers_per_thread": {
+          "min": 18,
+          "max": 20
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.concat",
+        "schedule": "",
+        "dispatches": 177,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.sigmoid",
+        "schedule": "",
+        "dispatches": 175,
+        "registers_per_thread": {
+          "min": 16,
+          "max": 16
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.deform_conv2d",
+        "schedule": "channel-tiled",
+        "dispatches": 156,
+        "registers_per_thread": {
+          "min": 38,
+          "max": 38
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.batch_norm",
+        "schedule": "",
+        "dispatches": 156,
+        "registers_per_thread": {
+          "min": 18,
+          "max": 18
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.relu",
+        "schedule": "",
+        "dispatches": 170,
+        "registers_per_thread": {
+          "min": 10,
+          "max": 10
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.resize",
+        "schedule": "",
+        "dispatches": 12,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 8
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.add",
+        "schedule": "",
+        "dispatches": 152,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.transpose",
+        "schedule": "",
+        "dispatches": 76,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 10
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.expand",
+        "schedule": "",
+        "dispatches": 68,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 8
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.tile",
+        "schedule": "",
+        "dispatches": 2,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 8
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.cast",
+        "schedule": "",
+        "dispatches": 1,
+        "registers_per_thread": {
+          "min": 8,
+          "max": 8
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.gemm",
+        "schedule": "",
+        "dispatches": 8,
+        "registers_per_thread": {
+          "min": 20,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.layer_norm",
+        "schedule": "row-reduction",
+        "dispatches": 49,
+        "registers_per_thread": {
+          "min": 20,
+          "max": 20
+        },
+        "static_shared_bytes_per_block": {
+          "min": 1024,
+          "max": 1024
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.matmul_bias",
+        "schedule": "shared-tiled",
+        "dispatches": 108,
+        "registers_per_thread": {
+          "min": 40,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 8192,
+          "max": 8192
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.softmax",
+        "schedule": "row-reduction",
+        "dispatches": 24,
+        "registers_per_thread": {
+          "min": 18,
+          "max": 20
+        },
+        "static_shared_bytes_per_block": {
+          "min": 128,
+          "max": 1024
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.ms_deform_attn_offsets",
+        "schedule": "",
+        "dispatches": 18,
+        "registers_per_thread": {
+          "min": 36,
+          "max": 38
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.reduce_mean",
+        "schedule": "",
+        "dispatches": 6,
+        "registers_per_thread": {
+          "min": 10,
+          "max": 10
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.gather",
+        "schedule": "",
+        "dispatches": 125,
+        "registers_per_thread": {
+          "min": 10,
+          "max": 10
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.div",
+        "schedule": "",
+        "dispatches": 30,
+        "registers_per_thread": {
+          "min": 16,
+          "max": 17
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.matmul_bias_relu",
+        "schedule": "shared-tiled",
+        "dispatches": 36,
+        "registers_per_thread": {
+          "min": 40,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 8192,
+          "max": 8192
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.matmul_bias",
+        "schedule": "",
+        "dispatches": 25,
+        "registers_per_thread": {
+          "min": 22,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.matmul",
+        "schedule": "",
+        "dispatches": 12,
+        "registers_per_thread": {
+          "min": 24,
+          "max": 40
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.clamp",
+        "schedule": "",
+        "dispatches": 54,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 14
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.sub",
+        "schedule": "",
+        "dispatches": 18,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.log",
+        "schedule": "",
+        "dispatches": 18,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.scatter_nd",
+        "schedule": "",
+        "dispatches": 66,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      {
+        "op": "gac.mul",
+        "schedule": "",
+        "dispatches": 18,
+        "registers_per_thread": {
+          "min": 12,
+          "max": 12
+        },
+        "static_shared_bytes_per_block": {
+          "min": 0,
+          "max": 0
+        },
+        "local_bytes_per_thread": {
+          "min": 0,
+          "max": 0
+        }
+      }
+    ],
+    "top_dispatches": [
+      {
+        "index": 2205,
+        "invocations": 1,
+        "kernel": "gac_op_2205",
+        "max_ms": 53.433345794677734,
+        "mean_ms": 53.433345794677734,
+        "min_ms": 53.433345794677734,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.01258435842141568,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2268,
+        "invocations": 1,
+        "kernel": "gac_op_2268",
+        "max_ms": 53.168128967285156,
+        "mean_ms": 53.168128967285156,
+        "min_ms": 53.168128967285156,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.012521895860524887,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2394,
+        "invocations": 1,
+        "kernel": "gac_op_2394",
+        "max_ms": 53.085182189941406,
+        "mean_ms": 53.085182189941406,
+        "min_ms": 53.085182189941406,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.012502360644070239,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2331,
+        "invocations": 1,
+        "kernel": "gac_op_2331",
+        "max_ms": 52.959232330322266,
+        "mean_ms": 52.959232330322266,
+        "min_ms": 52.959232330322266,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.012472697553485105,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2457,
+        "invocations": 1,
+        "kernel": "gac_op_2457",
+        "max_ms": 52.2690544128418,
+        "mean_ms": 52.2690544128418,
+        "min_ms": 52.2690544128418,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.01231015024975655,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2520,
+        "invocations": 1,
+        "kernel": "gac_op_2520",
+        "max_ms": 51.95366287231445,
+        "mean_ms": 51.95366287231445,
+        "min_ms": 51.95366287231445,
+        "op": "gac.ms_deform_attn_offsets",
+        "share_of_profiled_dispatch_time": 0.01223587078755836,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn"
+      },
+      {
+        "index": 2144,
+        "invocations": 1,
+        "kernel": "gac_op_2144",
+        "max_ms": 21.849088668823242,
+        "mean_ms": 21.849088668823242,
+        "min_ms": 21.849088668823242,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005145789747965791,
+        "source_node": "/img_neck/fpn_convs.0/conv_5/Conv"
+      },
+      {
+        "index": 1786,
+        "invocations": 1,
+        "kernel": "gac_op_1786",
+        "max_ms": 21.800960540771484,
+        "mean_ms": 21.800960540771484,
+        "min_ms": 21.800960540771484,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005134454848296914,
+        "source_node": "/img_neck/fpn_convs.0/conv_4/Conv"
+      },
+      {
+        "index": 1428,
+        "invocations": 1,
+        "kernel": "gac_op_1428",
+        "max_ms": 21.566463470458984,
+        "mean_ms": 21.566463470458984,
+        "min_ms": 21.566463470458984,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005079227253286789,
+        "source_node": "/img_neck/fpn_convs.0/conv_3/Conv"
+      },
+      {
+        "index": 1070,
+        "invocations": 1,
+        "kernel": "gac_op_1070",
+        "max_ms": 21.530624389648438,
+        "mean_ms": 21.530624389648438,
+        "min_ms": 21.530624389648438,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005070786609495792,
+        "source_node": "/img_neck/fpn_convs.0/conv_2/Conv"
+      },
+      {
+        "index": 712,
+        "invocations": 1,
+        "kernel": "gac_op_712",
+        "max_ms": 21.27564811706543,
+        "mean_ms": 21.27564811706543,
+        "min_ms": 21.27564811706543,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005010735853635007,
+        "source_node": "/img_neck/fpn_convs.0/conv_1/Conv"
+      },
+      {
+        "index": 354,
+        "invocations": 1,
+        "kernel": "gac_op_354",
+        "max_ms": 21.27257537841797,
+        "mean_ms": 21.27257537841797,
+        "min_ms": 21.27257537841797,
+        "op": "gac.conv2d",
+        "share_of_profiled_dispatch_time": 0.005010012177363197,
+        "source_node": "/img_neck/fpn_convs.0/conv/Conv"
+      },
+      {
+        "index": 2328,
+        "invocations": 1,
+        "kernel": "gac_op_2328",
+        "max_ms": 18.156543731689453,
+        "mean_ms": 18.156543731689453,
+        "min_ms": 18.156543731689453,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.004276139751601462,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 2454,
+        "invocations": 1,
+        "kernel": "gac_op_2454",
+        "max_ms": 18.127872467041016,
+        "mean_ms": 18.127872467041016,
+        "min_ms": 18.127872467041016,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.004269387236568665,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 2391,
+        "invocations": 1,
+        "kernel": "gac_op_2391",
+        "max_ms": 18.107391357421875,
+        "mean_ms": 18.107391357421875,
+        "min_ms": 18.107391357421875,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.004264563626508648,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 2265,
+        "invocations": 1,
+        "kernel": "gac_op_2265",
+        "max_ms": 18.050048828125,
+        "mean_ms": 18.050048828125,
+        "min_ms": 18.050048828125,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.004251058596443054,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 2517,
+        "invocations": 1,
+        "kernel": "gac_op_2517",
+        "max_ms": 18.03980827331543,
+        "mean_ms": 18.03980827331543,
+        "min_ms": 18.03980827331543,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.004248646791413045,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 2202,
+        "invocations": 1,
+        "kernel": "gac_op_2202",
+        "max_ms": 17.670143127441406,
+        "mean_ms": 17.670143127441406,
+        "min_ms": 17.670143127441406,
+        "op": "gac.matmul_bias",
+        "share_of_profiled_dispatch_time": 0.00416158507700236,
+        "source_node": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/sampling_offsets/Add"
+      },
+      {
+        "index": 1114,
+        "invocations": 1,
+        "kernel": "gac_op_1114",
+        "max_ms": 11.996159553527832,
+        "mean_ms": 11.996159553527832,
+        "min_ms": 11.996159553527832,
+        "op": "gac.deform_conv2d",
+        "share_of_profiled_dispatch_time": 0.0028252764122646615,
+        "source_node": "/img_backbone/layer3/layer3.0/conv2_3/MMCVModulatedDeformConv2d"
+      },
+      {
+        "index": 1830,
+        "invocations": 1,
+        "kernel": "gac_op_1830",
+        "max_ms": 11.883520126342773,
+        "mean_ms": 11.883520126342773,
+        "min_ms": 11.883520126342773,
+        "op": "gac.deform_conv2d",
+        "share_of_profiled_dispatch_time": 0.002798748129167313,
+        "source_node": "/img_backbone/layer3/layer3.0/conv2_5/MMCVModulatedDeformConv2d"
+      }
+    ],
+    "raw_report_sha256": "9b0c2090625ffc0d0c325efb72fb24399c734298cf4f58c0e8d24d1e87d4331a"
+  },
+  "artifact": "full-auto-artifact-audit.json"
+}

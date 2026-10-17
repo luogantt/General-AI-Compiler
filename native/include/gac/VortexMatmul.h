@@ -13,9 +13,11 @@ struct VortexMatmulPlan {
   std::string schedule;
   int64_t m = 0, n = 0, k = 0, batches = 1;
   int64_t tileM = 0, tileN = 0, tileK = 0;
+  int64_t threadTileM = 1, threadTileN = 1;
   int64_t blockSize = 0, gridSize = 0, lmemBytes = 0, stages = 1, lanes = 4;
   llvm::SmallVector<int64_t> aShape, bShape, outShape, biasShape;
   bool flattenedProjection = false, biasFirst = false, relu = false;
+  bool tcuCombined = false;
 };
 
 // Unsupported contracts return success with no plan and an explicit reason;

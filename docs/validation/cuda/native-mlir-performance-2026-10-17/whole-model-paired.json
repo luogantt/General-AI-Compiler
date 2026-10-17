@@ -1,0 +1,157 @@
+{
+  "runner_sha256": "fb2a29656b53727d982d4d5bbd3baf3cafce050bcd010a21617b2b7806d18531",
+  "order": [
+    "baseline",
+    "optimized",
+    "optimized",
+    "baseline"
+  ],
+  "runs": [
+    {
+      "variant": "baseline",
+      "ordinal": 0,
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 59, 1410 MHz, 31.13 W, 7 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 88, 630 MHz, 57.28 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          20491.740234375,
+          24917.087890625,
+          33705.35546875
+        ],
+        "gpu_dispatch_ms": 26371.39453125,
+        "warmup_runs": 1,
+        "measured_runs": 3,
+        "completed_dispatches": 3224,
+        "initialization_ms": 348.702335,
+        "upload_ms": 64.46576699999997,
+        "download_ms": 8.325292,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "d32e0e9c43134d8e7afc4d1a158cc465512079b57896a7213dd754279174c748",
+      "ptx_sha256": "23e73de0043358d1adbe02b876e351d55c371008ffd88a252824d6752dcbd605",
+      "output_sha256": {
+        "output_0.bin": "d0da6f0782bdf0612773abad20d70e4996fb58b25b142c683b393e16515c5dcd",
+        "output_1.bin": "df531c947979519ae95aa2c136713cf2aa5ad8a3cec9941f43d75342fcf28030",
+        "output_2.bin": "d21284509b68fe26353df227009bf74d14089fead863ce894128da8306724495"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "optimized",
+      "ordinal": 1,
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 630 MHz, 55.50 W, 0 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 89, 495 MHz, 53.62 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          14366.9248046875,
+          15263.5625,
+          16397.15625
+        ],
+        "gpu_dispatch_ms": 15342.5478515625,
+        "warmup_runs": 1,
+        "measured_runs": 3,
+        "completed_dispatches": 3224,
+        "initialization_ms": 377.839098,
+        "upload_ms": 65.43785800000005,
+        "download_ms": 6.116943,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "732267c17bf0a49a9ecd8d8ce29a109b691c0db7180ae65bdba64ea13f0db1be",
+      "ptx_sha256": "d4d44d34928f6ed50426633e488b7a5325674e02415409ef8b7a95a01b0a997e",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "optimized",
+      "ordinal": 2,
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 495 MHz, 51.15 W, 6 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 1485 MHz, 61.88 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          18958.0546875,
+          19338.64453125,
+          13369.7509765625
+        ],
+        "gpu_dispatch_ms": 17222.150065104168,
+        "warmup_runs": 1,
+        "measured_runs": 3,
+        "completed_dispatches": 3224,
+        "initialization_ms": 402.124936,
+        "upload_ms": 61.89122199999995,
+        "download_ms": 6.984725,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "732267c17bf0a49a9ecd8d8ce29a109b691c0db7180ae65bdba64ea13f0db1be",
+      "ptx_sha256": "d4d44d34928f6ed50426633e488b7a5325674e02415409ef8b7a95a01b0a997e",
+      "output_sha256": {
+        "output_0.bin": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a",
+        "output_1.bin": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998",
+        "output_2.bin": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    },
+    {
+      "variant": "baseline",
+      "ordinal": 3,
+      "gpu_before": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 86, 1485 MHz, 56.29 W, 100 %",
+      "gpu_after": "name, temperature.gpu, clocks.current.sm [MHz], power.draw [W], utilization.gpu [%]\nNVIDIA GeForce RTX 3070 Ti Laptop GPU, 85, 1755 MHz, 76.39 W, 100 %",
+      "runtime": {
+        "gpu_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+        "compute_capability": "8.6",
+        "driver_version": 13000,
+        "gpu_dispatch_samples_ms": [
+          24234.75,
+          23962.33984375,
+          23613.6015625
+        ],
+        "gpu_dispatch_ms": 23936.897135416668,
+        "warmup_runs": 1,
+        "measured_runs": 3,
+        "completed_dispatches": 3224,
+        "initialization_ms": 326.958892,
+        "upload_ms": 63.55442699999993,
+        "download_ms": 8.182314,
+        "trace_dispatches": false
+      },
+      "plan_sha256": "d32e0e9c43134d8e7afc4d1a158cc465512079b57896a7213dd754279174c748",
+      "ptx_sha256": "23e73de0043358d1adbe02b876e351d55c371008ffd88a252824d6752dcbd605",
+      "output_sha256": {
+        "output_0.bin": "d0da6f0782bdf0612773abad20d70e4996fb58b25b142c683b393e16515c5dcd",
+        "output_1.bin": "df531c947979519ae95aa2c136713cf2aa5ad8a3cec9941f43d75342fcf28030",
+        "output_2.bin": "d21284509b68fe26353df227009bf74d14089fead863ce894128da8306724495"
+      },
+      "final_output_hashes_match_independently_validated_run": true
+    }
+  ],
+  "summary": {
+    "baseline": {
+      "samples": 6,
+      "min_ms": 20491.740234375,
+      "max_ms": 33705.35546875,
+      "median_ms": 24098.544921875,
+      "mean_ms": 25154.145833333332
+    },
+    "optimized": {
+      "samples": 6,
+      "min_ms": 13369.7509765625,
+      "max_ms": 19338.64453125,
+      "median_ms": 15830.359375,
+      "mean_ms": 16282.348958333334
+    },
+    "observed_median_speedup": 1.5222992953610694
+  },
+  "caveat": "ABBA process order, 1 warmup and 3 timed sequences per process. Laptop thermal/frequency variation is substantial. This observed ratio is not a controlled fixed-clock speedup or a sustained FPS guarantee. Outputs saved only after the last sequence in each process."
+}

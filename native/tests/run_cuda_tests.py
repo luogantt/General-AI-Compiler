@@ -56,7 +56,7 @@ def validate_artifact(directory: Path) -> dict:
             or abi.get("index_bits") != 32 or abi.get("math_library") != "libdevice"):
         raise ValueError("Unsupported CUDA kernel ABI")
     if plan.get("lmem_bytes") != 0 or plan.get("double_buffer") is not False:
-        raise ValueError("CUDA runner currently supports the scalar global-memory template")
+        raise ValueError("CUDA artifact cannot carry a Vortex LMEM contract")
     ptx = (directory / "kernel.ptx").read_text(encoding="utf-8")
     if not re.search(r"\.address_size\s+64\b", ptx):
         raise ValueError("Expected 64-bit NVPTX addressing")
@@ -68,9 +68,44 @@ def validate_artifact(directory: Path) -> dict:
             size = dispatch[field]
             if not isinstance(size, int) or size <= 0:
                 raise ValueError(f"Invalid CUDA {field}: {size}")
-        if (dispatch["block_size"] > 1024 or dispatch.get("shared_memory_bytes") != 0
-                or dispatch["grid_size"] != (dispatch["elements"] + dispatch["block_size"] - 1) // dispatch["block_size"]):
+        if (dispatch["block_size"] > 1024 or dispatch["grid_size"] > 2147483647
+                or dispatch.get("shared_memory_bytes") != 0):
             raise ValueError("Invalid CUDA launch resources")
+        schedule = dispatch.get("cuda_schedule")
+        if schedule is None:
+            expected_grid = (dispatch["elements"] + dispatch["block_size"] - 1) // dispatch["block_size"]
+        else:
+            if (not isinstance(schedule, dict) or
+                    schedule.get("block_size") != dispatch["block_size"] or
+                    schedule.get("grid_size") != dispatch["grid_size"] or
+                    not 0 <= schedule.get("static_shared_memory_bytes", -1) <= 48 * 1024):
+                raise ValueError("Invalid CUDA schedule resources")
+            if schedule.get("schedule") == "shared-tiled":
+                m, n, batches = (schedule[field] for field in ("m", "n", "batches"))
+                tm, tn, tk, rm, rn = (schedule[field] for field in (
+                    "tile_m", "tile_n", "tile_k", "thread_tile_m", "thread_tile_n"))
+                if (min(m, n, batches, tm, tn, tk, rm, rn) <= 0 or
+                        tm % rm or tn % rn or (tm // rm) * (tn // rn) != dispatch["block_size"] or
+                        4 * tk * (tm + tn) != schedule["static_shared_memory_bytes"] or
+                        m * n * batches != dispatch["elements"]):
+                    raise ValueError("Invalid CUDA matrix tile geometry")
+                expected_grid = ((m + tm - 1) // tm) * ((n + tn - 1) // tn) * batches
+            elif schedule.get("schedule") == "channel-tiled":
+                tile = schedule["channel_tile"]
+                if (tile not in (2, 4, 8) or dispatch["elements"] % tile or
+                        schedule["logical_threads"] != dispatch["elements"] // tile or
+                        schedule["static_shared_memory_bytes"] != 0):
+                    raise ValueError("Invalid CUDA channel tile geometry")
+                expected_grid = (schedule["logical_threads"] + dispatch["block_size"] - 1) // dispatch["block_size"]
+            elif schedule.get("schedule") == "row-reduction":
+                expected_grid = schedule["rows"]
+                if (schedule["width"] <= 0 or expected_grid * schedule["width"] != dispatch["elements"] or
+                        schedule["static_shared_memory_bytes"] != dispatch["block_size"] * 4):
+                    raise ValueError("Invalid CUDA row reduction geometry")
+            else:
+                raise ValueError("Unknown CUDA compute schedule")
+        if dispatch["grid_size"] != expected_grid:
+            raise ValueError("Invalid CUDA launch geometry")
     return plan
 
 

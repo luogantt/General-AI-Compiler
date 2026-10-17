@@ -20,8 +20,16 @@ struct DeviceOptions {
   // outside a template's contract retain scalar code with a manifest reason.
   std::string vortexMatmulSchedule = "scalar";
   int64_t tileM = 4, tileN = 4, tileK = 16;
+  // LMEM/DXA output elements per thread; 1x1 preserves the original template.
+  int64_t vortexThreadTileM = 1, vortexThreadTileN = 1;
+  bool vortexTcuCombined = false;
   int64_t vortexLanes = 4;
   int64_t lmemBudget = 16384;
+  std::string cudaMatmulSchedule = "scalar";
+  int64_t cudaTileM = 32, cudaTileN = 32, cudaTileK = 16;
+  int64_t cudaThreadTileM = 2, cudaThreadTileN = 2;
+  std::string cudaReductionSchedule = "scalar";
+  int64_t cudaConvChannelTile = 1;
 };
 
 // All targets share tensor semantics, static allocation and dispatch ordering.

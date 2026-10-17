@@ -133,6 +133,29 @@ struct Emitter {
     }
     return branch.getResult(0);
   }
+  Value instruction(Type result, ValueRange operands) {
+    OperationState state(loc, "llvm.inline_asm");
+    state.addTypes(result);
+    state.addOperands(operands);
+    // custom-0 / funct3=0 / funct7=2; TF32 input id=1, FP32 output id=0.
+    // Every lane participates, including zero-filled out-of-bounds lanes.
+    state.addAttribute("asm_string",
+                       b.getStringAttr(".insn r 0x0b, 0, 2, x0, x1, x0"));
+    state.addAttribute("constraints", b.getStringAttr(
+        "={f0},={f1},={f2},={f3},={f4},={f5},={f6},={f7},"
+        "0,1,2,3,4,5,6,7,"
+        "{f10},{f11},{f12},{f13},{f14},{f15},{f16},{f17},"
+        "{f28},{f29},{f30},{f31}"));
+    state.addAttribute("has_side_effects", b.getUnitAttr());
+    return b.create(state)->getResult(0);
+  }
+  SmallVector<Value> unpack(Value packed) {
+    SmallVector<Value> result(8);
+    for (unsigned physical = 0; physical != 8; ++physical)
+      result[cPermutation[physical]] = b.create<LLVM::ExtractValueOp>(
+          loc, packed, ArrayRef<int64_t>{int64_t(physical)});
+    return result;
+  }
   SmallVector<Value> mma(ArrayRef<Value> a, ArrayRef<Value> c,
                          ValueRange accumulator) {
     // The instruction has implicit fixed FP-register operands. Explicit LLVM
@@ -164,29 +187,65 @@ struct Emitter {
           b.getStringAttr("optnone")}));
       Block *entry = helper.addEntryBlock(b);
       b.setInsertionPointToStart(entry);
-      OperationState state(loc, "llvm.inline_asm");
-      state.addTypes(result);
-      state.addOperands(entry->getArguments());
-      // custom-0 / funct3=0 / funct7=2; TF32 input id=1, FP32 output id=0.
-      // All four lanes execute, including zero-filled out-of-bounds lanes.
-      state.addAttribute("asm_string",
-                         b.getStringAttr(".insn r 0x0b, 0, 2, x0, x1, x0"));
-      state.addAttribute("constraints", b.getStringAttr(
-          "={f0},={f1},={f2},={f3},={f4},={f5},={f6},={f7},"
-          "0,1,2,3,4,5,6,7,"
-          "{f10},{f11},{f12},{f13},{f14},{f15},{f16},{f17},"
-          "{f28},{f29},{f30},{f31}"));
-      state.addAttribute("has_side_effects", b.getUnitAttr());
-      b.create<LLVM::ReturnOp>(loc, b.create(state)->getResults());
+      b.create<LLVM::ReturnOp>(loc, instruction(result, entry->getArguments()));
     }
     auto call = b.create<LLVM::CallOp>(loc, helper, operands);
     call->setAttr("convergent", b.getUnitAttr());
-    Value packed = call.getResult();
-    SmallVector<Value> result(8);
-    for (unsigned physical = 0; physical != 8; ++physical)
-      result[cPermutation[physical]] = b.create<LLVM::ExtractValueOp>(
-          loc, packed, ArrayRef<int64_t>{int64_t(physical)});
-    return result;
+    return unpack(call.getResult());
+  }
+  SmallVector<Value> mmaCombined(ArrayRef<Value> aHi, ArrayRef<Value> aLo,
+                                 ArrayRef<Value> bHi, ArrayRef<Value> bLo,
+                                 ValueRange accumulator) {
+    SmallVector<Value> operands;
+    for (unsigned index : cPermutation)
+      operands.push_back(accumulator[index]);
+    for (auto fragment : {aHi, aLo})
+      for (unsigned index : aPermutation)
+        operands.push_back(fragment[index]);
+    for (auto fragment : {bHi, bLo})
+      for (unsigned index : bPermutation)
+        operands.push_back(fragment[index]);
+    constexpr StringLiteral name = "__gac_tcu_wmma_tf32x3_nt4";
+    auto helper = module.lookupSymbol<LLVM::LLVMFuncOp>(name);
+    if (!helper) {
+      OpBuilder::InsertionGuard guard(b);
+      b.setInsertionPointToStart(module.getBody());
+      SmallVector<Type> fields(8, b.getF32Type()), args(32, b.getF32Type());
+      Type result = LLVM::LLVMStructType::getLiteral(b.getContext(), fields);
+      helper = b.create<LLVM::LLVMFuncOp>(
+          loc, name, LLVM::LLVMFunctionType::get(result, args),
+          LLVM::Linkage::Internal);
+      helper->setAttr("passthrough", b.getArrayAttr({
+          b.getStringAttr("convergent"), b.getStringAttr("noinline"),
+          b.getStringAttr("optnone")}));
+      Block *entry = helper.addEntryBlock(b);
+      b.setInsertionPointToStart(entry);
+      ValueRange arguments = entry->getArguments();
+      SmallVector<Value> carry(arguments.take_front(8));
+      // Keep all three collective instructions inside one convergence boundary.
+      // The intermediate C fragments are SSA values inside this helper, so they
+      // cross the function return ABI once rather than after each instruction.
+      // This is an inline-assembly wrapper experiment, not a formal intrinsic.
+      for (unsigned step = 0; step != 3; ++step) {
+        SmallVector<Value> values(carry);
+        auto a = arguments.slice(step == 1 ? 16 : 8, 8);
+        auto c = arguments.slice(step == 0 ? 28 : 24, 4);
+        values.append(a.begin(), a.end());
+        values.append(c.begin(), c.end());
+        Value packed = instruction(result, values);
+        if (step == 2) {
+          b.create<LLVM::ReturnOp>(loc, packed);
+        } else {
+          carry.clear();
+          for (int64_t physical = 0; physical != 8; ++physical)
+            carry.push_back(b.create<LLVM::ExtractValueOp>(
+                loc, packed, ArrayRef<int64_t>{physical}));
+        }
+      }
+    }
+    auto call = b.create<LLVM::CallOp>(loc, helper, operands);
+    call->setAttr("convergent", b.getUnitAttr());
+    return unpack(call.getResult());
   }
 };
 } // namespace
@@ -199,6 +258,7 @@ bool configureVortexTcuMatmul(const DeviceOptions &options,
     return false;
   }
   plan.schedule = "tcu";
+  plan.tcuCombined = options.vortexTcuCombined;
   plan.tileM = tileM;
   plan.tileN = tileN;
   plan.tileK = tileK;
@@ -270,9 +330,14 @@ LogicalResult emitVortexTcuMatmul(OpBuilder &builder, Operation *op,
         SmallVector<Value> aHi, aLo, bHi, bLo;
         e.splitTf32(a, aHi, aLo);
         e.splitTf32(c, bHi, bLo);
-        auto cross = e.mma(aHi, bLo, accumulator);
-        cross = e.mma(aLo, bHi, cross);
-        b.create<scf::YieldOp>(e.loc, e.mma(aHi, bHi, cross));
+        if (plan.tcuCombined) {
+          b.create<scf::YieldOp>(e.loc,
+                               e.mmaCombined(aHi, aLo, bHi, bLo, accumulator));
+        } else {
+          auto cross = e.mma(aHi, bLo, accumulator);
+          cross = e.mma(aLo, bHi, cross);
+          b.create<scf::YieldOp>(e.loc, e.mma(aHi, bHi, cross));
+        }
       });
   for (unsigned r = 0; r != 8; ++r) {
     Value row = e.add(rowBase, e.add(laneRow, e.i((r / 2) * 2)));

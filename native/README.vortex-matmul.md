@@ -1,6 +1,6 @@
 # Vortex 原生 MLIR MatMul 模板
 
-统一分支 `lg/bevformer-full-ops` 增加三个可显式选择的 Vortex 模板。
+统一编译器提供三个可显式选择的 Vortex 模板。
 它们使用 C++ `OpBuilder` 创建真实 MLIR Operation，经 LLVM/VOLT 生成机器码；
 没有生成 C++ 设备 Kernel，也没有调用 Python 数学实现代替设备执行。
 默认仍为 `scalar`，CUDA 后端保持独立。
@@ -33,7 +33,7 @@ ONNX → OnnxImporter → gac.matmul / gac.matmul_bias / gac.matmul_bias_relu
 
 | 模板选项 | 数据与执行方案 | 限制 |
 |---|---|---|
-| `lmem-tiled` | 一个 CTA 负责 C 的一个 M×N tile；协作搬入 A/B；每线程一个 FP32 累加器 | 完整 warp；静态连续 FP32；含 batch 广播 |
+| `lmem-tiled` | 一个 CTA 负责 C 的一个 M×N tile；协作搬入 A/B；每线程 RM×RN 个 FP32 累加器 | 完整 warp；静态连续 FP32；含 batch 广播 |
 | `dxa-double-buffer` | 两组 LMEM A/B tile；计算当前组时预取下一组 | 当前限 4 lane；右矩阵 rank 2；M/N/K≤65535；DXA 扩展 |
 | `tcu` | 4 lane warp 计算 8×4×4 tile；寄存器 fragment；三次 TF32 WMMA 累加 | TCU 和 TF32 必须启用；近似算术；此模板 LMEM=0 |
 
@@ -44,6 +44,30 @@ Conv、DCNv2、Softmax、LayerNorm、MSDeformAttn 等继续使用现有设备 Lo
 高维 A 与二维 B 的投影会把 A 的前导维展平为 M；批量 MatMul 按广播规则计算
 batch 地址。Bias 在完整 K 归约后加入，ReLU 随后执行。M/N 尾块不写越界输出；
 LMEM 模板的 K 尾块只归约有效元素，所有 CTA 线程仍参与 barrier。
+
+## 寄存器分块：让一次 LMEM 读取参与多次乘加
+
+`BM/BN/BK` 是 CTA 的计算块；`RM/RN` 是一个线程保留的输出个数。
+默认 `RM=RN=1` 保持原有行为。设置 `RM=RN=2` 后，一个线程维护四个累加器，
+每个 K 读取两个 A、两个 B，计算四个乘加；不再为四个结果各自重复读取 A/B。
+每个累加器仍按 K 从小到大累加，没有加入 fast-math 或改变归约顺序。
+
+```text
+threads = (BM / RM) × (BN / RN)
+threadRows = BM / RM；threadCols = BN / RN
+localRow = tid / threadCols；localCol = tid % threadCols
+线程负责的输出 = (rowBase + localRow + r×threadRows,
+                  colBase + localCol + c×threadCols)
+其中 r=0..RM-1，c=0..RN-1
+```
+
+这个交错排列保留相邻 lane 对 B 的连续访问。比如 `BM=BN=8，RM=RN=2`，
+16 个线程合起来计算 8×8 输出块，每线程四个结果。四个结果可能落在块内不同位置，
+并不要求它们是相邻的 2×2 小方块。LMEM 仍存完整的 A/B tile，C 保存在寄存器中。
+
+RM/RN 当前各限 1..4，且必须整除 BM/BN；线程数必须组成完整 warp，
+实际线程数、LMEM 和 barrier 还要满足目标设备资源。更多累加器可能产生寄存器
+溢出，不能假设越大越快。TCU 使用固定 fragment 布局，RM/RN 必须保持 1。
 
 ## LMEM 和双缓冲的生命周期
 
@@ -60,6 +84,9 @@ Buffer 是该 CTA 获配 LMEM 中的地址区间，C 的部分和保存在寄存
   → 切换组，已释放的组才能用于之后的预取
 全部 K 完成 → Bias/ReLU → global store C
 ```
+
+寄存器分块不会放宽这两个等待条件：读当前 Buffer 前等待搬运完成，复用 Buffer
+前等待全部消费者读完。两组 Buffer 的 LMEM 容量公式也不变。
 
 DXA descriptor 0/1 分别描述 A/B 的二维形状、stride 和 tile。
 Runtime 使用物理连续缓冲区；重编程 descriptor 前等待前一 Kernel 完成，
@@ -102,7 +129,8 @@ cmake --build build/native -j4
 
 GAC_NATIVE_BIN="$PWD/build/native" \
 GAC_VORTEX_MATMUL_SCHEDULE=dxa-double-buffer \
-GAC_TILE_M=4 GAC_TILE_N=4 GAC_TILE_K=128 \
+GAC_TILE_M=8 GAC_TILE_N=8 GAC_TILE_K=64 \
+GAC_VORTEX_THREAD_TILE_M=2 GAC_VORTEX_THREAD_TILE_N=2 \
   native/tools/compile-vortex.sh model.onnx build/model-dxa
 
 VORTEX_DRIVER=simx LD_LIBRARY_PATH="$VORTEX_BUILD/sw/runtime" \
@@ -111,9 +139,22 @@ VORTEX_DRIVER=simx LD_LIBRARY_PATH="$VORTEX_BUILD/sw/runtime" \
   --profile-counters
 ```
 
-将模板选项改成 `lmem-tiled` 或 `tcu` 可分别验证。TCU 的 tile 固定为 8×4×4，
-实际 geometry 写入 manifest；不会使用命令中的 4×4×128。全模型 base 编译还需
+将模板选项改成 `lmem-tiled` 可验证普通协作搬运。使用 `tcu` 时，删除上述两个
+`GAC_VORTEX_THREAD_TILE_*` 设置或设为 1。TCU 的 tile 固定为 8×4×4，
+实际 geometry 写入 manifest；不会使用命令中的 8×8×64。全模型 base 编译还需
 `GAC_CONSTANT_FOLD_PROFILE=bevformer-base`。先运行测试模型，再逐层验证整网。
+
+| 环境变量（compile-vortex.sh） | gac-compile 选项 | 默认值 |
+|---|---|---|
+| `GAC_VORTEX_THREAD_TILE_M` | `--vortex-thread-tile-m` | 1 |
+| `GAC_VORTEX_THREAD_TILE_N` | `--vortex-thread-tile-n` | 1 |
+| `GAC_VORTEX_TCU_COMBINED` | `--vortex-tcu-combined` | 0 / false |
+
+TCU 的 combined 开关把 TF32 三项 WMMA 放在同一个受保护的辅助函数里，
+减少跨函数传参和返回次数；没有取消 `convergent`、`noinline` 或 `optnone` 保护。
+开关只适用于 `tcu`，默认关闭，数值合同仍为 TF32×3。
+manifest 新增 `thread_tile_m/n`；Runtime 对缺少字段的旧文件按 1×1 解释。
+TCU 的 `tcu_call_mode` 标记 `separate` 或 `combined`，旧文件默认 `separate`。
 
 Runtime 动态查询 ISA、lane、warp 和 LMEM 能力，但当前 Vortex caps 无 TF32
 格式和 barrier 数量查询接口。`GAC_VORTEX_TCU_TF32` 与 barrier 数量是明确的
@@ -124,16 +165,23 @@ manifest 不一致、设备扩展缺失或资源不足则明确报错，不静�
 
 ## 验证和性能解释
 
-本轮 36 组数值检查、K=128 对照、非法配置与 CUDA/CPU 回归的完整记录见
+第一轮 36 组数值检查、K=128 对照、非法配置与 CUDA/CPU 回归的完整记录见
 [2026-10-17 验收报告](../docs/validation/vortex/native-mlir-matmul-2026-10-17/README.md)。
-测到 DXA K=128 在一个 FFN 投影上减少约 2.46% 周期；当前 LMEM 和 TCU 模板
-在相同配置下仍慢于标量，未将它们设为默认。
+当时测到 DXA K=128 在一个 FFN 投影上减少约 2.46% 周期；当时的 LMEM 和 TCU
+模板在相同配置下仍慢于标量。后续寄存器分块的独立重测见下文，默认仍是标量。
 完整 BEVFormer-base 三种模式均已生成并验证 LLVM IR：LMEM/TCU 各替换 181 个
 MatMul，DXA 替换 145 个并生成完整 ELF/vxbin；整网新模板的设备执行仍待验收。
 
 验证脚本从同一 ONNX 和输入生成四种机器码，在同一 SimX 配置执行，并与 NumPy
 独立参考比较；NumPy 仅用于造数据和验收。测试覆盖尾块、多轮 K、批量广播、
 高维投影、连续 MatMul/Residual、Reshape 视图和非有限值。
+
+后续[寄存器分块与 TCU 调用合并验收](../docs/validation/vortex/native-mlir-register-tiling-2026-10-17/README.md)
+在相同配置重测了原模板：60 组标量/LMEM/DXA 数值测试、18 组 TCU 对照、27 组
+非法 manifest 和 2 组旧 manifest 兼容性执行全部通过。FFN `[8,256]×[256,512]`
+加 Bias/ReLU 的周期从标量 `7,782,295` 降到 DXA `3,578,862`：
+`BM/BN/BK=8/16/64，RM/RN=2/4`，约 2.175×。TCU 合并调用相对旧 TCU 约快 1.356×。
+这些是指定小图的 SimX 建模结果；小形状仍可能变慢，未把这些选项设为默认。
 
 `device_counters.max_core_cycles` 是整个 dispatch 序列前后的设备计数器差值，
 包括设备端启动、同步与 flush 开销；主机仿真耗时另列。不能把 SimX 主机耗时或

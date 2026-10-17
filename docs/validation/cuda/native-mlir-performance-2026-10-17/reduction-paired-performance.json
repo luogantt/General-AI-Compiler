@@ -1,0 +1,200 @@
+{
+  "measurement": "CUDA-event single-kernel dispatch, paired fresh process by mode; no transfers/JIT; warmup5 repeat30 per process; not whole-model latency",
+  "raw_report_sha256": "bd8f7017af23637645251b9bb783241a443e20e78194366e04d0308384df24a5",
+  "whole_model_claim": false,
+  "protocol": "Four rounds with alternating mode order, each mode/case/round warmup 5 then 30 samples; 120 samples per mode/case. Medians are retained along with per-round medians.",
+  "cases": [
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_17",
+      "speedup": 1.0,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.004095999989658594,
+          "round_medians_ms": [
+            0.00406399997882545,
+            0.004095999989658594,
+            0.004095999989658594,
+            0.004095999989658594
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.0030720001086592674,
+          "maximum_ms": 0.045152001082897186
+        },
+        "optimized": {
+          "median_ms": 0.004095999989658594,
+          "round_medians_ms": [
+            0.004095999989658594,
+            0.004095999989658594,
+            0.004095999989658594,
+            0.0050559998489916325
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.0030720001086592674,
+          "maximum_ms": 0.005888000130653381
+        }
+      }
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_width_900",
+      "speedup": 9.166666414029258,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.05632000043988228,
+          "round_medians_ms": [
+            0.053247999399900436,
+            0.05632000043988228,
+            0.057231999933719635,
+            0.05734400078654289
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.052191998809576035,
+          "maximum_ms": 0.059167999774217606
+        },
+        "optimized": {
+          "median_ms": 0.006144000217318535,
+          "round_medians_ms": [
+            0.0060159999411553144,
+            0.006144000217318535,
+            0.006336000049486756,
+            0.006144000217318535
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.005119999870657921,
+          "maximum_ms": 0.015359999611973763
+        }
+      }
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_17",
+      "speedup": 1.062500021316282,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.004352000076323748,
+          "round_medians_ms": [
+            0.004143999889492989,
+            0.0043200000654906034,
+            0.004095999989658594,
+            0.006144000217318535
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.0030720001086592674,
+          "maximum_ms": 0.0071680000983178616
+        },
+        "optimized": {
+          "median_ms": 0.004095999989658594,
+          "round_medians_ms": [
+            0.004095999989658594,
+            0.004095999989658594,
+            0.004575999919325113,
+            0.004288000054657459
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.0038079998921602964,
+          "maximum_ms": 0.006144000217318535
+        }
+      }
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_width_257",
+      "speedup": 2.1375001409716825,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.010944000445306301,
+          "round_medians_ms": [
+            0.010239999741315842,
+            0.011119999922811985,
+            0.011055999901145697,
+            0.01080000028014183
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.009216000325977802,
+          "maximum_ms": 0.01228800043463707
+        },
+        "optimized": {
+          "median_ms": 0.005119999870657921,
+          "round_medians_ms": [
+            0.005119999870657921,
+            0.005248000146821141,
+            0.005119999870657921,
+            0.005119999870657921
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.004095999989658594,
+          "maximum_ms": 0.015359999611973763
+        }
+      }
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/softmax_bev_attention",
+      "speedup": 1.5384615169350364,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.020479999482631683,
+          "round_medians_ms": [
+            0.01934400014579296,
+            0.020479999482631683,
+            0.020479999482631683,
+            0.020304000005126
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.018432000651955605,
+          "maximum_ms": 0.021503999829292297
+        },
+        "optimized": {
+          "median_ms": 0.013311999849975109,
+          "round_medians_ms": [
+            0.013311999849975109,
+            0.014159999787807465,
+            0.014159999787807465,
+            0.013311999849975109
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.01228800043463707,
+          "maximum_ms": 0.015072000212967396
+        }
+      }
+    },
+    {
+      "name": "gac-cuda-reduction-fixtures-20261017/layer_norm_bev_embedding",
+      "speedup": 8.181817800982937,
+      "modes": {
+        "scalar": {
+          "median_ms": 0.5529599785804749,
+          "round_medians_ms": [
+            0.52019202709198,
+            0.5529599785804749,
+            0.5529599785804749,
+            0.5610720217227936
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.5191680192947388,
+          "maximum_ms": 0.5611519813537598
+        },
+        "optimized": {
+          "median_ms": 0.06758400052785873,
+          "round_medians_ms": [
+            0.06843199953436852,
+            0.06743999943137169,
+            0.06860800087451935,
+            0.06548799946904182
+          ],
+          "output_hashes_identical": true,
+          "samples": 120,
+          "minimum_ms": 0.06451199948787689,
+          "maximum_ms": 0.06883200258016586
+        }
+      }
+    }
+  ]
+}

@@ -143,7 +143,7 @@ void writeReport(const fs::path &directory, json::Object report) {
 
 struct Options {
   int device = 0, repeat = 1, warmup = 0;
-  bool trace = false;
+  bool trace = false, profile = false;
 };
 
 Options parseOptions(int argc, char **argv) {
@@ -152,6 +152,10 @@ Options parseOptions(int argc, char **argv) {
     std::string flag(argv[i]);
     if (flag == "--trace-dispatches") {
       options.trace = true;
+      continue;
+    }
+    if (flag == "--profile-dispatches") {
+      options.profile = true;
       continue;
     }
     if ((flag != "--device" && flag != "--repeat" && flag != "--warmup") ||
@@ -173,8 +177,20 @@ Options parseOptions(int argc, char **argv) {
   }
   if (!options.repeat)
     fail("--repeat must be positive");
+  if (options.trace && options.profile)
+    fail("--trace-dispatches and --profile-dispatches are mutually exclusive: "
+         "trace serializes the host after every kernel");
   return options;
 }
+
+struct KernelResources {
+  int registers = 0, sharedBytes = 0, localBytes = 0, maxThreads = 0;
+};
+
+struct ProfileSample {
+  CUevent begin = nullptr, end = nullptr;
+  double sumMs = 0, minMs = std::numeric_limits<double>::infinity(), maxMs = 0;
+};
 
 struct Device {
   Driver api;
@@ -186,6 +202,11 @@ struct Device {
   std::vector<CUdeviceptr> allocations;
   std::vector<CUfunction> functions;
   std::vector<std::vector<CUdeviceptr>> arguments;
+  // Pointer argument storage is fixed after initialize. Reuse the addresses
+  // instead of allocating a parameter vector for every launch of every frame.
+  std::vector<std::vector<void *>> parameters;
+  std::vector<KernelResources> resources;
+  std::vector<ProfileSample> profile;
   std::string name, jitLog;
   int major = 0, minor = 0, version = 0;
   size_t totalMemory = 0;
@@ -213,6 +234,12 @@ struct Device {
       api.destroyEvent(begin);
     if (end)
       api.destroyEvent(end);
+    for (auto &sample : profile) {
+      if (sample.begin)
+        api.destroyEvent(sample.begin);
+      if (sample.end)
+        api.destroyEvent(sample.end);
+    }
     if (module)
       api.unloadModule(module);
     for (auto allocation : allocations)
@@ -307,34 +334,56 @@ struct Device {
     for (const auto &dispatch : plan.dispatches) {
       CUfunction function = nullptr;
       CUDA_CHECK(api.getFunction(&function, module, dispatch.kernel.c_str()));
-      int kernelMaxThreads = 0;
-      CUDA_CHECK(api.functionAttribute(&kernelMaxThreads,
+      KernelResources resource;
+      CUDA_CHECK(api.functionAttribute(&resource.maxThreads,
                                        CU_FUNC_ATTRIBUTE_MAX_THREADS_PER_BLOCK,
+                                       function));
+      CUDA_CHECK(api.functionAttribute(&resource.registers,
+                                       CU_FUNC_ATTRIBUTE_NUM_REGS, function));
+      CUDA_CHECK(api.functionAttribute(&resource.sharedBytes,
+                                       CU_FUNC_ATTRIBUTE_SHARED_SIZE_BYTES,
+                                       function));
+      CUDA_CHECK(api.functionAttribute(&resource.localBytes,
+                                       CU_FUNC_ATTRIBUTE_LOCAL_SIZE_BYTES,
                                        function));
       if (dispatch.gridSize > uint32_t(maxGrid) ||
           dispatch.blockSize > uint32_t(maxBlock) ||
-          dispatch.blockSize > uint32_t(kernelMaxThreads))
+          dispatch.blockSize > uint32_t(resource.maxThreads))
         fail("launch dimensions exceed device/kernel limits: " +
              dispatch.kernel);
+      if (uint64_t(resource.sharedBytes) < dispatch.staticSharedBytes)
+        fail("PTX JIT shared-memory allocation is smaller than the dispatch "
+             "contract: " + dispatch.kernel);
+      resources.push_back(resource);
       functions.push_back(function);
       arguments.emplace_back();
       for (size_t input : dispatch.inputs)
         arguments.back().push_back(address(plan.tensors[input]));
       arguments.back().push_back(address(plan.tensors[dispatch.output]));
     }
+    for (auto &pointers : arguments) {
+      parameters.emplace_back();
+      for (auto &pointer : pointers)
+        parameters.back().push_back(&pointer);
+    }
+  }
+
+  void initializeProfile() {
+    profile.resize(functions.size());
+    for (auto &sample : profile) {
+      CUDA_CHECK(api.createEvent(&sample.begin, CU_EVENT_DEFAULT));
+      CUDA_CHECK(api.createEvent(&sample.end, CU_EVENT_DEFAULT));
+    }
   }
 
   // A single stream executes dispatches in manifest order. This order is the
   // proof used by static arena reuse, so no per-kernel wait is needed normally.
   double launch(const Plan &plan, int iteration, bool warmup,
-                std::ostream *trace) {
+                std::ostream *trace, bool instrument = false) {
     completedDispatches = 0;
     CUDA_CHECK(api.recordEvent(begin, stream));
     for (size_t i = 0; i < plan.dispatches.size(); ++i) {
       const auto &dispatch = plan.dispatches[i];
-      std::vector<void *> parameters;
-      for (auto &argument : arguments[i])
-        parameters.push_back(&argument);
       auto emit = [&](const char *event) {
         if (!trace)
           return;
@@ -349,9 +398,13 @@ struct Device {
           fail("cannot write dispatch trace");
       };
       emit("begin");
+      if (instrument)
+        CUDA_CHECK(api.recordEvent(profile[i].begin, stream));
       CUDA_CHECK(api.launch(functions[i], dispatch.gridSize, 1, 1,
                             dispatch.blockSize, 1, 1, 0, stream,
-                            parameters.data(), nullptr));
+                            parameters[i].data(), nullptr));
+      if (instrument)
+        CUDA_CHECK(api.recordEvent(profile[i].end, stream));
       if (trace) {
         CUDA_CHECK(api.synchronize(stream));
         completedDispatches = i + 1;
@@ -361,9 +414,91 @@ struct Device {
     CUDA_CHECK(api.recordEvent(end, stream));
     CUDA_CHECK(api.waitEvent(end));
     completedDispatches = plan.dispatches.size();
+    // The final event proves all preceding events on this stream completed.
+    // No per-dispatch host wait is introduced by event profiling.
+    if (instrument)
+      for (auto &sample : profile) {
+        float duration = 0;
+        CUDA_CHECK(api.eventTime(&duration, sample.begin, sample.end));
+        sample.sumMs += duration;
+        sample.minMs = std::min(sample.minMs, double(duration));
+        sample.maxMs = std::max(sample.maxMs, double(duration));
+      }
     float duration = 0;
     CUDA_CHECK(api.eventTime(&duration, begin, end));
     return duration;
+  }
+
+  json::Array resourceReport(const Plan &plan) const {
+    json::Array rows;
+    for (size_t i = 0; i < plan.dispatches.size(); ++i) {
+      const auto &dispatch = plan.dispatches[i];
+      const auto &resource = resources[i];
+      rows.push_back(json::Object{
+          {"index", int64_t(i)}, {"kernel", dispatch.kernel},
+          {"op", dispatch.op}, {"source_node", dispatch.source},
+          {"schedule", dispatch.cudaSchedule},
+          {"grid", json::Array{dispatch.gridSize, 1, 1}},
+          {"block", json::Array{dispatch.blockSize, 1, 1}},
+          {"registers_per_thread", resource.registers},
+          {"static_shared_bytes_per_block", resource.sharedBytes},
+          {"dynamic_shared_bytes_per_block", 0},
+          {"local_bytes_per_thread", resource.localBytes},
+          {"max_threads_per_block", resource.maxThreads}});
+    }
+    return rows;
+  }
+
+  json::Object profileReport(const Plan &plan, int repeat,
+                             json::Array sequenceSamples, double wallMs) const {
+    struct Aggregate { int64_t count = 0; double sumMs = 0; };
+    std::map<std::string, Aggregate> operators;
+    json::Array rows, operatorRows;
+    double totalMs = 0;
+    for (const auto &sample : profile)
+      totalMs += sample.sumMs;
+    for (size_t i = 0; i < plan.dispatches.size(); ++i) {
+      const auto &dispatch = plan.dispatches[i];
+      const auto &sample = profile[i];
+      auto &aggregate = operators[dispatch.op];
+      ++aggregate.count;
+      aggregate.sumMs += sample.sumMs;
+      rows.push_back(json::Object{
+          {"index", int64_t(i)}, {"kernel", dispatch.kernel},
+          {"op", dispatch.op}, {"source_node", dispatch.source},
+          {"invocations", repeat},
+          {"mean_ms", sample.sumMs / repeat},
+          {"min_ms", sample.minMs}, {"max_ms", sample.maxMs},
+          {"share_of_profiled_dispatch_time",
+           totalMs ? sample.sumMs / totalMs : 0}});
+    }
+    for (const auto &[op, aggregate] : operators)
+      operatorRows.push_back(json::Object{
+          {"op", op}, {"dispatch_count", aggregate.count},
+          {"invocations", aggregate.count * repeat},
+          {"mean_total_ms_per_sequence", aggregate.sumMs / repeat},
+          {"mean_ms_per_invocation", aggregate.sumMs / (aggregate.count * repeat)},
+          {"share_of_profiled_dispatch_time",
+           totalMs ? aggregate.sumMs / totalMs : 0}});
+    std::sort(operatorRows.begin(), operatorRows.end(),
+              [](const json::Value &left, const json::Value &right) {
+                return *left.getAsObject()->getNumber("mean_total_ms_per_sequence") >
+                       *right.getAsObject()->getNumber("mean_total_ms_per_sequence");
+              });
+    return json::Object{
+        {"measured_runs", repeat},
+        {"timing_kind", "cuda-events-per-dispatch-separate-instrumented-runs"},
+        {"timing_note",
+         "Profiling runs execute after uninstrumented timing. Two timing events "
+         "bracket each dispatch on the same stream; only the final sequence "
+         "event is synchronized. Event and submission overhead can perturb "
+         "short kernels. These are elapsed intervals, not hardware cycle, "
+         "occupancy, bank-conflict or bandwidth counters. Use gpu_dispatch_ms "
+         "for uninstrumented sequence comparisons."},
+        {"sum_dispatch_mean_ms", totalMs / repeat},
+        {"sequence_samples_ms", std::move(sequenceSamples)},
+        {"host_wall_ms", wallMs}, {"by_op", std::move(operatorRows)},
+        {"dispatches", std::move(rows)}};
   }
 };
 } // namespace
@@ -372,7 +507,8 @@ int main(int argc, char **argv) {
   if (argc < 5) {
     llvm::errs()
         << "usage: gac-cuda-run MANIFEST.json KERNEL.ptx DATA_DIR OUTPUT_DIR "
-           "[--device N] [--repeat N] [--warmup N] [--trace-dispatches]\n";
+           "[--device N] [--repeat N] [--warmup N] "
+           "[--trace-dispatches | --profile-dispatches]\n";
     return 1;
   }
   fs::path outputDirectory(argv[4]);
@@ -429,6 +565,7 @@ int main(int argc, char **argv) {
         fail("cannot open dispatch trace");
     }
     json::Array samples;
+    json::Object dispatchProfile;
     double sum = 0;
     double dispatchWall = 0;
     try {
@@ -444,6 +581,19 @@ int main(int argc, char **argv) {
         samples.push_back(duration);
       }
       dispatchWall = elapsed(dispatchStarted);
+      if (options.profile) {
+        stage = "dispatch-profiling";
+        // Allocate events only after the normal measurements. Their GPU memory
+        // and command overhead must not affect the uninstrumented sample set.
+        device.initializeProfile();
+        json::Array profileSamples;
+        auto profileStarted = Clock::now();
+        for (int i = 0; i < options.repeat; ++i)
+          profileSamples.push_back(device.launch(plan, i, false, nullptr, true));
+        dispatchProfile = device.profileReport(plan, options.repeat,
+                                              std::move(profileSamples),
+                                              elapsed(profileStarted));
+      }
     } catch (...) {
       completedDispatches = device.completedDispatches;
       throw;
@@ -505,6 +655,13 @@ int main(int argc, char **argv) {
             {"warmup_runs", options.warmup},
             {"measured_runs", options.repeat},
             {"trace_dispatches", options.trace},
+            {"profile_dispatches", options.profile},
+            {"kernel_resources", device.resourceReport(plan)},
+            {"kernel_resources_note",
+             "CUDA Driver function attributes after PTX JIT. Local-memory size "
+             "can include stack, spills and compiler-managed arrays; it does "
+             "not measure executed spill traffic or achieved occupancy."},
+            {"dispatch_profile", std::move(dispatchProfile)},
             {"inputs", std::move(inputFiles)},
             {"outputs", std::move(outputFiles)},
             {"scheduling", "single-cuda-stream-manifest-order"},

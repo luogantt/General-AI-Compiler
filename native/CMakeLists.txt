@@ -36,6 +36,8 @@ add_library(GACCompiler STATIC
   lib/OnnxImporter.cpp
   lib/DeviceLowering.cpp
   lib/CudaLowering.cpp
+  lib/CudaMatmul.cpp
+  lib/CudaReduction.cpp
   lib/VortexMatmul.cpp
   lib/VortexTcu.cpp
   lib/VortexLowering.cpp)

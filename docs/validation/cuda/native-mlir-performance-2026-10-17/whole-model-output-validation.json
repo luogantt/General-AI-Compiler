@@ -1,0 +1,76 @@
+{
+  "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+  "images_npy_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+  "onnx_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "scope": "Same complete fixed-input BEVFormer-base cold raw-head graph and export contract as ../native-mlir-bevformer-base-2026-10-17/export-reference-contract.json",
+  "outputs": {
+    "bev_embed": {
+      "passed": true,
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 2.0623207092285156e-05,
+      "mean_abs_error": 5.464401648236208e-07,
+      "dtype_matches": true,
+      "rtol": 0.001,
+      "atol": 0.0001,
+      "artifact": {
+        "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/cuda-perf-session/full-first/output_0.bin",
+        "bytes": 40960000,
+        "sha256": "477ce4f149ea7e48c0c01608dd0449f789b3f117d6b67bb3fc78b9955aa4df2a"
+      }
+    },
+    "all_cls_scores": {
+      "passed": true,
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 2.002716064453125e-05,
+      "mean_abs_error": 1.3738782317550094e-06,
+      "dtype_matches": true,
+      "rtol": 0.001,
+      "atol": 0.0001,
+      "artifact": {
+        "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/cuda-perf-session/full-first/output_1.bin",
+        "bytes": 216000,
+        "sha256": "e216830c2eaea9f4b26486d494218c53db738ceba471ce624dc6284665fc8998"
+      }
+    },
+    "all_bbox_preds": {
+      "passed": true,
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 5.950033664703369e-05,
+      "mean_abs_error": 1.8651776993768484e-06,
+      "dtype_matches": true,
+      "rtol": 0.001,
+      "atol": 0.0001,
+      "artifact": {
+        "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/cuda-perf-session/full-first/output_2.bin",
+        "bytes": 216000,
+        "sha256": "a015bc9b0a1d4540c1f61e71662e3326432b861d85ff56023e95875bdb6fa958"
+      }
+    }
+  }
+}

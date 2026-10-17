@@ -1,0 +1,2121 @@
+{
+  "scope": "CUDA Conv/DCNv2 fixtures only; no isolated scalar-vs-tiled GPU speedup claim",
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "reference": "Independent torch/torchvision outputs for ordinary cases; the padding/nonfinite-weight case uses an explicit analytic scalar-compatibility reference, not a PyTorch nonfinite oracle.",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "numpy": "1.26.4",
+    "onnx": "1.21.0"
+  },
+  "rtol": 2e-05,
+  "atol": 2e-05,
+  "summary": [
+    {
+      "channel_tile": 4,
+      "numerical_cases": 14,
+      "optimized_cases": 11,
+      "fallback_cases": 3,
+      "all_passed": true,
+      "max_absolute_error": 7.748603820800781e-07
+    },
+    {
+      "channel_tile": 8,
+      "numerical_cases": 14,
+      "optimized_cases": 9,
+      "fallback_cases": 5,
+      "all_passed": true,
+      "max_absolute_error": 7.748603820800781e-07
+    }
+  ],
+  "runs": [
+    {
+      "requested_channel_tile": 4,
+      "source_report_sha256": "4ca0ec1e20572ef1013f2a9053e84a8a1b099893c8071a849e73a35df317c0d2",
+      "runner_sha256": "fb2a29656b53727d982d4d5bbd3baf3cafce050bcd010a21617b2b7806d18531",
+      "passed": true,
+      "cases": [
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_bias_relu_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2116746ced99543de892d75900750917509deee71eca62c614fe063c93acfbe0",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "3be0e136f8af3cd06ca72afe0ceaaf199c6e2de058c7b135129e39b4e4438b19",
+          "manifest_sha256": "ce7bd9509bf036c6f7712a258dc7355e159c18e7bd08618475fee15ac3c0bc10",
+          "ptx_sha256": "426c682826770d892640a4e78433dbbab294af6005a9419b0894e9fc715920bf",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.011264000087976456,
+            "gpu_dispatch_samples_ms": [
+              0.011264000087976456,
+              0.011264000087976456,
+              0.011264000087976456
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d_relu",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.043081283569336e-07,
+              "mean_abs_error": 4.122089844063989e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "1552cd73b07df1abe7ca24faa0bf3546c02a6c421597798b0f9a939dd8539532"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d_relu",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_grouped_strided_dilated",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "bed96a9288c60c28205e52025eb63a5046c16460ae01ff1acf0c38bcabcb7100",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "14db0a5679d27ac5f212cc3afc21c82620b54adce160f8868599a3a01642147c",
+          "manifest_sha256": "26bb2b2ccf672ffb47f2cff680626a707c55b84e6c20ca1b52f367f3154f57d6",
+          "ptx_sha256": "9db2e55b643ba25be9b9844154a7c8b107fa0be307ac742d19a1533f30c018a0",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.0071680000983178616,
+            "gpu_dispatch_samples_ms": [
+              0.0071680000983178616,
+              0.0071680000983178616,
+              0.0071680000983178616
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 36,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                4,
+                7
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 3.725290298461914e-08,
+              "mean_abs_error": 3.687091520987451e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "f5104b6d2609ba37db643a2d323a4c3011d453d9832d3ac44fc56a5e397c0459"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_depthwise_multiplier",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "b8ab29c81fb8053827c64e1c5491823e19e3a40a6e5e36befa88dc54ba8abdb7",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "0a9873203c90d9983d8471d713784c6b7a48d33f1ded09106055d0c9d456e637",
+          "manifest_sha256": "045ad80c9c6fe830db2d4885b0bf92ea51aad8df6d5168ace6198fce0d15f73b",
+          "ptx_sha256": "7a036c054338e79bdb4614d2e09e4c06c9ebe4408b1bf6a74cf471bc74c6129b",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.00682666680465142,
+            "gpu_dispatch_samples_ms": [
+              0.008191999979317188,
+              0.006144000217318535,
+              0.006144000217318535
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  2,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 38,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.4901161193847656e-08,
+              "mean_abs_error": 1.2247453703763775e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "ad7e9c5aef728a41fe8c78d2809d745d27a36a437659691b333b737241cbb7b2"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_odd_group_channels_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "06a99a1d3141a511956099d935492d71a251a8e9ea06681424f05a1b63a7155a",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "66de14bcdadffcb72547ab4948f190fe07719895bf562bf5b50823a11c676852",
+          "manifest_sha256": "5bfdfbf463f85bcfd54482255aa78a3c73bf2237e64ad46e41f75d1e543294e8",
+          "ptx_sha256": "ef059ed5110bc5838abb81d610353615d7c258fe23242728e4ad13144e4f85ec",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.00513066661854585,
+            "gpu_dispatch_samples_ms": [
+              0.006144000217318535,
+              0.004127999767661095,
+              0.005119999870657921
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  3,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 44,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                6,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 4.470348358154297e-08,
+              "mean_abs_error": 3.48537618284503e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "cc5b121e5791d4f752ab672f304b8a39a236a74db76e2d72547e209d580364c0"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_fp16_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "8b26baa7a9ead7d19bd2883bdb7d8de771ee5768c3b3b03f16e8ac94f1111e0f",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "8a7c73ef0a91dfa232a6f35293a179a97b3e3134890464a2c92f4da3ea250505",
+          "manifest_sha256": "41066923826b08fc1896806e05fcab6a41faa43ef766292dcbc314aa1f27d9ef",
+          "ptx_sha256": "b0fddff1c33fe5983530bd37cda6a6dc97fb532e357249983e752a93fb328dc6",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.0058026667684316635,
+            "gpu_dispatch_samples_ms": [
+              0.006144000217318535,
+              0.005119999870657921,
+              0.006144000217318535
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  4,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 48,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float16",
+              "expected_dtype": "float16",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "c5ca5463cc14a51c03a3748fc14c540d62135dbc27775d36af05ee53536bc6cb"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "fallback_reason": "output-channel register tiling currently requires FP32 operands"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_1x1_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "e02d6150d1ea05c53e9fa3a24b7442fc20065b5b59fe30e58d09f49119c644b3",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "c3be19e18659c23a2239e9df5c09361539f557a9dbb54199e1400a05d02a5665",
+          "manifest_sha256": "9ce1ac27cbd1e15bc0632f001924d51a684402db58284c92748b16faa04c8c39",
+          "ptx_sha256": "f6fcc26a6c85592eca1df6fbacf94c04c12a2913ce9db926d663e24ddd67559c",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.00467200002943476,
+            "gpu_dispatch_samples_ms": [
+              0.004896000027656555,
+              0.004095999989658594,
+              0.005024000070989132
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 34,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.450580596923828e-09,
+              "mean_abs_error": 7.46114084096108e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "5cda361adb9ec9a0bfb6cba310584993f94d92e904b04273dd4b5e87fe5e5e6e"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_representative_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2374d655c06d5fe665c3807b1665c95bd8d1d61ab1fd0559b76caed95a3dc3ae",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "351fda0e5094882f286e0caa9fda06e29fd6bbafda169ff682a971db02f7a107",
+          "manifest_sha256": "1ecf2f2e685e8aedc6595f9e24add778cdaef72228228773c368248a546059ce",
+          "ptx_sha256": "e2b9c817b05b4243e8b703023d999974c177cdb99494b9f8365ef052f8b373b2",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.08838399996360143,
+            "gpu_dispatch_samples_ms": [
+              0.08806400001049042,
+              0.08799999952316284,
+              0.08908800035715103
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  64,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 31,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                64,
+                32,
+                32
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.748603820800781e-07,
+              "mean_abs_error": 7.318000366796085e-08,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "77ed1ecdafcc1a74149d2f3bb249b0897770e331f3745372edc17d9c6d380d7d"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_padding_nonfinite_weights",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "b4b5bcaa8e85ed6ef1217d2ae6da05511f7e86347deba6a6d223a40959148489",
+          "reference_description": "Analytic scalar-compatibility reference: only center weight is in bounds",
+          "inputs_sha256": "715e9f92a30fe30dc647df4c512ca0df5b4e7cd6237a28535b36203dcb4b6c6d",
+          "manifest_sha256": "007dd74eea6d8cd11a16ab3ac2c5efa45d123ea146653a988e06cb9007a12baf",
+          "ptx_sha256": "a7266be760d9b34b60ae2053f8cb028351398f0229091425565ff1048511d6b1",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.0038506667284915843,
+            "gpu_dispatch_samples_ms": [
+              0.004064000211656094,
+              0.003135999897494912,
+              0.004352000076323748
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 18,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                8,
+                1,
+                1
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "9d42cad41af4aaf3ae973e5a48d96f61e4708edc57bf7dd29a497ebd96f506cf"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_shared_samples",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "f76b06dadfed6454ba92da7739659dcb24a2625dff3a1cce98dbcf9368ba70dc",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "9fec80f2178511fdac8d9d6aaa07eaa18c7ab7b3b72bf07acf45fe8695defe5d",
+          "manifest_sha256": "06550565045164d4df54b65d5fea2f7cbe5786d17cad71c184cbd0cfc4bc3ca1",
+          "ptx_sha256": "1b542d0f6253e6de3388b0de6e76817c0c8deedebee44409f066bbc3ba29e26a",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.014591999972860018,
+            "gpu_dispatch_samples_ms": [
+              0.014208000153303146,
+              0.014336000196635723,
+              0.015231999568641186
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 37,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 1.2951204553246498e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "ecf06c7faaa1f56161517d6362c49a5ec4e0b6bbcb966c51a947b859c3f34d07"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_groups_and_deform_groups",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "bac07cef913efa1d131195ed55cb7f88779757ec4c5e2f8139cb4a61c610b0c3",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "d9b9f4a90f1fc6868639718645e725cba3769b3fd5e6785892ab4b9513f0aac9",
+          "manifest_sha256": "348dcc4b5ebb29f6fd8f841838c35447ee4bae7aa95ca8223961743196a6ca43",
+          "ptx_sha256": "9f11439d574ae60b24d5d5a7aa283110bc597e181b2950a486edb85783369f82",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.01589333328107993,
+            "gpu_dispatch_samples_ms": [
+              0.015359999611973763,
+              0.016063999384641647,
+              0.016256000846624374
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  2,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 38,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 1.4394269480059545e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "9c5af941ecf28a9f955f3c44533749138842b82a35d435c2a126c7895be25191"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_grouped_no_bias",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2d2b1799764078e5f8eaa908d2936550a2cf5af63693acbbaab676eac2df2ff2",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "919b06aee1374544b7399bfb8496530bb1f573ad7fd3f8f89706829c37a24da5",
+          "manifest_sha256": "e067fddf02f00ba6b2f322daaf01993fa0fc989fc13104ae7f992f26e8003f18",
+          "ptx_sha256": "1ec1bbcc082134d51ce3738d8868585b29cd8d205bbbf66d17b6ea4cfe5e9f8b",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.0075093333919843035,
+            "gpu_dispatch_samples_ms": [
+              0.008191999979317188,
+              0.0071680000983178616,
+              0.0071680000983178616
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  2,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 39,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.450580596923828e-09,
+              "mean_abs_error": 4.518347177887942e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "6e802aaa1520ff1b04d22421684ece88e025740df0eaf2f2effc62ebc5fac669"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_zero_offsets",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "8a45bd8d9c7ad408931e82a1dbddef06a90a336ad2cce6e98b0930c009afe9a1",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "0f145873ac8ab225d8f4516f3dae7b533ec01fdc191591830e1eb94c80327cf2",
+          "manifest_sha256": "06550565045164d4df54b65d5fea2f7cbe5786d17cad71c184cbd0cfc4bc3ca1",
+          "ptx_sha256": "1b542d0f6253e6de3388b0de6e76817c0c8deedebee44409f066bbc3ba29e26a",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.014677333335081736,
+            "gpu_dispatch_samples_ms": [
+              0.014336000196635723,
+              0.014336000196635723,
+              0.015359999611973763
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 37,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 3.259629011154175e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "7df83cde313bf052da103fb9be6fb476288843c105146208f1db1caa63a514ab"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 4
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_odd_group_channels_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "a623c4c1f3dd5bb304be6982f9ac896cb9b5898c762900a54817191d5e037224",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "047e002896514b0abdc8b427323b10bb7c2427c32961b79f135c555331831985",
+          "manifest_sha256": "ed7b744659311220219892791182664b7aa8ce4dc649a87c27a5c4edb8ba986a",
+          "ptx_sha256": "a6888e983c195bd13173e205711f1af231936d87bbf24ce18bc3f8ee79b7121e",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.008416000132759413,
+            "gpu_dispatch_samples_ms": [
+              0.008191999979317188,
+              0.00886400043964386,
+              0.008191999979317188
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  3,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 34,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                6,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.4901161193847656e-08,
+              "mean_abs_error": 9.183875388569302e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "b8cb3d66653bd483dc8f0b02b27ea7e517f84ce8a19dce4a3e9393f20eca37de"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_representative_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "151789e8b8d9d10f7b533c5179d7b5ee523f304a5f407e916a5612cc23e36395",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "f7efdd21ca5cbbd1d56fa0b49f78cf5b1eecef330e825a23750a959e97497e11",
+          "manifest_sha256": "aa65a207fb19a6f553f3ba039a4fa13a5a74c6d0e0a1a0019f7dd27b9a59d472",
+          "ptx_sha256": "6d57a7c925a6726076de0e3290456e0fe02c7014ac0764982c1c52062cbc05fd",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.08357333143552144,
+            "gpu_dispatch_samples_ms": [
+              0.08396799862384796,
+              0.08294399827718735,
+              0.08380799740552902
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  17,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 36,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                64,
+                16,
+                17
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 8.940696716308594e-08,
+              "mean_abs_error": 8.276963532861212e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "41a3ac2a6a7fc58d8286c027872eade7a6f4181ed7df64fafaedf21ba2d11ee2"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "requested_channel_tile": 8,
+      "source_report_sha256": "23fb17d011f3526ce88fd8a0f23d8bf91c3c91e4903e976a70d4caea114be6fb",
+      "runner_sha256": "fb2a29656b53727d982d4d5bbd3baf3cafce050bcd010a21617b2b7806d18531",
+      "passed": true,
+      "cases": [
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_bias_relu_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2116746ced99543de892d75900750917509deee71eca62c614fe063c93acfbe0",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "3be0e136f8af3cd06ca72afe0ceaaf199c6e2de058c7b135129e39b4e4438b19",
+          "manifest_sha256": "c190f9e4fb5a4c6f62af86508552afa803eab2981b4b4862b1b7b5047f869c1d",
+          "ptx_sha256": "64332c46c42a91aad38d632387fd5e402cf86a16d63d92f2103a5f198c4f2921",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.010207999808092913,
+            "gpu_dispatch_samples_ms": [
+              0.010239999741315842,
+              0.010143999941647053,
+              0.010239999741315842
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d_relu",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.043081283569336e-07,
+              "mean_abs_error": 4.122089844063989e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "1552cd73b07df1abe7ca24faa0bf3546c02a6c421597798b0f9a939dd8539532"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d_relu",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_grouped_strided_dilated",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "bed96a9288c60c28205e52025eb63a5046c16460ae01ff1acf0c38bcabcb7100",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "14db0a5679d27ac5f212cc3afc21c82620b54adce160f8868599a3a01642147c",
+          "manifest_sha256": "fb86247aee07df76b188a310904c3ccf9132f1c3870c0b4e9ab91b71d06d2e58",
+          "ptx_sha256": "ada9c5d6af87befec7db134c8fd9ac4355305c57d0f635fa84b5aec7bc1c3a91",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.008191999979317188,
+            "gpu_dispatch_samples_ms": [
+              0.008191999979317188,
+              0.008191999979317188,
+              0.008191999979317188
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                4,
+                7
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 3.725290298461914e-08,
+              "mean_abs_error": 3.687091520987451e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "f5104b6d2609ba37db643a2d323a4c3011d453d9832d3ac44fc56a5e397c0459"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_depthwise_multiplier",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "b8ab29c81fb8053827c64e1c5491823e19e3a40a6e5e36befa88dc54ba8abdb7",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "0a9873203c90d9983d8471d713784c6b7a48d33f1ded09106055d0c9d456e637",
+          "manifest_sha256": "46ef048c5eca8718697d53be220cb38b79f075cb3ce0df0dd97c58c7406d5014",
+          "ptx_sha256": "c1bec7493b5a98b050c96bea3f9144d1eb0a760d5d7f9a8caa18798e9b333025",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.005045333256324132,
+            "gpu_dispatch_samples_ms": [
+              0.005119999870657921,
+              0.004896000027656555,
+              0.005119999870657921
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  8,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 32,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.4901161193847656e-08,
+              "mean_abs_error": 1.2247453703763775e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "ad7e9c5aef728a41fe8c78d2809d745d27a36a437659691b333b737241cbb7b2"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_odd_group_channels_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "06a99a1d3141a511956099d935492d71a251a8e9ea06681424f05a1b63a7155a",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "66de14bcdadffcb72547ab4948f190fe07719895bf562bf5b50823a11c676852",
+          "manifest_sha256": "e59538a5476e646415f59d7809b3521c8ea28aec9131d03c6c2b768e224774ce",
+          "ptx_sha256": "ef059ed5110bc5838abb81d610353615d7c258fe23242728e4ad13144e4f85ec",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.00510933327799042,
+            "gpu_dispatch_samples_ms": [
+              0.005216000135987997,
+              0.004991999827325344,
+              0.005119999870657921
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  3,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 44,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                6,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 4.470348358154297e-08,
+              "mean_abs_error": 3.48537618284503e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "cc5b121e5791d4f752ab672f304b8a39a236a74db76e2d72547e209d580364c0"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_fp16_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "8b26baa7a9ead7d19bd2883bdb7d8de771ee5768c3b3b03f16e8ac94f1111e0f",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "8a7c73ef0a91dfa232a6f35293a179a97b3e3134890464a2c92f4da3ea250505",
+          "manifest_sha256": "59b4b19ccf57faa89564c6fd583f28b11264840603343ce5efafa089cc0d2a34",
+          "ptx_sha256": "b0fddff1c33fe5983530bd37cda6a6dc97fb532e357249983e752a93fb328dc6",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.005600000110765298,
+            "gpu_dispatch_samples_ms": [
+              0.005344000179320574,
+              0.006016000173985958,
+              0.005439999978989363
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  4,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 48,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float16",
+              "expected_dtype": "float16",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "c5ca5463cc14a51c03a3748fc14c540d62135dbc27775d36af05ee53536bc6cb"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "fallback_reason": "output-channel register tiling currently requires FP32 operands"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_1x1_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "e02d6150d1ea05c53e9fa3a24b7442fc20065b5b59fe30e58d09f49119c644b3",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "c3be19e18659c23a2239e9df5c09361539f557a9dbb54199e1400a05d02a5665",
+          "manifest_sha256": "a21906b305ff1c7f6c212380b0f8c5c5b02c0c19147618c4627cb6e5cedb130b",
+          "ptx_sha256": "2046377f3a8c85412b253aaada32ad9d4466996b5a243c329dfc80b2fe990c07",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.004394666602214177,
+            "gpu_dispatch_samples_ms": [
+              0.004991999827325344,
+              0.004095999989658594,
+              0.004095999989658594
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 39,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                7,
+                9
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.450580596923828e-09,
+              "mean_abs_error": 7.46114084096108e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "5cda361adb9ec9a0bfb6cba310584993f94d92e904b04273dd4b5e87fe5e5e6e"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_representative_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2374d655c06d5fe665c3807b1665c95bd8d1d61ab1fd0559b76caed95a3dc3ae",
+          "reference_description": "torch.nn.functional.conv2d CPU FP32 + optional ReLU/output cast",
+          "inputs_sha256": "351fda0e5094882f286e0caa9fda06e29fd6bbafda169ff682a971db02f7a107",
+          "manifest_sha256": "db8c8dd236fddd222a976bede5fff9e03a0c05779f97812804575e84750b0a03",
+          "ptx_sha256": "c587248cc04295b4a5d48f39fb3c2c96469dfbaa94c2838ff4a57d5265b98859",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.08025599767764409,
+            "gpu_dispatch_samples_ms": [
+              0.07999999821186066,
+              0.0798719972372055,
+              0.08089599758386612
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  32,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                64,
+                32,
+                32
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.748603820800781e-07,
+              "mean_abs_error": 7.318000366796085e-08,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "77ed1ecdafcc1a74149d2f3bb249b0897770e331f3745372edc17d9c6d380d7d"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/conv_padding_nonfinite_weights",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "b4b5bcaa8e85ed6ef1217d2ae6da05511f7e86347deba6a6d223a40959148489",
+          "reference_description": "Analytic scalar-compatibility reference: only center weight is in bounds",
+          "inputs_sha256": "715e9f92a30fe30dc647df4c512ca0df5b4e7cd6237a28535b36203dcb4b6c6d",
+          "manifest_sha256": "8c76563834479f018c2a3105a55dc5100a66133d0ac60f28c3630695f77c5ffe",
+          "ptx_sha256": "aa1fe6795a79136e7dac6de3cb9d90100b05d93c08d2e15ab9bdb9ad59b0da6b",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.004213333362713456,
+            "gpu_dispatch_samples_ms": [
+              0.004095999989658594,
+              0.004736000206321478,
+              0.0038079998921602964
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 26,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                8,
+                1,
+                1
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 0.0,
+              "mean_abs_error": 0.0,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "9d42cad41af4aaf3ae973e5a48d96f61e4708edc57bf7dd29a497ebd96f506cf"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_shared_samples",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "f76b06dadfed6454ba92da7739659dcb24a2625dff3a1cce98dbcf9368ba70dc",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "9fec80f2178511fdac8d9d6aaa07eaa18c7ab7b3b72bf07acf45fe8695defe5d",
+          "manifest_sha256": "8495c96aeee37595ece3bc33ead039ae3822c27c50aa9936416381e490ae0a48",
+          "ptx_sha256": "b06208379c00dd7b6ab7e652e1411ca02784a0b20635fd500618b9982fc11bad",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.014837333311637243,
+            "gpu_dispatch_samples_ms": [
+              0.015039999969303608,
+              0.014336000196635723,
+              0.015135999768972397
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 1.2951204553246498e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "ecf06c7faaa1f56161517d6362c49a5ec4e0b6bbcb966c51a947b859c3f34d07"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_groups_and_deform_groups",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "bac07cef913efa1d131195ed55cb7f88779757ec4c5e2f8139cb4a61c610b0c3",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "d9b9f4a90f1fc6868639718645e725cba3769b3fd5e6785892ab4b9513f0aac9",
+          "manifest_sha256": "9ff0ba2557884fbb1c559bdae598969c4105fc6b15a1916e7bd3ff8a6cd0ee92",
+          "ptx_sha256": "ca33878a5bb1509f60d6922fc72ff9f94269c4670d830de66d1b65708797d3f5",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.020085332915186882,
+            "gpu_dispatch_samples_ms": [
+              0.02051199972629547,
+              0.020287999883294106,
+              0.01945599913597107
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 1.4394269480059545e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "9c5af941ecf28a9f955f3c44533749138842b82a35d435c2a126c7895be25191"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_grouped_no_bias",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "2d2b1799764078e5f8eaa908d2936550a2cf5af63693acbbaab676eac2df2ff2",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "919b06aee1374544b7399bfb8496530bb1f573ad7fd3f8f89706829c37a24da5",
+          "manifest_sha256": "83d38f22e09c3995f6bd70b0c74e277b3fcda42900e97aa87c2b3183744bb164",
+          "ptx_sha256": "b51476d94aa2c6c9f38274e83fb7982001256c5e4664666df0061d9b40494974",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.006485333510984977,
+            "gpu_dispatch_samples_ms": [
+              0.0071680000983178616,
+              0.006144000217318535,
+              0.006144000217318535
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  6,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 36,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                16,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 7.450580596923828e-09,
+              "mean_abs_error": 4.518347177887942e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "6e802aaa1520ff1b04d22421684ece88e025740df0eaf2f2effc62ebc5fac669"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_zero_offsets",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "8a45bd8d9c7ad408931e82a1dbddef06a90a336ad2cce6e98b0930c009afe9a1",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "0f145873ac8ab225d8f4516f3dae7b533ec01fdc191591830e1eb94c80327cf2",
+          "manifest_sha256": "8495c96aeee37595ece3bc33ead039ae3822c27c50aa9936416381e490ae0a48",
+          "ptx_sha256": "b06208379c00dd7b6ab7e652e1411ca02784a0b20635fd500618b9982fc11bad",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.014314666700859865,
+            "gpu_dispatch_samples_ms": [
+              0.01360000018030405,
+              0.014336000196635723,
+              0.01500799972563982
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  1,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 40,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                8,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 2.9802322387695312e-08,
+              "mean_abs_error": 3.259629011154175e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "7df83cde313bf052da103fb9be6fb476288843c105146208f1db1caa63a514ab"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 8
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_odd_group_channels_fallback",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "a623c4c1f3dd5bb304be6982f9ac896cb9b5898c762900a54817191d5e037224",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "047e002896514b0abdc8b427323b10bb7c2427c32961b79f135c555331831985",
+          "manifest_sha256": "29384d03d46561c25d77c0ba21bd5824f010be05a8aea719a30df040fe4f470d",
+          "ptx_sha256": "a6888e983c195bd13173e205711f1af231936d87bbf24ce18bc3f8ee79b7121e",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.0084906667470932,
+            "gpu_dispatch_samples_ms": [
+              0.009088000282645226,
+              0.008191999979317188,
+              0.008191999979317188
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  3,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 34,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                2,
+                6,
+                6,
+                8
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 1.4901161193847656e-08,
+              "mean_abs_error": 9.183875388569302e-10,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "b8cb3d66653bd483dc8f0b02b27ea7e517f84ce8a19dce4a3e9393f20eca37de"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "fallback_reason": "output channels per group are not divisible by the requested register tile"
+            }
+          ]
+        },
+        {
+          "name": "cuda-convolution-fixtures-20261017/dcn_representative_channels",
+          "status": "gpu_passed",
+          "gpu_executed": true,
+          "artifact_hashes_verified": true,
+          "exit_code": 0,
+          "numerical_passed": true,
+          "reference_sha256": "151789e8b8d9d10f7b533c5179d7b5ee523f304a5f407e916a5612cc23e36395",
+          "reference_description": "torchvision.ops.deform_conv2d compiled CPU operator",
+          "inputs_sha256": "f7efdd21ca5cbbd1d56fa0b49f78cf5b1eecef330e825a23750a959e97497e11",
+          "manifest_sha256": "38e0ac88c7f5326355c4216e8c776086e044e94abf7a5b24d9e609f6d0bd3d2c",
+          "ptx_sha256": "e3ab9ea6a098d6a0c630e592601e49677a394d46bc3c36b20d04ace3acbdfeb0",
+          "compiler_sha256": "4481ec7b8725e48b41176d56caf4512f3ee53b5d399cbf4edafaf7c9331701e8",
+          "runtime": {
+            "execution": "cuda-device",
+            "host_operator_fallback": false,
+            "completed_dispatches": 1,
+            "warmup_runs": 1,
+            "measured_runs": 3,
+            "gpu_dispatch_ms": 0.08868266642093658,
+            "gpu_dispatch_samples_ms": [
+              0.08806400001049042,
+              0.08915200084447861,
+              0.08883199840784073
+            ],
+            "resources": [
+              {
+                "kernel": "gac_op_0",
+                "op": "gac.deform_conv2d",
+                "schedule": "channel-tiled",
+                "block": [
+                  256,
+                  1,
+                  1
+                ],
+                "grid": [
+                  9,
+                  1,
+                  1
+                ],
+                "registers_per_thread": 39,
+                "static_shared_bytes_per_block": 0,
+                "local_bytes_per_thread": 0
+              }
+            ]
+          },
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "shape": [
+                1,
+                64,
+                16,
+                17
+              ],
+              "actual_dtype": "float32",
+              "expected_dtype": "float32",
+              "finite": true,
+              "mismatched_elements": 0,
+              "max_abs_error": 8.940696716308594e-08,
+              "mean_abs_error": 8.276963532861212e-09,
+              "dtype_matches": true,
+              "rtol": 2e-05,
+              "atol": 2e-05,
+              "output_sha256": "41a3ac2a6a7fc58d8286c027872eade7a6f4181ed7df64fafaedf21ba2d11ee2"
+            }
+          },
+          "selected_schedules": [
+            {
+              "op": "gac.deform_conv2d",
+              "channel_tile": 8
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
