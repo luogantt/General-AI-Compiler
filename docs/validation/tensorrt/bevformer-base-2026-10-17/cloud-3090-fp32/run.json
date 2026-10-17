@@ -1,0 +1,185 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-17T12:35:28.950486+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 51, 750 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-17T12:35:40.012437+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 70, 1860 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  },
+  "engine": "/root/gac-tensorrt-20261017/results/fp32-workspace-01/full.engine",
+  "engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+  "inputs": "/root/gac-tensorrt-20261017/models/held-out-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 3686472704,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 20741947392,
+      "total_bytes": 25296044032,
+      "device_used_bytes": 4554096640
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 20,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      371.4918518066406,
+      374.540283203125,
+      371.2122802734375,
+      373.35040283203125,
+      373.0677795410156,
+      372.2669982910156,
+      373.080078125,
+      373.6422424316406,
+      375.5274353027344,
+      373.90234375,
+      373.74053955078125,
+      375.7752380371094,
+      373.3463134765625,
+      375.1137390136719,
+      376.9292907714844,
+      375.4117126464844,
+      375.9308776855469,
+      379.2507019042969,
+      374.23614501953125,
+      373.6309814453125
+    ],
+    "mean": 374.2723617553711,
+    "median": 373.8214416503906,
+    "min": 371.2122802734375,
+    "max": 379.2507019042969,
+    "p95": 377.045361328125
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      371.52911990415305,
+      374.5555110508576,
+      371.22780608478934,
+      373.36465693078935,
+      373.09561390429735,
+      372.28270899504423,
+      373.09495103545487,
+      373.6670929938555,
+      375.5445700371638,
+      373.9175220252946,
+      373.75582894310355,
+      375.7882850477472,
+      373.3628240879625,
+      375.1272320514545,
+      376.94315798580647,
+      375.4262940492481,
+      375.95290900208056,
+      379.26533399149776,
+      374.250564025715,
+      373.64700296893716
+    ],
+    "mean": 374.2899492557626,
+    "median": 373.8366754841991,
+    "min": 371.22780608478934,
+    "max": 379.26533399149776,
+    "p95": 377.05926678609103
+  },
+  "validation": {
+    "status": "not_checked",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only"
+  }
+}

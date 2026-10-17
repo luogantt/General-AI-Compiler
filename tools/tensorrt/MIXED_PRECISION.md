@@ -5,10 +5,18 @@
 输入已完成一次完整图校准并生成缓存；随后 engine 构建因共享常量权重的导入方式失败。
 已通过 GPU 对照定位并修复 Conv 权重 Identity 别名问题。修正后的 backbone 已完成
 32 帧真实校准并构建 engine，逐层检查确认 462 个目标 Conv 的输入和权重为 INT8。
-尚未完成完整 BEVFormer 的 TensorRT engine、精度验收或 FPS 测量。
-在一帧未参与校准的真实六相机输入上，混合 INT8 backbone 的延时中位数为 146.72 ms，
+云端 RTX3090 24GB 已使用这些实测范围构建、执行完整 Base engine，实际格式审计确认
+462 个目标 Conv 的输入和权重均为 INT8。预热 5 次、测量 20 次，中位设备延时
+204.07 ms（倒数约 4.90 FPS），不含预处理、传输和后处理，未达到 30 FPS。
+一帧独立 mini_val 真实输入的三路输出有限，与独立 GAC native-MLIR FP32 对照，
+BEV/分类/框相对 RMSE 为 2.42%/0.54%/0.47%；严格逐元素门限
+`rtol=1e-3, atol=1e-4` 未通过。该误差包含混合精度与不同实现/设备差异，不等于检测指标下降。
+此固定 cold 图仍使用 synthetic 几何、零 CAN-bus、无历史帧，尚无 nuScenes mAP/NDS 验收。
+
+此前 RTX3070 Ti Laptop 8GB 的测试中，一帧未参与校准的真实六相机输入上，
+混合 INT8 backbone 的延时中位数为 146.72 ms，
 所有末端特征有限；这不包含 FPN/Transformer/head。与同图 FP32 backbone 对照的
-特征相对 RMSE 为 11.49%–15.21%，尚不能判定检测精度达标。完整图在降低构建搜索开销后
+特征相对 RMSE 为 11.49%–15.21%，尚不能判定检测精度达标。该机器的完整图在降低构建搜索开销后
 仍因显存不足失败，详见[验证记录](../../docs/validation/tensorrt/bevformer-base-2026-10-17/README.md)。
 
 ## 精度落在什么位置
@@ -99,7 +107,7 @@ NVIDIA_TF32_OVERRIDE=0 python tools/tensorrt/run_engine.py build \
   --engine build/trt/base-mixed.engine --report build/trt/base-mixed-build.json
 ```
 
-512 MiB 是 tactic 工作区上限，不是整网总显存上限，也不保证当前 8GB GPU 能构建完整 Base。
+512 MiB 是 tactic 工作区上限，不是整网总显存上限，也不保证 8GB GPU 能构建完整 Base。
 缓存绑定完整内嵌权重 ONNX 的哈希、精度策略、TensorRT 版本、预处理声明、
 有序样本列表及文件哈希；任何一项改变都需要使用新缓存路径。
 构建通过后再按 [运行说明](README.runtime.md) 做输出误差与真实验证集 NDS/mAP 检查。

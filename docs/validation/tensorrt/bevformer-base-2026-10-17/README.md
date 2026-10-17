@@ -1,7 +1,174 @@
 # BEVFormer-base TensorRT 验证（2026-10-17）
 
 分支 `lg/bevformer-tensorrt`，独立 TensorRT 对照入口，不经过 GAC MLIR Pass。
-测试机 `robot@192.168.3.33`，RTX 3070 Ti Laptop 8GB，TensorRT 10.13.3.9、
+
+同日补测 **全 FP32（关闭 TF32）**：同一 3090、完整模型和输入，中位延时
+**373.821 ms，约 2.675 FPS**；混合精度为 **204.073 ms，约 4.900 FPS**，约快 1.832 倍。
+FP32 使用 4 GiB workspace，混合精度使用 1 GiB，均为搜索级别 3；不是只改变精度的隔离实验。
+FP32 输出通过同帧独立 native FP32 参考的严格逐元素检查，仍不代表检测精度验收。
+构建失败与修正、显存和复现命令见 [FP32 对照报告](cloud-3090-fp32/README.md)。
+
+同日已完成 **TensorRT IProfiler + Nsight Systems** 分析：
+[交互报告](profiling/index.html)、[全量逐层 CSV](profiling/layers-ranked.csv)、
+[采集说明与公开时间线](profiling/README.md)、[公开数据包](profiling/profile-data.zip)。
+混合精度 / FP32 分别记录 3819 / 3260 条执行层回调，各预热 10 次、采样 30 次；
+Nsight 各捕获 5 帧。混合引擎的 MSDA 插件合计 74.188 ms，占逐层均值之和的 35.08%；
+Nsight 独立 trace 中对应采样 kernel 每帧累计 75.118 ms，占 kernel 累计时间的 37.90%。
+两个分母和采集 pass 不同，不能混作无 profiler 的整网延时。图仍为无历史帧、合成投影条件；
+这些统计不代表真实时序或检测精度验收。下载的 32 个采集文件均通过远端 SHA-256 校验。
+公开前已从两个 SQLite 中删除进程 / 系统环境变量记录，并替换 `StringIds` 中的凭据后
+执行 VACUUM。逐表行摘要确认除上述净化外，其余数据（包括计时和字符串 ID）不变；
+可能包含环境凭据的原始 `.nsys-rep` 不纳入 Git 或 ZIP。
+[净化记录](profiling/publication-sanitization.json)保留原文件与公开文件哈希；
+`remote-manifest.json` / `download-verification.json` 描述原始下载，
+`local-manifest.json` 描述净化后的公开文件，不能要求两组 SQLite 哈希相同。
+
+## 性能分析与车企 / Orin 对比
+
+### 本次 profiling 告诉了我们什么
+
+这是与上方首次测速独立的一组实验。各引擎预热 10 次、采样 30 次，随后分别测量
+未启用逐层 profiler 的 baseline、启用 profiler 的全图时间和逐层回调；Nsight 另捕获 5 帧。
+
+| 引擎 | baseline 中位数 / P95 | 执行层回调数 | 逐层均值之和 |
+| --- | ---: | ---: | ---: |
+| 混合精度 | 204.224 / 232.416 ms | 3819 | 211.475 ms |
+| FP32（关闭 TF32） | 375.967 / 398.980 ms | 3260 | 380.366 ms |
+
+混合精度的主要执行层类别如下。占比分母是全部 IProfiler 回调的均值之和，不是
+baseline 延时；融合层保持整体统计，不把同一条回调拆成多个原始 ONNX 算子重复计时。
+
+| 执行层类别 | 均值之和 | 层占比 |
+| --- | ---: | ---: |
+| MSDA 插件 | 74.188 ms | 35.08% |
+| Convolution | 37.380 ms | 17.68% |
+| kgen 代码生成 / 融合层 | 29.505 ms | 13.95% |
+| DCN 插件 | 28.635 ms | 13.54% |
+| Reformat | 18.348 ms | 8.68% |
+| MatrixMultiply | 11.231 ms | 5.31% |
+
+Convolution 分类可能包括被映射为卷积的矩阵运算及融合 epilogue，不能全部解释成
+CNN backbone。最慢的六条回调是六层 encoder 的空间 MSDeformAttn，每条约
+11.38–11.73 ms。独立 Nsight trace 中，混合引擎每帧有 3929 次 Kernel 启动；
+`ms_deformable_im2col_gpu_kernel<__half>` 每帧累计约 75.118 ms，占 Kernel 累计时间
+37.90%。这些证据支持优先检查空间注意力的工作量和插件实现，但尚未采集 Nsight
+Compute 硬件计数器，不能仅凭耗时判定显存带宽、缓存命中或计算利用率的根因。
+
+### 当前几何条件为什么影响比较
+
+本次导出图使用 synthetic all-visible 投影。空间 MSDA 的采样位置 shape 为
+`[6, 40000, 8, 4, 8, 2]`，六个相机各处理全部 40,000 个 BEV 查询。
+这不等于真实相机视野下的工作量。[官方 SpatialCrossAttention 实现](https://github.com/fundamentalvision/BEVFormer/blob/master/projects/mmdet3d_plugin/bevformer/modules/spatial_cross_attention.py)
+先用 `bev_mask` 为每个相机筛选可见查询，再按相机中最大的可见数量 `max_len` 补齐、
+重组并执行注意力；不能简单把所有相机有效查询数相加就当成实际 Kernel 规模。
+
+所以，约 204 ms 是当前固定图和输入条件下的设备序列延时，不能直接推断真实车载
+BEVFormer 的延时，也不能用它证明所有量产 BEV 网络在 Orin 上都无法实时。
+真实投影可能减少空间注意力的工作量，但历史帧、输入变化和实际导出方式也会影响性能，
+具体收益需要重新测量，不能预先保证达到 30 FPS。
+
+### 车企公开的网络不等于开源 BEVFormer-base
+
+以下为官方披露的历史代际，核查日期为 2026-10-17，不代表厂商当前所有车型和版本。
+BEV 是空间表示，Transformer 是网络组件；二者不能唯一确定具体 backbone、层数或权重。
+
+| 厂商 / 披露时间 | 官方披露 | 可确认的边界 |
+| --- | --- | --- |
+| 小鹏 G6，2023-06-29 | 自研 BEV + Transformer 的 XNet，双 Orin-X | 没有据此公开可复现的完整网络配置和单帧延时，不能认定为官方 BEVFormer-base。[官方发布](https://www.xpeng.com/news/0189077394e388fa98d62c9e8d790065) |
+| 理想 L7，2023-02-08 | 融合 BEV 算法框架；AD Max 双 Orin-X，AD Pro 征程 5 | 不能据此认定量产直接使用开源 BEVFusion 或 BEVFormer 的原配置、原权重。[官方发布](https://ir.lixiang.com/zh-hant/news-releases/news-release-details/li-auto-inc-launches-li-l7-five-seat-flagship-family-suv/) |
+
+后续系统也持续演进：小鹏 2024 年披露 [XNet + XPlanner + XBrain](https://www.xiaopeng.com/news/company_news/5307.html)，
+理想 2025 年初披露 [端到端模型 + VLM 双系统](https://ir.lixiang.com/zh-hant/news-releases/news-release-details/li-auto-inc-december-2024-delivery-update/)。
+这些系统名称不能直接对应某个公开 checkpoint，也不提供与本实验同口径的 FPS。
+
+### 可复核的 Orin 公开参考
+
+[NVIDIA CUDA-BEVFusion](https://github.com/NVIDIA-AI-IOT/Lidar_AI_Solution/tree/master/CUDA-BEVFusion)
+公开了 BEVFusion-Base、ResNet-50、相机输入 `256×704` 的以下结果：
+
+| 公开配置 | Orin FPS | mAP / NDS |
+| --- | ---: | ---: |
+| TensorRT FP16 | 18 | 67.89 / 70.98 |
+| TensorRT FP16 + INT8 PTQ | 25 | 67.66 / 70.81 |
+
+官方说明使用 TensorRT 8.6、CUDA 11.4、cuDNN 8.6，在 nuScenes 6019 个验证样本上统计，
+LiDAR 点数影响速度。该模型使用相机和 LiDAR，属于 **BEVFusion，不是 BEVFormer**；
+表格不代表任何量产车型的整套智驾速度，也不能和我们的 `928×1600` 六相机 Base 图
+做相同任务、相同精度的直接性能排名。
+
+工程上可共同调整 backbone、输入分辨率、查询数量、层数、精度、时序复用和 Kernel
+实现，以适配延时预算；结构调整通常需要重新训练并验证任务精度。摄像头帧率、感知
+网络频率与控制循环频率也不是同一个指标；流水线提高吞吐，不自动消除单帧依赖延迟。
+本项目下一步应先建立真实几何与连续帧的性能 / 精度基线，再按实测热点优化；若固定
+官方 Base 配置，仅凭编译优化，目前没有证据保证 Orin 上达到 30 FPS。
+
+## 最新结果：3090 完整混合精度引擎已执行
+
+云机器实际为 **RTX 3090 24GB，并非 4090**。源代码提交
+`cf34273c6d1853a302bbfc24c59d4afce46fbd16`；TensorRT 10.13.3.9、PyTorch
+2.7.0+cu126、Python 3.11.15、驱动 580.126.18。使用修复权重引用后的完整 Base ONNX，
+读取原机上 32 帧真实 mini_train 图像测得的 backbone 校准范围，在云端完成构建和推理。
+环境依赖通过清华 PyPI 镜像及 NVIDIA 包源安装到独立 venv，未修改系统驱动。
+
+| 检查 | 结果 |
+|---|---|
+| 完整引擎构建 | 成功；构建进程约 342 秒 |
+| 实际 INT8 覆盖 | 462/462 个目标 backbone Conv 的激活和权重为 INT8，输出 FP16 |
+| 测速方法 | 同一真实 mini_val 帧，预热 5 次、测量 20 次 |
+| CUDA event 中位数 / P95 | **204.073 / 206.887 ms** |
+| 中位延时倒数 | **约 4.90 帧/秒**；不是应用端到端吞吐 |
+| 主机提交至同步完成中位数 | 204.091 ms |
+| 构建时整卡显存采样峰值 | 9346 MiB，约 9.13 GiB |
+| 推理进程期间整卡显存采样峰值 | 2570 MiB，约 2.51 GiB |
+| 输出有限性 | 三路输出全部有限，无 NaN/Inf |
+
+显存每 250 ms 采样一次，是整卡占用，包含基线和其他进程，不是本进程独占分配；
+采样可能漏掉更短的峰值。上述构建需求不能直接当作推理需求，也不能据此保证
+该引擎在其他 GPU 上可移植。计时排除模型加载、预热、输入输出复制、预处理和后处理，
+没有使用 CUDA Graph replay。**当前没有达到 30 FPS（每帧约 33.3 ms）的目标。**
+
+同一帧另用原机上的独立 GAC native MLIR FP32 实现生成参考，并检查输入、模型与常量身份：
+
+| 输出 | 相对 RMSE | 余弦相似度 | 最大绝对误差 |
+|---|---:|---:|---:|
+| `bev_embed` | 2.419% | 0.999707 | 0.211466 |
+| `all_cls_scores` | 0.539% | 0.999985 | 0.773867 |
+| `all_bbox_preds` | 0.475% | 0.999989 | 1.104830 |
+
+`rtol=1e-3, atol=1e-4` 的严格逐元素诊断阈值**未通过**。这不是新一次 PyTorch 真值运行，
+差异包含混合精度及后端实现差异，不能全部归因于 INT8，也不能把特征误差解释为检测准确率下降。
+此次执行的是完整固定形状 **cold raw-head** 导出图：R101/DCNv2、4 层 FPN、200×200 BEV、
+6 层 encoder、六相机输入 `[1,6,3,928,1600]`。图内仍是合成全可见投影、zero CAN-bus，
+没有历史帧或框解码。**真实几何/时序推理及 nuScenes mAP/NDS 尚未验收。**
+
+证据：[汇总](cloud-3090/summary.json)、[构建](cloud-3090/full-build.json)、
+[测速](cloud-3090/run.json)、[实际精度格式](cloud-3090/full-precision-audit.json)、
+[逐输出误差](cloud-3090/native-comparison.json)、[输入来源](cloud-3090/held-out-input-provenance.json)、
+[独立参考来源](cloud-3090/native-heldout-reference.provenance.json)、
+[环境](cloud-3090/environment.json)、[依赖版本](cloud-3090/packages.txt)。
+原始 run 报告未传入 `--reference`，保留 `not_checked`；数值对照由独立离线报告记录。
+完整 inspector、日志和输出保留于本地 `build/tensorrt-cloud-20261017/`，大模型和 engine
+保留于云端 `/root/gac-tensorrt-20261017/`；汇总记录文件哈希。
+
+云端复现命令（模型和范围文件身份见汇总，先准备相应文件）：
+
+```sh
+cd /root/gac-tensorrt-20261017
+NVIDIA_TF32_OVERRIDE=0 venv/bin/python tools/tensorrt/run_engine.py build \
+  --onnx models/full.onnx --precision mixed-int8 --calibrated-ranges models/ranges.json \
+  --engine results/mixed-01/full.engine --report results/mixed-01/full-build.json \
+  --workspace-mib 1024 --builder-optimization-level 3 --max-aux-streams 0 --verbose
+NVIDIA_TF32_OVERRIDE=0 venv/bin/python tools/tensorrt/run_engine.py run \
+  --engine results/mixed-01/full.engine --inputs models/held-out-images.npy \
+  --output results/mixed-01/heldout --warmup 5 --repeat 20
+```
+
+下文保留此前 **3070 Ti Laptop 8GB** 的校准、失败诊断与 backbone 测试过程，
+不把不同 GPU、子图或不同参考的结果混为同一次实验。
+
+## 原 3070 Ti 测试环境
+
+测试机原地址 `robot@192.168.3.33`，当前为 `robot@192.168.3.24`，RTX 3070 Ti Laptop 8GB，TensorRT 10.13.3.9、
 Python 3.11.16、PyTorch 2.7.0+cu126、驱动 580.178.04。
 运行目录 `/home/robot/project/gac-tensorrt-20261017`；系统驱动与原 Isaac 环境未修改。
 
@@ -19,7 +186,7 @@ Python 3.11.16、PyTorch 2.7.0+cu126、驱动 580.178.04。
 - 完整 Base ONNX 已适配：22,412 → 22,538 节点，156 个 DCNv2、18 个 MSDA。
   额外节点只用于 MSDA shape 恢复；没有裁剪模型、预计算激活或 CPU 算子回退。
 - 32 帧真实 mini 输入完成旧完整图校准并写出缓存；随后 engine 构建失败。
-  失败 Conv 的常量权重别名已用 GPU 对照定位并在适配器中修复，完整新 engine 待验收。
+  失败 Conv 的常量权重别名已用 GPU 对照定位并在适配器中修复；后来在 3090 构建完整引擎，见上节。
 
 ## 混合精度：完整计划与小网络实测
 
@@ -63,7 +230,7 @@ stem/body/head 仍为 `Half/Int8/Half`；与缓存 engine 的 256 个输出元�
 `calibration_ranges.py` 单独绑定子图缓存与范围产物，不能把子图缓存冒充全图缓存。
 新 manifest 还记录 462 个 Conv 的 924 条 input0/output0 激活边；转换及全图应用都按精确
 张量名称核对，必需范围缺失或无效时失败，不填默认值。子图提取已完成 CPU 验证，
-范围应用接口已完成上述小网络 GPU 验证。修复后的 Base backbone 已完成真实校准与构建，见下节；完整模型仍待验收。
+范围应用接口已完成上述小网络 GPU 验证。修复后的 Base backbone 已完成真实校准与构建，见下节；后续 3090 完整模型执行及精度边界见本页开头。
 
 ## 真实 32 帧校准与权重别名修复
 
@@ -93,7 +260,7 @@ CPU 随机小模型对照结果完全一致，真实 Base 的结构逐项核对�
 
 完整图最初仅传 Conv 两端范围，在 Conv+Add+ReLU 融合处失败；现在还传递已有实测范围的
 backbone 激活，排除静态权重、shape 与未知 head。诊断构建已越过融合错误，但在后续
-生成引擎时 OOM（新申请 655,520,000 B）。这是构建失败，不是推理峰值测量；完整 FPS 尚无结果。
+生成引擎时 OOM（新申请 655,520,000 B）。这是原 3070 Ti 上的构建失败，不是推理峰值测量；当时没有完整 FPS 结果。
 
 正式范围传递实现再次使用 `builder_optimization_level=0`、`TACTIC_DRAM=4096 MiB`、
 workspace 512 MiB、aux streams 0 构建完整图，仍在相同申请量处 OOM。
@@ -134,8 +301,8 @@ FP32 禁用 FP16/TF32，插件保持 FP32；参考是同图 TensorRT 浮点引�
 
 这些数字是失败的单次申请，**不是模型总显存需求或实测峰值**；workspace 也不是总显存上限。
 现在 builder 已直接使用 CUDA Driver 初始化，不再导入 PyTorch CUDA；新路径已完成小网络
-构建、完整模型计划解析与真实 32 帧校准，但尚无完整 Base 构建成功的证据，不能宣称 OOM 已解决。
-尚不能由环境、单算子或小 CNN 验证推断完整模型已经通过或报告整网 FPS。
+构建、完整模型计划解析与真实 32 帧校准。该 8GB 测试阶段没有完整 Base 构建成功的证据；
+后续 24GB 3090 的成功构建不表示 8GB 构建 OOM 已解决。
 静态张量容量与后续分块方向见 [memory-analysis.md](memory-analysis.md)。
 
 ## 模型与比较范围
@@ -161,7 +328,7 @@ manifest 记录 sample token、原图与输出哈希及实际导出报告。证�
 [preparation-summary.json](nuscenes-mini/preparation-summary.json)、
 [calibration.json](nuscenes-mini/calibration.json)、[dataset.json](nuscenes-mini/dataset.json)。
 全部 32 帧已在旧完整图完成校准，但后续 engine 构建失败；以上既有随机输入对照文件
-不会被标成真实校准结果。新模型将单独记录子图校准和完整 engine 构建结果。
+不会被标成真实校准结果。新模型的子图校准见上文，完整 engine 的 3090 构建结果见本页开头。
 
 当前 ONNX 的相机投影仍为固定的 synthetic all-visible 几何，CAN-bus 仍为零。
 真实图像不能修正这一导出边界，校准出的 head 激活统计不一定适用于真实几何和跨帧部署；

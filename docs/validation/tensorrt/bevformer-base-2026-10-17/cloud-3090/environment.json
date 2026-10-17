@@ -1,0 +1,46 @@
+{
+  "scope": "Environment and FP32 add smoke test only; not BEVFormer validation",
+  "passed": true,
+  "host": "wyAbDb",
+  "python": "3.11.15",
+  "tensorrt": "10.13.3.9",
+  "torch": "2.7.0+cu126",
+  "torch_cuda": "12.6",
+  "gpu": "NVIDIA GeForce RTX 3090, 580.126.18, 24576 MiB",
+  "plugins": [
+    {
+      "name": "ModulatedDeformConv2d",
+      "version": "2",
+      "namespace": ""
+    },
+    {
+      "name": "MultiscaleDeformableAttnPlugin_TRT",
+      "version": "2",
+      "namespace": ""
+    }
+  ],
+  "actual": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ],
+  "expected": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ]
+}

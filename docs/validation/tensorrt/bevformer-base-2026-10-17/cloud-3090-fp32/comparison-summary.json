@@ -1,0 +1,2554 @@
+{
+  "status": "measured",
+  "source_commit": "cf34273c6d1853a302bbfc24c59d4afce46fbd16",
+  "scope": "Complete fixed-shape BEVFormer-base cold raw-head ONNX; synthetic geometry, zero CAN-bus; no box decoding or nuScenes accuracy",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "precision": {
+    "requested": "fp32",
+    "network_typing": "weak",
+    "tf32_builder_flag": false,
+    "fp16_allowed": false,
+    "plugins_fp32": true,
+    "fp32_plugin_layers": [
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2_1/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2_2/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2_3/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2_4/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.0/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.1/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.2/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.3/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.4/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.5/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.6/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.7/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.8/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.9/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.10/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.11/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.12/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.13/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.14/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.15/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.16/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.17/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.18/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.19/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.20/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.21/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer3/layer3.22/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.0/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.1/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/img_backbone/layer4/layer4.2/conv2_5/MMCVModulatedDeformConv2d",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.0/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.0/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.1/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.2/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.3/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.4/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      },
+      {
+        "name": "/pts_bbox_head/transformer/decoder/layers.5/attentions.1/MSDeformAttn",
+        "floating_precision": "fp32",
+        "float_input_indices": [
+          0,
+          3,
+          4
+        ],
+        "float_output_indices": [
+          0
+        ],
+        "method": "Identity-constrained floating edges; integer edges unchanged; no layer.precision"
+      }
+    ],
+    "mixed_layer_policy": null
+  },
+  "NVIDIA_TF32_OVERRIDE": "0",
+  "onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "fp32_engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+  "mixed_engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2",
+  "warmup": 5,
+  "repeat": 20,
+  "fp32_cuda_event_ms": {
+    "mean": 374.2723617553711,
+    "median": 373.8214416503906,
+    "min": 371.2122802734375,
+    "max": 379.2507019042969,
+    "p95": 377.045361328125
+  },
+  "mixed_cuda_event_ms": {
+    "mean": 204.41881637573243,
+    "median": 204.07295989990234,
+    "min": 202.0341796875,
+    "max": 209.41209411621094,
+    "p95": 206.88671417236327
+  },
+  "fp32_median_latency_reciprocal_fps": 2.675073948634629,
+  "mixed_median_latency_reciprocal_fps": 4.9002082416528845,
+  "fp32_to_mixed_latency_ratio": 1.831802909281807,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "timing_note": "Sequential samples, no CUDA Graph, reciprocal latency not application throughput; old mixed run reused on same GPU, not an interleaved thermal-controlled experiment",
+  "runtime_memory": {
+    "context_device_memory_requirement_bytes": 3686472704,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 20741947392,
+      "total_bytes": 25296044032,
+      "device_used_bytes": 4554096640
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "sampled_memory_scope": "250 ms sampled whole-device memory.used, includes baseline/other processes; observed lower bound on peak, not exclusive process allocation",
+  "phases": [
+    {
+      "name": "full-build",
+      "status": "passed",
+      "seconds": 162.39791178703308,
+      "memory": {
+        "samples": 648,
+        "sampled_device_used_peak_mib": 2948.0,
+        "first_sample_used_mib": 1.0
+      }
+    },
+    {
+      "name": "heldout-run",
+      "status": "passed",
+      "seconds": 15.367393732070923,
+      "memory": {
+        "samples": 61,
+        "sampled_device_used_peak_mib": 4348.0,
+        "first_sample_used_mib": 1.0
+      }
+    }
+  ],
+  "all_outputs_finite": true,
+  "fp32_vs_native_elementwise_threshold_met": true,
+  "fp32_vs_native_relative_rmse": {
+    "bev_embed": 8.337044917440445e-07,
+    "all_cls_scores": 2.0012239048666731e-07,
+    "all_bbox_preds": 3.9291481591341416e-07
+  },
+  "mixed_vs_fp32_elementwise_threshold_met": false,
+  "mixed_vs_fp32_relative_rmse": {
+    "bev_embed": 0.024193061933643276,
+    "all_cls_scores": 0.005385732700265422,
+    "all_bbox_preds": 0.004748603087582587
+  },
+  "detection_accuracy": "not evaluated; synthetic geometry, zero CAN-bus, cold frame remain",
+  "artifacts": {
+    "full.engine": {
+      "sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+      "bytes": 329543788
+    },
+    "full-build.json": {
+      "sha256": "f58d16bc2e5e79f6f95d95d6c49ae583e85e78fdb7676dea5104f8260120e190",
+      "bytes": 71102
+    },
+    "full-build.layers.json": {
+      "sha256": "0b4cd6d23b9fc2d5c5ce3814b69aa2b10a0348bcc749de010243a0f12cd3495b",
+      "bytes": 3006421
+    },
+    "full-build.log": {
+      "sha256": "dc0ce62c2bede91c02b4c7681745bbc3a90cce030d0640222ff096c3f4c75692",
+      "bytes": 50723
+    },
+    "status.json": {
+      "sha256": "569cba07259e01be4344db9a7752939076afe6f2a92bc14c3abe78e309de58e0",
+      "bytes": 3280
+    },
+    "heldout/report.json": {
+      "sha256": "36b10d5dedc80aefa0bbc3b675af90d133b08c00197bfeb71462d64157623900",
+      "bytes": 5082
+    },
+    "heldout/outputs.npz": {
+      "sha256": "2e6740dab815cd0f485b62926219291dbf1d7624300fc4c567d7b7d17fff4752",
+      "bytes": 41392792
+    },
+    "full-build-gpu.csv": {
+      "sha256": "a7a92a8424ad7e5805e4085aceff67d09347b3b71b3a7c453a5931fa2df02248",
+      "bytes": 47019
+    },
+    "heldout-run-gpu.csv": {
+      "sha256": "bec205ca43aede7d336624f9dc6cb6e89aebc151d2c2007bcae0d726e8b797c1",
+      "bytes": 4463
+    },
+    "mixed-vs-fp32.json": {
+      "sha256": "1a9518243e6c5bacea743be7dcffd98d7b6c7b9a6c403e67d73e9e12c13c78fd",
+      "bytes": 2875
+    },
+    "fp32-vs-native.json": {
+      "sha256": "f24f02565945af48c514fa352841b83cc55654f5b952ac8e5eeba5d028f798c1",
+      "bytes": 2877
+    }
+  }
+}

@@ -2,8 +2,8 @@
 
 分支：`lg/bevformer-tensorrt`，基于原生 CUDA/Vortex 优化提交 `baac4de`。
 本分支先建立完整 BEVFormer 的 TensorRT 对照路线，用于比较数值与性能。
-截至 2026-10-17，已固定两份上游参考源码，并在 `robot@192.168.3.33` 安装
-TensorRT 10.13.3.9，通过真实 GPU 加法网络测试。当前直接适配本项目已经导出的
+截至 2026-10-17，已固定两份上游参考源码，并在云端 RTX3090 24GB 上使用
+TensorRT 10.13.3.9 构建、执行完整 Base 混合精度 engine。当前直接适配本项目已经导出的
 Base cold ONNX，使用 TensorRT 内置 DCNv2/MSDA v2 插件，保留相同输入和参考输出。
 完整模型构建、数值与延时的结果以验证报告为准；环境测试不代表模型测试通过。
 
@@ -12,12 +12,26 @@ backbone 普通卷积 INT8 的规则和校准方式见 [MIXED_PRECISION.md](MIXE
 混合精度代码、完整模型逐层计划、校准缓存和小 CNN 的 GPU 集成测试已完成；
 真实 nuScenes mini 的 32 帧六相机输入已完成旧完整图的校准并写出缓存，但随后 engine
 构建因 Conv 常量权重的 Identity 别名失败。GPU 对照已复现问题，适配器已修复这些引用。
-修复后的 backbone 已完成 32 帧真实校准并构建 INT8 引擎；完整 Base 构建遇到显存限制，尚无整网精度或 FPS 结果。
-小网络的结果不能替代整网结果。
+修复后的 backbone 已完成 32 帧真实校准；云端完整 engine 的实际格式检查确认
+462 个目标 Conv 的输入和权重均为 INT8。预热 5 次、测量 20 次，设备延时中位数
+204.07 ms，倒数约 4.90 FPS，未达到 30 FPS；不含预处理、传输和后处理。
+一帧独立 mini_val 真实输入的三路输出均有限；与独立 GAC native-MLIR FP32 对照，
+BEV/分类/框的相对 RMSE 为 2.42%/0.54%/0.47%。严格逐元素门限未通过，
+尚无 nuScenes mAP/NDS 验收。固定 synthetic 几何、零 CAN-bus 和无历史帧的范围不变。
+完整证据见[验证报告](../../docs/validation/tensorrt/bevformer-base-2026-10-17/README.md)。
+
+逐层分析入口为 [profile_engine.py](profile_engine.py)，配合
+[analyze_nsys_trace.py](analyze_nsys_trace.py) 和 [render_profile_report.py](render_profile_report.py)。
+已保存 [IProfiler / Nsight 采集说明](../../docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/README.md)、
+[交互报告](../../docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/index.html)及原始数据。
+执行层回调、GPU Kernel 和原始 ONNX 节点不是一一对应关系，比较时须保留各自统计口径。
 
 ## 当前测试环境
 
-测试目录为 `/home/robot/project/gac-tensorrt-20261017`。
+云端测试目录为 `/root/gac-tensorrt-20261017`，实际 GPU 为 RTX3090 24GB，
+驱动 580.126.18；隔离 venv 使用 Python3.11.15、PyTorch2.7.0+cu126、TensorRT10.13.3.9。
+原 RTX3070 Ti Laptop 8GB 测试机的目录为 `/home/robot/project/gac-tensorrt-20261017`；
+该机器曾因显存不足无法构建完整 engine，保留为历史记录。
 `venv` 使用 Python3.11，复用已有 PyTorch2.7.0+cu126 的只读包依赖，TensorRT
 安装在新 venv 中，没有改动原 Isaac 环境或系统驱动。GPU 为 RTX3070 Ti Laptop 8GB，
 驱动 580.178.04。独立环境检查入口：
@@ -197,21 +211,26 @@ python tools/tensorrt/prepare_nuscenes_calibration.py \
 卷积的六路 backbone，再将它自己的校准缓存转换成独立范围产物。结构提取已通过 CPU
 测试；小 CNN 的首次校准、缓存复用和显式范围构建均已通过 GPU 测试，缓存与范围路径
 输出最大绝对差为 0，见 [范围接口结果](../../docs/validation/tensorrt/bevformer-base-2026-10-17/mixed-precision-ranges-interface/summary.json)。
-修复后的 Base backbone 已完成真实 32 帧校准及构建；完整图仍未生成可执行引擎，不能报告整网 FPS。
+修复后的 Base backbone 已完成真实 32 帧校准及构建；其范围产物已用于云端完整 engine 构建和测速。
 子图缓存不能冒充整网缓存，备用方案也不能保证完整 engine 适合 8GB 显存。
 
 ## 性能验收边界
 
-完整 Base 的 FP32/FP16 与混合 INT8 数值对照仍需验证。目前已有 87 项 CPU
+完整 Base 同帧 TensorRT FP32 对照已完成：RTX3090 上中位 373.821 ms（约 2.675 FPS），
+关闭 TF32，使用 4 GiB workspace；混合精度为 204.073 ms、1 GiB workspace。
+FP32 对独立 native FP32 参考的严格逐元素检查通过；纯 FP16 和检测指标仍需验证。
+详见 [FP32 对照报告](../../docs/validation/tensorrt/bevformer-base-2026-10-17/cloud-3090-fp32/README.md)。目前已有 87 项 CPU
 测试（含 19 项适配器、8 项 nuScenes 预处理、20 项子图提取、18 项范围转换测试）和三层小 CNN 的
 GPU 测试，确认了 8 批校准、缓存复用、显式范围构建，以及实际 engine 中的
-FP16 / INT8 / FP16 计算格式。完整模型的逐层约束表可审查，但不是实际 engine 精度报告。
+FP16 / INT8 / FP16 计算格式。完整模型另有[实际 engine INT8 审计](../../docs/validation/tensorrt/bevformer-base-2026-10-17/cloud-3090/full-precision-audit.json)，
+不能仅凭构建前的逐层约束表证明实际精度。
 
 验收应分别记录 engine 构建时间、预热、样本数、GPU 温度/频率、设备执行延时和
 包含搬运/预后处理的整链延时，cold 与连续帧分别报告。当前工具记录的显存数据是
-初始化/分配后的快照和 context 需求，不是峰值；整网峰值仍需实测。
+初始化/分配后的快照和 context 需求，不是峰值；云端另以 250 ms 间隔采样整卡显存，
+构建/推理阶段观测峰值为 9.13/2.51 GiB。这是整卡采样值，可能漏过瞬时峰值。
 早期整网 OOM 日志来自会初始化 PyTorch CUDA 的旧 builder；现已改用 CUDA Driver
-直接初始化，尚无证据说明这一改动解决了完整 Base 的显存不足。
+直接初始化；云端 24GB 构建成功不代表原 8GB 机器的构建问题已经解决。
 
 上游 RTX3090、batch1 的 Base half2 FP16 为 6.6 FPS，混合 FP16/INT8 为 8.6 FPS；
 这些是公开参考，**不是本项目在 RTX3070 Ti Laptop 上的测量结果**。
@@ -219,4 +238,4 @@ FP16 / INT8 / FP16 计算格式。完整模型的逐层约束表可审查，但�
 
 环境与测试证据保存在
 [`docs/validation/tensorrt/bevformer-base-2026-10-17/`](../../docs/validation/tensorrt/bevformer-base-2026-10-17/)。
-测试机目前为 `192.168.3.33`；旧地址 `.24` 的连接失败不代表当前环境状态。
+原测试机现地址为 `192.168.3.24`，先前记录的 `.33` 为旧地址；云端测试记录独立保存。

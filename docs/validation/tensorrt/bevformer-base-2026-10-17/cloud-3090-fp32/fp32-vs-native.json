@@ -1,0 +1,90 @@
+{
+  "actual_sha256": "2e6740dab815cd0f485b62926219291dbf1d7624300fc4c567d7b7d17fff4752",
+  "reference_sha256": "2c293ca15c12e95796c843b13506bf8a7bd42175c3aea6f303a08bf455f84b98",
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "criterion": "abs(actual-reference) <= atol + rtol*abs(reference)",
+  "all_outputs_finite": true,
+  "elementwise_threshold_met": true,
+  "scope": "Raw final-output diagnostics only; not nuScenes mAP/NDS acceptance",
+  "outputs": {
+    "bev_embed": {
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "elements": 10240000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": true,
+      "mismatched_elements": 0,
+      "max_absolute_error": 1.2427568435668945e-05,
+      "mean_absolute_error": 4.415612053829312e-07,
+      "rmse": 6.276787577823816e-07,
+      "reference_rms": 0.7528791844090067,
+      "relative_rmse": 8.337044917440445e-07,
+      "cosine_similarity": 0.9999999999996242,
+      "absolute_error_percentiles": {
+        "p50": 3.2782554626464844e-07,
+        "p95": 1.2516975402832031e-06,
+        "p99": 2.1010637283325195e-06
+      }
+    },
+    "all_cls_scores": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": true,
+      "mismatched_elements": 0,
+      "max_absolute_error": 2.09808349609375e-05,
+      "mean_absolute_error": 9.791851043701172e-07,
+      "rmse": 1.4427231909167033e-06,
+      "reference_rms": 7.209204264491441,
+      "relative_rmse": 2.0012239048666731e-07,
+      "cosine_similarity": 0.9999999999999808,
+      "absolute_error_percentiles": {
+        "p50": 9.5367431640625e-07,
+        "p95": 2.86102294921875e-06,
+        "p99": 4.76837158203125e-06
+      }
+    },
+    "all_bbox_preds": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": true,
+      "mismatched_elements": 0,
+      "max_absolute_error": 9.393692016601562e-05,
+      "mean_absolute_error": 2.054496421456625e-06,
+      "rmse": 4.692664141008034e-06,
+      "reference_rms": 11.943209955315472,
+      "relative_rmse": 3.9291481591341416e-07,
+      "cosine_similarity": 0.999999999999925,
+      "absolute_error_percentiles": {
+        "p50": 4.76837158203125e-07,
+        "p95": 1.1444091796875e-05,
+        "p99": 2.09808349609375e-05
+      }
+    }
+  },
+  "meaning": "TensorRT FP32 vs independent GAC native-MLIR FP32 on original RTX3070Ti; not a new PyTorch reference or detection evaluation"
+}

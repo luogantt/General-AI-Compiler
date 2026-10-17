@@ -1,0 +1,90 @@
+{
+  "actual_sha256": "2be6716b5baa8e64e1f45f5e7dd3e2ddbb162b74b6e2529f11d8292a904cf060",
+  "reference_sha256": "2e6740dab815cd0f485b62926219291dbf1d7624300fc4c567d7b7d17fff4752",
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "criterion": "abs(actual-reference) <= atol + rtol*abs(reference)",
+  "all_outputs_finite": true,
+  "elementwise_threshold_met": false,
+  "scope": "Raw final-output diagnostics only; not nuScenes mAP/NDS acceptance",
+  "outputs": {
+    "bev_embed": {
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "elements": 10240000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 9885381,
+      "max_absolute_error": 0.2114608883857727,
+      "mean_absolute_error": 0.013507215660121353,
+      "rmse": 0.018214452439942234,
+      "reference_rms": 0.7528791721321109,
+      "relative_rmse": 0.024193061933643276,
+      "cosine_similarity": 0.9997074685230287,
+      "absolute_error_percentiles": {
+        "p50": 0.010352492332458496,
+        "p95": 0.036830619722604735,
+        "p99": 0.05709207594394672
+      }
+    },
+    "all_cls_scores": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 39779,
+      "max_absolute_error": 0.7738475799560547,
+      "mean_absolute_error": 0.024742546699665212,
+      "rmse": 0.03882684690161163,
+      "reference_rms": 7.209204218341202,
+      "relative_rmse": 0.005385732700265422,
+      "cosine_similarity": 0.9999854986721602,
+      "absolute_error_percentiles": {
+        "p50": 0.01572251319885254,
+        "p95": 0.07912027835845946,
+        "p99": 0.14405645847320558
+      }
+    },
+    "all_bbox_preds": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 44654,
+      "max_absolute_error": 1.1048479080200195,
+      "mean_absolute_error": 0.02857941608366862,
+      "rmse": 0.05671356740679818,
+      "reference_rms": 11.94321074235536,
+      "relative_rmse": 0.004748603087582587,
+      "cosine_similarity": 0.9999887310405109,
+      "absolute_error_percentiles": {
+        "p50": 0.012255579233169556,
+        "p95": 0.10673150718212127,
+        "p99": 0.2135253991186626
+      }
+    }
+  },
+  "meaning": "Mixed INT8/FP16 vs TensorRT FP32 on same RTX3090 and held-out frame; includes all precision/tactic differences, not INT8 alone; not mAP/NDS"
+}

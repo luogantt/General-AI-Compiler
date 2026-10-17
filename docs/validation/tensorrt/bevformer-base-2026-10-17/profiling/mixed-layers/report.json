@@ -1,0 +1,361 @@
+{
+  "mode": "layers",
+  "environment_before": {
+    "utc": "2026-10-17T13:10:08.413754+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 26, 675 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  },
+  "engine": "/root/gac-tensorrt-20261017/results/mixed-01/full.engine",
+  "engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2",
+  "inputs": "/root/gac-tensorrt-20261017/models/held-out-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "warmup": 10,
+  "repeat": 30,
+  "device": 0,
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "engine_aux_streams": 0,
+  "engine_profiling_verbosity": "ProfilingVerbosity.DETAILED",
+  "baseline": {
+    "cuda_event": {
+      "count": 30,
+      "mean_ms": 209.41824086507162,
+      "median_ms": 204.2239990234375,
+      "min_ms": 201.21395874023438,
+      "max_ms": 283.28961181640625,
+      "p95_ms": 232.4158454895019,
+      "samples_ms": [
+        205.3212127685547,
+        213.83782958984375,
+        203.70431518554688,
+        203.36947631835938,
+        243.6003875732422,
+        283.28961181640625,
+        201.21395874023438,
+        213.8839111328125,
+        205.1102752685547,
+        202.95167541503906,
+        205.47378540039062,
+        203.97056579589844,
+        203.66029357910156,
+        206.0410919189453,
+        204.0412139892578,
+        206.12197875976562,
+        207.07635498046875,
+        203.68077087402344,
+        203.9377899169922,
+        204.2890167236328,
+        204.26853942871094,
+        204.08114624023438,
+        218.745849609375,
+        203.41555786132812,
+        203.9920654296875,
+        204.3832244873047,
+        204.06375122070312,
+        203.72889709472656,
+        204.17945861816406,
+        207.11322021484375
+      ]
+    },
+    "host_submit_and_sync": {
+      "count": 30,
+      "mean_ms": 209.4395965958635,
+      "median_ms": 204.24862194340676,
+      "min_ms": 201.23219094239175,
+      "max_ms": 283.3119370043278,
+      "p95_ms": 232.43647887138644,
+      "samples_ms": [
+        205.3780019050464,
+        213.85881898459047,
+        203.7290590815246,
+        203.39050400070846,
+        243.61954000778496,
+        283.3119370043278,
+        201.23219094239175,
+        213.92162202391773,
+        205.12619195505977,
+        202.985928975977,
+        205.48987900838256,
+        203.99298309348524,
+        203.6766860401258,
+        206.05853002052754,
+        204.05889197718352,
+        206.14063402172178,
+        207.09224499296397,
+        203.69794592261314,
+        203.95558094605803,
+        204.30575695354491,
+        204.28556797560304,
+        204.09765897784382,
+        218.7682930380106,
+        203.43419804703444,
+        204.0085339685902,
+        204.39938304480165,
+        204.08198900986463,
+        203.7457770202309,
+        204.21167591121048,
+        207.13189302477986
+      ]
+    }
+  },
+  "profiled_whole_engine": {
+    "cuda_event": {
+      "count": 30,
+      "mean_ms": 217.2147705078125,
+      "median_ms": 213.51065063476562,
+      "min_ms": 211.85536193847656,
+      "max_ms": 240.4188232421875,
+      "p95_ms": 230.21782989501952,
+      "samples_ms": [
+        213.13638305664062,
+        212.15948486328125,
+        213.48658752441406,
+        222.6472930908203,
+        217.670654296875,
+        230.64268493652344,
+        240.4188232421875,
+        226.43405151367188,
+        218.7519989013672,
+        212.44210815429688,
+        228.94796752929688,
+        212.73805236816406,
+        212.69503784179688,
+        212.01510620117188,
+        216.6313018798828,
+        212.12570190429688,
+        215.4721221923828,
+        212.58444213867188,
+        211.85536193847656,
+        213.2060089111328,
+        213.06777954101562,
+        213.5347137451172,
+        213.33094787597656,
+        212.15231323242188,
+        214.80038452148438,
+        213.6248321533203,
+        222.1281280517578,
+        229.6985626220703,
+        213.2305908203125,
+        214.81369018554688
+      ]
+    },
+    "host_submit_and_sync": {
+      "count": 30,
+      "mean_ms": 217.2521761036478,
+      "median_ms": 213.54654501192272,
+      "min_ms": 211.88653900753707,
+      "max_ms": 240.45816296711564,
+      "p95_ms": 230.2556715090759,
+      "samples_ms": [
+        213.16433907486498,
+        212.19311200547963,
+        213.51981803309172,
+        222.6845680270344,
+        217.7056570071727,
+        230.67752399947494,
+        240.45816296711564,
+        226.46884201094508,
+        218.7920929864049,
+        212.48713391833007,
+        228.9893280249089,
+        212.77392003685236,
+        212.73152297362685,
+        212.0510139502585,
+        216.66145196650177,
+        212.1651420602575,
+        215.50558297894895,
+        212.61765505187213,
+        211.88653900753707,
+        213.2407840108499,
+        213.10345304664224,
+        213.5732719907537,
+        213.36789999622852,
+        212.19054597895592,
+        214.84692906960845,
+        213.67462305352092,
+        222.1676849294454,
+        229.74007402081043,
+        213.27266399748623,
+        214.85394693445414
+      ]
+    },
+    "host_submit_sync_and_report": {
+      "count": 30,
+      "mean_ms": 232.3843410704285,
+      "median_ms": 229.40502350684255,
+      "min_ms": 225.8784519508481,
+      "max_ms": 254.91367501672357,
+      "p95_ms": 245.23725098115392,
+      "samples_ms": [
+        226.6723670763895,
+        225.9739510482177,
+        228.1383629888296,
+        237.11305006872863,
+        231.9576389854774,
+        245.18164107576013,
+        254.91367501672357,
+        241.13046005368233,
+        233.1649489933625,
+        227.1720189601183,
+        243.35024505853653,
+        227.28088893927634,
+        227.21030400134623,
+        226.40084091108292,
+        231.05727706570178,
+        226.60538903437555,
+        229.49095291551203,
+        226.1949919629842,
+        225.8784519508481,
+        227.58809698279947,
+        227.5652140378952,
+        229.76600204128772,
+        228.04006503429264,
+        226.84746095910668,
+        231.34837101679295,
+        244.36208594124764,
+        237.03268298413604,
+        245.28274999465793,
+        229.46678299922496,
+        229.34326401446015
+      ]
+    }
+  },
+  "profiling_overhead": {
+    "cuda_event_mean_delta_ms": 7.796529642740865,
+    "cuda_event_mean_ratio": 1.0372294677413711,
+    "note": "Independent sequential passes; includes run-to-run variation and profiling perturbation"
+  },
+  "layer_summary": {
+    "callbacks_per_iteration": 3819,
+    "stable_ordinal_name_sequence": true,
+    "sum_mean_ms": 211.474673308704,
+    "note": "Sum of profiled layer means is not the unprofiled baseline or an end-to-end latency"
+  },
+  "validation": {
+    "baseline": {
+      "status": "not_checked",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "bev_embed": true,
+        "all_cls_scores": true,
+        "all_bbox_preds": true
+      },
+      "scope": "Final output of the last measured execution only"
+    },
+    "profiled_whole_engine": {
+      "status": "not_checked",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "bev_embed": true,
+        "all_cls_scores": true,
+        "all_bbox_preds": true
+      },
+      "scope": "Final output of the last measured execution only"
+    },
+    "layers": {
+      "status": "not_checked",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "bev_embed": true,
+        "all_cls_scores": true,
+        "all_bbox_preds": true
+      },
+      "scope": "Final output of the last measured execution only"
+    }
+  },
+  "timing_scope": "One synchronized inference per sample; copies, loading and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "profiler": {
+    "enqueue_emits_profile": false,
+    "report_after_synchronization": true
+  },
+  "status": "completed",
+  "validation_scope": "Final output of each measured pass only; no numerical reference comparison",
+  "environment_after": {
+    "utc": "2026-10-17T13:10:42.362666+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 53, 1695 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  }
+}

@@ -1,0 +1,757 @@
+{
+  "purpose": "Public copy with environment metadata removed and credential strings redacted; timing tables and string IDs unchanged.",
+  "method": "DELETE FROM META_DATA_CAPTURE WHERE name LIKE '%ENVIRONMENT%'; DELETE FROM TARGET_INFO_SYSTEM_ENV; replace captured credentials in StringIds.value without changing IDs; PRAGMA secure_delete=ON before deletion; VACUUM",
+  "original_capture_manifests": [
+    "remote-manifest.json",
+    "download-verification.json"
+  ],
+  "public_manifest": "local-manifest.json",
+  "excluded_from_publication": [
+    "mixed-nsys.nsys-rep",
+    "fp32-nsys.nsys-rep"
+  ],
+  "note": "Original Nsight reports may contain environment credentials and remain local only. Original download hashes describe pre-sanitization files, not these public SQLite copies.",
+  "files": {
+    "mixed-nsys.sqlite": {
+      "original_sha256": "da45c0be5ec0ab08304a5d4c43ae0011e974f019b6f078cb703bbd823a3f54a7",
+      "public_sha256": "9d48e154b09dc062120a5518c8da5703738cff2d8d81c5afa76bc5005f3d9665",
+      "removed_environment_rows": 21,
+      "removed_system_environment_rows": 86,
+      "redacted_string_ids": [
+        14,
+        23,
+        25,
+        26,
+        27,
+        28,
+        29,
+        33,
+        43,
+        119,
+        130,
+        151
+      ],
+      "timing_tables_and_string_ids_unchanged": true,
+      "table_fingerprints_excluding_environment_with_credentials_normalized": {
+        "ANALYSIS_DETAILS": {
+          "rows": 1,
+          "sorted_row_sha256": "ab714c5a3d7830f014f01aba3a3651cb1e3a7a9cb78b15833221527c0d97532b"
+        },
+        "ANALYSIS_FILE": {
+          "rows": 2,
+          "sorted_row_sha256": "494aa69f98d244c24309d85bff167e6cd310a02baa203b7452830960bc905731"
+        },
+        "CUDA_GPU_MEMORY_USAGE_EVENTS": {
+          "rows": 13664,
+          "sorted_row_sha256": "7828c5a7f882546e9ca2af5c1b92e76db166f8446ece9a503422da82af74ab3d"
+        },
+        "CUPTI_ACTIVITY_KIND_CUDA_EVENT": {
+          "rows": 780,
+          "sorted_row_sha256": "6d62e27ef4b032a02c1c36affd0fe667857bb48da8d70af169994f81a7aed105"
+        },
+        "CUPTI_ACTIVITY_KIND_KERNEL": {
+          "rows": 19645,
+          "sorted_row_sha256": "efa247dd4d0162464307b01d2e12a1ec40cf790297acccd3140673900fcb20b7"
+        },
+        "CUPTI_ACTIVITY_KIND_MEMCPY": {
+          "rows": 180,
+          "sorted_row_sha256": "ad8a855f19306def49141ade49b8a48858e316f62cd37a2eca0ab06f0701e1f2"
+        },
+        "CUPTI_ACTIVITY_KIND_MEMSET": {
+          "rows": 780,
+          "sorted_row_sha256": "8285d9f82fbae9ed721e0a29488dd9f736c7307f78c9d3cead979e42f1bdb8bd"
+        },
+        "CUPTI_ACTIVITY_KIND_RUNTIME": {
+          "rows": 26316,
+          "sorted_row_sha256": "774b70d8d9284109feaf5e45edd8bb703e88b3450d2c0ef454de8ce228efca07"
+        },
+        "CUPTI_ACTIVITY_KIND_SYNCHRONIZATION": {
+          "rows": 36,
+          "sorted_row_sha256": "414759567df12bbed23022d260f8862737effa8d46f2b08d67b2ee72291d1228"
+        },
+        "DIAGNOSTIC_EVENT": {
+          "rows": 16,
+          "sorted_row_sha256": "7c4ec0a58950efb7e57fa26110a8e59ebd7be74f34ef4e0ba2c18ba836f32a81"
+        },
+        "ENUM_CUDA_DEV_MEM_EVENT_OPER": {
+          "rows": 2,
+          "sorted_row_sha256": "fa5e4a91c7b9aedc53390f7cfef5edd3cfc13ca28aacea7aa25fb309ef906715"
+        },
+        "ENUM_CUDA_FUNC_CACHE_CONFIG": {
+          "rows": 4,
+          "sorted_row_sha256": "72e95e61bdb213b6b4a711a99fdfc69ce6956c90e6a764f71d0c6c5b94ab6531"
+        },
+        "ENUM_CUDA_KERNEL_LAUNCH_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "807f2ecbfc0ea54dd49f74dbccd0ee5cca7b4e443870bb61c0a67fbcfd6e3969"
+        },
+        "ENUM_CUDA_MEMCPY_OPER": {
+          "rows": 14,
+          "sorted_row_sha256": "7c7301e123996c998274ba2c0d9dcc313bc4fa6d24f0ee2aab1c6faec32ba696"
+        },
+        "ENUM_CUDA_MEMPOOL_OPER": {
+          "rows": 4,
+          "sorted_row_sha256": "246ae69f315725912edf598ae93eeae075309a5f0ccf5fbdcbc98ccea2fad1de"
+        },
+        "ENUM_CUDA_MEMPOOL_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "6656842c4fe6c0400d4aa7d1387a519f726f7d607c73953f08d9a45ac89ff07a"
+        },
+        "ENUM_CUDA_MEM_KIND": {
+          "rows": 8,
+          "sorted_row_sha256": "c15a871e58dc14e54b5ac20e711ada9ed8f2223284e5ae39192684b601bbe1fe"
+        },
+        "ENUM_CUDA_SHARED_MEM_LIMIT_CONFIG": {
+          "rows": 2,
+          "sorted_row_sha256": "32cd84a7df5b5b93a32482f02eccdbabaef5d568a709d5f4aea475d4271161a3"
+        },
+        "ENUM_CUDA_UNIF_MEM_ACCESS_TYPE": {
+          "rows": 5,
+          "sorted_row_sha256": "ca603c35e6b39860764df3b04b65bc23ed47903fffa2aa4e8df39c37cba439f0"
+        },
+        "ENUM_CUDA_UNIF_MEM_MIGRATION": {
+          "rows": 6,
+          "sorted_row_sha256": "5348297427b5ebc1fde1aac1e610f940dc5e6a8fc4701bbbc3c2fe920e539b65"
+        },
+        "ENUM_CUPTI_STREAM_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "2bec43f180fd1ae0ab0425a0fc106a4db8eef096e198de8ad5ddd88d2a2b590b"
+        },
+        "ENUM_CUPTI_SYNC_TYPE": {
+          "rows": 5,
+          "sorted_row_sha256": "3995c40374901d123bbaaeab99383c379dced73493bf5e466f030f3e59a830d4"
+        },
+        "ENUM_D3D12_CMD_LIST_TYPE": {
+          "rows": 7,
+          "sorted_row_sha256": "f4c37963a62d4d075c680e7ca34b78c81a7fee86531775680ea2d7e4b7436c3f"
+        },
+        "ENUM_D3D12_HEAP_FLAGS": {
+          "rows": 7,
+          "sorted_row_sha256": "d258a5e245e7d975ef61591b353ec0ca1f3c89726076916d56948b215162245f"
+        },
+        "ENUM_D3D12_HEAP_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "4681c7ca1aec2b349e1731bca83dea16180f7c403752d37d2b7f64c6c64c80d3"
+        },
+        "ENUM_D3D12_PAGE_PROPERTY": {
+          "rows": 4,
+          "sorted_row_sha256": "48b66fba33c5c827cda17b2c1bb85b85ffbc959de0239c8037b0ea6bd6f2af34"
+        },
+        "ENUM_DIAGNOSTIC_SEVERITY_LEVEL": {
+          "rows": 5,
+          "sorted_row_sha256": "4b83d12758d42ec73467be679fc3455a4b399a5af6c8a24e66b8b77d3d5d9c05"
+        },
+        "ENUM_DIAGNOSTIC_SOURCE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "e61fcec5b3f072c36c44b5041de5353422622a3dd53f1857c63de56467fb655c"
+        },
+        "ENUM_DIAGNOSTIC_TIMESTAMP_SOURCE": {
+          "rows": 3,
+          "sorted_row_sha256": "2418c6bf76a9c359c4b31b0a323ea4e1980c81569c3de483c9eaf993d889dd21"
+        },
+        "ENUM_DXGI_FORMAT": {
+          "rows": 121,
+          "sorted_row_sha256": "93683b389b7b0953e7346797e1990870920043dcd48f382d37c72d66c66bb084"
+        },
+        "ENUM_ETW_MEMORY_TRANSFER_TYPE": {
+          "rows": 8,
+          "sorted_row_sha256": "eee89c2e987288f167f4a9da60ac13aaf0159913355bcb833026f4ccf93ab77b"
+        },
+        "ENUM_GPU_CTX_SWITCH": {
+          "rows": 13,
+          "sorted_row_sha256": "dc598f0f14d9e3cf3ccb9d3aaa7cb3dda4c31488e67801229c1f45d4a0e1e894"
+        },
+        "ENUM_NET_DEVICE_ID": {
+          "rows": 45,
+          "sorted_row_sha256": "a266b029e0d5efbd2cc2ad673d4c5aade36cb968a7d658e4ac83f803ce02e9e8"
+        },
+        "ENUM_NET_IB_DEVICE_TYPE": {
+          "rows": 2,
+          "sorted_row_sha256": "968d3ad2248c058ab33495aac490daaa8fdf2744027b1e196b98ede73aa4f1dc"
+        },
+        "ENUM_NET_LINK_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "39245235e5b8c9291762d5bce63cfcb1f2b3ef86cdf761e8694f3ec9d733e191"
+        },
+        "ENUM_NET_VENDOR_ID": {
+          "rows": 1,
+          "sorted_row_sha256": "b0f80ecc6cfe324d1a1e8b9160ad44162f81fdfc242b7bc6b0f1615dfffa1c22"
+        },
+        "ENUM_NSYS_EVENT_CLASS": {
+          "rows": 89,
+          "sorted_row_sha256": "bc8d43f878bf6339738470fa5b8cbf090a59d3f82cb65457118308254db8ca17"
+        },
+        "ENUM_NSYS_EVENT_TYPE": {
+          "rows": 147,
+          "sorted_row_sha256": "72ce9466d6cb2cb24f573c566aa2190c91b6c2a9a15d099af45a5e8b225dd08a"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_FLAGS": {
+          "rows": 7,
+          "sorted_row_sha256": "c5b0e86f9f55407740defe703dbe856a8ce0d26052aa3229a6a3562495da7cc3"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_PROPERTY": {
+          "rows": 8,
+          "sorted_row_sha256": "35d8f8c3d74f0f8e5d76ce45cd9a4197f8d0e9891aaa5d9e0027657811735128"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_TYPE": {
+          "rows": 22,
+          "sorted_row_sha256": "6af81f6c661c5804127c99e2814679b3f4d6c2757b026c62eabc909c8c51a9e3"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "989ccc303dfde631c16e0cdc04abb9772a5cff87bea5a5b42a83da9cd05280e5"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_GROUP": {
+          "rows": 5,
+          "sorted_row_sha256": "e4c5fd100e56be046488534fd3c2787c73d4f747ae5324062e8d9bb0ae096da9"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_SOURCE": {
+          "rows": 4,
+          "sorted_row_sha256": "30e000c7452ceaf76db77cad3ce2af8c0d03ad75d9434d7115c5c122cc50b1a7"
+        },
+        "ENUM_NVDRIVER_EVENT_ID": {
+          "rows": 4,
+          "sorted_row_sha256": "c00b6f52053544622639b7d38f7a92bed203f9e6c9b30e384ad319b62cbd63bf"
+        },
+        "ENUM_OPENACC_DEVICE": {
+          "rows": 10,
+          "sorted_row_sha256": "d6fa071134165fb63d49d644fa631ae4debede74abe24ed265c60991233dd40b"
+        },
+        "ENUM_OPENACC_EVENT_KIND": {
+          "rows": 17,
+          "sorted_row_sha256": "244f6fb3c413828870f974cb74e85c28a58100f42193aa5c96eaa69182d96524"
+        },
+        "ENUM_OPENGL_DEBUG_SEVERITY": {
+          "rows": 4,
+          "sorted_row_sha256": "e5bb72bc56d0de3bb88b15eb50c44b55c0654bad54e4496b836b46d0cb4a2d46"
+        },
+        "ENUM_OPENGL_DEBUG_SOURCE": {
+          "rows": 6,
+          "sorted_row_sha256": "08ef3dc1ec6b8b0327a49ac8eff6277753ae1d7883a2f3448beb500faf5202cd"
+        },
+        "ENUM_OPENGL_DEBUG_TYPE": {
+          "rows": 9,
+          "sorted_row_sha256": "8742c2ca1421766c0d85adc69d22a36e7348e2a3f60db6a4359228ed58881aa5"
+        },
+        "ENUM_OPENMP_DISPATCH": {
+          "rows": 2,
+          "sorted_row_sha256": "e3003a75b0af64e8bfbbac895a3414a3eec40d777db56deda8e619f8eb76dc50"
+        },
+        "ENUM_OPENMP_EVENT_KIND": {
+          "rows": 37,
+          "sorted_row_sha256": "376b0d9db3bc8f34e4c1140d28410791548f920ee5875f39ac3b89ea4851d042"
+        },
+        "ENUM_OPENMP_MUTEX": {
+          "rows": 7,
+          "sorted_row_sha256": "468b83cb319135b46c7ce655ad07b2627decf0e982103eaee366898b052cbdd2"
+        },
+        "ENUM_OPENMP_SYNC_REGION": {
+          "rows": 7,
+          "sorted_row_sha256": "5c98f8ffcd89641f66f20c73ce31ae65fdbc96b98bb8819fc720a1a1e47df96c"
+        },
+        "ENUM_OPENMP_TASK_FLAG": {
+          "rows": 9,
+          "sorted_row_sha256": "50ca7cf340844641985a5133a71e97e60a38ede1d86822e513151253db4bc329"
+        },
+        "ENUM_OPENMP_TASK_STATUS": {
+          "rows": 7,
+          "sorted_row_sha256": "cf31dc59c7f0b2e6e8df28d8fc646cfcea04723b1070f992cbdb0ece1ae8e6d3"
+        },
+        "ENUM_OPENMP_THREAD": {
+          "rows": 4,
+          "sorted_row_sha256": "4d0cae05f0237b10bf7b37c917831c8a8f878d1bb199b85c5e47bb155f0e3b46"
+        },
+        "ENUM_OPENMP_WORK": {
+          "rows": 7,
+          "sorted_row_sha256": "60f53423e4ed262335c29bc380c874cd4bf2d8089ecb83dc1a7976871292a5f1"
+        },
+        "ENUM_PMU_EVENT_SOURCE": {
+          "rows": 4,
+          "sorted_row_sha256": "4f56d8d77d33efd9fd9179e7779ae078b56c2b98b8fce7b41a4e78b3655ac0a8"
+        },
+        "ENUM_PMU_UNIT_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "b89bf79e52c8e868421f046239265c2aa15ef9ebc75a58037901fbc47099372e"
+        },
+        "ENUM_SAMPLING_THREAD_STATE": {
+          "rows": 11,
+          "sorted_row_sha256": "5867348590740789a1926c8f6e7b386fabdc73692c9812ca41a3c3e5892b8803"
+        },
+        "ENUM_SCHEDULING_THREAD_BLOCK": {
+          "rows": 53,
+          "sorted_row_sha256": "9ed7cf93352a0b9ec844db61b84782d9cb7317aae343e73878689c836d180b20"
+        },
+        "ENUM_SLI_TRANSER": {
+          "rows": 6,
+          "sorted_row_sha256": "dd348a02fa5bda6534234d72faa18cdf1eec35833f0aeaf4e5a48bf302585823"
+        },
+        "ENUM_STACK_UNWIND_METHOD": {
+          "rows": 10,
+          "sorted_row_sha256": "18079e30842c692edecfa5c47247aba76e3449700cde8efb572b48ff04ab2434"
+        },
+        "ENUM_VIDEO_ENGINE_CODEC": {
+          "rows": 8,
+          "sorted_row_sha256": "3b9f67f283ffd7d9275d305949d99b30b0fd0effa794e4b7d4342253fde42aed"
+        },
+        "ENUM_VIDEO_ENGINE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "11c4bfe427e2c7c19a484f4f8d37dd676a2b1b4aa1f2c2cbf76145b044232e38"
+        },
+        "ENUM_VULKAN_PIPELINE_CREATION_FLAGS": {
+          "rows": 3,
+          "sorted_row_sha256": "a4fe35773d0d81405f1ba259c26c40ea17ca45f570bba38ada9bb3520e27296e"
+        },
+        "ENUM_WDDM_ENGINE_TYPE": {
+          "rows": 9,
+          "sorted_row_sha256": "2a383d3829f5ab3bd694beae2cf32a49ce057aae5ce185df2eb1e5f3fce9b126"
+        },
+        "ENUM_WDDM_INTERRUPT_TYPE": {
+          "rows": 17,
+          "sorted_row_sha256": "fb26dfe76b5ce66d0f89947ba3795227283dd3b90e896be16727ea3f393b3e22"
+        },
+        "ENUM_WDDM_PACKET_TYPE": {
+          "rows": 8,
+          "sorted_row_sha256": "e4e4cc60e439f0d255f64d38df5bd0976878d03259001b421b871f6891413fee"
+        },
+        "ENUM_WDDM_PAGING_QUEUE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "6ed121426781f33826402e8a1b3c1ed5d3dc829cc0b6e1a963af5bd3a2b976dd"
+        },
+        "ENUM_WDDM_VIDMM_OP_TYPE": {
+          "rows": 32,
+          "sorted_row_sha256": "225f1f5743c330695a2963fa0c8a93489e935c6670f97d0abaa9db0e89c70ed6"
+        },
+        "META_DATA_CAPTURE": {
+          "rows": 90,
+          "sorted_row_sha256": "ef6b27d8be9a3763771ab7784b45827af7cd5401ca45228007971de2ada12e20"
+        },
+        "META_DATA_EXPORT": {
+          "rows": 29,
+          "sorted_row_sha256": "6bf27e3f9cdc8fd78293179d635eeb1635510933c6d291b0db8b18f856a43975"
+        },
+        "NVTX_EVENTS": {
+          "rows": 26713,
+          "sorted_row_sha256": "2d377ca4ff735c8d057c108cd4b66b86a29e32a51fbaff178178ada1b276594e"
+        },
+        "PROCESSES": {
+          "rows": 43,
+          "sorted_row_sha256": "3fa136f0c315c2d82c7ae7d1d088b2f038b60a0600fe1dbcf2000df088bd7b59"
+        },
+        "PROFILER_OVERHEAD": {
+          "rows": 8,
+          "sorted_row_sha256": "538c71b3a7f779706a0e38b54deac31b17d2979ddeed5c3ecc5ace9ea6c5dfcf"
+        },
+        "ProcessStreams": {
+          "rows": 2,
+          "sorted_row_sha256": "73008f5ab1c2e6d323672c4faf07453c1edba6ab1e1f5cdf5983d235cb40ab52"
+        },
+        "StringIds": {
+          "rows": 11123,
+          "sorted_row_sha256": "0e9a93721a70df97b928dc0a3c8c12148220331ea4ca301fea3476f5d2e52371"
+        },
+        "TARGET_INFO_CUDA_CONTEXT_INFO": {
+          "rows": 1,
+          "sorted_row_sha256": "6b0a234e6ee3a28233184b6d72ec9544d040ed2df336a3be92b6b01b18a6966e"
+        },
+        "TARGET_INFO_CUDA_STREAM": {
+          "rows": 135,
+          "sorted_row_sha256": "e45ebc3baf56128aed45bfe173af381720ec4e689884c65f756a39661e96254c"
+        },
+        "TARGET_INFO_GPU": {
+          "rows": 1,
+          "sorted_row_sha256": "8c31a6431c28ed5eb4e4e17a06e7c78e353537da039551a8a85d19f42174bfb5"
+        },
+        "TARGET_INFO_NIC_INFO": {
+          "rows": 1,
+          "sorted_row_sha256": "8ca65fd403adf5df41de3963c7e416a23f1ea995e6523c276c9ccfea5bb56aac"
+        },
+        "TARGET_INFO_SESSION_START_TIME": {
+          "rows": 1,
+          "sorted_row_sha256": "db533adf35c716b549cb6cfb106d5396afe9bdd5d6bd7d7494a3d1e0c1347e64"
+        },
+        "TARGET_INFO_SYSTEM_ENV": {
+          "rows": 0,
+          "sorted_row_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ThreadNames": {
+          "rows": 77,
+          "sorted_row_sha256": "12955ef09d5560b30c229d28fabde60856040746e0f6dd65bafd87a07d103148"
+        }
+      },
+      "integrity_check": "ok",
+      "known_credential_bytes_absent": true
+    },
+    "fp32-nsys.sqlite": {
+      "original_sha256": "a56d548ffa4491892a389c6df27bac8192fea0bc8da3e09d2f7e3218fb2485cd",
+      "public_sha256": "b1648183b89fa05e3ba86adb32f98814d2895f49561aaa0c3e9c386a95d690c7",
+      "removed_environment_rows": 21,
+      "removed_system_environment_rows": 86,
+      "redacted_string_ids": [
+        14,
+        20,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        30,
+        146,
+        489,
+        511,
+        517,
+        528
+      ],
+      "timing_tables_and_string_ids_unchanged": true,
+      "table_fingerprints_excluding_environment_with_credentials_normalized": {
+        "ANALYSIS_DETAILS": {
+          "rows": 1,
+          "sorted_row_sha256": "15b6457f4d9852f29f21f29bc406f27c1496259676da2fef35e0c8de02e890e3"
+        },
+        "ANALYSIS_FILE": {
+          "rows": 2,
+          "sorted_row_sha256": "543d7e3896e36b1ae9399b3450ded0e4c851fcfd32f28a77430092d596917aab"
+        },
+        "CUDA_GPU_MEMORY_USAGE_EVENTS": {
+          "rows": 3657,
+          "sorted_row_sha256": "1171ba9ab8a84bfc0595f0032f646ff7ba4b5510ef28f3a9bfde7a5b65fb4075"
+        },
+        "CUPTI_ACTIVITY_KIND_CUDA_EVENT": {
+          "rows": 780,
+          "sorted_row_sha256": "63005875c62f359182c3cb0d2858c45af6063ef8d019ac9bd77f304c8f1b084a"
+        },
+        "CUPTI_ACTIVITY_KIND_KERNEL": {
+          "rows": 14605,
+          "sorted_row_sha256": "c1dcfdc555d038f4ac9ed08b5dd0f937c5f2af289ec34b649801eb3cd79fa786"
+        },
+        "CUPTI_ACTIVITY_KIND_MEMCPY": {
+          "rows": 180,
+          "sorted_row_sha256": "3b2854706e9d029157e5a814f20ea5501c34dca2df5737f848723e6c166f9b32"
+        },
+        "CUPTI_ACTIVITY_KIND_MEMSET": {
+          "rows": 1860,
+          "sorted_row_sha256": "68ec67725c85f20f4416116050b25483bef6f5ef0cf3a2ee71afc53fab7896ab"
+        },
+        "CUPTI_ACTIVITY_KIND_RUNTIME": {
+          "rows": 22536,
+          "sorted_row_sha256": "9af7f86cfb5f51e106f6e8ee41c55c8cbed719ebd4be6157e8bbaf6b052d03d2"
+        },
+        "CUPTI_ACTIVITY_KIND_SYNCHRONIZATION": {
+          "rows": 36,
+          "sorted_row_sha256": "a15fcefb3ba3d601e1425f552f1cc6665e713f220727739b095484710b22c69a"
+        },
+        "DIAGNOSTIC_EVENT": {
+          "rows": 16,
+          "sorted_row_sha256": "f80d6783a858e71c407246972919362c164dac1adc9d8ea881e7d96893a22a59"
+        },
+        "ENUM_CUDA_DEV_MEM_EVENT_OPER": {
+          "rows": 2,
+          "sorted_row_sha256": "fa5e4a91c7b9aedc53390f7cfef5edd3cfc13ca28aacea7aa25fb309ef906715"
+        },
+        "ENUM_CUDA_FUNC_CACHE_CONFIG": {
+          "rows": 4,
+          "sorted_row_sha256": "72e95e61bdb213b6b4a711a99fdfc69ce6956c90e6a764f71d0c6c5b94ab6531"
+        },
+        "ENUM_CUDA_KERNEL_LAUNCH_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "807f2ecbfc0ea54dd49f74dbccd0ee5cca7b4e443870bb61c0a67fbcfd6e3969"
+        },
+        "ENUM_CUDA_MEMCPY_OPER": {
+          "rows": 14,
+          "sorted_row_sha256": "7c7301e123996c998274ba2c0d9dcc313bc4fa6d24f0ee2aab1c6faec32ba696"
+        },
+        "ENUM_CUDA_MEMPOOL_OPER": {
+          "rows": 4,
+          "sorted_row_sha256": "246ae69f315725912edf598ae93eeae075309a5f0ccf5fbdcbc98ccea2fad1de"
+        },
+        "ENUM_CUDA_MEMPOOL_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "6656842c4fe6c0400d4aa7d1387a519f726f7d607c73953f08d9a45ac89ff07a"
+        },
+        "ENUM_CUDA_MEM_KIND": {
+          "rows": 8,
+          "sorted_row_sha256": "c15a871e58dc14e54b5ac20e711ada9ed8f2223284e5ae39192684b601bbe1fe"
+        },
+        "ENUM_CUDA_SHARED_MEM_LIMIT_CONFIG": {
+          "rows": 2,
+          "sorted_row_sha256": "32cd84a7df5b5b93a32482f02eccdbabaef5d568a709d5f4aea475d4271161a3"
+        },
+        "ENUM_CUDA_UNIF_MEM_ACCESS_TYPE": {
+          "rows": 5,
+          "sorted_row_sha256": "ca603c35e6b39860764df3b04b65bc23ed47903fffa2aa4e8df39c37cba439f0"
+        },
+        "ENUM_CUDA_UNIF_MEM_MIGRATION": {
+          "rows": 6,
+          "sorted_row_sha256": "5348297427b5ebc1fde1aac1e610f940dc5e6a8fc4701bbbc3c2fe920e539b65"
+        },
+        "ENUM_CUPTI_STREAM_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "2bec43f180fd1ae0ab0425a0fc106a4db8eef096e198de8ad5ddd88d2a2b590b"
+        },
+        "ENUM_CUPTI_SYNC_TYPE": {
+          "rows": 5,
+          "sorted_row_sha256": "3995c40374901d123bbaaeab99383c379dced73493bf5e466f030f3e59a830d4"
+        },
+        "ENUM_D3D12_CMD_LIST_TYPE": {
+          "rows": 7,
+          "sorted_row_sha256": "f4c37963a62d4d075c680e7ca34b78c81a7fee86531775680ea2d7e4b7436c3f"
+        },
+        "ENUM_D3D12_HEAP_FLAGS": {
+          "rows": 7,
+          "sorted_row_sha256": "d258a5e245e7d975ef61591b353ec0ca1f3c89726076916d56948b215162245f"
+        },
+        "ENUM_D3D12_HEAP_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "4681c7ca1aec2b349e1731bca83dea16180f7c403752d37d2b7f64c6c64c80d3"
+        },
+        "ENUM_D3D12_PAGE_PROPERTY": {
+          "rows": 4,
+          "sorted_row_sha256": "48b66fba33c5c827cda17b2c1bb85b85ffbc959de0239c8037b0ea6bd6f2af34"
+        },
+        "ENUM_DIAGNOSTIC_SEVERITY_LEVEL": {
+          "rows": 5,
+          "sorted_row_sha256": "4b83d12758d42ec73467be679fc3455a4b399a5af6c8a24e66b8b77d3d5d9c05"
+        },
+        "ENUM_DIAGNOSTIC_SOURCE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "e61fcec5b3f072c36c44b5041de5353422622a3dd53f1857c63de56467fb655c"
+        },
+        "ENUM_DIAGNOSTIC_TIMESTAMP_SOURCE": {
+          "rows": 3,
+          "sorted_row_sha256": "2418c6bf76a9c359c4b31b0a323ea4e1980c81569c3de483c9eaf993d889dd21"
+        },
+        "ENUM_DXGI_FORMAT": {
+          "rows": 121,
+          "sorted_row_sha256": "93683b389b7b0953e7346797e1990870920043dcd48f382d37c72d66c66bb084"
+        },
+        "ENUM_ETW_MEMORY_TRANSFER_TYPE": {
+          "rows": 8,
+          "sorted_row_sha256": "eee89c2e987288f167f4a9da60ac13aaf0159913355bcb833026f4ccf93ab77b"
+        },
+        "ENUM_GPU_CTX_SWITCH": {
+          "rows": 13,
+          "sorted_row_sha256": "dc598f0f14d9e3cf3ccb9d3aaa7cb3dda4c31488e67801229c1f45d4a0e1e894"
+        },
+        "ENUM_NET_DEVICE_ID": {
+          "rows": 45,
+          "sorted_row_sha256": "a266b029e0d5efbd2cc2ad673d4c5aade36cb968a7d658e4ac83f803ce02e9e8"
+        },
+        "ENUM_NET_IB_DEVICE_TYPE": {
+          "rows": 2,
+          "sorted_row_sha256": "968d3ad2248c058ab33495aac490daaa8fdf2744027b1e196b98ede73aa4f1dc"
+        },
+        "ENUM_NET_LINK_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "39245235e5b8c9291762d5bce63cfcb1f2b3ef86cdf761e8694f3ec9d733e191"
+        },
+        "ENUM_NET_VENDOR_ID": {
+          "rows": 1,
+          "sorted_row_sha256": "b0f80ecc6cfe324d1a1e8b9160ad44162f81fdfc242b7bc6b0f1615dfffa1c22"
+        },
+        "ENUM_NSYS_EVENT_CLASS": {
+          "rows": 89,
+          "sorted_row_sha256": "bc8d43f878bf6339738470fa5b8cbf090a59d3f82cb65457118308254db8ca17"
+        },
+        "ENUM_NSYS_EVENT_TYPE": {
+          "rows": 147,
+          "sorted_row_sha256": "72ce9466d6cb2cb24f573c566aa2190c91b6c2a9a15d099af45a5e8b225dd08a"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_FLAGS": {
+          "rows": 7,
+          "sorted_row_sha256": "c5b0e86f9f55407740defe703dbe856a8ce0d26052aa3229a6a3562495da7cc3"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_PROPERTY": {
+          "rows": 8,
+          "sorted_row_sha256": "35d8f8c3d74f0f8e5d76ce45cd9a4197f8d0e9891aaa5d9e0027657811735128"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_ETW_TYPE": {
+          "rows": 22,
+          "sorted_row_sha256": "6af81f6c661c5804127c99e2814679b3f4d6c2757b026c62eabc909c8c51a9e3"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_FIELD_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "989ccc303dfde631c16e0cdc04abb9772a5cff87bea5a5b42a83da9cd05280e5"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_GROUP": {
+          "rows": 5,
+          "sorted_row_sha256": "e4c5fd100e56be046488534fd3c2787c73d4f747ae5324062e8d9bb0ae096da9"
+        },
+        "ENUM_NSYS_GENERIC_EVENT_SOURCE": {
+          "rows": 4,
+          "sorted_row_sha256": "30e000c7452ceaf76db77cad3ce2af8c0d03ad75d9434d7115c5c122cc50b1a7"
+        },
+        "ENUM_NVDRIVER_EVENT_ID": {
+          "rows": 4,
+          "sorted_row_sha256": "c00b6f52053544622639b7d38f7a92bed203f9e6c9b30e384ad319b62cbd63bf"
+        },
+        "ENUM_OPENACC_DEVICE": {
+          "rows": 10,
+          "sorted_row_sha256": "d6fa071134165fb63d49d644fa631ae4debede74abe24ed265c60991233dd40b"
+        },
+        "ENUM_OPENACC_EVENT_KIND": {
+          "rows": 17,
+          "sorted_row_sha256": "244f6fb3c413828870f974cb74e85c28a58100f42193aa5c96eaa69182d96524"
+        },
+        "ENUM_OPENGL_DEBUG_SEVERITY": {
+          "rows": 4,
+          "sorted_row_sha256": "e5bb72bc56d0de3bb88b15eb50c44b55c0654bad54e4496b836b46d0cb4a2d46"
+        },
+        "ENUM_OPENGL_DEBUG_SOURCE": {
+          "rows": 6,
+          "sorted_row_sha256": "08ef3dc1ec6b8b0327a49ac8eff6277753ae1d7883a2f3448beb500faf5202cd"
+        },
+        "ENUM_OPENGL_DEBUG_TYPE": {
+          "rows": 9,
+          "sorted_row_sha256": "8742c2ca1421766c0d85adc69d22a36e7348e2a3f60db6a4359228ed58881aa5"
+        },
+        "ENUM_OPENMP_DISPATCH": {
+          "rows": 2,
+          "sorted_row_sha256": "e3003a75b0af64e8bfbbac895a3414a3eec40d777db56deda8e619f8eb76dc50"
+        },
+        "ENUM_OPENMP_EVENT_KIND": {
+          "rows": 37,
+          "sorted_row_sha256": "376b0d9db3bc8f34e4c1140d28410791548f920ee5875f39ac3b89ea4851d042"
+        },
+        "ENUM_OPENMP_MUTEX": {
+          "rows": 7,
+          "sorted_row_sha256": "468b83cb319135b46c7ce655ad07b2627decf0e982103eaee366898b052cbdd2"
+        },
+        "ENUM_OPENMP_SYNC_REGION": {
+          "rows": 7,
+          "sorted_row_sha256": "5c98f8ffcd89641f66f20c73ce31ae65fdbc96b98bb8819fc720a1a1e47df96c"
+        },
+        "ENUM_OPENMP_TASK_FLAG": {
+          "rows": 9,
+          "sorted_row_sha256": "50ca7cf340844641985a5133a71e97e60a38ede1d86822e513151253db4bc329"
+        },
+        "ENUM_OPENMP_TASK_STATUS": {
+          "rows": 7,
+          "sorted_row_sha256": "cf31dc59c7f0b2e6e8df28d8fc646cfcea04723b1070f992cbdb0ece1ae8e6d3"
+        },
+        "ENUM_OPENMP_THREAD": {
+          "rows": 4,
+          "sorted_row_sha256": "4d0cae05f0237b10bf7b37c917831c8a8f878d1bb199b85c5e47bb155f0e3b46"
+        },
+        "ENUM_OPENMP_WORK": {
+          "rows": 7,
+          "sorted_row_sha256": "60f53423e4ed262335c29bc380c874cd4bf2d8089ecb83dc1a7976871292a5f1"
+        },
+        "ENUM_PMU_EVENT_SOURCE": {
+          "rows": 4,
+          "sorted_row_sha256": "4f56d8d77d33efd9fd9179e7779ae078b56c2b98b8fce7b41a4e78b3655ac0a8"
+        },
+        "ENUM_PMU_UNIT_TYPE": {
+          "rows": 3,
+          "sorted_row_sha256": "b89bf79e52c8e868421f046239265c2aa15ef9ebc75a58037901fbc47099372e"
+        },
+        "ENUM_SAMPLING_THREAD_STATE": {
+          "rows": 11,
+          "sorted_row_sha256": "5867348590740789a1926c8f6e7b386fabdc73692c9812ca41a3c3e5892b8803"
+        },
+        "ENUM_SCHEDULING_THREAD_BLOCK": {
+          "rows": 53,
+          "sorted_row_sha256": "9ed7cf93352a0b9ec844db61b84782d9cb7317aae343e73878689c836d180b20"
+        },
+        "ENUM_SLI_TRANSER": {
+          "rows": 6,
+          "sorted_row_sha256": "dd348a02fa5bda6534234d72faa18cdf1eec35833f0aeaf4e5a48bf302585823"
+        },
+        "ENUM_STACK_UNWIND_METHOD": {
+          "rows": 10,
+          "sorted_row_sha256": "18079e30842c692edecfa5c47247aba76e3449700cde8efb572b48ff04ab2434"
+        },
+        "ENUM_VIDEO_ENGINE_CODEC": {
+          "rows": 8,
+          "sorted_row_sha256": "3b9f67f283ffd7d9275d305949d99b30b0fd0effa794e4b7d4342253fde42aed"
+        },
+        "ENUM_VIDEO_ENGINE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "11c4bfe427e2c7c19a484f4f8d37dd676a2b1b4aa1f2c2cbf76145b044232e38"
+        },
+        "ENUM_VULKAN_PIPELINE_CREATION_FLAGS": {
+          "rows": 3,
+          "sorted_row_sha256": "a4fe35773d0d81405f1ba259c26c40ea17ca45f570bba38ada9bb3520e27296e"
+        },
+        "ENUM_WDDM_ENGINE_TYPE": {
+          "rows": 9,
+          "sorted_row_sha256": "2a383d3829f5ab3bd694beae2cf32a49ce057aae5ce185df2eb1e5f3fce9b126"
+        },
+        "ENUM_WDDM_INTERRUPT_TYPE": {
+          "rows": 17,
+          "sorted_row_sha256": "fb26dfe76b5ce66d0f89947ba3795227283dd3b90e896be16727ea3f393b3e22"
+        },
+        "ENUM_WDDM_PACKET_TYPE": {
+          "rows": 8,
+          "sorted_row_sha256": "e4e4cc60e439f0d255f64d38df5bd0976878d03259001b421b871f6891413fee"
+        },
+        "ENUM_WDDM_PAGING_QUEUE_TYPE": {
+          "rows": 4,
+          "sorted_row_sha256": "6ed121426781f33826402e8a1b3c1ed5d3dc829cc0b6e1a963af5bd3a2b976dd"
+        },
+        "ENUM_WDDM_VIDMM_OP_TYPE": {
+          "rows": 32,
+          "sorted_row_sha256": "225f1f5743c330695a2963fa0c8a93489e935c6670f97d0abaa9db0e89c70ed6"
+        },
+        "META_DATA_CAPTURE": {
+          "rows": 90,
+          "sorted_row_sha256": "4364355bf7dcf0086364c54884e3188264192f0138ba1979d1f47696c90da5ee"
+        },
+        "META_DATA_EXPORT": {
+          "rows": 29,
+          "sorted_row_sha256": "ff03514de92952fc74e8bdbc20fc9e819561894cf01aabb4d0d663a9f518708c"
+        },
+        "NVTX_EVENTS": {
+          "rows": 25538,
+          "sorted_row_sha256": "b1fc422fe11377d315f839d690098b2ce05be1f4f03f98dfb30783dc6a986623"
+        },
+        "PROCESSES": {
+          "rows": 65,
+          "sorted_row_sha256": "c3b15ac2718449a1ab9b77426da114becd2a5f96b4dd896f18c80456b2190747"
+        },
+        "PROFILER_OVERHEAD": {
+          "rows": 8,
+          "sorted_row_sha256": "756461f8178e42dcd7105c77a1a2279216e76e4f02f9fb56fc10b604217a3392"
+        },
+        "ProcessStreams": {
+          "rows": 2,
+          "sorted_row_sha256": "8a413bf99eed4e16ec79e6a7cf4f4219f49619365261e6be2605a0608947438c"
+        },
+        "StringIds": {
+          "rows": 10181,
+          "sorted_row_sha256": "b12ec3c1f21dc050a78d6a2c499959daea2bffe3e6ba8029c7cd0ea9cf9f1b3e"
+        },
+        "TARGET_INFO_CUDA_CONTEXT_INFO": {
+          "rows": 1,
+          "sorted_row_sha256": "885cb2e5d2d0e57c434ce167f7be8282f4d8dbf10331a45a9c7af7cd8296395e"
+        },
+        "TARGET_INFO_CUDA_STREAM": {
+          "rows": 135,
+          "sorted_row_sha256": "11b6cd261f5666fc8cb3cf9c95c2f9973f5abaeea8f0c5e706639fd063825ac2"
+        },
+        "TARGET_INFO_GPU": {
+          "rows": 1,
+          "sorted_row_sha256": "8c31a6431c28ed5eb4e4e17a06e7c78e353537da039551a8a85d19f42174bfb5"
+        },
+        "TARGET_INFO_NIC_INFO": {
+          "rows": 1,
+          "sorted_row_sha256": "8ca65fd403adf5df41de3963c7e416a23f1ea995e6523c276c9ccfea5bb56aac"
+        },
+        "TARGET_INFO_SESSION_START_TIME": {
+          "rows": 1,
+          "sorted_row_sha256": "2e2dd1faba49ca8bb226da99d55e6f4f07a708092e173c59a8498acb5e9a2a62"
+        },
+        "TARGET_INFO_SYSTEM_ENV": {
+          "rows": 0,
+          "sorted_row_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "ThreadNames": {
+          "rows": 98,
+          "sorted_row_sha256": "8d5c79f63ef7bec3d2f29ab5abf6eb28321ea43eb82d47856f1f9273f697bedd"
+        }
+      },
+      "integrity_check": "ok",
+      "known_credential_bytes_absent": true
+    }
+  }
+}

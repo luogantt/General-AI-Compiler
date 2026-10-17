@@ -1,0 +1,282 @@
+{
+  "status": "complete_engine_executed_accuracy_acceptance_pending",
+  "source_commit": "cf34273c6d1853a302bbfc24c59d4afce46fbd16",
+  "environment": {
+    "scope": "Environment and FP32 add smoke test only; not BEVFormer validation",
+    "passed": true,
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "gpu": "NVIDIA GeForce RTX 3090, 580.126.18, 24576 MiB",
+    "plugins": [
+      {
+        "name": "ModulatedDeformConv2d",
+        "version": "2",
+        "namespace": ""
+      },
+      {
+        "name": "MultiscaleDeformableAttnPlugin_TRT",
+        "version": "2",
+        "namespace": ""
+      }
+    ],
+    "actual": [
+      [
+        0.0,
+        2.0,
+        4.0
+      ],
+      [
+        6.0,
+        8.0,
+        10.0
+      ]
+    ],
+    "expected": [
+      [
+        0.0,
+        2.0,
+        4.0
+      ],
+      [
+        6.0,
+        8.0,
+        10.0
+      ]
+    ]
+  },
+  "scope": "Complete fixed-shape BEVFormer-base cold raw-head ONNX; synthetic geometry, zero CAN-bus; no box decoding or nuScenes accuracy",
+  "calibration": {
+    "source": "32 real mini_train frames, backbone ranges measured on original GPU",
+    "ranges_file_sha256": "b213446406e19f32c71b5fd0df191db40c08103bd13e746ddca5c13f586ead6a"
+  },
+  "source_onnx_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "adapted_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2",
+  "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "int8_conv_audit": {
+    "status": "passed",
+    "target_count": 462,
+    "counts": {
+      "passed": 462
+    }
+  },
+  "timing": {
+    "warmup": 5,
+    "repeat": 20,
+    "cuda_event_ms": {
+      "mean": 204.41881637573243,
+      "median": 204.07295989990234,
+      "min": 202.0341796875,
+      "max": 209.41209411621094,
+      "p95": 206.88671417236327
+    },
+    "host_submit_and_sync_ms": {
+      "mean": 204.43715529982,
+      "median": 204.09111102344468,
+      "min": 202.04852998722345,
+      "max": 209.43656808231026,
+      "p95": 206.90550959552638
+    },
+    "median_latency_reciprocal_fps": 4.9002082416528845,
+    "scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+    "note": "Reciprocal latency is not end-to-end throughput; no CUDA Graph replay",
+    "target_30_fps_met": false
+  },
+  "sampled_memory": {
+    "scope": "250 ms sampled whole-device memory.used, includes baseline/other processes; observed lower bound on peak, not exclusive process allocation",
+    "phases": {
+      "full-build": {
+        "sampled_device_used_peak_mib": 9346.0,
+        "sampled_device_used_peak_gib": 9.126953125,
+        "samples": 1365,
+        "process_seconds": 342.08737230300903
+      },
+      "heldout-run": {
+        "sampled_device_used_peak_mib": 2570.0,
+        "sampled_device_used_peak_gib": 2.509765625,
+        "samples": 41,
+        "process_seconds": 10.340015411376953
+      }
+    }
+  },
+  "runtime_memory_snapshot": {
+    "context_device_memory_requirement_bytes": 2053694976,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 22606315520,
+      "total_bytes": 25296044032,
+      "device_used_bytes": 2689728512
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "numeric_validation": {
+    "reference": "Independent GAC native-MLIR FP32 implementation on the original RTX 3070 Ti; not a fresh PyTorch ground truth",
+    "all_outputs_finite": true,
+    "rtol": 0.001,
+    "atol": 0.0001,
+    "elementwise_threshold_met": false,
+    "detection_accuracy_acceptance": "not established; no mAP/NDS evaluation",
+    "outputs": {
+      "bev_embed": {
+        "shape": [
+          40000,
+          1,
+          256
+        ],
+        "elements": 10240000,
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "actual_finite": true,
+        "reference_finite": true,
+        "elementwise_threshold_met": false,
+        "mismatched_elements": 9885406,
+        "max_absolute_error": 0.21146565675735474,
+        "mean_absolute_error": 0.013507215732624638,
+        "rmse": 0.018214456603889925,
+        "reference_rms": 0.7528791844090067,
+        "relative_rmse": 0.024193067069835202,
+        "cosine_similarity": 0.9997074683894807,
+        "absolute_error_percentiles": {
+          "p50": 0.01035260409116745,
+          "p95": 0.03683054447174072,
+          "p99": 0.05709177345037458
+        }
+      },
+      "all_cls_scores": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "elements": 54000,
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "actual_finite": true,
+        "reference_finite": true,
+        "elementwise_threshold_met": false,
+        "mismatched_elements": 39777,
+        "max_absolute_error": 0.7738666534423828,
+        "mean_absolute_error": 0.024742565583299708,
+        "rmse": 0.03882692092776837,
+        "reference_rms": 7.209204264491441,
+        "relative_rmse": 0.0053857429340722586,
+        "cosine_similarity": 0.9999854986174271,
+        "absolute_error_percentiles": {
+          "p50": 0.015723228454589844,
+          "p95": 0.07912123203277587,
+          "p99": 0.14405691623687747
+        }
+      },
+      "all_bbox_preds": {
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "elements": 54000,
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "actual_finite": true,
+        "reference_finite": true,
+        "elementwise_threshold_met": false,
+        "mismatched_elements": 44654,
+        "max_absolute_error": 1.1048295497894287,
+        "mean_absolute_error": 0.02857940195697389,
+        "rmse": 0.05671358569901571,
+        "reference_rms": 11.943209955315472,
+        "relative_rmse": 0.004748604932108276,
+        "cosine_similarity": 0.9999887310247048,
+        "absolute_error_percentiles": {
+          "p50": 0.012254834175109863,
+          "p95": 0.10670322030782686,
+          "p99": 0.21351820707321242
+        }
+      }
+    }
+  },
+  "local_recheck": "Engine/input/output/reference hashes, 462 inspector records and memory CSV sample counts/peaks checked",
+  "cloud_root": "/root/gac-tensorrt-20261017",
+  "reports": {
+    "environment.json": {
+      "bytes": 725,
+      "sha256": "b74f73cede28d35158f84545aae0aa66fa586f6782075d2d5557d00ccadb0be1"
+    },
+    "experiment.json": {
+      "bytes": 3853,
+      "sha256": "9d3215c304dbd1178f75681fc0f70ebbcec9b70914ac417f3c88c4d6f8cb6639"
+    },
+    "full-build-gpu.csv": {
+      "bytes": 99568,
+      "sha256": "b0031478c1c3ee2ce74181511eff5e201fdaa849fa084f0e5af606503b6495f4"
+    },
+    "full-build.json": {
+      "bytes": 1438115,
+      "sha256": "af1da8fcd35648977d9afcaf16442782d626863298f6d647c08e43bcf79c8c94"
+    },
+    "full-precision-audit.json": {
+      "bytes": 811655,
+      "sha256": "e67d9c065ee2462ec12cc7539c87b23a2c575878eb232944073b3289c50254ae"
+    },
+    "held-out-input-provenance.json": {
+      "bytes": 1101,
+      "sha256": "3d07d18d1ace43a04c9f9153cf0ec24a03e29a5bac1cd8e0396637ed308df347"
+    },
+    "heldout-run-gpu.csv": {
+      "bytes": 2979,
+      "sha256": "d680d4babb28eaf957af34dcc77de14dd04c87de6d07944735be479b6da69760"
+    },
+    "native-comparison.json": {
+      "bytes": 3377,
+      "sha256": "686ed69865322e15224a213337803d82d3c0cd7e701d13994db474bd1e0faa84"
+    },
+    "native-heldout-reference.provenance.json": {
+      "bytes": 1837903,
+      "sha256": "96dc3ef1b8954804149f42de7eb9fddda07674bd589977c1ca59f277e9de4a26"
+    },
+    "packages.txt": {
+      "bytes": 782,
+      "sha256": "080b1149582ca029bc90961b0c0358ce2d2efcdbbd2be30501d2cf28594e51a0"
+    },
+    "plugin-validation.json": {
+      "bytes": 23435,
+      "sha256": "48456e23eab3d6cdf0a5bbf305d66e17fabfffd2457ba84d2280dab2265f3dd2"
+    },
+    "run.json": {
+      "bytes": 5095,
+      "sha256": "cd5c143f1fb4621bd6320a05bcc760fbf8ab426166bc4a6c39be7cebb09bbf06"
+    }
+  },
+  "large_artifacts_not_committed": {
+    "full-build.layers.json": {
+      "local_path": "build/tensorrt-cloud-20261017/full-build.layers.json",
+      "bytes": 3665505,
+      "sha256": "00bfb86f0ad9435eb93a7579b7caf16ff6b27f9ba7dee595af202c206783319d"
+    },
+    "full-build.log": {
+      "local_path": "build/tensorrt-cloud-20261017/full-build.log",
+      "bytes": 1774224,
+      "sha256": "30e899aa7bb711b50f7005390db1c93be850c08131889daf866f3f1b6f7b0e99"
+    },
+    "outputs.npz": {
+      "local_path": "build/tensorrt-cloud-20261017/outputs.npz",
+      "bytes": 41392792,
+      "sha256": "2be6716b5baa8e64e1f45f5e7dd3e2ddbb162b74b6e2529f11d8292a904cf060"
+    },
+    "native-heldout-reference.npz": {
+      "local_path": "build/tensorrt-cloud-20261017/native-heldout-reference.npz",
+      "bytes": 41392792,
+      "sha256": "2c293ca15c12e95796c843b13506bf8a7bd42175c3aea6f303a08bf455f84b98"
+    },
+    "held-out-images.npy": {
+      "local_path": "build/tensorrt-cloud-20261017/held-out-images.npy",
+      "bytes": 106905728,
+      "sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968"
+    }
+  }
+}

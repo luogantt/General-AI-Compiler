@@ -1,0 +1,2002 @@
+{
+  "status": "passed_available_evidence",
+  "scope": "Full BEVFormer-base cold graph: FP32 floating tensors/weights and plugin ABI; integer shape/index/Bool preserved",
+  "limits": "Inspector formats and named tactics do not disassemble every arithmetic instruction. TF32 exclusion additionally relies on TensorRT builder flag and NVIDIA_TF32_OVERRIDE=0; this is not an independent task-accuracy test.",
+  "checks": {
+    "build_completed": true,
+    "requested_fp32": true,
+    "fp16_disallowed": true,
+    "tf32_builder_flag_disabled": true,
+    "plugin_fp32_constraints_enabled": true,
+    "mixed_int8_policy_absent": true,
+    "build_tf32_override_zero": true,
+    "inspector_nonempty": true,
+    "all_public_floating_io_fp32": true,
+    "engine_hash_matches_build": true,
+    "expected_plugin_counts": true,
+    "plugin_constraint_count": true,
+    "reported_tensor_formats_include_fp32": true,
+    "run_completed": true,
+    "run_engine_hash_matches": true,
+    "run_tf32_override_zero": true,
+    "outputs_finite": true
+  },
+  "bindings": {
+    "build_report_sha256": "f58d16bc2e5e79f6f95d95d6c49ae583e85e78fdb7676dea5104f8260120e190",
+    "inspector_sha256": "0b4cd6d23b9fc2d5c5ce3814b69aa2b10a0348bcc749de010243a0f12cd3495b",
+    "engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+    "source_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+    "run_report_sha256": "36b10d5dedc80aefa0bbc3b675af90d133b08c00197bfeb71462d64157623900",
+    "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968"
+  },
+  "layer_count": 3260,
+  "layer_types": {
+    "TrainStation": 8,
+    "kgen": 819,
+    "gemm": 164,
+    "NoOp": 355,
+    "Constant": 192,
+    "NonZero": 36,
+    "CaskConvolution": 354,
+    "PluginV3": 174,
+    "DeviceToShapeHost": 36,
+    "CaskPooling": 6,
+    "Reformat": 468,
+    "PointWiseV2": 156,
+    "Scale": 156,
+    "CaskGemmConvolution": 312,
+    "Resize": 12,
+    "shape_call": 12
+  },
+  "tensor_format_occurrences": {
+    "Float": 7180,
+    "Int32": 490,
+    "Bool": 37,
+    "Int64": 180
+  },
+  "typed_weight_field_occurrences": {
+    "Float": 1956,
+    "Int32": 36
+  },
+  "named_tactics_checked": 1655,
+  "plugin_counts": {
+    "MultiscaleDeformableAttnPlugin_TRT": 18,
+    "ModulatedDeformConv2d": 156
+  },
+  "plugin_layers": [
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_5/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_4/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_3/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_1/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2/MMCVModulatedDeformConv2d",
+      "plugin": "ModulatedDeformConv2d",
+      "types": [
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.0/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.0/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.1/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.2/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.3/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.4/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.5/attentions.1/MSDeformAttn",
+      "plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "types": [
+        "fp32",
+        "integer_or_bool",
+        "integer_or_bool",
+        "fp32",
+        "fp32",
+        "fp32"
+      ]
+    }
+  ],
+  "issue_counts": {},
+  "first_100_issues": []
+}

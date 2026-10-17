@@ -2,8 +2,32 @@
 
 TensorRT 实验分支：**`lg/bevformer-tensorrt`**。已建立 Base ONNX 插件适配、
 引擎构建与数值/延时验证入口，见 [TensorRT 对照路线](tools/tensorrt/README.md)。
-GPU 环境及六组 DCNv2/MSDA 对照通过；完整模型状态见
-[验证记录](docs/validation/tensorrt/bevformer-base-2026-10-17/README.md)。
+2026-10-17 已在 **RTX 3090 24GB** 完成完整 Base 固定 cold raw-head 图的执行与分析：
+
+| TensorRT 引擎 | 初次测速中位延时（预热 5 次 / 测量 20 次） | 延时倒数 |
+| --- | ---: | ---: |
+| FP32，关闭 TF32 | 373.821 ms | 2.675 FPS |
+| backbone 普通 Conv INT8，其余按混合精度策略执行 | 204.073 ms | 4.900 FPS |
+
+计时不含预处理、传输、模型加载或后处理；两引擎 workspace 和 tactic 不同，不能把
+差值全部归因于量化。输入为真实六相机图像，但仍使用**合成全可见投影、零 CAN-bus、
+无历史帧**；未通过真实几何/时序和 nuScenes mAP/NDS 验收，也未达到 30 FPS。
+FP32 通过独立 native FP32 参考的严格逐元素检查，混合精度未通过同一严格门限。
+
+另以 **TensorRT IProfiler + Nsight Systems** 采集逐层与 Kernel 数据：混合精度 / FP32
+分别有 3819 / 3260 条执行层回调。混合引擎 MSDA 合计 74.188 ms，占逐层均值之和
+35.08%；独立 Nsight trace 的对应采样 Kernel 每帧累计 75.118 ms，占 Kernel 累计
+时间 37.90%。两种口径不能混作无 profiler 的整网占比，尚无硬件计数器证据认定带宽瓶颈。
+
+查看 [完整验证与车企/Orin 对比](docs/validation/tensorrt/bevformer-base-2026-10-17/README.md)、
+[交互式逐层报告](docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/index.html)、
+[CSV 数据](docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/layers-ranked.csv)、
+[可下载的公开数据包](docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/profile-data.zip)。
+HTML 需下载后用浏览器打开；GitHub 文件页不执行交互脚本。
+公开 SQLite 已删除环境变量元数据并替换字符串表中的凭据，耗时、字符串 ID 和其余数据保持不变；原始 `.nsys-rep`
+仅保留在本地，未放入 Git 或 ZIP，见[净化记录](docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/publication-sanitization.json)。
+车企使用自研 BEV 网络并不等于直接部署官方 BEVFormer-base；公开的 Orin 18/25 FPS
+来自另一套 BEVFusion 配置，不能作为本项目的测速或精度结论。
 
 当前主分支：**`main`**（已合入 `lg/bevformer-full-ops`）。CUDA PTX 与 Vortex 共用一套 C++ MLIR
 前端、图优化和算子语义，通过 `gac-compile --target=cuda` 或 `--target=vortex`

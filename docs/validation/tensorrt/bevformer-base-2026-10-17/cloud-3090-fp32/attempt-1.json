@@ -1,0 +1,72 @@
+{
+  "status": "failed",
+  "source_commit": "cf34273c6d1853a302bbfc24c59d4afce46fbd16",
+  "scope": "Complete fixed-shape BEVFormer-base cold raw-head ONNX; synthetic geometry, zero CAN-bus; no box decoding or nuScenes accuracy",
+  "precision": "fp32; TF32, FP16 and INT8 disabled; float plugin boundaries constrained FP32",
+  "memory_scope": "250 ms sampled whole-device memory.used, includes baseline/other processes; observed lower bound on peak, not exclusive process allocation",
+  "steps": [
+    {
+      "name": "full-build",
+      "command": [
+        "/root/gac-tensorrt-20261017/venv/bin/python",
+        "/root/gac-tensorrt-20261017/tools/tensorrt/run_engine.py",
+        "build",
+        "--onnx",
+        "/root/gac-tensorrt-20261017/models/full.onnx",
+        "--precision",
+        "fp32",
+        "--plugins-fp32",
+        "--engine",
+        "/root/gac-tensorrt-20261017/results/fp32-01/full.engine",
+        "--report",
+        "/root/gac-tensorrt-20261017/results/fp32-01/full-build.json",
+        "--workspace-mib",
+        "1024",
+        "--builder-optimization-level",
+        "3",
+        "--max-aux-streams",
+        "0",
+        "--verbose"
+      ],
+      "status": "failed",
+      "started_unix": 1792240069.771253,
+      "pid": 24508,
+      "exit_code": 1,
+      "seconds": 117.59681963920593,
+      "memory": {
+        "samples": 469,
+        "sampled_device_used_peak_mib": 2948.0,
+        "first_sample_used_mib": 1.0
+      }
+    }
+  ],
+  "started_unix": 1792240068.36092,
+  "artifacts": {
+    "full.onnx": {
+      "sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+      "bytes": 283055352
+    },
+    "held-out-images.npy": {
+      "sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+      "bytes": 106905728
+    },
+    "images.npy": {
+      "sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+      "bytes": 106905728
+    },
+    "pytorch-outputs.npz": {
+      "sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+      "bytes": 41392792
+    },
+    "ranges.json": {
+      "sha256": "b213446406e19f32c71b5fd0df191db40c08103bd13e746ddca5c13f586ead6a",
+      "bytes": 2661526
+    },
+    "export-report.json": {
+      "sha256": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb",
+      "bytes": 9703
+    }
+  },
+  "error": "full-build failed; inspect its log",
+  "finished_unix": 1792240187.3716052
+}

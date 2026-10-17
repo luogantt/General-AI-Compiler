@@ -1,0 +1,283 @@
+{
+  "sqlite": "fp32-nsys.sqlite",
+  "sqlite_sha256": "a56d548ffa4491892a389c6df27bac8192fea0bc8da3e09d2f7e3218fb2485cd",
+  "frames": [
+    {
+      "frame": "frame_0",
+      "host_range_ms": 376.084343,
+      "kernel_count": 2921,
+      "kernel_sum_ms": 364.86759,
+      "kernel_union_ms": 364.86759,
+      "gpu_activity_union_ms": 365.500932,
+      "uncovered_range_ms": 10.583411,
+      "memory_activity_count": 408,
+      "memory_activity_bytes": 559248
+    },
+    {
+      "frame": "frame_1",
+      "host_range_ms": 374.16606,
+      "kernel_count": 2921,
+      "kernel_sum_ms": 363.917645,
+      "kernel_union_ms": 363.917645,
+      "gpu_activity_union_ms": 364.58737,
+      "uncovered_range_ms": 9.57869,
+      "memory_activity_count": 408,
+      "memory_activity_bytes": 559248
+    },
+    {
+      "frame": "frame_2",
+      "host_range_ms": 376.366334,
+      "kernel_count": 2921,
+      "kernel_sum_ms": 366.314307,
+      "kernel_union_ms": 366.314307,
+      "gpu_activity_union_ms": 366.932705,
+      "uncovered_range_ms": 9.433629,
+      "memory_activity_count": 408,
+      "memory_activity_bytes": 559248
+    },
+    {
+      "frame": "frame_3",
+      "host_range_ms": 377.25898,
+      "kernel_count": 2921,
+      "kernel_sum_ms": 367.18115,
+      "kernel_union_ms": 367.18115,
+      "gpu_activity_union_ms": 367.876219,
+      "uncovered_range_ms": 9.382761,
+      "memory_activity_count": 408,
+      "memory_activity_bytes": 559248
+    },
+    {
+      "frame": "frame_4",
+      "host_range_ms": 375.342956,
+      "kernel_count": 2921,
+      "kernel_sum_ms": 364.817995,
+      "kernel_union_ms": 364.817995,
+      "gpu_activity_union_ms": 365.50388,
+      "uncovered_range_ms": 9.839076,
+      "memory_activity_count": 408,
+      "memory_activity_bytes": 559248
+    }
+  ],
+  "frame_count": 5,
+  "kernel_count": 14605,
+  "distinct_kernel_names": 155,
+  "top_kernels": [
+    {
+      "name": "void ms_deformable_im2col_gpu_kernel<float>(int, const T1 *, const int *, const int *, const T1 *, const T1 *, int, int, int, int, int, int, int, T1 *)",
+      "calls": 90,
+      "total_ms": 390.007098,
+      "per_frame_sum_ms": 78.00141959999999,
+      "mean_call_ms": 4.3334122,
+      "min_call_ms": 0.01968,
+      "max_call_ms": 12.395001,
+      "percent_of_kernel_duration_sum": 21.345705121181556
+    },
+    {
+      "name": "ampere_sgemm_128x64_nn",
+      "calls": 690,
+      "total_ms": 254.513663,
+      "per_frame_sum_ms": 50.9027326,
+      "mean_call_ms": 0.36886038115942027,
+      "min_call_ms": 0.337695,
+      "max_call_ms": 0.381119,
+      "percent_of_kernel_duration_sum": 13.929935192384058
+    },
+    {
+      "name": "sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x256x8_stage3_warpsize2x4x1_ffma_aligna4_alignc4_execute_kernel_trt",
+      "calls": 240,
+      "total_ms": 194.849795,
+      "per_frame_sum_ms": 38.969959,
+      "mean_call_ms": 0.8118741458333333,
+      "min_call_ms": 0.159455,
+      "max_call_ms": 3.984788,
+      "percent_of_kernel_duration_sum": 10.664437361067407
+    },
+    {
+      "name": "sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_execute_kernel_trt",
+      "calls": 925,
+      "total_ms": 148.932269,
+      "per_frame_sum_ms": 29.786453799999997,
+      "mean_call_ms": 0.1610078583783784,
+      "min_call_ms": 0.019328,
+      "max_call_ms": 0.456863,
+      "percent_of_kernel_duration_sum": 8.15129856201358
+    },
+    {
+      "name": "sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_execute_kernel_trt",
+      "calls": 720,
+      "total_ms": 125.103228,
+      "per_frame_sum_ms": 25.0206456,
+      "mean_call_ms": 0.17375448333333332,
+      "min_call_ms": 0.149184,
+      "max_call_ms": 0.462911,
+      "percent_of_kernel_duration_sum": 6.8470974715335675
+    },
+    {
+      "name": "sm80_xmma_fprop_wngd_f32f32_f32_f32_nchwkcrs_nchw_tilesize8x16x64x8_warpsize8x1x1_wngd2x2_execute_kernel_trt",
+      "calls": 300,
+      "total_ms": 83.116632,
+      "per_frame_sum_ms": 16.6233264,
+      "mean_call_ms": 0.27705544,
+      "min_call_ms": 0.081408,
+      "max_call_ms": 0.884125,
+      "percent_of_kernel_duration_sum": 4.549104686647941
+    },
+    {
+      "name": "void modulatedDeformableIm2colGpuKernel<float>(int, const T1 *, const T1 *, const T1 *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, T1 *)",
+      "calls": 780,
+      "total_ms": 82.685793,
+      "per_frame_sum_ms": 16.5371586,
+      "mean_call_ms": 0.10600742692307692,
+      "min_call_ms": 0.056064,
+      "max_call_ms": 0.116703,
+      "percent_of_kernel_duration_sum": 4.525524186970204
+    },
+    {
+      "name": "trt_ampere_scudnn_128x64_relu_interior_nn_v1",
+      "calls": 270,
+      "total_ms": 55.322164,
+      "per_frame_sum_ms": 11.0644328,
+      "mean_call_ms": 0.2048969037037037,
+      "min_call_ms": 0.100224,
+      "max_call_ms": 0.338879,
+      "percent_of_kernel_duration_sum": 3.0278695066458665
+    },
+    {
+      "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_256x128_8x4_nn_align1>(T1::Params)",
+      "calls": 90,
+      "total_ms": 47.097838,
+      "per_frame_sum_ms": 9.4195676,
+      "mean_call_ms": 0.5233093111111111,
+      "min_call_ms": 0.513086,
+      "max_call_ms": 0.529214,
+      "percent_of_kernel_duration_sum": 2.5777391410275805
+    },
+    {
+      "name": "trt_ampere_scudnn_128x64_relu_medium_nn_v1",
+      "calls": 150,
+      "total_ms": 41.007047,
+      "per_frame_sum_ms": 8.2014094,
+      "mean_call_ms": 0.27338031333333335,
+      "min_call_ms": 0.069056,
+      "max_call_ms": 0.43251,
+      "percent_of_kernel_duration_sum": 2.2443805193320685
+    },
+    {
+      "name": "trt_ampere_scudnn_winograd_128x128_ldg1_ldg4_relu_tile148t_nt_v1",
+      "calls": 690,
+      "total_ms": 38.509416,
+      "per_frame_sum_ms": 7.7018832,
+      "mean_call_ms": 0.05581074782608696,
+      "min_call_ms": 0.050848,
+      "max_call_ms": 0.058495,
+      "percent_of_kernel_duration_sum": 2.107681225650183
+    },
+    {
+      "name": "__myl_ReshReshMulReshAddReshCast_0xf2b41d574a1bc057c78c7acc254603c7",
+      "calls": 30,
+      "total_ms": 35.251471,
+      "per_frame_sum_ms": 7.050294200000001,
+      "mean_call_ms": 1.1750490333333334,
+      "min_call_ms": 1.173468,
+      "max_call_ms": 1.177148,
+      "percent_of_kernel_duration_sum": 1.9293687446013694
+    },
+    {
+      "name": "__myl_Scat_0x90bc4d0aca472cdbace25eb85e1a8548_vec",
+      "calls": 180,
+      "total_ms": 17.84138,
+      "per_frame_sum_ms": 3.568276,
+      "mean_call_ms": 0.09911877777777778,
+      "min_call_ms": 0.0984,
+      "max_call_ms": 0.100256,
+      "percent_of_kernel_duration_sum": 0.9764869367453057
+    },
+    {
+      "name": "__myl_ReshMaxrSubExpSumDivReshCast_0x3cc261fa99e62d988ea29fdb59a5a445",
+      "calls": 30,
+      "total_ms": 17.518696,
+      "per_frame_sum_ms": 3.5037391999999996,
+      "mean_call_ms": 0.5839565333333333,
+      "min_call_ms": 0.582686,
+      "max_call_ms": 0.58579,
+      "percent_of_kernel_duration_sum": 0.9588259312234949
+    },
+    {
+      "name": "sm80_xmma_fprop_implicit_gemm_f32f32_f32f32_f32_nchwkcrs_nchw_tilesize64x64x8_stage3_warpsize1x4x1_g1_ffma_simple_t1r1s1_aligna4_alignc4_execute_kernel_trt",
+      "calls": 90,
+      "total_ms": 15.579568,
+      "per_frame_sum_ms": 3.1159136,
+      "mean_call_ms": 0.1731063111111111,
+      "min_call_ms": 0.167903,
+      "max_call_ms": 0.181184,
+      "percent_of_kernel_duration_sum": 0.8526943897913272
+    },
+    {
+      "name": "__myl_Scat_0xb3e30064dfba038417552d35ff2fcac4",
+      "calls": 150,
+      "total_ms": 15.041873,
+      "per_frame_sum_ms": 3.0083746000000002,
+      "mean_call_ms": 0.10027915333333333,
+      "min_call_ms": 0.09968,
+      "max_call_ms": 0.101632,
+      "percent_of_kernel_duration_sum": 0.8232654922815343
+    },
+    {
+      "name": "__myl_Move_0xe6ce08e24760d86de8006fa768772f4e",
+      "calls": 150,
+      "total_ms": 14.869457,
+      "per_frame_sum_ms": 2.9738914000000003,
+      "mean_call_ms": 0.09912971333333333,
+      "min_call_ms": 0.098368,
+      "max_call_ms": 0.100192,
+      "percent_of_kernel_duration_sum": 0.8138288919913169
+    },
+    {
+      "name": "void cuInt8::nchwToNhwcKernel<float>(int, int, int, int, int, int, int, int, bool, const T1 *, T1 *)",
+      "calls": 840,
+      "total_ms": 14.518802,
+      "per_frame_sum_ms": 2.9037604000000004,
+      "mean_call_ms": 0.017284288095238097,
+      "min_call_ms": 0.009152,
+      "max_call_ms": 0.059551,
+      "percent_of_kernel_duration_sum": 0.7946369894140262
+    },
+    {
+      "name": "__myl_Cast_0x50a5a070647440344e2571f6b677d470",
+      "calls": 30,
+      "total_ms": 13.487509,
+      "per_frame_sum_ms": 2.6975018,
+      "mean_call_ms": 0.44958363333333334,
+      "min_call_ms": 0.448671,
+      "max_call_ms": 0.45059,
+      "percent_of_kernel_duration_sum": 0.738192692927046
+    },
+    {
+      "name": "void cuScale::scale<float, float, (bool)0, (cuScale::Mode)1, (bool)0, (bool)0, (bool)0, (unsigned int)4, (nvinfer1::FusedActType)0>(const T1 *, T1 *, cuScale::KernelParameters<T1>, nvinfer1::rt::ReducedDivisorBase<unsigned int>, nvinfer1::rt::ReducedDivisorBase<unsigned int>, nvinfer1::rt::ReducedDivisorBase<unsigned int>, nvinfer1::rt::ReducedDivisorBase<unsigned int>, nvinfer1::rt::ReducedDivisorBase<unsigned int>)",
+      "calls": 780,
+      "total_ms": 12.64472,
+      "per_frame_sum_ms": 2.528944,
+      "mean_call_ms": 0.016211179487179487,
+      "min_call_ms": 0.008288,
+      "max_call_ms": 0.018432,
+      "percent_of_kernel_duration_sum": 0.6920655184073262
+    }
+  ],
+  "mean_per_frame": {
+    "host_range_ms": 375.8437346,
+    "kernel_count": 2921,
+    "kernel_sum_ms": 365.4197374,
+    "kernel_union_ms": 365.4197374,
+    "gpu_activity_union_ms": 366.0802212,
+    "uncovered_range_ms": 9.7635134,
+    "memory_activity_count": 408,
+    "memory_activity_bytes": 559248
+  },
+  "notes": [
+    "Nsight-instrumented inference; not the unprofiled latency baseline.",
+    "Kernel sum counts device execution durations; unions avoid counting overlapping intervals twice.",
+    "Host frame ranges include stream synchronization. Uncovered time is not necessarily recoverable overhead.",
+    "Memory activity bytes describe explicit CUDA copies/memsets, not kernel DRAM traffic.",
+    "No SM occupancy, DRAM bandwidth, or cache-miss counters were collected."
+  ]
+}

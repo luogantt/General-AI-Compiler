@@ -1,0 +1,127 @@
+{
+  "mode": "trace",
+  "environment_before": {
+    "utc": "2026-10-17T13:12:38.972816+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 48, 330 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  },
+  "engine": "/root/gac-tensorrt-20261017/results/fp32-workspace-01/full.engine",
+  "engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+  "inputs": "/root/gac-tensorrt-20261017/models/held-out-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "warmup": 10,
+  "repeat": 5,
+  "device": 0,
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "engine_aux_streams": 0,
+  "engine_profiling_verbosity": "ProfilingVerbosity.DETAILED",
+  "trace": {
+    "frames": 5,
+    "nvtx_verbosity": "ProfilingVerbosity.DETAILED",
+    "capture_range": "cudaProfilerApi",
+    "profiler_attached": false,
+    "scope": "Synchronized inference frames after warmup; loading, copies and validation outside capture"
+  },
+  "validation": {
+    "trace": {
+      "status": "not_checked",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "bev_embed": true,
+        "all_cls_scores": true,
+        "all_bbox_preds": true
+      },
+      "scope": "Final output of the last measured execution only"
+    }
+  },
+  "status": "completed",
+  "validation_scope": "Final output of each measured pass only; no numerical reference comparison",
+  "environment_after": {
+    "utc": "2026-10-17T13:12:53.925907+00:00",
+    "host": "wyAbDb",
+    "python": "3.11.15",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 54, 1695 MHz, 350.00 W",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3090",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 25296044032
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "actual_sha256": "2be6716b5baa8e64e1f45f5e7dd3e2ddbb162b74b6e2529f11d8292a904cf060",
+  "reference_sha256": "2c293ca15c12e95796c843b13506bf8a7bd42175c3aea6f303a08bf455f84b98",
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "criterion": "abs(actual-reference) <= atol + rtol*abs(reference)",
+  "all_outputs_finite": true,
+  "elementwise_threshold_met": false,
+  "scope": "Complete cold raw-head graph; one real mini_val frame with fixed synthetic geometry and zero CAN-bus; no detection metric",
+  "outputs": {
+    "bev_embed": {
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "elements": 10240000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 9885406,
+      "max_absolute_error": 0.21146565675735474,
+      "mean_absolute_error": 0.013507215732624638,
+      "rmse": 0.018214456603889925,
+      "reference_rms": 0.7528791844090067,
+      "relative_rmse": 0.024193067069835202,
+      "cosine_similarity": 0.9997074683894807,
+      "absolute_error_percentiles": {
+        "p50": 0.01035260409116745,
+        "p95": 0.03683054447174072,
+        "p99": 0.05709177345037458
+      }
+    },
+    "all_cls_scores": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 39777,
+      "max_absolute_error": 0.7738666534423828,
+      "mean_absolute_error": 0.024742565583299708,
+      "rmse": 0.03882692092776837,
+      "reference_rms": 7.209204264491441,
+      "relative_rmse": 0.0053857429340722586,
+      "cosine_similarity": 0.9999854986174271,
+      "absolute_error_percentiles": {
+        "p50": 0.015723228454589844,
+        "p95": 0.07912123203277587,
+        "p99": 0.14405691623687747
+      }
+    },
+    "all_bbox_preds": {
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "elements": 54000,
+      "actual_dtype": "float32",
+      "reference_dtype": "float32",
+      "actual_finite": true,
+      "reference_finite": true,
+      "elementwise_threshold_met": false,
+      "mismatched_elements": 44654,
+      "max_absolute_error": 1.1048295497894287,
+      "mean_absolute_error": 0.02857940195697389,
+      "rmse": 0.05671358569901571,
+      "reference_rms": 11.943209955315472,
+      "relative_rmse": 0.004748604932108276,
+      "cosine_similarity": 0.9999887310247048,
+      "absolute_error_percentiles": {
+        "p50": 0.012254834175109863,
+        "p95": 0.10670322030782686,
+        "p99": 0.21351820707321242
+      }
+    }
+  },
+  "reference": "Independent GAC native-MLIR FP32 implementation on the original RTX 3070 Ti; not a fresh PyTorch ground truth",
+  "real_quantization_accuracy_acceptance": "not_established; elementwise tolerance is a diagnostic, not mAP/NDS",
+  "source_onnx_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "adapted_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2"
+}

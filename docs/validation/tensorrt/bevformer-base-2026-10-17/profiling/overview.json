@@ -1,0 +1,1791 @@
+{
+  "schema_version": 1,
+  "generated_utc": "2026-10-17T13:21:07.078187+00:00",
+  "scope": "本次为无历史帧、合成投影条件下的静态引擎 profiling；不能作为完整真实时序性能或 nuScenes mAP 验收。",
+  "denominator": "层占比 = 该回调 mean_ms / 全部 IProfiler 回调 mean_ms 之和；不是 baseline 全图耗时占比，也不是 ONNX 原始节点占比。",
+  "fusion_note": "每个 ordinal 回调仅计一次。分类依据唯一精确匹配的 inspector LayerType / PluginType；名称、Metadata 中的原始节点只供追溯，不用于推断或拆分耗时。TrainStation、kgen 和已融合执行层均保留原始回调整体；不将其内部节点额外加入统计。不据邻近层推断 TrainStation 的语义。回调统计不能证明底层 GPU 时间区间互斥，不能当作无重叠的 GPU 时间分解。",
+  "perturbation_note": "baseline、profiled 全图与逐层采样来自独立顺序执行。差值包含 profiling 扰动和运行间波动；加载、输入拷贝、warmup 不在计时内。CUDA event 也可能包含主机提交造成的 GPU 空闲。",
+  "comparison_note": "Mixed 与 FP32 是两套已构建引擎，执行层数、融合方式和 tactic 均可能不同；此对比不是仅改变 precision 的单变量实验。层/类别耗时差不能直接解释为某个精度选项的因果收益，也不能仅凭这些计时断言计算或显存带宽瓶颈。",
+  "nsight_note": "Nsight 为单独 trace pass。Total 为捕获范围内累计 kernel 时间；每帧累计 = Total / trace.frames，不等于单帧延迟，重叠 kernel 的时间也会累加。Instances 是所有捕获帧的调用总数。Kernel 占比分母为该 trace 全部 kernel 累计时间。NVTX push/pop 是 CPU range，不是 GPU 层耗时。",
+  "variants": [
+    {
+      "id": "mixed-layers",
+      "label": "Mixed",
+      "status": "completed",
+      "engine": "/root/gac-tensorrt-20261017/results/mixed-01/full.engine",
+      "engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2",
+      "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+      "warmup": 10,
+      "repeat": 30,
+      "environment_before": {
+        "utc": "2026-10-17T13:10:08.413754+00:00",
+        "host": "wyAbDb",
+        "python": "3.11.15",
+        "tensorrt": "10.13.3.9",
+        "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 26, 675 MHz, 350.00 W",
+        "NVIDIA_TF32_OVERRIDE": "0",
+        "CUDA_VISIBLE_DEVICES": null,
+        "CUDA_MODULE_LOADING": "LAZY",
+        "torch": "2.7.0+cu126",
+        "torch_cuda": "12.6",
+        "cuda_initialization": "PyTorch; required for run buffers and events",
+        "gpu": {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3090",
+          "compute_capability": [
+            8,
+            6
+          ],
+          "total_memory_bytes": 25296044032
+        }
+      },
+      "environment_after": {
+        "utc": "2026-10-17T13:10:42.362666+00:00",
+        "host": "wyAbDb",
+        "python": "3.11.15",
+        "tensorrt": "10.13.3.9",
+        "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 53, 1695 MHz, 350.00 W",
+        "NVIDIA_TF32_OVERRIDE": "0",
+        "CUDA_VISIBLE_DEVICES": null,
+        "CUDA_MODULE_LOADING": "LAZY",
+        "torch": "2.7.0+cu126",
+        "torch_cuda": "12.6",
+        "cuda_initialization": "PyTorch; required for run buffers and events",
+        "gpu": {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3090",
+          "compute_capability": [
+            8,
+            6
+          ],
+          "total_memory_bytes": 25296044032
+        }
+      },
+      "io": [
+        {
+          "name": "images",
+          "shape": [
+            1,
+            6,
+            3,
+            928,
+            1600
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "INPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "bev_embed",
+          "shape": [
+            40000,
+            1,
+            256
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "all_cls_scores",
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "all_bbox_preds",
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        }
+      ],
+      "engine_aux_streams": 0,
+      "engine_profiling_verbosity": "ProfilingVerbosity.DETAILED",
+      "baseline": {
+        "cuda_event": {
+          "count": 30,
+          "mean_ms": 209.41824086507162,
+          "median_ms": 204.2239990234375,
+          "min_ms": 201.21395874023438,
+          "max_ms": 283.28961181640625,
+          "p95_ms": 232.4158454895019,
+          "samples_ms": [
+            205.3212127685547,
+            213.83782958984375,
+            203.70431518554688,
+            203.36947631835938,
+            243.6003875732422,
+            283.28961181640625,
+            201.21395874023438,
+            213.8839111328125,
+            205.1102752685547,
+            202.95167541503906,
+            205.47378540039062,
+            203.97056579589844,
+            203.66029357910156,
+            206.0410919189453,
+            204.0412139892578,
+            206.12197875976562,
+            207.07635498046875,
+            203.68077087402344,
+            203.9377899169922,
+            204.2890167236328,
+            204.26853942871094,
+            204.08114624023438,
+            218.745849609375,
+            203.41555786132812,
+            203.9920654296875,
+            204.3832244873047,
+            204.06375122070312,
+            203.72889709472656,
+            204.17945861816406,
+            207.11322021484375
+          ]
+        },
+        "host_submit_and_sync": {
+          "count": 30,
+          "mean_ms": 209.4395965958635,
+          "median_ms": 204.24862194340676,
+          "min_ms": 201.23219094239175,
+          "max_ms": 283.3119370043278,
+          "p95_ms": 232.43647887138644,
+          "samples_ms": [
+            205.3780019050464,
+            213.85881898459047,
+            203.7290590815246,
+            203.39050400070846,
+            243.61954000778496,
+            283.3119370043278,
+            201.23219094239175,
+            213.92162202391773,
+            205.12619195505977,
+            202.985928975977,
+            205.48987900838256,
+            203.99298309348524,
+            203.6766860401258,
+            206.05853002052754,
+            204.05889197718352,
+            206.14063402172178,
+            207.09224499296397,
+            203.69794592261314,
+            203.95558094605803,
+            204.30575695354491,
+            204.28556797560304,
+            204.09765897784382,
+            218.7682930380106,
+            203.43419804703444,
+            204.0085339685902,
+            204.39938304480165,
+            204.08198900986463,
+            203.7457770202309,
+            204.21167591121048,
+            207.13189302477986
+          ]
+        }
+      },
+      "profiled_whole_engine": {
+        "cuda_event": {
+          "count": 30,
+          "mean_ms": 217.2147705078125,
+          "median_ms": 213.51065063476562,
+          "min_ms": 211.85536193847656,
+          "max_ms": 240.4188232421875,
+          "p95_ms": 230.21782989501952,
+          "samples_ms": [
+            213.13638305664062,
+            212.15948486328125,
+            213.48658752441406,
+            222.6472930908203,
+            217.670654296875,
+            230.64268493652344,
+            240.4188232421875,
+            226.43405151367188,
+            218.7519989013672,
+            212.44210815429688,
+            228.94796752929688,
+            212.73805236816406,
+            212.69503784179688,
+            212.01510620117188,
+            216.6313018798828,
+            212.12570190429688,
+            215.4721221923828,
+            212.58444213867188,
+            211.85536193847656,
+            213.2060089111328,
+            213.06777954101562,
+            213.5347137451172,
+            213.33094787597656,
+            212.15231323242188,
+            214.80038452148438,
+            213.6248321533203,
+            222.1281280517578,
+            229.6985626220703,
+            213.2305908203125,
+            214.81369018554688
+          ]
+        },
+        "host_submit_and_sync": {
+          "count": 30,
+          "mean_ms": 217.2521761036478,
+          "median_ms": 213.54654501192272,
+          "min_ms": 211.88653900753707,
+          "max_ms": 240.45816296711564,
+          "p95_ms": 230.2556715090759,
+          "samples_ms": [
+            213.16433907486498,
+            212.19311200547963,
+            213.51981803309172,
+            222.6845680270344,
+            217.7056570071727,
+            230.67752399947494,
+            240.45816296711564,
+            226.46884201094508,
+            218.7920929864049,
+            212.48713391833007,
+            228.9893280249089,
+            212.77392003685236,
+            212.73152297362685,
+            212.0510139502585,
+            216.66145196650177,
+            212.1651420602575,
+            215.50558297894895,
+            212.61765505187213,
+            211.88653900753707,
+            213.2407840108499,
+            213.10345304664224,
+            213.5732719907537,
+            213.36789999622852,
+            212.19054597895592,
+            214.84692906960845,
+            213.67462305352092,
+            222.1676849294454,
+            229.74007402081043,
+            213.27266399748623,
+            214.85394693445414
+          ]
+        },
+        "host_submit_sync_and_report": {
+          "count": 30,
+          "mean_ms": 232.3843410704285,
+          "median_ms": 229.40502350684255,
+          "min_ms": 225.8784519508481,
+          "max_ms": 254.91367501672357,
+          "p95_ms": 245.23725098115392,
+          "samples_ms": [
+            226.6723670763895,
+            225.9739510482177,
+            228.1383629888296,
+            237.11305006872863,
+            231.9576389854774,
+            245.18164107576013,
+            254.91367501672357,
+            241.13046005368233,
+            233.1649489933625,
+            227.1720189601183,
+            243.35024505853653,
+            227.28088893927634,
+            227.21030400134623,
+            226.40084091108292,
+            231.05727706570178,
+            226.60538903437555,
+            229.49095291551203,
+            226.1949919629842,
+            225.8784519508481,
+            227.58809698279947,
+            227.5652140378952,
+            229.76600204128772,
+            228.04006503429264,
+            226.84746095910668,
+            231.34837101679295,
+            244.36208594124764,
+            237.03268298413604,
+            245.28274999465793,
+            229.46678299922496,
+            229.34326401446015
+          ]
+        }
+      },
+      "perturbation_mean": {
+        "delta_ms": 7.796529642740865,
+        "delta_percent": 3.7229467741371147
+      },
+      "perturbation_median": {
+        "delta_ms": 9.286651611328125,
+        "delta_percent": 4.547287123812693
+      },
+      "callback_count": 3819,
+      "inspector_count": 3819,
+      "matching": {
+        "exact_unique": 3819
+      },
+      "repeated_callback_names": {},
+      "sum_layer_mean_ms": 211.47467330870373,
+      "groups": [
+        {
+          "category": "MSDA",
+          "callbacks": 18,
+          "sum_mean_ms": 74.1883563619107,
+          "layer_time_percent": 35.0814379808087,
+          "layer_types": [
+            "PluginV3"
+          ],
+          "plugin_types": [
+            "MultiscaleDeformableAttnPlugin_TRT"
+          ],
+          "classification_basis": [
+            "LayerType=PluginV3; PluginType=MultiscaleDeformableAttnPlugin_TRT"
+          ]
+        },
+        {
+          "category": "Convolution",
+          "callbacks": 667,
+          "sum_mean_ms": 37.38030190076679,
+          "layer_time_percent": 17.676018274869378,
+          "layer_types": [
+            "CaskConvolution",
+            "CaskGemmConvolution"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=CaskConvolution",
+            "LayerType=CaskGemmConvolution"
+          ]
+        },
+        {
+          "category": "kgen（代码生成/融合层）",
+          "callbacks": 741,
+          "sum_mean_ms": 29.50456632891049,
+          "layer_time_percent": 13.95182026636386,
+          "layer_types": [
+            "kgen"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=kgen"
+          ]
+        },
+        {
+          "category": "DCN",
+          "callbacks": 156,
+          "sum_mean_ms": 28.635409141580265,
+          "layer_time_percent": 13.54082202542488,
+          "layer_types": [
+            "PluginV3"
+          ],
+          "plugin_types": [
+            "ModulatedDeformConv2d"
+          ],
+          "classification_basis": [
+            "LayerType=PluginV3; PluginType=ModulatedDeformConv2d"
+          ]
+        },
+        {
+          "category": "Reformat",
+          "callbacks": 1112,
+          "sum_mean_ms": 18.34775793477893,
+          "layer_time_percent": 8.676101798722478,
+          "layer_types": [
+            "Reformat"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Reformat"
+          ]
+        },
+        {
+          "category": "MatrixMultiply",
+          "callbacks": 153,
+          "sum_mean_ms": 11.230822434540217,
+          "layer_time_percent": 5.310717476861087,
+          "layer_types": [
+            "gemm"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=gemm"
+          ]
+        },
+        {
+          "category": "TrainStation（整体回调）",
+          "callbacks": 8,
+          "sum_mean_ms": 3.4916757284353177,
+          "layer_time_percent": 1.6511082267228687,
+          "layer_types": [
+            "TrainStation"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=TrainStation"
+          ]
+        },
+        {
+          "category": "其他已知类型 · PointWiseV2",
+          "callbacks": 316,
+          "sum_mean_ms": 2.6953728045802565,
+          "layer_time_percent": 1.2745605714428228,
+          "layer_types": [
+            "PointWiseV2"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=PointWiseV2"
+          ]
+        },
+        {
+          "category": "其他已知类型 · DeviceToShapeHost",
+          "callbacks": 36,
+          "sum_mean_ms": 2.5493300914143524,
+          "layer_time_percent": 1.2055013735346571,
+          "layer_types": [
+            "DeviceToShapeHost"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=DeviceToShapeHost"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Scale",
+          "callbacks": 156,
+          "sum_mean_ms": 1.8977109612586598,
+          "layer_time_percent": 0.8973703240994936,
+          "layer_types": [
+            "Scale"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Scale"
+          ]
+        },
+        {
+          "category": "其他已知类型 · NonZero",
+          "callbacks": 36,
+          "sum_mean_ms": 0.5004629338781039,
+          "layer_time_percent": 0.23665383946357713,
+          "layer_types": [
+            "NonZero"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=NonZero"
+          ]
+        },
+        {
+          "category": "其他已知类型 · CaskPooling",
+          "callbacks": 6,
+          "sum_mean_ms": 0.46403948242465654,
+          "layer_time_percent": 0.21943028692956867,
+          "layer_types": [
+            "CaskPooling"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=CaskPooling"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Shuffle",
+          "callbacks": 4,
+          "sum_mean_ms": 0.3804160042045017,
+          "layer_time_percent": 0.17988726415913786,
+          "layer_types": [
+            "Shuffle"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Shuffle"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Resize",
+          "callbacks": 12,
+          "sum_mean_ms": 0.17916586633461218,
+          "layer_time_percent": 0.08472213884121801,
+          "layer_types": [
+            "Resize"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Resize"
+          ]
+        },
+        {
+          "category": "其他已知类型 · shape_call",
+          "callbacks": 12,
+          "sum_mean_ms": 0.029285333685887358,
+          "layer_time_percent": 0.013848151756280336,
+          "layer_types": [
+            "shape_call"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=shape_call"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Constant",
+          "callbacks": 200,
+          "sum_mean_ms": 0.0,
+          "layer_time_percent": 0.0,
+          "layer_types": [
+            "Constant"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Constant"
+          ]
+        },
+        {
+          "category": "其他已知类型 · NoOp",
+          "callbacks": 186,
+          "sum_mean_ms": 0.0,
+          "layer_time_percent": 0.0,
+          "layer_types": [
+            "NoOp"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=NoOp"
+          ]
+        }
+      ],
+      "top20": [
+        {
+          "rank": 1,
+          "ordinal": 3104,
+          "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.727598857879638,
+          "layer_time_percent": 5.5456280765877235,
+          "category": "MSDA"
+        },
+        {
+          "rank": 2,
+          "ordinal": 3350,
+          "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.693397331237794,
+          "layer_time_percent": 5.529455205337123,
+          "category": "MSDA"
+        },
+        {
+          "rank": 3,
+          "ordinal": 3268,
+          "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.658854389190674,
+          "layer_time_percent": 5.513120889030273,
+          "category": "MSDA"
+        },
+        {
+          "rank": 4,
+          "ordinal": 3186,
+          "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.6305921236674,
+          "layer_time_percent": 5.499756515376878,
+          "category": "MSDA"
+        },
+        {
+          "rank": 5,
+          "ordinal": 3432,
+          "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.624379698435465,
+          "layer_time_percent": 5.4968188467025465,
+          "category": "MSDA"
+        },
+        {
+          "rank": 6,
+          "ordinal": 3022,
+          "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 11.376674207051595,
+          "layer_time_percent": 5.37968638468792,
+          "category": "MSDA"
+        },
+        {
+          "rank": 7,
+          "ordinal": 2971,
+          "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/value_proj/Add || /pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/value_proj/Add || /pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/value_proj/Add || /pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/value_proj/Add || /pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/value_proj/Add || /pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/value_proj/MatMul + /pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/value_proj/Add",
+          "mean_ms": 1.3553322394688925,
+          "layer_time_percent": 0.6408957717080491,
+          "category": "Convolution"
+        },
+        {
+          "rank": 8,
+          "ordinal": 3183,
+          "name": "/pts_bbox_head/transformer/encoder/layers_2/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_2/attentions_1/deformable_attention/sampling_offsets/MatMul_myl3000_21",
+          "mean_ms": 1.0337621370951335,
+          "layer_time_percent": 0.48883496114264324,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 9,
+          "ordinal": 3265,
+          "name": "/pts_bbox_head/transformer/encoder/layers_3/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_3/attentions_1/deformable_attention/sampling_offsets/MatMul_myl3017_21",
+          "mean_ms": 1.031748257080714,
+          "layer_time_percent": 0.48788265797417835,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 10,
+          "ordinal": 3347,
+          "name": "/pts_bbox_head/transformer/encoder/layers_4/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_4/attentions_1/deformable_attention/sampling_offsets/MatMul_myl3034_21",
+          "mean_ms": 1.0313386559486388,
+          "layer_time_percent": 0.48768896994257316,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 11,
+          "ordinal": 3429,
+          "name": "/pts_bbox_head/transformer/encoder/layers_5/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_5/attentions_1/deformable_attention/sampling_offsets/MatMul_myl3051_21",
+          "mean_ms": 1.0305194755395253,
+          "layer_time_percent": 0.48730160421395097,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 12,
+          "ordinal": 3101,
+          "name": "/pts_bbox_head/transformer/encoder/layers_1/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_1/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2983_21",
+          "mean_ms": 1.0204842726389567,
+          "layer_time_percent": 0.4825562591834756,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 13,
+          "ordinal": 3019,
+          "name": "/pts_bbox_head/transformer/encoder/layers_0/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_0/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2966_21",
+          "mean_ms": 1.0127359986305238,
+          "layer_time_percent": 0.47889233390712715,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 14,
+          "ordinal": 3155,
+          "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+          "mean_ms": 0.7924106517496209,
+          "layer_time_percent": 0.37470711709902305,
+          "category": "其他已知类型 · DeviceToShapeHost"
+        },
+        {
+          "rank": 15,
+          "ordinal": 3318,
+          "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7346858739852905,
+          "layer_time_percent": 0.34741080929006585,
+          "category": "MSDA"
+        },
+        {
+          "rank": 16,
+          "ordinal": 3151,
+          "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7340031961599985,
+          "layer_time_percent": 0.3470879915196866,
+          "category": "MSDA"
+        },
+        {
+          "rank": 17,
+          "ordinal": 3400,
+          "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7332522730032603,
+          "layer_time_percent": 0.34673290258871,
+          "category": "MSDA"
+        },
+        {
+          "rank": 18,
+          "ordinal": 3236,
+          "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7318186740080516,
+          "layer_time_percent": 0.346054996826862,
+          "category": "MSDA"
+        },
+        {
+          "rank": 19,
+          "ordinal": 3072,
+          "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7207936008771261,
+          "layer_time_percent": 0.3408415719952126,
+          "category": "MSDA"
+        },
+        {
+          "rank": 20,
+          "ordinal": 242,
+          "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.0/MSDeformAttn",
+          "mean_ms": 0.7178240021069845,
+          "layer_time_percent": 0.33943733822873856,
+          "category": "MSDA"
+        }
+      ],
+      "validation": {
+        "baseline": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        },
+        "profiled_whole_engine": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        },
+        "layers": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        }
+      },
+      "validation_scope": "Final output of each measured pass only; no numerical reference comparison",
+      "warnings": [],
+      "nsight": {
+        "frames": 5,
+        "kernel_names": 168,
+        "instances": 19645,
+        "total_kernel_ms": 991.033058,
+        "cumulative_kernel_ms_per_frame": 198.2066116,
+        "top10": [
+          {
+            "name": "void ms_deformable_im2col_gpu_kernel<__half>(int, const T1 *, const int *, const int *, const T1 *, const T1 *, int, int, int, int, int, int, int, T1 *)",
+            "total_ms": 375.587682,
+            "instances": 90,
+            "cumulative_ms_per_frame": 75.11753639999999,
+            "kernel_time_percent": 37.89860277294604
+          },
+          {
+            "name": "void modulatedDeformableIm2colGpuKernel<__half>(int, const T1 *, const T1 *, const T1 *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, T1 *)",
+            "total_ms": 81.655215,
+            "instances": 780,
+            "cumulative_ms_per_frame": 16.331043,
+            "kernel_time_percent": 8.239403755590967
+          },
+          {
+            "name": "sm86_xmma_fprop_implicit_gemm_interleaved_indexed_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize64x128x64_stage4_warpsize2x2x1_g1_tensor16x8x32_execute_kernel_trt",
+            "total_ms": 59.852227,
+            "instances": 1710,
+            "cumulative_ms_per_frame": 11.9704454,
+            "kernel_time_percent": 6.03937744728592
+          },
+          {
+            "name": "ampere_h1688gemm_128x128_ldg8_stages_32x1_nn",
+            "total_ms": 54.206034,
+            "instances": 690,
+            "cumulative_ms_per_frame": 10.8412068,
+            "kernel_time_percent": 5.469649429191898
+          },
+          {
+            "name": "generatedNativePointwise",
+            "total_ms": 53.837377,
+            "instances": 2990,
+            "cumulative_ms_per_frame": 10.767475399999999,
+            "kernel_time_percent": 5.432450165552399
+          },
+          {
+            "name": "void CUTENSOR_NAMESPACE::permutationKernelPLC3<CUTENSOR_NAMESPACE::VectorWrite2DTensorView<(unsigned char)0, (unsigned char)1, (bool)0, (unsigned int)8, float, signed char, CUTENSOR_NAMESPACE::GeneralUnarySmall<float>>, CUTENSOR_NAMESPACE::VectorRead2DTensorView<(unsigned char)0, (unsigned char)1, (bool)0, (unsigned int)8, float, __half, CUTENSOR_NAMESPACE::GeneralUnarySmall<float>>, CUTENSOR_NAMESPACE::ThreadLevelElementwise<CUTENSOR_NAMESPACE::ElementwiseConfig2DCommonCase<CUTENSOR_NAMESPACE::GeneralUnarySmall<float>, CUTENSOR_NAMESPACE::GeneralBinary<float>, (int)2, (int)32, (int)64, (int)128, (signed char)8, (bool)1, (bool)0, (bool)1, (bool)0, (bool)0>, float>, CUTENSOR_NAMESPACE::ElementwiseRuntimePLC3<__half, float, signed char, float>::Params>(T4)",
+            "total_ms": 40.024374,
+            "instances": 1410,
+            "cumulative_ms_per_frame": 8.0048748,
+            "kernel_time_percent": 4.038651756054741
+          },
+          {
+            "name": "sm80_xmma_gemm_f16f16_f16f16_f16_tn_n_tilesize256x128x32_stage3_warpsize4x2x1_tensor16x8x16_execute_kernel_trt",
+            "total_ms": 31.259479,
+            "instances": 30,
+            "cumulative_ms_per_frame": 6.2518958,
+            "kernel_time_percent": 3.1542317128234485
+          },
+          {
+            "name": "sm80_xmma_fprop_implicit_gemm_interleaved_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize64x64x64_stage6_warpsize2x2x1_g1_tensor16x8x32_t1r1s1_execute_kernel_trt",
+            "total_ms": 19.944392,
+            "instances": 240,
+            "cumulative_ms_per_frame": 3.9888784,
+            "kernel_time_percent": 2.0124850365990516
+          },
+          {
+            "name": "__myl_ReshReshMulReshAddReshCast_0xc0e6c6bed6e631626b4ccd587de5b41d",
+            "total_ms": 18.760644,
+            "instances": 30,
+            "cumulative_ms_per_frame": 3.7521288,
+            "kernel_time_percent": 1.8930391724632054
+          },
+          {
+            "name": "sm80_xmma_fprop_implicit_gemm_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x32x32_stage4_warpsize4x1x1_g1_tensor16x8x16_t1r3s3_execute_kernel_trt",
+            "total_ms": 13.292141,
+            "instances": 690,
+            "cumulative_ms_per_frame": 2.6584282000000004,
+            "kernel_time_percent": 1.3412409296239642
+          }
+        ],
+        "note": "Nsight 为单独 trace pass。Total 为捕获范围内累计 kernel 时间；每帧累计 = Total / trace.frames，不等于单帧延迟，重叠 kernel 的时间也会累加。Instances 是所有捕获帧的调用总数。Kernel 占比分母为该 trace 全部 kernel 累计时间。NVTX push/pop 是 CPU range，不是 GPU 层耗时。",
+        "trace_engine_sha256": "f89f51852eb5e7f3862bb213a2b7008742847c16710403e150491430337938a2",
+        "downloads": [
+          {
+            "name": "mixed-stats_cuda_gpu_kern_sum.csv",
+            "href": "mixed-stats_cuda_gpu_kern_sum.csv"
+          },
+          {
+            "name": "mixed-stats_cuda_api_sum.csv",
+            "href": "mixed-stats_cuda_api_sum.csv"
+          },
+          {
+            "name": "mixed-stats_nvtx_pushpop_sum.csv",
+            "href": "mixed-stats_nvtx_pushpop_sum.csv"
+          },
+          {
+            "name": "report.json",
+            "href": "mixed-trace/report.json"
+          },
+          {
+            "name": "nsys-summary.json",
+            "href": "nsys-summary.json"
+          },
+          {
+            "name": "mixed-nsys-summary-kernel-ranked.csv",
+            "href": "mixed-nsys-summary-kernel-ranked.csv"
+          },
+          {
+            "name": "mixed-nsys-summary-kernel-calls.csv",
+            "href": "mixed-nsys-summary-kernel-calls.csv"
+          },
+          {
+            "name": "mixed-nsys-summary-frames.csv",
+            "href": "mixed-nsys-summary-frames.csv"
+          },
+          {
+            "name": "mixed-nsys.sqlite",
+            "href": "mixed-nsys.sqlite"
+          },
+          {
+            "name": "publication-sanitization.json",
+            "href": "publication-sanitization.json"
+          }
+        ]
+      },
+      "downloads": [
+        {
+          "name": "report.json",
+          "href": "mixed-layers/report.json"
+        },
+        {
+          "name": "layers.json",
+          "href": "mixed-layers/layers.json"
+        },
+        {
+          "name": "layers.raw.json",
+          "href": "mixed-layers/layers.raw.json"
+        },
+        {
+          "name": "layers.csv",
+          "href": "mixed-layers/layers.csv"
+        },
+        {
+          "name": "engine.layers.json",
+          "href": "mixed-layers/engine.layers.json"
+        }
+      ]
+    },
+    {
+      "id": "fp32-layers",
+      "label": "FP32",
+      "status": "completed",
+      "engine": "/root/gac-tensorrt-20261017/results/fp32-workspace-01/full.engine",
+      "engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+      "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+      "warmup": 10,
+      "repeat": 30,
+      "environment_before": {
+        "utc": "2026-10-17T13:10:45.621416+00:00",
+        "host": "wyAbDb",
+        "python": "3.11.15",
+        "tensorrt": "10.13.3.9",
+        "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 51, 510 MHz, 350.00 W",
+        "NVIDIA_TF32_OVERRIDE": "0",
+        "CUDA_VISIBLE_DEVICES": null,
+        "CUDA_MODULE_LOADING": "LAZY",
+        "torch": "2.7.0+cu126",
+        "torch_cuda": "12.6",
+        "cuda_initialization": "PyTorch; required for run buffers and events",
+        "gpu": {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3090",
+          "compute_capability": [
+            8,
+            6
+          ],
+          "total_memory_bytes": 25296044032
+        }
+      },
+      "environment_after": {
+        "utc": "2026-10-17T13:11:37.810561+00:00",
+        "host": "wyAbDb",
+        "python": "3.11.15",
+        "tensorrt": "10.13.3.9",
+        "nvidia_smi": "NVIDIA GeForce RTX 3090, GPU-92ef5501-5370-da07-1265-3f82053ced4a, 580.126.18, 24576 MiB, 64, 1695 MHz, 350.00 W",
+        "NVIDIA_TF32_OVERRIDE": "0",
+        "CUDA_VISIBLE_DEVICES": null,
+        "CUDA_MODULE_LOADING": "LAZY",
+        "torch": "2.7.0+cu126",
+        "torch_cuda": "12.6",
+        "cuda_initialization": "PyTorch; required for run buffers and events",
+        "gpu": {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3090",
+          "compute_capability": [
+            8,
+            6
+          ],
+          "total_memory_bytes": 25296044032
+        }
+      },
+      "io": [
+        {
+          "name": "images",
+          "shape": [
+            1,
+            6,
+            3,
+            928,
+            1600
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "INPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "bev_embed",
+          "shape": [
+            40000,
+            1,
+            256
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "all_cls_scores",
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "all_bbox_preds",
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "OUTPUT",
+          "location": "TensorLocation.DEVICE"
+        }
+      ],
+      "engine_aux_streams": 0,
+      "engine_profiling_verbosity": "ProfilingVerbosity.DETAILED",
+      "baseline": {
+        "cuda_event": {
+          "count": 30,
+          "mean_ms": 379.48805033365886,
+          "median_ms": 375.9667205810547,
+          "min_ms": 372.2864685058594,
+          "max_ms": 408.6804504394531,
+          "p95_ms": 398.9802536010742,
+          "samples_ms": [
+            372.2864685058594,
+            375.7127685546875,
+            372.5854797363281,
+            372.6725158691406,
+            376.8084411621094,
+            373.51934814453125,
+            374.67852783203125,
+            373.5367736816406,
+            376.09063720703125,
+            373.6995849609375,
+            374.1562805175781,
+            378.20416259765625,
+            374.39898681640625,
+            388.25982666015625,
+            388.2188720703125,
+            384.49151611328125,
+            373.50091552734375,
+            375.8428039550781,
+            385.944580078125,
+            373.70062255859375,
+            376.8084411621094,
+            376.2124938964844,
+            376.13055419921875,
+            408.6804504394531,
+            373.7610168457031,
+            375.794677734375,
+            376.5872497558594,
+            397.5987243652344,
+            400.110595703125,
+            384.648193359375
+          ]
+        },
+        "host_submit_and_sync": {
+          "count": 30,
+          "mean_ms": 379.50711781159043,
+          "median_ms": 375.98586501553655,
+          "min_ms": 372.3208700539544,
+          "max_ms": 408.70188700500876,
+          "p95_ms": 398.99979439214803,
+          "samples_ms": [
+            372.3208700539544,
+            375.7289800560102,
+            372.6027390221134,
+            372.69220501184464,
+            376.83488707989454,
+            373.5381629085168,
+            374.7031190432608,
+            373.56149102561176,
+            376.1120680719614,
+            373.7139500444755,
+            374.1714400239289,
+            378.2215641112998,
+            374.41123300231993,
+            388.28191498760134,
+            388.23407306335866,
+            384.5088769448921,
+            373.51678404957056,
+            375.8596619591117,
+            385.96138497814536,
+            373.72899299953133,
+            376.82386697269976,
+            376.2288229772821,
+            376.15141191054136,
+            408.70188700500876,
+            373.7769559957087,
+            375.81189104821533,
+            376.6034330474213,
+            397.61594601441175,
+            400.13203397393227,
+            384.66288696508855
+          ]
+        }
+      },
+      "profiled_whole_engine": {
+        "cuda_event": {
+          "count": 30,
+          "mean_ms": 386.6940409342448,
+          "median_ms": 385.12025451660156,
+          "min_ms": 383.3641052246094,
+          "max_ms": 398.02777099609375,
+          "p95_ms": 397.90781555175784,
+          "samples_ms": [
+            384.32257080078125,
+            397.7912292480469,
+            398.0032043457031,
+            383.4644470214844,
+            383.7870178222656,
+            384.6614990234375,
+            385.75616455078125,
+            384.79156494140625,
+            383.3641052246094,
+            384.9297790527344,
+            384.83660888671875,
+            398.02777099609375,
+            383.9610900878906,
+            385.2892150878906,
+            385.07623291015625,
+            384.4659118652344,
+            385.17144775390625,
+            388.0550537109375,
+            385.1642761230469,
+            396.1036682128906,
+            387.4600830078125,
+            385.8524169921875,
+            384.0081787109375,
+            383.8709716796875,
+            387.2645263671875,
+            385.227783203125,
+            385.38751220703125,
+            385.4254150390625,
+            384.6174621582031,
+            384.68402099609375
+          ]
+        },
+        "host_submit_and_sync": {
+          "count": 30,
+          "mean_ms": 386.73196670521673,
+          "median_ms": 385.15656598610803,
+          "min_ms": 383.40184499975294,
+          "max_ms": 398.0643020477146,
+          "p95_ms": 397.9507598327473,
+          "samples_ms": [
+            384.3550959136337,
+            397.83494803123176,
+            398.04551494307816,
+            383.5015529766679,
+            383.8236889569089,
+            384.71673894673586,
+            385.79332910012454,
+            384.84251499176025,
+            383.40184499975294,
+            384.9678039550781,
+            384.87489498220384,
+            398.0643020477146,
+            383.99478304199874,
+            385.32765000127256,
+            385.11108502279967,
+            384.5015469705686,
+            385.20910299848765,
+            388.0949360318482,
+            385.2020469494164,
+            396.1410280317068,
+            387.4951129546389,
+            385.8902499778196,
+            384.0413501020521,
+            383.9054850395769,
+            387.29826104827225,
+            385.2680630516261,
+            385.42226306162775,
+            385.46019804198295,
+            384.65307699516416,
+            384.7205319907516
+          ]
+        },
+        "host_submit_sync_and_report": {
+          "count": 30,
+          "mean_ms": 400.13101597238955,
+          "median_ms": 397.93121855473146,
+          "min_ms": 396.18983201216906,
+          "max_ms": 413.12479495536536,
+          "p95_ms": 410.94766876194626,
+          "samples_ms": [
+            413.12479495536536,
+            411.07588505838066,
+            410.78803094569594,
+            396.8082789797336,
+            396.76729892380536,
+            397.6007979363203,
+            398.5285140806809,
+            397.83667505253106,
+            396.18983201216906,
+            397.9210259858519,
+            397.7870219387114,
+            410.7909599551931,
+            396.7712880112231,
+            398.03631394170225,
+            397.92729006148875,
+            396.7372350161895,
+            397.1893379930407,
+            401.3695470057428,
+            397.93514704797417,
+            408.80294400267303,
+            400.2381289610639,
+            399.8693550238386,
+            396.8020901083946,
+            396.5959690976888,
+            399.84326902776957,
+            399.0241300780326,
+            398.50217604544014,
+            398.0874629924074,
+            397.40844699554145,
+            397.5712319370359
+          ]
+        }
+      },
+      "perturbation_mean": {
+        "delta_ms": 7.205990600585949,
+        "delta_percent": 1.8988715439788306
+      },
+      "perturbation_median": {
+        "delta_ms": 9.153533935546875,
+        "delta_percent": 2.4346660048528035
+      },
+      "callback_count": 3260,
+      "inspector_count": 3260,
+      "matching": {
+        "exact_unique": 3260
+      },
+      "repeated_callback_names": {},
+      "sum_layer_mean_ms": 380.36552591104993,
+      "groups": [
+        {
+          "category": "Convolution",
+          "callbacks": 666,
+          "sum_mean_ms": 107.06848436792691,
+          "layer_time_percent": 28.148840279748523,
+          "layer_types": [
+            "CaskConvolution",
+            "CaskGemmConvolution"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=CaskConvolution",
+            "LayerType=CaskGemmConvolution"
+          ]
+        },
+        {
+          "category": "MSDA",
+          "callbacks": 18,
+          "sum_mean_ms": 78.7080195772772,
+          "layer_time_percent": 20.69273217880513,
+          "layer_types": [
+            "PluginV3"
+          ],
+          "plugin_types": [
+            "MultiscaleDeformableAttnPlugin_TRT"
+          ],
+          "classification_basis": [
+            "LayerType=PluginV3; PluginType=MultiscaleDeformableAttnPlugin_TRT"
+          ]
+        },
+        {
+          "category": "DCN",
+          "callbacks": 156,
+          "sum_mean_ms": 78.24186055362225,
+          "layer_time_percent": 20.570176638962657,
+          "layer_types": [
+            "PluginV3"
+          ],
+          "plugin_types": [
+            "ModulatedDeformConv2d"
+          ],
+          "classification_basis": [
+            "LayerType=PluginV3; PluginType=ModulatedDeformConv2d"
+          ]
+        },
+        {
+          "category": "kgen（代码生成/融合层）",
+          "callbacks": 819,
+          "sum_mean_ms": 52.52307716289845,
+          "layer_time_percent": 13.808579796261872,
+          "layer_types": [
+            "kgen"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=kgen"
+          ]
+        },
+        {
+          "category": "MatrixMultiply",
+          "callbacks": 164,
+          "sum_mean_ms": 47.6600235491991,
+          "layer_time_percent": 12.530058667920551,
+          "layer_types": [
+            "gemm"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=gemm"
+          ]
+        },
+        {
+          "category": "Reformat",
+          "callbacks": 468,
+          "sum_mean_ms": 6.716723170612628,
+          "layer_time_percent": 1.765860130074817,
+          "layer_types": [
+            "Reformat"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Reformat"
+          ]
+        },
+        {
+          "category": "TrainStation（整体回调）",
+          "callbacks": 8,
+          "sum_mean_ms": 3.385236266007026,
+          "layer_time_percent": 0.8899955530666778,
+          "layer_types": [
+            "TrainStation"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=TrainStation"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Scale",
+          "callbacks": 156,
+          "sum_mean_ms": 2.9534889831518134,
+          "layer_time_percent": 0.7764870320667545,
+          "layer_types": [
+            "Scale"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Scale"
+          ]
+        },
+        {
+          "category": "其他已知类型 · PointWiseV2",
+          "callbacks": 156,
+          "sum_mean_ms": 0.8792405345477163,
+          "layer_time_percent": 0.2311567359953989,
+          "layer_types": [
+            "PointWiseV2"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=PointWiseV2"
+          ]
+        },
+        {
+          "category": "其他已知类型 · CaskPooling",
+          "callbacks": 6,
+          "sum_mean_ms": 0.8612053429087003,
+          "layer_time_percent": 0.2264151938706708,
+          "layer_types": [
+            "CaskPooling"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=CaskPooling"
+          ]
+        },
+        {
+          "category": "其他已知类型 · NonZero",
+          "callbacks": 36,
+          "sum_mean_ms": 0.5144917320460081,
+          "layer_time_percent": 0.13526245072123705,
+          "layer_types": [
+            "NonZero"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=NonZero"
+          ]
+        },
+        {
+          "category": "其他已知类型 · DeviceToShapeHost",
+          "callbacks": 36,
+          "sum_mean_ms": 0.44921600030114256,
+          "layer_time_percent": 0.11810113422481762,
+          "layer_types": [
+            "DeviceToShapeHost"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=DeviceToShapeHost"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Resize",
+          "callbacks": 12,
+          "sum_mean_ms": 0.37478400353963176,
+          "layer_time_percent": 0.09853258984024661,
+          "layer_types": [
+            "Resize"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Resize"
+          ]
+        },
+        {
+          "category": "其他已知类型 · shape_call",
+          "callbacks": 12,
+          "sum_mean_ms": 0.029674667011325557,
+          "layer_time_percent": 0.007801618440643094,
+          "layer_types": [
+            "shape_call"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=shape_call"
+          ]
+        },
+        {
+          "category": "其他已知类型 · Constant",
+          "callbacks": 192,
+          "sum_mean_ms": 0.0,
+          "layer_time_percent": 0.0,
+          "layer_types": [
+            "Constant"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=Constant"
+          ]
+        },
+        {
+          "category": "其他已知类型 · NoOp",
+          "callbacks": 355,
+          "sum_mean_ms": 0.0,
+          "layer_time_percent": 0.0,
+          "layer_types": [
+            "NoOp"
+          ],
+          "plugin_types": [],
+          "classification_basis": [
+            "LayerType=NoOp"
+          ]
+        }
+      ],
+      "top20": [
+        {
+          "rank": 1,
+          "ordinal": 2509,
+          "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.42705930074056,
+          "layer_time_percent": 3.2671360715394275,
+          "category": "MSDA"
+        },
+        {
+          "rank": 2,
+          "ordinal": 2420,
+          "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.385860220591228,
+          "layer_time_percent": 3.2563046272200054,
+          "category": "MSDA"
+        },
+        {
+          "rank": 3,
+          "ordinal": 2687,
+          "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.31158618927002,
+          "layer_time_percent": 3.2367776127401027,
+          "category": "MSDA"
+        },
+        {
+          "rank": 4,
+          "ordinal": 2776,
+          "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.294963264465332,
+          "layer_time_percent": 3.232407362632691,
+          "category": "MSDA"
+        },
+        {
+          "rank": 5,
+          "ordinal": 2598,
+          "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.25359369913737,
+          "layer_time_percent": 3.221531096906749,
+          "category": "MSDA"
+        },
+        {
+          "rank": 6,
+          "ordinal": 2865,
+          "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+          "mean_ms": 12.245435841878255,
+          "layer_time_percent": 3.2193863554137927,
+          "category": "MSDA"
+        },
+        {
+          "rank": 7,
+          "ordinal": 2417,
+          "name": "/pts_bbox_head/transformer/encoder/layers_0/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_0/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2357_28",
+          "mean_ms": 3.9957162380218505,
+          "layer_time_percent": 1.0504937923728308,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 8,
+          "ordinal": 2506,
+          "name": "/pts_bbox_head/transformer/encoder/layers_1/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_1/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2374_28",
+          "mean_ms": 3.9647232055664063,
+          "layer_time_percent": 1.0423455690602133,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 9,
+          "ordinal": 2595,
+          "name": "/pts_bbox_head/transformer/encoder/layers_2/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_2/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2391_28",
+          "mean_ms": 3.948031989733378,
+          "layer_time_percent": 1.0379573648997418,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 10,
+          "ordinal": 2773,
+          "name": "/pts_bbox_head/transformer/encoder/layers_4/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_4/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2425_28",
+          "mean_ms": 3.9230122804641723,
+          "layer_time_percent": 1.0313795581415506,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 11,
+          "ordinal": 2684,
+          "name": "/pts_bbox_head/transformer/encoder/layers_3/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_3/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2408_28",
+          "mean_ms": 3.922705094019572,
+          "layer_time_percent": 1.031298797288194,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 12,
+          "ordinal": 2862,
+          "name": "/pts_bbox_head/transformer/encoder/layers_5/attentions_1/deformable_attention/attention_weights/MatMul+/pts_bbox_head/transformer/encoder/layers_5/attentions_1/deformable_attention/sampling_offsets/MatMul_myl2442_28",
+          "mean_ms": 3.9226368268330893,
+          "layer_time_percent": 1.0312808495032788,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 13,
+          "ordinal": 2508,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2374_30",
+          "mean_ms": 1.17794136206309,
+          "layer_time_percent": 0.3096866781608795,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 14,
+          "ordinal": 2419,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2357_30",
+          "mean_ms": 1.1779413541158041,
+          "layer_time_percent": 0.3096866760714983,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 15,
+          "ordinal": 2597,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2391_30",
+          "mean_ms": 1.1778048276901245,
+          "layer_time_percent": 0.3096507825910488,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 16,
+          "ordinal": 2686,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2408_30",
+          "mean_ms": 1.1775658925374348,
+          "layer_time_percent": 0.3095879653438449,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 17,
+          "ordinal": 2864,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2442_30",
+          "mean_ms": 1.1774634917577107,
+          "layer_time_percent": 0.30956104366647186,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 18,
+          "ordinal": 2775,
+          "name": "__myl_ReshReshMulReshAddReshCast_myl2425_30",
+          "mean_ms": 1.177395224571228,
+          "layer_time_percent": 0.30954309588155654,
+          "category": "kgen（代码生成/融合层）"
+        },
+        {
+          "rank": 19,
+          "ordinal": 2479,
+          "name": "/pts_bbox_head/transformer/encoder/layers_1/attentions_1/deformable_attention/value_proj/MatMul_myl2374_1",
+          "mean_ms": 1.1174890677134195,
+          "layer_time_percent": 0.29379346749072865,
+          "category": "MatrixMultiply"
+        },
+        {
+          "rank": 20,
+          "ordinal": 2568,
+          "name": "/pts_bbox_head/transformer/encoder/layers_2/attentions_1/deformable_attention/value_proj/MatMul_myl2391_1",
+          "mean_ms": 1.1053290685017905,
+          "layer_time_percent": 0.2905965428529073,
+          "category": "MatrixMultiply"
+        }
+      ],
+      "validation": {
+        "baseline": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        },
+        "profiled_whole_engine": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        },
+        "layers": {
+          "status": "not_checked",
+          "all_outputs_finite": true,
+          "output_finite": {
+            "bev_embed": true,
+            "all_cls_scores": true,
+            "all_bbox_preds": true
+          },
+          "scope": "Final output of the last measured execution only"
+        }
+      },
+      "validation_scope": "Final output of each measured pass only; no numerical reference comparison",
+      "warnings": [],
+      "nsight": {
+        "frames": 5,
+        "kernel_names": 155,
+        "instances": 14605,
+        "total_kernel_ms": 1827.098687,
+        "cumulative_kernel_ms_per_frame": 365.4197374,
+        "top10": [
+          {
+            "name": "void ms_deformable_im2col_gpu_kernel<float>(int, const T1 *, const int *, const int *, const T1 *, const T1 *, int, int, int, int, int, int, int, T1 *)",
+            "total_ms": 390.007098,
+            "instances": 90,
+            "cumulative_ms_per_frame": 78.00141959999999,
+            "kernel_time_percent": 21.345705121181556
+          },
+          {
+            "name": "ampere_sgemm_128x64_nn",
+            "total_ms": 254.513663,
+            "instances": 690,
+            "cumulative_ms_per_frame": 50.9027326,
+            "kernel_time_percent": 13.929935192384058
+          },
+          {
+            "name": "sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x256x8_stage3_warpsize2x4x1_ffma_aligna4_alignc4_execute_kernel_trt",
+            "total_ms": 194.849795,
+            "instances": 240,
+            "cumulative_ms_per_frame": 38.969959,
+            "kernel_time_percent": 10.664437361067405
+          },
+          {
+            "name": "sm80_xmma_gemm_f32f32_f32f32_f32_nn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_execute_kernel_trt",
+            "total_ms": 148.932269,
+            "instances": 925,
+            "cumulative_ms_per_frame": 29.786453799999997,
+            "kernel_time_percent": 8.15129856201358
+          },
+          {
+            "name": "sm80_xmma_gemm_f32f32_f32f32_f32_tn_n_tilesize128x64x8_stage3_warpsize2x2x1_ffma_aligna4_alignc4_execute_kernel_trt",
+            "total_ms": 125.103228,
+            "instances": 720,
+            "cumulative_ms_per_frame": 25.0206456,
+            "kernel_time_percent": 6.847097471533567
+          },
+          {
+            "name": "sm80_xmma_fprop_wngd_f32f32_f32_f32_nchwkcrs_nchw_tilesize8x16x64x8_warpsize8x1x1_wngd2x2_execute_kernel_trt",
+            "total_ms": 83.116632,
+            "instances": 300,
+            "cumulative_ms_per_frame": 16.6233264,
+            "kernel_time_percent": 4.549104686647941
+          },
+          {
+            "name": "void modulatedDeformableIm2colGpuKernel<float>(int, const T1 *, const T1 *, const T1 *, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, T1 *)",
+            "total_ms": 82.685793,
+            "instances": 780,
+            "cumulative_ms_per_frame": 16.5371586,
+            "kernel_time_percent": 4.525524186970204
+          },
+          {
+            "name": "trt_ampere_scudnn_128x64_relu_interior_nn_v1",
+            "total_ms": 55.322164,
+            "instances": 270,
+            "cumulative_ms_per_frame": 11.0644328,
+            "kernel_time_percent": 3.027869506645866
+          },
+          {
+            "name": "void cutlass::Kernel2<cutlass_80_simt_sgemm_256x128_8x4_nn_align1>(T1::Params)",
+            "total_ms": 47.097838,
+            "instances": 90,
+            "cumulative_ms_per_frame": 9.4195676,
+            "kernel_time_percent": 2.5777391410275805
+          },
+          {
+            "name": "trt_ampere_scudnn_128x64_relu_medium_nn_v1",
+            "total_ms": 41.007047,
+            "instances": 150,
+            "cumulative_ms_per_frame": 8.2014094,
+            "kernel_time_percent": 2.2443805193320685
+          }
+        ],
+        "note": "Nsight 为单独 trace pass。Total 为捕获范围内累计 kernel 时间；每帧累计 = Total / trace.frames，不等于单帧延迟，重叠 kernel 的时间也会累加。Instances 是所有捕获帧的调用总数。Kernel 占比分母为该 trace 全部 kernel 累计时间。NVTX push/pop 是 CPU range，不是 GPU 层耗时。",
+        "trace_engine_sha256": "171b028d9583f77ca42e123017d3ba4feba4fdbbf1b17dc0eb5b35f0cd63e9d0",
+        "downloads": [
+          {
+            "name": "fp32-stats_cuda_gpu_kern_sum.csv",
+            "href": "fp32-stats_cuda_gpu_kern_sum.csv"
+          },
+          {
+            "name": "fp32-stats_cuda_api_sum.csv",
+            "href": "fp32-stats_cuda_api_sum.csv"
+          },
+          {
+            "name": "fp32-stats_nvtx_pushpop_sum.csv",
+            "href": "fp32-stats_nvtx_pushpop_sum.csv"
+          },
+          {
+            "name": "report.json",
+            "href": "fp32-trace/report.json"
+          },
+          {
+            "name": "nsys-summary.json",
+            "href": "nsys-summary.json"
+          },
+          {
+            "name": "fp32-nsys-summary-kernel-ranked.csv",
+            "href": "fp32-nsys-summary-kernel-ranked.csv"
+          },
+          {
+            "name": "fp32-nsys-summary-kernel-calls.csv",
+            "href": "fp32-nsys-summary-kernel-calls.csv"
+          },
+          {
+            "name": "fp32-nsys-summary-frames.csv",
+            "href": "fp32-nsys-summary-frames.csv"
+          },
+          {
+            "name": "fp32-nsys.sqlite",
+            "href": "fp32-nsys.sqlite"
+          },
+          {
+            "name": "publication-sanitization.json",
+            "href": "publication-sanitization.json"
+          }
+        ]
+      },
+      "downloads": [
+        {
+          "name": "report.json",
+          "href": "fp32-layers/report.json"
+        },
+        {
+          "name": "layers.json",
+          "href": "fp32-layers/layers.json"
+        },
+        {
+          "name": "layers.raw.json",
+          "href": "fp32-layers/layers.raw.json"
+        },
+        {
+          "name": "layers.csv",
+          "href": "fp32-layers/layers.csv"
+        },
+        {
+          "name": "engine.layers.json",
+          "href": "fp32-layers/engine.layers.json"
+        }
+      ]
+    }
+  ],
+  "publication_note": "公开 SQLite 移除了全部环境元数据记录，并将 StringIds 中出现的凭据值替换为占位符；保留字符串 ID，其他采集数据（包括计时表）未改变。原始 .nsys-rep 二进制仅在本地保留，不纳入 Git 或下载 ZIP；profile-data.zip 是净化后的公开归档。",
+  "publication_record": "publication-sanitization.json"
+}

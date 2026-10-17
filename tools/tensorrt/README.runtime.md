@@ -98,7 +98,11 @@ tactic。请求 INT8 的计划只能表达约束，实际采用的格式须查�
 8 批校准、缓存复用、显式范围 GPU 测试通过。旧完整 Base 已完成 32 帧真实 mini 校准并写出缓存，
 但 engine 在选择第 2 相机的首个 INT8 Conv 格式时失败；常量权重 Identity 别名问题已复现并修复。
 修复后 390 个 Conv 的 780 条引用改变，新 ONNX 有独立 SHA，不能使用重标的旧缓存。
-新的完整计划与 backbone 校准已通过，462 个目标 Conv 的实际 INT8 输入/权重已核对；完整 Base 的数值和 FPS 尚未验收。证据见
+新的完整计划与 backbone 校准已通过；云端 RTX3090 24GB 已构建、执行完整 Base，
+462 个目标 Conv 的实际 INT8 输入/权重审计通过。预热 5 次、测量 20 次，设备延时中位数
+204.07 ms（倒数约 4.90 FPS）。一帧真实 mini_val 输入的三路输出有限，与独立 native-MLIR
+FP32 对照的 BEV/分类/框相对 RMSE 为 2.42%/0.54%/0.47%，严格逐元素门限
+`rtol=1e-3, atol=1e-4` 未通过；尚无检测精度验收。证据见
 [验证报告](../../docs/validation/tensorrt/bevformer-base-2026-10-17/README.md)。
 
 备用入口 [backbone_calibration.py](backbone_calibration.py) 保留六路 backbone 的末端
@@ -109,7 +113,8 @@ tactic。请求 INT8 的计划只能表达约束，实际采用的格式须查�
 保留这些精确名称；缺失、非有限或非正的必需范围不能用默认值补齐。
 小 CNN 的显式范围 engine 已通过 GPU 输出对照，与缓存构建输出的最大绝对差为 0，见
 [范围接口结果](../../docs/validation/tensorrt/bevformer-base-2026-10-17/mixed-precision-ranges-interface/summary.json)。
-它不把子图缓存标为全图缓存，也不改变原完整模型的执行范围；真实 Base 的该路径仍待验收。
+它不把子图缓存标为全图缓存，也不改变原完整模型的执行范围；云端完整 Base 已使用
+这一范围路径构建并运行，真实几何、历史帧和 nuScenes mAP/NDS 仍待验证。
 
 ## 计时与数值范围
 

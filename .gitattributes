@@ -10,3 +10,8 @@ docs/validation/vortex/full-graph-2026-10-15/*.bin -text
 docs/validation/vortex/native-mlir*/** -text -whitespace
 docs/validation/cuda/native-mlir*/** -text -whitespace
 
+# Preserve TensorRT/Nsight capture bytes and their recorded SHA-256 manifests.
+docs/validation/tensorrt/bevformer-base-2026-10-17/cloud-3090/** -text -whitespace
+docs/validation/tensorrt/bevformer-base-2026-10-17/cloud-3090-fp32/** -text -whitespace
+docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/** -text -whitespace
+
