@@ -1,0 +1,81 @@
+{
+  "compiler": "/home/thomas/gac-vortex-tag-build-20261017/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "matmul_bias_relu",
+      "operation_counts": [
+        5,
+        3
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "multi_consumer",
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0,
+        "M": 1.4901161193847656e-07
+      },
+      "passed": true
+    },
+    {
+      "name": "conv_bias_relu",
+      "operation_counts": [
+        4,
+        3
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.9073486328125e-06
+      },
+      "passed": true
+    },
+    {
+      "name": "residual_add_relu",
+      "operation_counts": [
+        2,
+        1
+      ],
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "softmax",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      },
+      "passed": true
+    },
+    {
+      "name": "shape_chain",
+      "shape_chain_folded": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "invalid_broadcast",
+      "diagnostic": "loc(\"bad_add\"(\"/mnt/c/Users/Thomas/.codex/worktrees/bevformer-vortex-tag/General-AI-Compiler/build/snapshot-regressions/native/invalid_broadcast/model.onnx\":1:0)): error: 'gac.add' op incompatible broadcast dimensions 3 and 4\nloc(\"bad_add\"(\"/mnt/c/Users/Thomas/.codex/worktrees/bevformer-vortex-tag/General-AI-Compiler/build/snapshot-regressions/native/invalid_broadcast/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "unsupported",
+      "diagnostic": "loc(\"unknown\"(\"/mnt/c/Users/Thomas/.codex/worktrees/bevformer-vortex-tag/General-AI-Compiler/build/snapshot-regressions/native/unsupported/model.onnx\":1:0)): error: custom ONNX domain has no registered import contract: Mystery",
+      "inspection_preserved_unsupported": true,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,299 @@
+{
+  "scope": "Fresh unified-source build; native numerical checks, Vortex RV32 objects, CUDA NVPTX and offline ptxas for three small models",
+  "started_at_utc": "2026-10-17T01:21:50.394992+00:00",
+  "branch": "lg/bevformer-full-ops",
+  "head": "ece1b68ac960fadbf5bfa420c55b65fd6942589f",
+  "native_matches_cuda_reference_ece1b68": false,
+  "commands": [
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native",
+        "-B",
+        "/home/thomas/gac-unified-smoke-20261017/build",
+        "-G",
+        "Unix Makefiles",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DMLIR_DIR=/home/thomas/gac-volt-llvm20/build-release/lib/cmake/mlir",
+        "-DLLVM_DIR=/home/thomas/gac-volt-llvm20/build-release/lib/cmake/llvm",
+        "-DONNX_PROTO_DIR=/mnt/c/Users/Thomas/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/Lib/site-packages/onnx"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/configure.log",
+      "exit_code": 0,
+      "elapsed_seconds": 4.230655
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/thomas/gac-unified-smoke-20261017/build",
+        "--target",
+        "gac-compile",
+        "gac-opt",
+        "-j",
+        "4"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/build.log",
+      "exit_code": 0,
+      "elapsed_seconds": 48.562161
+    },
+    {
+      "argv": [
+        "/home/thomas/gac-native-reference-venv/bin/python",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_tests.py",
+        "--compiler",
+        "/home/thomas/gac-unified-smoke-20261017/build/gac-compile",
+        "--optimizer",
+        "/home/thomas/gac-unified-smoke-20261017/build/gac-opt",
+        "--mlir-translate",
+        "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+        "--clang",
+        "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+        "--fixtures",
+        "/home/thomas/gac-unified-smoke-20261017/fixtures"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/native-numerical.log",
+      "exit_code": 0,
+      "elapsed_seconds": 1.019697
+    },
+    {
+      "argv": [
+        "/home/thomas/gac-native-reference-venv/bin/python",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_vortex_tests.py",
+        "--compiler",
+        "/home/thomas/gac-unified-smoke-20261017/build/gac-compile",
+        "--llvm-bin",
+        "/home/thomas/gac-volt-llvm20/build-release/bin",
+        "--fixtures",
+        "/home/thomas/gac-unified-smoke-20261017/fixtures"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/vortex-rv32-object.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.53196
+    },
+    {
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-unified-smoke-20261017/fixtures/matmul_bias_relu/model.onnx",
+        "/home/thomas/gac-unified-smoke-20261017/cuda/matmul_bias_relu"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/cuda-matmul_bias_relu.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.314961
+    },
+    {
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-unified-smoke-20261017/fixtures/conv_bias_relu/model.onnx",
+        "/home/thomas/gac-unified-smoke-20261017/cuda/conv_bias_relu"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/cuda-conv_bias_relu.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.22094
+    },
+    {
+      "argv": [
+        "bash",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tools/compile-cuda.sh",
+        "/home/thomas/gac-unified-smoke-20261017/fixtures/softmax/model.onnx",
+        "/home/thomas/gac-unified-smoke-20261017/cuda/softmax"
+      ],
+      "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+      "log": "/home/thomas/gac-unified-smoke-20261017/cuda-softmax.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.211055
+    }
+  ],
+  "cases": [
+    {
+      "name": "matmul_bias_relu",
+      "model_sha256": "0258c36e8b15f12b6f337af62ee23082fe443f64ac83c9a3eacdf7396b27e845",
+      "cuda_dispatches": 1,
+      "cuda_abi": {
+        "index_bits": 32,
+        "kernel_abi": "direct-pointers",
+        "math_library": "libdevice",
+        "max_tensor_bytes": 2147483647,
+        "pointer_bits": 64
+      },
+      "ptx_bytes": 1944,
+      "cubin_bytes": 3240,
+      "cuda_artifact_sha256": {
+        "plan.json": "1614de7acbf5b5af0fa8fdf97c3a10b226ec3b1e6ff843f2485ff3bbe232e1bc",
+        "kernel.ptx": "2ae61af6623dbf66069ae7f07c275c0b70d088d817ca8841586771326463c7f0",
+        "kernel.cubin": "3d3227a0538678cdf3d0b0ddd3e0d253c21ad72ed2dfd9d20d46c787ddb0f73c"
+      },
+      "cuda_compile_and_offline_assembly_passed": true
+    },
+    {
+      "name": "conv_bias_relu",
+      "model_sha256": "03d8ceee30a917813a9cc5baccf4bd2a7b040406ab033b4dec2928f1ce2c347a",
+      "cuda_dispatches": 1,
+      "cuda_abi": {
+        "index_bits": 32,
+        "kernel_abi": "direct-pointers",
+        "math_library": "libdevice",
+        "max_tensor_bytes": 2147483647,
+        "pointer_bits": 64
+      },
+      "ptx_bytes": 3181,
+      "cubin_bytes": 7848,
+      "cuda_artifact_sha256": {
+        "plan.json": "ba0eaf990885a5452e5bcc5a3e50671314cc50d73b0f3e6e404772d52e0eb2b6",
+        "kernel.ptx": "d02a423e5a5f684c74f8660fcdaafc780af361e17167f7ced58303a2acd5dad6",
+        "kernel.cubin": "152216e72b376a6de4c317ee7d6658118195c61e78a37299c0eb8b57357d104d"
+      },
+      "cuda_compile_and_offline_assembly_passed": true
+    },
+    {
+      "name": "softmax",
+      "model_sha256": "91e7de25fa4cc3fe101b5e18826319994661a515fe1e5bd8e47629d4ea525bd7",
+      "cuda_dispatches": 1,
+      "cuda_abi": {
+        "index_bits": 32,
+        "kernel_abi": "direct-pointers",
+        "math_library": "libdevice",
+        "max_tensor_bytes": 2147483647,
+        "pointer_bits": 64
+      },
+      "ptx_bytes": 3771,
+      "cubin_bytes": 6448,
+      "cuda_artifact_sha256": {
+        "plan.json": "9e819fc5e237ca24f5789abc8bf76fda9dd6b710f252ff1b4c10170842c153f6",
+        "kernel.ptx": "e6f8ddb7900b9b7e2bea2249bfe7b455d9a251adb683534a7be1539582346054",
+        "kernel.cubin": "5d4309610bf5bd158f4828e13dc1331b8d9929a90dd0186b810e4e55209de282"
+      },
+      "cuda_compile_and_offline_assembly_passed": true
+    }
+  ],
+  "limitations": [
+    "No full-model rerun",
+    "No physical GPU or SimX execution in this smoke run",
+    "PTX/cubin assembly does not establish GPU numerical accuracy or performance"
+  ],
+  "source_sha256_at_start": {
+    "native/CMakeLists.txt": "5fd57c67d17d13a2c9756ff2f79b7223f726b847ff0d5ed4e60e59c952cd9745",
+    "native/include/gac/ConstantFolding.h": "01a44850f4836fcab004d5f3cbe90124c0d6c3b03fcdd282887e366d72c825d5",
+    "native/include/gac/CudaLowering.h": "f981aa9eb5d20f8c7e3f9b937e89c5124a356c3ab88c67d5c970e16d28d5d1eb",
+    "native/include/gac/DeviceLowering.h": "a5163006540f7703a3d78e430f3499f35e507f6bdb7f0f92cb05ee04b69a96e8",
+    "native/include/gac/Dialect.h": "f7a6ac40de64ec95927c97b67fc3974e0b02b61e34aa256634b80ba0e9173bbd",
+    "native/include/gac/OnnxImporter.h": "2d63fe8c7d7c6be84f3365af14109b32fd68ba23defa0e4438baf07b32cea43d",
+    "native/include/gac/Passes.h": "f08ce80af50c5cd5c73b2baf02a6e70966798c75b3329a9d5320e203a3ab983b",
+    "native/include/gac/VortexLowering.h": "15a90addd896465dae8853901a603ddf18324054f096c3bd877cdc76a627db95",
+    "native/lib/ConstantFolding.cpp": "8b6a8db0fa64d14c0cc24774eeb863cbaa86efb3cb4022a9c3db53e5ca2e7c94",
+    "native/lib/CudaLowering.cpp": "474c798ea553c52d579aaf0ce83abdcc3e5e218eaf4ee907ae5f4c596dd9dcb4",
+    "native/lib/DeviceLowering.cpp": "e23bf5a5c7978579d55885d432703362e3f0774b28f4ec5a85b303a72d243a6a",
+    "native/lib/Dialect.cpp": "1aa2a57603845279f144018425eabbdb775197bd84f8f01d837552a2a4f0c656",
+    "native/lib/GraphPasses.cpp": "0f2a795d026c476d59ac2ef915c6074a380b42879d314652c0b5e9aa3c41ede8",
+    "native/lib/OnnxImporter.cpp": "e7ef5bc7f8135ae33e57fdcbbebca8be09f417b9e8829b0f6fe967e227f2f1af",
+    "native/lib/TensorLegalization.cpp": "785408563b9ba62a7639222b6b28a11824820410e0c03c738ce3ffddd66f2e73",
+    "native/lib/VortexLowering.cpp": "2f42cefe095596bd1c4c40f8e05cc1186822683196915d1274f0ae329b85141d",
+    "native/tools/compile-cuda.sh": "626be69b11ea3743e786843f2b07460924097eeabee69c83b043be2f18d4035b",
+    "native/tools/compile-vortex.sh": "7033cab0f62cdfdf7c63f49467d49571f9a477da2120d739ddf3832617d1c2c5",
+    "native/tools/gac-compile.cpp": "c6866c350752a66914c8034d8e544da5c88d92114ad50631a6840a84b468aa06",
+    "native/tools/gac-opt.cpp": "1841cfaac7ed3dac6e4729ebb2c86f7efdc39d13d27961d770788b16be6fdfc7"
+  },
+  "compiler": {
+    "path": "/home/thomas/gac-unified-smoke-20261017/build/gac-compile",
+    "sha256": "dabfe3c5c0f93508cefe20586056e95cca13e70b8a5fdd2c072a9fd9394bac61"
+  },
+  "optimizer": {
+    "path": "/home/thomas/gac-unified-smoke-20261017/build/gac-opt",
+    "sha256": "876ccd9b8b942865aead4e35d90e825e1435038e3df37704907abf23aeaf74ef"
+  },
+  "cuda_environment": {
+    "GAC_NATIVE_BIN": "/home/thomas/gac-unified-smoke-20261017/build",
+    "LLVM_PATH": "/home/thomas/gac-volt-llvm20/build-release",
+    "CUDA_LIBDEVICE": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc",
+    "CUDA_PTXAS": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/bin/ptxas",
+    "GAC_CUDA_ARCH": "sm_86",
+    "GAC_CUDA_PTX": "+ptx80"
+  },
+  "native_results": {
+    "compiler": "/home/thomas/gac-unified-smoke-20261017/build/gac-compile",
+    "target": "native",
+    "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+    "vortex_device_execution": false,
+    "cases": [
+      {
+        "name": "matmul_bias_relu",
+        "operation_counts": [
+          5,
+          3
+        ],
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "passed": true
+      },
+      {
+        "name": "conv_bias_relu",
+        "operation_counts": [
+          4,
+          3
+        ],
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 1.9073486328125e-06
+        },
+        "passed": true
+      },
+      {
+        "name": "softmax",
+        "dispatches": 1,
+        "max_absolute_errors": {
+          "Y": 2.9802322387695312e-08
+        },
+        "passed": true
+      }
+    ]
+  },
+  "vortex_results": {
+    "target": "vortex",
+    "scope": "native MLIR to VOLT RV32 object validation",
+    "physical_device_execution": false,
+    "simx_execution_requested": false,
+    "cases": [
+      {
+        "name": "matmul_bias_relu",
+        "passed": true,
+        "dispatches": 1,
+        "object_bytes": 1228
+      },
+      {
+        "name": "conv_bias_relu",
+        "passed": true,
+        "dispatches": 1,
+        "object_bytes": 1512
+      },
+      {
+        "name": "softmax",
+        "passed": true,
+        "dispatches": 1,
+        "object_bytes": 1820
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "compiler_unchanged": true,
+  "optimizer_unchanged": true,
+  "passed": true,
+  "finished_at_utc": "2026-10-17T01:22:50.405840+00:00",
+  "native_changes_from_reference_ece1b68": [
+    "native/README.cuda.md",
+    "native/README.md"
+  ],
+  "executable_sources_match_reference_ece1b68": true,
+  "native_tree_comparison_note": "The whole native tree differs only in Markdown documentation; executable source equality is checked separately.",
+  "rebuilt_compiler_matches_premerge_binary": true
+}

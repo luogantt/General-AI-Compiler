@@ -1,0 +1,44 @@
+{
+  "target": "vortex",
+  "scope": "native MLIR to VOLT RV32 object validation",
+  "physical_device_execution": false,
+  "simx_execution_requested": false,
+  "cases": [
+    {
+      "name": "matmul_bias_relu",
+      "passed": true,
+      "dispatches": 1,
+      "object_bytes": 1228
+    },
+    {
+      "name": "multi_consumer",
+      "passed": true,
+      "dispatches": 2,
+      "object_bytes": 1600
+    },
+    {
+      "name": "conv_bias_relu",
+      "passed": true,
+      "dispatches": 1,
+      "object_bytes": 1512
+    },
+    {
+      "name": "residual_add_relu",
+      "passed": true,
+      "dispatches": 1,
+      "object_bytes": 1152
+    },
+    {
+      "name": "softmax",
+      "passed": true,
+      "dispatches": 1,
+      "object_bytes": 1820
+    },
+    {
+      "name": "shape_chain",
+      "passed": true,
+      "dispatches": 1,
+      "object_bytes": 1076
+    }
+  ]
+}

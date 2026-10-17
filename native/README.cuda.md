@@ -1,6 +1,7 @@
 # 原生 MLIR CUDA PTX 后端
 
-分支：`lg/bevformer-cuda-ptx-full-ops`。前端、MLIR 图优化、算子语义和静态 Buffer
+统一分支：`lg/bevformer-full-ops`，通过 `--target=cuda` 选择本后端。
+前端、MLIR 图优化、算子语义和静态 Buffer
 规划与 Vortex 共用，CUDA 使用独立的线程映射、指针 ABI 和 Runtime。
 本路径不生成 CUDA C++ Kernel，也不调用 Python 算子或 cuBLAS 代替当前设备计算。
 

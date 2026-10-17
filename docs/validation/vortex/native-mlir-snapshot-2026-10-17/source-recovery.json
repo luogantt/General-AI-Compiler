@@ -1,0 +1,287 @@
+{
+  "recovery_source_tree": "89df1527f7b10f3ef728d5334340c6b65643494a",
+  "second_equivalent_source_tree": "abe12c4ebb6d22d951ad6394c1c493f18974d7fd",
+  "workspace": "/mnt/c/Users/Thomas/.codex/worktrees/bevformer-vortex-tag/General-AI-Compiler",
+  "note": "Recovered original Git object contents, not reconstructed source. Historical validation association is audited separately. Markdown files left for parent agent.",
+  "recovered_files": [
+    {
+      "path": "native/CMakeLists.txt",
+      "blob": "48d7999262bef874813eaeedeb4114807c0835f9",
+      "sha256": "af9ea68b9634674d8b4cc493fd1ddfe6e62799cf61c615f59191da8634c11bcb",
+      "bytes": 3247
+    },
+    {
+      "path": "native/include/gac/ConstantFolding.h",
+      "blob": "732a3b09e0ffdb45e0ec8e98dee9e05333b5439a",
+      "sha256": "01a44850f4836fcab004d5f3cbe90124c0d6c3b03fcdd282887e366d72c825d5",
+      "bytes": 1214
+    },
+    {
+      "path": "native/include/gac/Dialect.h",
+      "blob": "b2907d325fbe7ac44ea8b882b815afc41300a7a6",
+      "sha256": "f7a6ac40de64ec95927c97b67fc3974e0b02b61e34aa256634b80ba0e9173bbd",
+      "bytes": 6339
+    },
+    {
+      "path": "native/include/gac/OnnxImporter.h",
+      "blob": "4cba23eb945267a0d4c2ba9905bc71d377624b94",
+      "sha256": "2d63fe8c7d7c6be84f3365af14109b32fd68ba23defa0e4438baf07b32cea43d",
+      "bytes": 775
+    },
+    {
+      "path": "native/include/gac/Passes.h",
+      "blob": "313a6d46b9e171de6a94636013e9a27ecaf22c45",
+      "sha256": "f08ce80af50c5cd5c73b2baf02a6e70966798c75b3329a9d5320e203a3ab983b",
+      "bytes": 550
+    },
+    {
+      "path": "native/include/gac/VortexLowering.h",
+      "blob": "c795f995e056524881907f3d4007edcd372155a9",
+      "sha256": "0e01eec140c39f46572812be9d22735d3f8aa33ff5d91c1a616d0450c5ff49a3",
+      "bytes": 1127
+    },
+    {
+      "path": "native/lib/ConstantFolding.cpp",
+      "blob": "14dc701947b1bcfe3a0c262d87ed6a0daa0491c8",
+      "sha256": "8b6a8db0fa64d14c0cc24774eeb863cbaa86efb3cb4022a9c3db53e5ca2e7c94",
+      "bytes": 30720
+    },
+    {
+      "path": "native/lib/Dialect.cpp",
+      "blob": "4c662b6fd64211851aab5096cb813f6c80bbbe78",
+      "sha256": "1aa2a57603845279f144018425eabbdb775197bd84f8f01d837552a2a4f0c656",
+      "bytes": 58937
+    },
+    {
+      "path": "native/lib/GraphPasses.cpp",
+      "blob": "0e7dd864873ea0cff38247008f5de2ea95f46742",
+      "sha256": "661a4bae604f2a9835dedbbffa68889ad3b0414dc556491f1f9c6b4a329f836f",
+      "bytes": 24123
+    },
+    {
+      "path": "native/lib/OnnxImporter.cpp",
+      "blob": "9968e1e5541dfe21ab23663587e3f4a25548f7f4",
+      "sha256": "e7ef5bc7f8135ae33e57fdcbbebca8be09f417b9e8829b0f6fe967e227f2f1af",
+      "bytes": 36085
+    },
+    {
+      "path": "native/lib/TensorLegalization.cpp",
+      "blob": "501bb1b93b5a4ea16d702f19b92db27fa71e8c26",
+      "sha256": "785408563b9ba62a7639222b6b28a11824820410e0c03c738ce3ffddd66f2e73",
+      "bytes": 17286
+    },
+    {
+      "path": "native/lib/VortexLowering.cpp",
+      "blob": "09e36b1d676fa5db8f13ab7e0acf4acbb0d49c2f",
+      "sha256": "c75edccaa3a2bc6f8fd0999d2e21852a9ab060d31690908a7783088f69a416ab",
+      "bytes": 77465
+    },
+    {
+      "path": "native/runtime/vortex-run.cpp",
+      "blob": "9719bf23f0fe9fa3fd32f328a179d7de188318af",
+      "sha256": "8d298692f0d4fb7f7e5af4bfa895da009b65c2bbe16b993ab9e0c93a758eaf7d",
+      "bytes": 21191
+    },
+    {
+      "path": "native/tests/archive_validation.py",
+      "blob": "bd18ccca54f46429914d246586f845501b0913f3",
+      "sha256": "ceeba89c11d5afa87bc226e99815b7cb15158aa21ed94ceac6bdc063f6b766af",
+      "bytes": 4023
+    },
+    {
+      "path": "native/tests/check_base_contracts.py",
+      "blob": "44f4bbbe9bd13ae9d63feab68fb0a8a1ef17c4b6",
+      "sha256": "a05b5f15fbaa9c4e59807fdf12bc37baef6951e4e5328bf7f2c4bf1b7c869ce7",
+      "bytes": 7197
+    },
+    {
+      "path": "native/tests/collect_onnx_references.py",
+      "blob": "c116185243c35636f7561d54e73ba52360e6bc9b",
+      "sha256": "b8b80976442fd8bfd9bbdf0fbfbc51f5d0510e10585c8b1eb09ab6f90905999a",
+      "bytes": 3624
+    },
+    {
+      "path": "native/tests/generate_base_ops_models.py",
+      "blob": "0ce9b3dda171922120f2fd7f19eb40f636f42411",
+      "sha256": "bb8ca936c00b6721ecc40f9585a2b0df3d0c9f9db918898b788316d40e305e69",
+      "bytes": 18644
+    },
+    {
+      "path": "native/tests/generate_full_ops_models.py",
+      "blob": "9c1b36a459054da393b04c83563d8b5bbdc43c85",
+      "sha256": "76cfb2d0cae1136b48859977e71bfa320e3041e17d5da7cd210bfcc95d413e49",
+      "bytes": 7513
+    },
+    {
+      "path": "native/tests/generate_geometry_models.py",
+      "blob": "3fb9e889fe3da58b6b17e7054229c731ed57c8b8",
+      "sha256": "4ea9a434b9d845d754332f2f8d99e738cb5e10f416d6c5daf889e22ca7b46ebe",
+      "bytes": 6680
+    },
+    {
+      "path": "native/tests/generate_matmul_bias_models.py",
+      "blob": "41ce0373ea12ff604fe92c062810c96593bf9e77",
+      "sha256": "567dcbd379707c2f82f268373d13f469266f82686f01906ef7c462514101a2f3",
+      "bytes": 7497
+    },
+    {
+      "path": "native/tests/generate_models.py",
+      "blob": "3d7793768839facdc16921416abd821056bf4c50",
+      "sha256": "ced0922776aee9048bf75ce80fa6f58e791434d7aec43dedda1e027031b0899e",
+      "bytes": 16406
+    },
+    {
+      "path": "native/tests/generate_msda_offsets_models.py",
+      "blob": "31ec72f12434411f2959828365b56592af82e7eb",
+      "sha256": "a9f22e0cf210066e71a2fd230ecb7b43bdafec191f1a846ffa49f64565ad14db",
+      "bytes": 9501
+    },
+    {
+      "path": "native/tests/generate_range_models.py",
+      "blob": "0171407cfc8360cfa5b6cae6ca7350e842d849f9",
+      "sha256": "0890057a0cd383893e0d4abd2ee49d015de905c7878d5fdc527559181e92ee60",
+      "bytes": 8483
+    },
+    {
+      "path": "native/tests/generate_scatter_legalization_models.py",
+      "blob": "adbb075543b322f192fdc5cd2d62c07b7765510b",
+      "sha256": "21ebeeab87ed36a63596980668d117aeb644d9117ca2bc3b44e16068df0d13ee",
+      "bytes": 5994
+    },
+    {
+      "path": "native/tests/generate_shape_if_models.py",
+      "blob": "93d54bcd7d40a9eed9e8890567055f7c26c01a41",
+      "sha256": "eb25455baf752343a07e2d787623452a28ad5e19d1f04ba508b882581f754f2d",
+      "bytes": 7936
+    },
+    {
+      "path": "native/tests/generate_view_alias_models.py",
+      "blob": "e16988bc089e25c400dbfca96474befc204523b8",
+      "sha256": "5e90d9bb8b052ee4c71584b04d55293f4da809fa71779bec19c20a694c8ad7ce",
+      "bytes": 9214
+    },
+    {
+      "path": "native/tests/run_base_ops_tests.py",
+      "blob": "9680bdb501baf9ba55f4ad8b79d8452d20e244b9",
+      "sha256": "a5333cfbc026198a68c07e71dbe23fab25e3641fb04b36073aa6679481d202f6",
+      "bytes": 8660
+    },
+    {
+      "path": "native/tests/run_full_model.py",
+      "blob": "0a3e2d190a20be031cf849238c0019ddc58c82db",
+      "sha256": "b86cf14d3ce5b51271f17d3116de1bc38fb5fdd556178077de213b372ae306d3",
+      "bytes": 18717
+    },
+    {
+      "path": "native/tests/run_matmul_bias_tests.py",
+      "blob": "7e9f8230db031aebed177e34aa7b2d2e6371fd6a",
+      "sha256": "4e0f367188473c0188acff95cf8f480f062f63b30535a018f3ebd7a10a92981b",
+      "bytes": 6208
+    },
+    {
+      "path": "native/tests/run_msda_offsets_tests.py",
+      "blob": "1b7d284ff459df6e7714d3710580df7f89a85c27",
+      "sha256": "859a36c64f7c87614f1f2922dcb2e5e51291632f43357fc2f7709b29de93a1de",
+      "bytes": 5063
+    },
+    {
+      "path": "native/tests/run_range_tests.py",
+      "blob": "ec698cba3882b2300a64e4043638358d5612a03b",
+      "sha256": "6467404e69bb1efd66442fa6d4768335ce75b07da444560d16c5e59d89515ace",
+      "bytes": 3622
+    },
+    {
+      "path": "native/tests/run_scatter_legalization_tests.py",
+      "blob": "3e8498e8798abfd98c71c10e865efe47e703d916",
+      "sha256": "1c0740982b13763a6a39fb9242de6b1788b78bb861f3867576aa9058aa8e7a9e",
+      "bytes": 2671
+    },
+    {
+      "path": "native/tests/run_tests.py",
+      "blob": "086d9609dced783d7fc132bcf63594f593201044",
+      "sha256": "b14dde02b3c0bde223a95088f3cafa0bb2fa0dff3276d70022e1bfb54084dddb",
+      "bytes": 10539
+    },
+    {
+      "path": "native/tests/run_view_alias_tests.py",
+      "blob": "dc8f0e009ebce3ebcf4c39f7c8d0e00984d1284b",
+      "sha256": "62cf754a0f195a6b67fcd123db9382947780f0e77d47e9b66383b8b8627d6d2f",
+      "bytes": 4847
+    },
+    {
+      "path": "native/tests/run_vortex_tests.py",
+      "blob": "02244c050f0c57e27772a78b822094cf7e73b295",
+      "sha256": "293b5c7a48af4db0db7894dde01c6bb418551a53cae6fed948506ced34034490",
+      "bytes": 7409
+    },
+    {
+      "path": "native/tools/Vortex.mk",
+      "blob": "83e447d0ed2bd0233eaf48ed3bb0aa95d019732d",
+      "sha256": "818634bcb9065a69ca49e4f9f7c72e93396585c049281eb0940dbe5acf26cd4a",
+      "bytes": 1265
+    },
+    {
+      "path": "native/tools/compile-vortex.sh",
+      "blob": "74f77afa544960d3e0e26386fbb9fd41ca0584b1",
+      "sha256": "7033cab0f62cdfdf7c63f49467d49571f9a477da2120d739ddf3832617d1c2c5",
+      "bytes": 1368
+    },
+    {
+      "path": "native/tools/gac-compile.cpp",
+      "blob": "61f3165899058862cacc486d351b832df481c397",
+      "sha256": "e5d3e4d761bd090b48765fe11832e7155114742e63d885ea01631720f33a0ef0",
+      "bytes": 7133
+    },
+    {
+      "path": "native/tools/gac-opt.cpp",
+      "blob": "99b8d8763d124df9deb8b147b6690ce4114d3910",
+      "sha256": "e4fcc1b001ae68a14b209a928cbab485dbf15c33ae3b22c720ee155b5574524e",
+      "bytes": 1020
+    }
+  ],
+  "removed_cuda_only_files": [
+    "native/README.cuda.md",
+    "native/include/gac/CudaLowering.h",
+    "native/include/gac/DeviceLowering.h",
+    "native/lib/CudaLowering.cpp",
+    "native/lib/DeviceLowering.cpp",
+    "native/runtime/cuda-run.cpp",
+    "native/runtime/dispatch-plan.h",
+    "native/tests/README.cuda.md",
+    "native/tests/run_cuda_tests.py",
+    "native/tests/test_cuda_validation.py",
+    "native/tools/compile-cuda.sh"
+  ],
+  "shared_core_comparison": [
+    {
+      "path": "native/lib/OnnxImporter.cpp",
+      "pre_cuda_blob": "9968e1e5541dfe21ab23663587e3f4a25548f7f4",
+      "cuda_commit_blob": "9968e1e5541dfe21ab23663587e3f4a25548f7f4",
+      "identical_git_blob": true
+    },
+    {
+      "path": "native/lib/GraphPasses.cpp",
+      "pre_cuda_blob": "0e7dd864873ea0cff38247008f5de2ea95f46742",
+      "cuda_commit_blob": "0e7dd864873ea0cff38247008f5de2ea95f46742",
+      "identical_git_blob": true
+    },
+    {
+      "path": "native/lib/Dialect.cpp",
+      "pre_cuda_blob": "4c662b6fd64211851aab5096cb813f6c80bbbe78",
+      "cuda_commit_blob": "4c662b6fd64211851aab5096cb813f6c80bbbe78",
+      "identical_git_blob": true
+    },
+    {
+      "path": "native/lib/ConstantFolding.cpp",
+      "pre_cuda_blob": "14dc701947b1bcfe3a0c262d87ed6a0daa0491c8",
+      "cuda_commit_blob": "14dc701947b1bcfe3a0c262d87ed6a0daa0491c8",
+      "identical_git_blob": true
+    },
+    {
+      "path": "native/lib/TensorLegalization.cpp",
+      "pre_cuda_blob": "501bb1b93b5a4ea16d702f19b92db27fa71e8c26",
+      "cuda_commit_blob": "501bb1b93b5a4ea16d702f19b92db27fa71e8c26",
+      "identical_git_blob": true
+    }
+  ]
+}

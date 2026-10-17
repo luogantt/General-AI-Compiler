@@ -1,0 +1,78 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-vortex-tag-build-20261017/gac-compile",
+  "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "cases": [
+    {
+      "name": "dcn_mask_bias",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1666307674d071dc72943789e59a56a170e77c3ef19372db915b37b1c9bad94d",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      },
+      "library_sha256": "2e13ea00d9c4fa211ae182d2256a8246c5d8692338416e96a960cd13826cc418",
+      "test_wall_seconds": 0.4398631780000528
+    },
+    {
+      "name": "resize_fpn_2x",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU",
+      "model_sha256": "f5439bee0ee0dd631d4da4f3f5888df91e3f4b973c3c24d1940865b6ee992486",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "3320e604c984b606eecefff260488d3fad25a18b9975727f6c8c9dff44160825",
+      "test_wall_seconds": 0.2688022419999925
+    },
+    {
+      "name": "msda_multilevel_heads",
+      "kind": "MSDeformAttn",
+      "reference": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "model_sha256": "01cc3e655f51c67d2573e5d417be52877150baf72e2a3d629e0ea2442bf905c5",
+      "passed": true,
+      "arena_bytes": 128,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "library_sha256": "6d794836d5e86382ae7017d9fdfb0cdb1090af281b5b36fc30ffbf517de2e355",
+      "test_wall_seconds": 0.318067783999993
+    },
+    {
+      "name": "memory_fragmented_fork",
+      "kind": "StaticMemoryForkDAG",
+      "reference": "PyTorch eager matmul/relu/cat/add; two observable outputs",
+      "model_sha256": "c026a41fc58add8f54b7bf89d72c510a662fbf620bfde28a413d6a9793500bda",
+      "passed": true,
+      "arena_bytes": 832,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 7,
+      "max_absolute_errors": {
+        "retained": 3.5762786865234375e-07,
+        "Y": 1.9073486328125e-06
+      },
+      "library_sha256": "3ebdb703dad891a3dcbb7459dda137e55694196fa0525b743262af8cc102b8a1",
+      "test_wall_seconds": 0.36640220000003865
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "compiler_stable_during_run": true
+}

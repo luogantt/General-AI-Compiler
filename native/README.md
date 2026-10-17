@@ -6,7 +6,8 @@
 编译器、图优化、设备 Lowering、Buffer 规划与 Runtime 使用 C++；不调用原有
 Python `Graph`、Python 图 Pass 或 Python MLIR 文本发射器。
 
-当前 CUDA 分支：`lg/bevformer-cuda-ptx-full-ops`，从 Vortex 工作继续扩展。
+当前统一分支：**`lg/bevformer-full-ops`**，同时维护 CUDA PTX 和 Vortex 后端。
+`DeviceOptions::target` 选择设备；`native` 目标只用于显式的 CPU 数值验证。
 Vortex 路径已经用小模型完成真实
 `ONNX → MLIR → VOLT → ELF → vxbin → SimX` 数值闭环。完整 BEVFormer-tiny cold
 ONNX 已通过严格导入、MLIR 优化和设备 Lowering，生成 **1,548 个 dispatch** 的
@@ -24,11 +25,17 @@ native 主机共享库与 Vortex ELF/vxbin，全部设备入口和产物审核�
 [最终验证记录](../docs/validation/vortex/native-mlir-bevformer-base-2026-10-16/README.md)。
 尚无 base 全图 Vortex 执行或硬件 FPS 结论。
 
-CUDA 分支已使用同一 C++ 前端和共享算子 Lowering，把完整 base 的 3,224 个
+CUDA 后端已使用同一 C++ 前端和共享算子 Lowering，把完整 base 的 3,224 个
 dispatch 编译成 PTX，并在 RTX 3070 Ti Laptop 8 GB 上执行。固定 cold 输入的
 三个输出与 PyTorch 参考对齐；预热后平均设备延时约 18.05 秒，显存采样约 2.11 GiB，
 当前功能通过、性能尚未达到 30 FPS。范围与证据见
 [CUDA 完整 base 验证](../docs/validation/cuda/native-mlir-bevformer-base-2026-10-17/README.md)。
+
+统一分支合并时重新构建了同一个编译器，并用 MatMul、Conv、Softmax 分别通过
+3 项 CPU 数值检查、3 项 Vortex RV32 对象检查和 3 项 CUDA PTX/ptxas 检查。
+可执行源码与合并前 CUDA 分支一致，重建的编译器 SHA-256 也一致；本轮未重复
+整网、GPU 或 SimX 执行，不能据此新增性能结论。命令、产物身份与范围见
+[合并验证报告](../docs/validation/native-mlir-unified-2026-10-17.json)。
 
 ## 1. 实际架构与代码
 
@@ -54,17 +61,16 @@ MLIR PassManager
 ├── gac-fuse                            条件满足时融合，保留数值语义
 └── gac-propagate-layout                 验证/传播可证明的轴布局
         ↓
-gac-lower-to-vortex                     SSA 依赖 + 静态 Buffer + Kernel 映射
+DeviceLowering.cpp                     共享算子循环、SSA 依赖与静态 Buffer 规划
         ↓
-SCF / Arith / Math / LLVM + Vortex Dialect
-        ↓
-gac-vortex-to-llvm + 上游转换 Pass
-        ↓
-LLVM Dialect → mlir-translate → LLVM IR
-        ↓
-VOLT → RISC-V/Vortex ELF → vxbin
-        ↓
-C++ Runtime → Buffer / Queue / Event → SimX 或设备
+按 --target 选择线程映射、ABI、设备数学和地址约束
+        ├── vortex：VortexLowering.cpp / Vortex Dialect
+        │      → LLVM Dialect → LLVM IR → VOLT → ELF → vxbin
+        │      → vortex-run.cpp → Vortex Runtime → SimX / 设备
+        │
+        └── cuda：CudaLowering.cpp / NVVM
+               → LLVM Dialect / NVVM → LLVM IR + libdevice → LLVM NVPTX → PTX
+               → cuda-run.cpp → CUDA Driver JIT → SASS → NVIDIA GPU
 ```
 
 | 层 | 源码 | 实际职责 |
@@ -84,6 +90,38 @@ C++ Runtime → Buffer / Queue / Event → SimX 或设备
 | 机器码构建 | [compile-vortex.sh](tools/compile-vortex.sh)、[Vortex.mk](tools/Vortex.mk) | 调用同版本 MLIR/VOLT，复用 Vortex startup/linker/封装工具 |
 | 执行 | [vortex-run.cpp](runtime/vortex-run.cpp) | 读取 SSA 规划产生的 manifest；上传、提交、等待、写回，无 Host 算子回退 |
 | CUDA 机器码与执行 | [compile-cuda.sh](tools/compile-cuda.sh)、[cuda-run.cpp](runtime/cuda-run.cpp) | LLVM NVPTX 生成 PTX，CUDA Driver JIT 和 Stream 顺序执行 |
+| Runtime 共用契约 | [dispatch-plan.h](runtime/dispatch-plan.h) | manifest 类型、张量大小、生命周期与 Buffer 重叠校验 |
+
+### 同一个编译器选择后端
+
+两种目标共用 `gac-compile` / `gac-opt`，不必切 Git 分支。以下命令分别生成
+LLVM 层 MLIR、执行计划和常量；它们还不是最终可执行机器码：
+
+```bash
+mkdir -p build/model-vortex build/model-cuda
+gac-compile model.onnx --target=vortex --emit=llvm \
+  --manifest build/model-vortex/plan.json --constants-dir build/model-vortex \
+  -o build/model-vortex/kernel.mlir
+gac-compile model.onnx --target=cuda --emit=llvm \
+  --manifest build/model-cuda/plan.json --constants-dir build/model-cuda \
+  -o build/model-cuda/kernel.mlir
+```
+
+对于完整 BEVFormer-base，另加 `--constant-fold-profile=bevformer-base`。
+要从 ONNX 一次生成机器码，使用 `compile-vortex.sh` 或 `compile-cuda.sh`；
+两者均可指向同一个 `GAC_NATIVE_BIN`，使用各自独立、全新的输出目录。
+Vortex 环境设置见下方“构建与执行”，CUDA 见 [CUDA 使用说明](README.cuda.md)。
+
+| 应共用的内容 | 必须由目标决定的内容 |
+|---|---|
+| ONNX 导入、GAC 算子定义、SSA、形状和常量推导 | Vortex RV32 / CUDA 64 位指针及地址预算 |
+| 图优化与满足语义条件的融合规则 | CSR / NVVM 线程编号、Kernel ABI 与调用约定 |
+| 当前标量算子语义、全局 Buffer 生命周期算法 | LMEM / CUDA shared memory 容量与布局、硬件矩阵指令 |
+| manifest 通用校验与数值测试方法 | VOLT / NVPTX 机器码生成、设备加载与同步 API |
+
+LMEM、DXA 双缓冲、TCU 与 CUDA Tensor Core 是后续各目标的优化工作；
+当前共享标量路径没有因此获得这些功能。硬件限制、Tiling / Schedule 参数和
+Runtime 同步方式应保持各自的实现，不能把 Vortex 的参数直接作为 CUDA 配置。
 
 `gac-opt` 必须用于包含 `gac.*` 或 `vortex.*` 的 IR，因为普通上游 `mlir-opt`
 没有注册本项目的方言。降成标准 LLVM Dialect 后，可以使用同版本的上游工具。

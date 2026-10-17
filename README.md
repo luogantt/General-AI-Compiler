@@ -1,5 +1,15 @@
 # General AI Compiler（GAC）
 
+统一开发分支：**`lg/bevformer-full-ops`**。CUDA PTX 与 Vortex 共用一套 C++ MLIR
+前端、图优化和算子语义，通过 `gac-compile --target=cuda` 或 `--target=vortex`
+选择设备后端；每次编译生成一个目标的产物，不要求同时使用两种设备。
+源码分层、后端接口与使用方式见 [原生编译器架构](native/README.md#1-实际架构与代码)。
+
+合并保留两条开发历史；原分支 `lg/bevformer-cuda-ptx-full-ops`、
+`lg/bevformer-vortex-full-ops` 及 tag `bevformer-base-mlir-cuda-ptx`、
+`bevformer-base-mlir-vortex` 继续保留，作为合并前的版本参照。
+Vortex 源码快照与复验记录见 [版本存档](docs/validation/vortex/native-mlir-snapshot-2026-10-17/README.md)。
+
 **ONNX → MLIR → Vortex / CUDA 的主入口：[原生 C++ MLIR 编译器](native/README.md)。**
 它直接把 ONNX ModelProto 导入注册的 `gac` Operations，使用真实 MLIR Pass 做
 shape 推导、常量折叠、CSE、条件融合和布局验证，再由 C++ Lowering/Buffer 规划生成
@@ -16,7 +26,7 @@ Vortex ELF/vxbin 已生成并核对全部 1,548 个入口；主机生成的机�
 PyTorch 参考对齐，见[最终验证记录](docs/validation/vortex/native-mlir-bevformer-base-2026-10-16/README.md)。
 尚无整网 Vortex 执行或 30 FPS 结论。
 
-`lg/bevformer-cuda-ptx-full-ops` 增加 [原生 CUDA PTX 后端](native/README.cuda.md)：
+统一分支包含 [原生 CUDA PTX 后端](native/README.cuda.md)：
 复用 C++ ONNX 导入、MLIR Pass 和算子/Buffer 规划，通过 NVVM 与 LLVM NVPTX
 生成 PTX，C++ Runtime 调用 CUDA Driver JIT 和启动 Kernel。62 个小模型已在
 RTX 3070 Ti Laptop 上完成数值验证；完整 base 已生成全部 3,224 个 CUDA dispatch，
