@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="BEVFormer PyTorch 模型结构：点击模块查看作用、张量形状与对应的真实源码。">
+<title>BEVFormer · 模型结构与源码</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f8;--surface:#fff;--ink:#172b3b;--muted:#5a6b79;--line:#d9e1e7;--blue:#145fb6;--blue-soft:#edf4fc;--green:#267158;--green-soft:#f0f7f3;--purple:#725799;--purple-soft:#f6f2fa;--orange:#945c19;--orange-soft:#fff7eb;--shadow:0 3px 14px #172b3b08}
+*{box-sizing:border-box}html{scroll-padding-top:20px}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}button,a,summary{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}button:disabled{cursor:default}a{color:var(--blue);text-underline-offset:3px}a:hover{text-decoration-thickness:2px}button:focus-visible,a:focus-visible,summary:focus-visible,[tabindex="-1"]:focus-visible{outline:3px solid #2c78ce;outline-offset:4px}button{color:inherit}h1,h2,h3,h4,p{margin:0}code,pre{font-family:Consolas,"SFMono-Regular","Liberation Mono",monospace}code{font-size:.92em}button,code{overflow-wrap:anywhere}svg{display:block}.hidden,[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.page{max-width:1580px;padding:25px 30px 34px;margin:0 auto}.topline{display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:12px;color:var(--muted)}.back-link{text-decoration:none}.edition{letter-spacing:.1em;font-size:11px;font-weight:650}.hero{padding:25px 0 22px}.eyebrow{font-size:11px;font-weight:750;letter-spacing:.12em;color:var(--blue);margin-bottom:8px}.hero h1{font-size:clamp(26px,3vw,38px);line-height:1.3;letter-spacing:-.035em}.hero p{margin-top:12px;max-width:1000px;color:var(--muted);font-size:15px}.hero strong{font-weight:650;color:var(--ink)}.overview-meta{display:flex;gap:12px 24px;flex-wrap:wrap;margin-top:17px;color:var(--muted);font-size:12px}.overview-meta span{display:inline-flex;align-items:center;gap:8px}.overview-meta code{font-size:12px;color:var(--ink);background:#e9edf1;padding:2px 6px;border-radius:4px}.toolbar{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:7px;gap:5px}.tab{padding:11px 14px;text-align:left;border:1px solid transparent;border-radius:6px;background:transparent;line-height:1.35;display:flex;align-items:center;gap:11px;min-width:0}.tab:hover{background:var(--bg)}.tab[aria-selected="true"]{background:var(--blue-soft);border-color:#bfd4ed;color:var(--blue)}.tab-number{font:12px/1 Consolas,monospace;opacity:.7}.tab-name{font-weight:650;font-size:14px}.object-nav{border-top:1px solid var(--line);padding:10px 13px;display:flex;gap:7px 10px;align-items:center;flex-wrap:wrap}.object-nav-label{font-size:11px;color:var(--muted);margin-right:3px}.object-button,.related-button,.subview-button,.small-button{border:1px solid var(--line);border-radius:5px;background:var(--surface);padding:5px 9px;font-size:12px;line-height:1.5}.object-button:hover,.related-button:hover,.small-button:hover{border-color:var(--blue);color:var(--blue)}.object-button[aria-pressed="true"],.related-button[aria-pressed="true"]{color:var(--blue);background:var(--blue-soft);border-color:var(--blue)}.workspace{display:grid;grid-template-columns:minmax(0,1.36fr) minmax(355px,1fr);gap:18px;align-items:start}.diagram-panel,.detail-panel{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}.diagram-heading{padding:20px 22px 14px}.section-kicker{color:var(--muted);font-size:10px;font-weight:750;letter-spacing:.1em}.diagram-heading h2{font-size:20px;line-height:1.4;margin:4px 0 7px;letter-spacing:-.02em}.diagram-heading p{color:var(--muted);font-size:12px;line-height:1.75;max-width:690px}.legend{display:flex;gap:13px;flex-wrap:wrap;align-items:center;padding:0 22px 16px;font-size:11px;color:var(--muted);border-bottom:1px solid #e8edf1}.legend span{display:inline-flex;gap:6px;align-items:center}.legend-line{width:21px;height:0;border-top:2px solid #8e9caa;position:relative}.legend-line:after{content:"";position:absolute;right:-1px;top:-4px;border-left:5px solid #8e9caa;border-top:3px solid transparent;border-bottom:3px solid transparent}.legend-line.state{border-top-color:var(--purple);border-top-style:dashed}.legend-line.state:after{border-left-color:var(--purple)}.legend-dot{width:8px;height:8px;border-radius:2px;background:var(--blue-soft);border:1px solid #85acd9}.legend .click-hint{margin-left:auto;color:var(--blue)}.diagram-canvas{isolation:isolate;position:relative;padding:32px 24px;min-width:0;overflow:hidden}.diagram-grid{position:relative;display:grid;grid-template-columns:minmax(0,.91fr) minmax(0,1.3fr) minmax(0,.91fr);column-gap:28px;row-gap:57px;align-items:stretch;z-index:1}.diagram-node{width:100%;min-height:88px;text-align:left;background:#fff;border:1px solid #b9c8d5;border-radius:6px;padding:11px 12px;line-height:1.4;position:relative;box-shadow:0 2px 3px #172b3b04;min-width:0;display:flex;flex-direction:column;justify-content:center}.diagram-node:hover{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}.diagram-node[aria-pressed="true"]{border:2px solid var(--blue);padding:10px 11px;box-shadow:0 0 0 3px #dceafa;background:var(--blue-soft)}.node-kind{font-size:9px;line-height:1.2;color:var(--muted);margin-bottom:6px;letter-spacing:.06em;font-weight:600}.node-title{font-size:13px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}.node-caption{display:block;font-size:10px;margin-top:6px;color:var(--muted);line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}.diagram-node[data-kind="input"]{background:#f7f9fb}.diagram-node[data-kind="output"]{background:var(--green-soft);border-color:#9dbfaf}.diagram-node[data-kind="state"]{background:var(--purple-soft);border-color:#b8a8cd}.diagram-node[data-kind="config"]{background:var(--orange-soft);border-color:#d6bd9b}.diagram-node[data-kind="output"] .node-kind{color:var(--green)}.diagram-node[data-kind="state"] .node-kind{color:var(--purple)}.diagram-node[data-kind="config"] .node-kind{color:var(--orange)}.diagram-node[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}.diagram-node[aria-pressed="true"] .node-title{color:#0d4c97}.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}.edge-path{fill:none;stroke:#a7b4c0;stroke-width:1.5;vector-effect:non-scaling-stroke}.edge-state .edge-path{stroke:#a99aba;stroke-dasharray:5 4}.edge-control .edge-path{stroke:#b7a589;stroke-dasharray:2 4}.edge-label{font-size:9px;fill:#6b7c8b;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round;text-anchor:middle}.edge.is-selected .edge-path{stroke:var(--blue);stroke-width:2}.edge-state.is-selected .edge-path{stroke:var(--purple)}.edge-control.is-selected .edge-path{stroke:var(--orange)}.edge.is-selected .edge-label{fill:var(--blue);font-weight:600}.edge-state.is-selected .edge-label{fill:var(--purple)}.edge-control.is-selected .edge-label{fill:var(--orange)}.diagram-footnote{margin:0 22px 20px;padding:12px 13px;border-left:2px solid #a8bdd3;background:#f6f8fa;font-size:11px;color:var(--muted);line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}.detail-panel{position:sticky;top:16px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin}.detail-inner{padding:20px 22px 23px}.detail-topline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.detail-badge{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--blue)}.detail-title{font-size:23px;line-height:1.35;letter-spacing:-.025em;overflow-wrap:anywhere}.detail-subtitle{font-family:Consolas,"SFMono-Regular",monospace;font-size:12px;color:var(--muted);margin-top:7px;overflow-wrap:anywhere;white-space:pre-line}.detail-summary{font-size:13px;line-height:1.85;margin-top:15px;color:#42586a;white-space:pre-line;overflow-wrap:anywhere}.detail-flow{margin-top:19px;display:grid;gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden}.flow-item{padding:12px 13px;display:grid;grid-template-columns:35px minmax(0,1fr);gap:11px}.flow-item+.flow-item{border-top:1px solid #e4eaf0}.flow-item.action{background:#f4f8fd}.flow-label{font-size:10px;font-weight:750;letter-spacing:.05em;color:var(--muted);line-height:1.8}.flow-item.action .flow-label{color:var(--blue)}.flow-value{font-size:12px;line-height:1.8;white-space:pre-line;overflow-wrap:anywhere}.formula{margin-top:14px;padding:12px;background:#f7f8fa;border-radius:5px;font-size:11px;line-height:1.8;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;color:#304a61}.notes{margin:15px 0 0;padding:0 0 0 17px;font-size:12px;line-height:1.8;color:var(--muted)}.notes li{padding-left:2px;margin:6px 0;overflow-wrap:anywhere}.subview-button{margin-top:14px;padding:8px 11px;background:var(--blue-soft);color:var(--blue);border-color:#bad1ec;font-weight:600}.subview-button:hover{border-color:var(--blue)}.source-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:24px 0 10px;padding-top:19px;border-top:1px solid var(--line)}.source-heading h3,.related-heading{font-size:13px;font-weight:700}.source-count{color:var(--muted);font-size:10px}.source{margin:9px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden}.source>summary{cursor:pointer;padding:11px 12px;background:#f7f9fb;font-size:12px;font-weight:600;line-height:1.6;overflow-wrap:anywhere}.source>summary:hover{color:var(--blue)}.source[open]>summary{border-bottom:1px solid var(--line)}.source-meta{padding:11px 12px;color:var(--muted);font-size:10px;line-height:1.75;overflow-wrap:anywhere}.source-location{display:block;color:#41586b;white-space:pre-line;font-size:10px;margin-bottom:5px;overflow-wrap:anywhere}.source-symbol{margin-bottom:7px;white-space:pre-line}.source-links{display:flex;align-items:center;flex-wrap:wrap;gap:6px 11px}.source-links a{font-size:10px}.copy-button{padding:3px 7px;font-size:10px}.source-note{margin-top:9px}.source-code{margin:0;padding:12px 0;background:#f5f7fa;overflow:auto;max-height:390px;font-size:11px;line-height:1.75;tab-size:4;white-space:pre;scrollbar-width:thin;overscroll-behavior:contain}.code-line{display:block;width:max-content;min-width:100%;padding:0 12px 0 0}.line-number{display:inline-block;min-width:4.5em;padding:0 1.2em 0 .6em;color:#8a99a7;text-align:right;user-select:none;border-right:1px solid #dde4ec;margin-right:1em;font-variant-numeric:tabular-nums}.provenance{font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding:8px 12px}.provenance summary{cursor:pointer}.provenance p{margin-top:7px;overflow-wrap:anywhere}.related{margin-top:21px;border-top:1px solid var(--line);padding-top:17px}.related-buttons{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.related-button{font-size:11px}.empty-source{font-size:12px;color:var(--muted)}.snapshot-note{margin-top:20px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:11px;line-height:1.8;overflow-wrap:anywhere}.snapshot-note strong{color:var(--ink);font-weight:600}.snapshot-note code{font-size:10px}.snapshot-note p+p{margin-top:5px}footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-top:20px;font-size:11px;color:var(--muted)}.mobile-action,.back-to-diagram{display:none}.load-error{padding:20px;border:1px solid #d7a778;background:#fff7ed;border-radius:8px;white-space:pre-wrap}
+@media(min-width:1550px){.diagram-grid{column-gap:36px}.node-title{font-size:14px}.node-caption{font-size:11px}.diagram-node{min-height:94px}}
+@media(max-width:1150px){.page{padding:20px 20px 30px}.workspace{grid-template-columns:minmax(0,1.38fr) minmax(330px,1fr);gap:14px}.diagram-heading{padding:18px 17px 13px}.legend{padding-left:17px;padding-right:17px;gap:11px}.legend .click-hint{width:100%;margin-left:0}.diagram-canvas{padding:29px 17px}.diagram-grid{column-gap:20px;row-gap:56px}.diagram-node{padding:10px 8px;min-height:88px}.diagram-node[aria-pressed="true"]{padding:9px 7px}.node-title{font-size:12px}.node-caption{font-size:9px}.node-kind{font-size:8px}.diagram-footnote{margin:0 17px 17px}.detail-inner{padding:18px 17px 20px}.detail-title{font-size:21px}.tab{padding:10px;gap:8px}.tab-name{font-size:13px}}
+@media(max-width:899px){.workspace{grid-template-columns:minmax(0,1fr)}.page{max-width:780px;padding:18px 20px 100px}.hero{padding-top:22px}.detail-panel{position:static;max-height:none;overflow:visible;scrollbar-gutter:auto;overscroll-behavior:auto}.detail-inner{padding:22px}.diagram-heading{padding:20px 22px 14px}.legend{padding-left:22px;padding-right:22px}.legend .click-hint{width:auto;margin-left:auto}.diagram-canvas{padding:30px 24px}.diagram-grid{column-gap:27px;row-gap:57px}.diagram-node{padding:11px 12px;min-height:90px}.diagram-node[aria-pressed="true"]{padding:10px 11px}.node-title{font-size:13px}.node-caption{font-size:10px}.node-kind{font-size:9px}.diagram-footnote{margin:0 22px 20px}.mobile-action{display:flex;position:fixed;left:20px;right:20px;bottom:14px;max-width:740px;margin:auto;z-index:5;align-items:center;justify-content:space-between;gap:12px;border:1px solid #b6cbe3;background:#fff;box-shadow:0 4px 20px #20395120;border-radius:7px;padding:10px 13px}.mobile-action span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mobile-action button{border:0;background:var(--blue);color:#fff;border-radius:4px;padding:7px 10px;font-size:12px;flex:none}.back-to-diagram{display:block;font-size:11px}.source-code{max-height:420px}.overview-meta{gap:8px 18px}.source-links a{font-size:11px}}
+@media(max-width:480px){.page{padding:15px 12px 96px}.topline{font-size:11px;gap:8px}.edition{font-size:9px;letter-spacing:.03em}.hero{padding:21px 2px 18px}.hero h1{font-size:27px}.hero p{font-size:13px;line-height:1.85}.eyebrow{font-size:10px}.overview-meta{font-size:10px;gap:7px 12px;margin-top:14px}.overview-meta code{font-size:10px}.toolbar{margin-bottom:12px}.tabs{padding:5px;gap:3px}.tab{display:block;padding:9px 4px;text-align:center}.tab-number{display:block;margin-bottom:5px;font-size:10px}.tab-name{font-size:11px}.object-nav{gap:6px;padding:10px}.object-nav-label{width:100%;font-size:10px}.object-button{font-size:10px;padding:4px 6px}.diagram-heading{padding:17px 14px 11px}.diagram-heading h2{font-size:18px}.diagram-heading p{font-size:11px}.legend{padding:0 14px 13px;gap:8px 12px;font-size:10px}.legend .click-hint{width:100%;margin-left:0}.diagram-canvas{padding:26px 12px}.diagram-grid{grid-template-columns:minmax(0,.88fr) minmax(0,1.35fr) minmax(0,.88fr);column-gap:13px;row-gap:53px}.diagram-node{min-height:88px;padding:8px 6px;border-radius:5px}.diagram-node[aria-pressed="true"]{padding:7px 5px;box-shadow:0 0 0 2px #dceafa}.node-kind{font-size:8px;margin-bottom:5px;letter-spacing:0}.node-title{font-size:10px;line-height:1.5}.node-caption{font-size:9px;line-height:1.5;margin-top:5px}.edge-label{font-size:8px;stroke-width:3px}.diagram-footnote{margin:0 14px 15px;padding:10px 11px;font-size:10px}.detail-inner{padding:18px 14px}.detail-title{font-size:21px}.detail-summary{font-size:12px}.detail-subtitle{font-size:11px}.flow-item{padding:11px;gap:8px;grid-template-columns:30px minmax(0,1fr)}.flow-label{font-size:9px}.flow-value{font-size:11px}.notes{font-size:11px}.source-code{font-size:10px}.source>summary{font-size:11px}.source-meta{padding:10px}.source-count{font-size:9px}.snapshot-note{font-size:10px;padding:11px 12px}.mobile-action{left:12px;right:12px;bottom:10px;padding:9px 11px}.mobile-action span{font-size:10px}footer{font-size:10px;gap:6px}}
+.diagram-grid{row-gap:44px}.diagram-canvas[data-view="overview"] .diagram-grid{row-gap:38px}.node-title{font-size:14px}.node-caption{font-size:11px}.node-kind{font-size:9px}.node-connections{display:none}.mobile-list-hint{display:none}
+@media(min-width:900px) and (max-width:1150px){.node-title{font-size:13px}.node-caption{font-size:11px}.node-kind{font-size:9px}.diagram-node{padding:11px 8px}.diagram-node[aria-pressed="true"]{padding:10px 7px}}
+@media(max-width:600px){.diagram-grid,.diagram-canvas[data-view="overview"] .diagram-grid{display:flex;flex-direction:column;gap:14px}.diagram-canvas{padding:18px 14px}.edges{display:none}.diagram-node{min-height:0;padding:13px 14px;border-radius:6px}.diagram-node[aria-pressed="true"]{padding:12px 13px}.node-title{font-size:14px;line-height:1.55}.node-caption{font-size:12px;line-height:1.6;margin-top:5px}.node-kind{font-size:10px;margin-bottom:5px;letter-spacing:.04em}.node-connections{display:block;margin-top:10px;padding-top:9px;border-top:1px solid #dbe4ec;font-size:11px;line-height:1.75;color:var(--muted);font-weight:400}.node-connection{display:block}.node-connection+.node-connection{margin-top:4px}.mobile-list-hint{display:block;margin:13px 14px 0;font-size:11px;color:var(--muted)}.legend .click-hint{display:none}.legend{gap:10px 13px}.legend .legend-data,.legend .legend-state{display:none}.source-code{font-size:11px}.tab-name{font-size:12px}.overview-meta{font-size:11px}.overview-meta code{font-size:11px}}
+@media print{body{background:#fff}.page{max-width:none;padding:0}.workspace{grid-template-columns:1fr 1fr}.detail-panel{position:static;max-height:none;overflow:visible}.mobile-action,.back-to-diagram,.copy-button{display:none!important}.toolbar{box-shadow:none}.source-code{max-height:none}.diagram-panel,.detail-panel{box-shadow:none}.diagram-node{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="topline"><a class="back-link" href="index.html">← 架构图目录</a><span class="edition">PYTORCH MODEL / SOURCE MAP</span></div>
+  <header class="hero">
+    <div class="eyebrow">BEVFORMER · 模型结构</div>
+    <h1 id="page-title">BEVFormer 模型结构与源码</h1>
+    <p>从 <strong>6 路相机图像</strong>，到 <strong>BEV 空间表示</strong>，再到 <strong>3D 检测结果</strong>。点击图中任一模块，查看它做什么、张量如何变化，以及对应的 PyTorch 实现。</p>
+    <div class="overview-meta" aria-label="张量记号与示例输入">
+      <span><code>B</code> batch</span><span><code>N = 6</code> 相机数</span><span><code>C = 256</code> BEV 特征维度</span><span>示例输入 <code>1 × 6 × 3 × 928 × 1600</code></span>
+    </div>
+  </header>
+  <div class="toolbar">
+    <nav class="tabs" id="view-tabs" role="tablist" aria-label="模型结构视图"></nav>
+    <nav class="object-nav" id="object-nav" aria-label="模型对象与配置"><span class="object-nav-label">对象层级 · 点击查看</span></nav>
+  </div>
+  <div id="load-error" class="load-error" hidden></div>
+  <div class="workspace" id="workspace">
+    <section class="diagram-panel" id="diagram-panel" role="tabpanel" tabindex="-1" aria-labelledby="view-title">
+      <div class="diagram-heading"><div class="section-kicker" id="view-kicker">01 / OVERVIEW</div><h2 id="view-title">全局流程</h2><p id="view-subtitle"></p></div>
+      <div class="legend" aria-label="图例"><span class="legend-data"><i class="legend-line" aria-hidden="true"></i>数据流</span><span class="legend-state"><i class="legend-line state" aria-hidden="true"></i>跨帧状态</span><span><i class="legend-dot" aria-hidden="true"></i>当前选择</span><span class="click-hint">点击模块查看说明与源码 ↗</span></div>
+      <p class="mobile-list-hint">手机阅读模式：逐个模块展开排列；每张卡片标明输入来源与输出去向。</p>
+      <div class="diagram-canvas" id="diagram-canvas"><svg class="edges" id="diagram-edges" aria-hidden="true"></svg><div class="diagram-grid" id="diagram" aria-label="可点击的模型模块"></div></div>
+      <p class="diagram-footnote" id="view-footnote"></p>
+    </section>
+    <aside class="detail-panel" id="detail-panel" aria-labelledby="detail-title" tabindex="-1">
+      <div class="detail-inner">
+        <div class="detail-topline"><span class="detail-badge" id="detail-badge">模块详情</span><button class="small-button back-to-diagram" id="back-to-diagram" type="button">返回结构图 ↑</button></div>
+        <h2 class="detail-title" id="detail-title" tabindex="-1"></h2>
+        <p class="detail-subtitle" id="detail-subtitle"></p>
+        <p class="detail-summary" id="detail-summary"></p>
+        <div class="detail-flow" aria-label="模块的输入、计算与输出">
+          <div class="flow-item"><span class="flow-label">输入</span><p class="flow-value" id="detail-input"></p></div>
+          <div class="flow-item action"><span class="flow-label">计算</span><p class="flow-value" id="detail-action"></p></div>
+          <div class="flow-item"><span class="flow-label">输出</span><p class="flow-value" id="detail-output"></p></div>
+        </div>
+        <pre class="formula" id="detail-formula" hidden></pre>
+        <ul class="notes" id="detail-notes"></ul>
+        <button class="subview-button" id="open-subview" type="button" hidden></button>
+        <div class="source-heading"><h3>对应源码</h3><span class="source-count" id="source-count"></span></div>
+        <div id="sources"></div>
+        <div class="related" id="related"><h3 class="related-heading">相关模块</h3><div class="related-buttons" id="related-buttons"></div></div>
+      </div>
+    </aside>
+  </div>
+  <div class="snapshot-note"><p><strong>阅读依据</strong> · <span id="generated-note"></span></p><p>源码根目录：<code id="source-root"></code></p></div>
+  <footer><span>范围：BEVFormer 的 PyTorch 模型结构与本地源码快照。框架片段 © OpenMMLab，Apache-2.0；对应上游版本链接见源码详情。</span><span>形状用于解释数据流；本页不执行模型，也不代表实测推理性能。</span></footer>
+  <div class="mobile-action" id="mobile-action"><span id="mobile-selected">已选模块</span><button id="jump-detail" type="button">查看详情 ↓</button></div>
+  <p class="sr-only" id="selection-status" aria-live="polite" aria-atomic="true"></p>
+</main>
+<script id="catalog-data" type="application/json">__BEVFORMER_CATALOG_JSON__</script>
+<script>
+(() => {
+  'use strict';
+  const el = id => document.getElementById(id);
+  const create = (tag, className, value) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (value !== undefined && value !== null) element.textContent = String(value);
+    return element;
+  };
+  const kinds = {input:'输入张量',compute:'计算模块',output:'输出张量',state:'跨帧状态',config:'模型配置'};
+  let catalog;
+  try {
+    catalog = JSON.parse(el('catalog-data').textContent);
+    if (!catalog.nodes || !Array.isArray(catalog.views) || !catalog.views.length) throw new Error('缺少模型结构数据。');
+  } catch (error) {
+    el('load-error').hidden = false;
+    el('load-error').textContent = '模型结构数据尚未生成。请通过项目的页面构建脚本生成此 HTML。\n' + error.message;
+    el('workspace').hidden = true;
+    el('mobile-action').hidden = true;
+    return;
+  }
+  const views = new Map(catalog.views.map(view => [view.id, view]));
+  const defaultView = views.has('overview') ? 'overview' : catalog.views[0].id;
+  const defaultNode = catalog.nodes.input ? 'input' : catalog.views[0].nodes[0].id;
+  const nodeButtons = new Map();
+  const tabButtons = new Map();
+  const quickButtons = new Map();
+  const svgNS = 'http://www.w3.org/2000/svg';
+  let state = {view:defaultView, node:defaultNode};
+  let drawnView = null;
+  let edgeFrame = 0;
+  let edgeItems = [];
+  let lastNodeFocus = null;
+  el('page-title').textContent = catalog.title || 'BEVFormer 模型结构与源码';
+  document.title = catalog.title || 'BEVFormer · 模型结构与源码';
+  el('generated-note').textContent = catalog.generatedNote || '';
+  el('source-root').textContent = catalog.sourceRoot || '';
+
+  function safeURL(value) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    try {
+      const url = new URL(value, location.href);
+      return ['http:','https:','file:'].includes(url.protocol) ? value : null;
+    } catch (_) { return null; }
+  }
+  function addLink(parent, url, label) {
+    const href = safeURL(url);
+    if (!href) return;
+    const a = create('a', '', label);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    parent.append(a);
+  }
+  function setText(id, value) { el(id).textContent = value == null ? '' : String(value); }
+  function firstNode(viewId) {
+    const view = views.get(viewId);
+    return view.nodes.find(item => item.col === 2 && catalog.nodes[item.id])?.id || view.nodes.find(item => catalog.nodes[item.id])?.id || defaultNode;
+  }
+  function selectNode(nodeId, updateHistory = true) {
+    if (!catalog.nodes[nodeId]) return;
+    applyState({view:state.view, node:nodeId}, updateHistory);
+  }
+  function selectView(viewId, updateHistory = true) {
+    if (!views.has(viewId)) return;
+    const view = views.get(viewId);
+    const node = view.nodes.some(item => item.id === state.node) ? state.node : firstNode(viewId);
+    applyState({view:viewId, node}, updateHistory);
+  }
+  catalog.views.forEach((view, index) => {
+    const button = create('button', 'tab');
+    button.type = 'button';
+    button.id = 'tab-' + view.id;
+    button.dataset.view = view.id;
+    button.setAttribute('role','tab');
+    button.setAttribute('aria-controls','diagram-panel');
+    button.setAttribute('aria-selected','false');
+    button.tabIndex = -1;
+    button.append(create('span','tab-number',String(index + 1).padStart(2,'0')),create('span','tab-name',view.title));
+    button.addEventListener('click', () => selectView(view.id));
+    button.addEventListener('keydown', event => {
+      const keys = ['ArrowLeft','ArrowRight','Home','End'];
+      if (!keys.includes(event.key)) return;
+      event.preventDefault();
+      let next = index;
+      if (event.key === 'ArrowLeft') next = (index - 1 + catalog.views.length) % catalog.views.length;
+      if (event.key === 'ArrowRight') next = (index + 1) % catalog.views.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = catalog.views.length - 1;
+      const target = catalog.views[next];
+      selectView(target.id);
+      tabButtons.get(target.id).focus();
+    });
+    tabButtons.set(view.id,button);
+    el('view-tabs').append(button);
+  });
+  (catalog.quickNodes || []).forEach(id => {
+    const node = catalog.nodes[id];
+    if (!node) return;
+    const button = create('button','object-button',node.title);
+    button.type = 'button';
+    button.dataset.node = id;
+    button.setAttribute('aria-pressed','false');
+    button.addEventListener('click', () => selectNode(id));
+    quickButtons.set(id,button);
+    el('object-nav').append(button);
+  });
+
+  function renderDiagram() {
+    const view = views.get(state.view);
+    const index = catalog.views.indexOf(view);
+    setText('view-kicker',String(index + 1).padStart(2,'0') + ' / ' + view.id.toUpperCase());
+    setText('view-title',view.title);
+    setText('view-subtitle',view.subtitle);
+    setText('view-footnote',view.footnote);
+    el('diagram-panel').setAttribute('aria-labelledby','tab-' + view.id);
+    const grid = el('diagram');
+    el('diagram-canvas').dataset.view = view.id;
+    grid.replaceChildren();
+    nodeButtons.clear();
+    const rows = Math.max(Number(view.rows) || 0,...view.nodes.map(item => Number(item.row) + 1));
+    grid.style.gridTemplateRows = 'repeat(' + rows + ',minmax(88px,auto))';
+    [...view.nodes].sort((a,b) => a.row-b.row || a.col-b.col).forEach(item => {
+      const node = catalog.nodes[item.id];
+      if (!node) return;
+      const button = create('button','diagram-node');
+      button.type = 'button';
+      button.dataset.node = item.id;
+      button.dataset.kind = node.kind || 'compute';
+      button.style.gridRow = String(Number(item.row) + 1);
+      button.style.gridColumn = String(item.col);
+      button.setAttribute('aria-pressed','false');
+      button.setAttribute('aria-controls','detail-panel');
+      button.setAttribute('aria-label',(item.label || node.title) + '：查看模块作用、张量形状和源码');
+      button.append(create('span','node-kind',kinds[node.kind] || '模型模块'));
+      button.append(create('span','node-title',item.label || node.title));
+      const caption = item.caption !== undefined ? item.caption : node.subtitle;
+      if (caption) button.append(create('span','node-caption',caption));
+      const incoming = (view.edges || []).filter(edge => edge.to === item.id);
+      const outgoing = (view.edges || []).filter(edge => edge.from === item.id);
+      const connections = create('span','node-connections');
+      const connectedName = (edge,key) => (catalog.nodes[edge[key]]?.title || edge[key]) + (edge.kind === 'state' ? '（跨帧状态）' : '');
+      if (incoming.length) connections.append(create('span','node-connection','输入来自：' + incoming.map(edge => connectedName(edge,'from')).join(' / ')));
+      if (outgoing.length) connections.append(create('span','node-connection','输出至：' + outgoing.map(edge => connectedName(edge,'to')).join(' / ')));
+      button.append(connections);
+      button.addEventListener('click', () => { lastNodeFocus = item.id; selectNode(item.id); });
+      nodeButtons.set(item.id,button);
+      grid.append(button);
+    });
+    drawnView = state.view;
+    scheduleEdges();
+  }
+
+  function svgElement(tag, attrs) {
+    const element = document.createElementNS(svgNS,tag);
+    for (const [key,value] of Object.entries(attrs || {})) element.setAttribute(key,String(value));
+    return element;
+  }
+  function scheduleEdges() {
+    if (edgeFrame) cancelAnimationFrame(edgeFrame);
+    edgeFrame = requestAnimationFrame(() => { edgeFrame = 0; drawEdges(); });
+  }
+  function drawEdges() {
+    const svg = el('diagram-edges');
+    const canvas = el('diagram-canvas');
+    const bounds = canvas.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    svg.setAttribute('viewBox','0 0 ' + bounds.width + ' ' + bounds.height);
+    svg.replaceChildren();
+    const defs = svgElement('defs');
+    for (const [id,color] of [['base','#a7b4c0'],['active','#145fb6'],['state','#a99aba'],['state-active','#725799'],['control','#b7a589'],['control-active','#945c19']]) {
+      const marker = svgElement('marker',{id:'arrow-' + id,viewBox:'0 0 8 8',refX:7,refY:4,markerWidth:5,markerHeight:5,orient:'auto-start-reverse'});
+      marker.append(svgElement('path',{d:'M 0 0 L 8 4 L 0 8 z',fill:color}));
+      defs.append(marker);
+    }
+    svg.append(defs);
+    edgeItems = [];
+    const rectangles = new Map();
+    nodeButtons.forEach((button,id) => {
+      const r = button.getBoundingClientRect();
+      rectangles.set(id,{x:r.left-bounds.left,y:r.top-bounds.top,w:r.width,h:r.height,cx:r.left-bounds.left+r.width/2,cy:r.top-bounds.top+r.height/2});
+    });
+    const view = views.get(state.view);
+    const placements = new Map(view.nodes.map(item => [item.id,item]));
+    (view.edges || []).forEach((edge, index) => {
+      const a = rectangles.get(edge.from), b = rectangles.get(edge.to);
+      if (!a || !b) return;
+      const ap = placements.get(edge.from), bp = placements.get(edge.to);
+      let d, labelX, labelY, horizontalSpace = 0;
+      if (edge.route === 'left' || edge.route === 'right') {
+        const right = edge.route === 'right';
+        const lane = right ? bounds.width - 6 : 6;
+        const ax = right ? a.x+a.w : a.x;
+        const bx = right ? b.x+b.w : b.x;
+        d = 'M ' + ax + ' ' + a.cy + ' H ' + lane + ' V ' + b.cy + ' H ' + bx;
+        labelX = right ? lane - 8 : lane + 8;
+        labelY = (a.cy+b.cy)/2;
+      } else if (ap.col === bp.col) {
+        const down = b.cy >= a.cy;
+        const ay = down ? a.y+a.h : a.y;
+        const by = down ? b.y : b.y+b.h;
+        d = 'M ' + a.cx + ' ' + ay + ' V ' + by;
+        labelX = a.cx + 8;
+        labelY = (ay+by)/2 + 3;
+      } else if (ap.row === bp.row) {
+        const right = b.cx >= a.cx;
+        const ax = right ? a.x+a.w : a.x;
+        const bx = right ? b.x : b.x+b.w;
+        d = 'M ' + ax + ' ' + a.cy + ' H ' + bx;
+        labelX = (ax+bx)/2;
+        labelY = a.cy - 9;
+        horizontalSpace = Math.abs(bx-ax);
+      } else {
+        const down = b.cy > a.cy;
+        const fromSide = ap.col !== 2;
+        if (fromSide) {
+          const towardRight = b.cx > a.cx;
+          const ax = towardRight ? a.x+a.w : a.x;
+          const by = down ? b.y : b.y+b.h;
+          const bendY = down ? b.y-25 : b.y+b.h+25;
+          const lane = towardRight ? (a.x+a.w+b.x)/2 : (a.x+b.x+b.w)/2;
+          d = 'M ' + ax + ' ' + a.cy + ' H ' + lane + ' V ' + bendY + ' H ' + b.cx + ' V ' + by;
+          labelX = (lane+b.cx)/2;
+          labelY = bendY-7;
+        } else {
+          const ay = down ? a.y+a.h : a.y;
+          const bendY = down ? a.y+a.h+25 : a.y-25;
+          const by = down ? b.y : b.y+b.h;
+          d = 'M ' + a.cx + ' ' + ay + ' V ' + bendY + ' H ' + b.cx + ' V ' + by;
+          labelX = (a.cx+b.cx)/2;
+          labelY = bendY-7;
+        }
+      }
+      const kind = edge.kind || 'data';
+      const group = svgElement('g',{class:'edge edge-' + kind,'data-from':edge.from,'data-to':edge.to});
+      const path = svgElement('path',{class:'edge-path',d});
+      const tooltip = svgElement('title');
+      tooltip.textContent = (catalog.nodes[edge.from]?.title || edge.from) + ' → ' + (catalog.nodes[edge.to]?.title || edge.to) + (edge.label ? ' · ' + edge.label : '');
+      group.append(tooltip,path);
+      if (edge.label) {
+        const label = svgElement('text',{class:'edge-label',x:labelX,y:labelY});
+        label.textContent = edge.label;
+        if (ap.col === bp.col && !edge.route) label.setAttribute('text-anchor','start');
+        if (edge.route) { label.setAttribute('text-anchor',edge.route === 'right' ? 'end' : 'start'); }
+        // Side-by-side arrows have little room; their complete label remains in the SVG title.
+        if (!horizontalSpace || horizontalSpace >= String(edge.label).length * 8 + 10) group.append(label);
+      }
+      svg.append(group);
+      edgeItems.push({edge,group,path,kind,index});
+    });
+    highlightEdges();
+  }
+  function highlightEdges() {
+    edgeItems.forEach(({edge,group,path,kind}) => {
+      const active = edge.from === state.node || edge.to === state.node;
+      group.classList.toggle('is-selected',active);
+      const marker = kind === 'state' ? (active?'state-active':'state') : kind === 'control' ? (active?'control-active':'control') : (active?'active':'base');
+      path.setAttribute('marker-end','url(#arrow-' + marker + ')');
+    });
+  }
+
+  async function copyText(text, button) {
+    let copied = false;
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); copied = true; }
+    } catch (_) { /* Local files and denied clipboard permission use the selection fallback. */ }
+    if (!copied) {
+      const area = create('textarea','',text);
+      area.setAttribute('readonly','');
+      area.style.cssText = 'position:fixed;left:-9999px;top:0;';
+      document.body.append(area);
+      area.select();
+      try { copied = document.execCommand('copy'); } catch (_) { copied = false; }
+      area.remove();
+      button.focus({preventScroll:true});
+    }
+    button.textContent = copied ? '已复制' : '请选中路径复制';
+    setTimeout(() => { if (button.isConnected) button.textContent = '复制位置'; },2200);
+  }
+  function sourceBlock(key, index) {
+    const source = catalog.sources[key];
+    if (!source) return null;
+    const block = create('details','source');
+    block.open = index === 0;
+    const summary = create('summary','',(source.symbol || source.file || key) + ' · L' + source.start + '–' + source.end);
+    block.append(summary);
+    const meta = create('div','source-meta');
+    const location = String(source.file || key) + ':' + source.start + '–' + source.end;
+    meta.append(create('code','source-location',location));
+    if (source.owner) meta.append(create('p','source-symbol','所属对象：' + source.owner));
+    const links = create('div','source-links');
+    addLink(links,source.localUrl,'本地源文件 ↗');
+    addLink(links,source.url,'上游源码链接 ↗');
+    const copy = create('button','small-button copy-button','复制位置');
+    copy.type = 'button';
+    copy.setAttribute('aria-label','复制源码位置：' + location);
+    copy.addEventListener('click', () => copyText((source.localPath || source.file) + ':' + source.start,copy));
+    links.append(copy);
+    meta.append(links);
+    if (source.note) meta.append(create('p','source-note',source.note));
+    block.append(meta);
+    const code = create('pre','source-code');
+    code.tabIndex = 0;
+    code.setAttribute('aria-label','源码：' + (source.symbol || source.file || key));
+    const lines = String(source.code || '').replace(/\r\n/g,'\n').split('\n');
+    if (lines.length > 1 && lines[lines.length-1] === '') lines.pop();
+    lines.forEach((line,lineIndex) => {
+      const row = create('span','code-line');
+      const number = create('span','line-number',Number(source.start) + lineIndex);
+      number.setAttribute('aria-hidden','true');
+      row.append(number,document.createTextNode(line || ' '));
+      code.append(row);
+    });
+    block.append(code);
+    const provenance = create('details','provenance');
+    provenance.append(create('summary','','快照来源与校验值'));
+    provenance.append(create('p','','来源：' + (source.file || key)));
+    provenance.append(create('p','','SHA-256：' + (source.sha256 || '未提供')));
+    if (source.note) provenance.append(create('p','',source.note));
+    block.append(provenance);
+    return block;
+  }
+  function renderDetail() {
+    const node = catalog.nodes[state.node];
+    setText('detail-badge',(kinds[node.kind] || '模型模块') + ' / ' + state.node);
+    setText('detail-title',node.title);
+    setText('detail-subtitle',node.subtitle);
+    setText('detail-summary',node.summary);
+    setText('detail-input',node.input);
+    setText('detail-action',node.action);
+    setText('detail-output',node.output);
+    setText('detail-formula',node.formula);
+    el('detail-formula').hidden = !node.formula;
+    el('detail-notes').replaceChildren(...(node.notes || []).map(note => create('li','',note)));
+    el('detail-notes').hidden = !(node.notes || []).length;
+    const viewButton = el('open-subview');
+    viewButton.hidden = !node.view || !views.has(node.view) || node.view === state.view;
+    if (!viewButton.hidden) { viewButton.textContent = views.get(node.view).title + ' →'; viewButton.dataset.view = node.view; }
+    const keys = (node.sources || []).filter(key => catalog.sources && catalog.sources[key]);
+    setText('source-count',keys.length + ' 处 · 原始行号');
+    el('sources').replaceChildren(...keys.map(sourceBlock).filter(Boolean));
+    if (!keys.length) el('sources').append(create('p','empty-source','此节点为数据流说明；可从相关模块查看它的生产者或使用者。'));
+    const related = (node.related || []).filter(id => catalog.nodes[id] && id !== state.node);
+    el('related').hidden = !related.length;
+    el('related-buttons').replaceChildren(...related.map(id => {
+      const button = create('button','related-button',catalog.nodes[id].title);
+      button.type = 'button';
+      button.dataset.node = id;
+      button.addEventListener('click', () => {
+        selectNode(id);
+        el('detail-title').focus({preventScroll:true});
+        if (matchMedia('(max-width:899px)').matches) el('detail-panel').scrollIntoView({block:'start'});
+      });
+      return button;
+    }));
+    setText('mobile-selected','已选：' + node.title);
+    el('jump-detail').setAttribute('aria-label','查看 ' + node.title + ' 的模块详情与源码');
+    setText('selection-status','已选择 ' + node.title + '。模块说明与 ' + keys.length + ' 处源码已更新。');
+    el('detail-panel').scrollTop = 0;
+  }
+  function applyState(next, updateHistory) {
+    state = next;
+    tabButtons.forEach((button,id) => {
+      const selected = id === state.view;
+      button.setAttribute('aria-selected',String(selected));
+      button.tabIndex = selected ? 0 : -1;
+    });
+    if (drawnView !== state.view) renderDiagram();
+    nodeButtons.forEach((button,id) => button.setAttribute('aria-pressed',String(id === state.node)));
+    quickButtons.forEach((button,id) => button.setAttribute('aria-pressed',String(id === state.node)));
+    renderDetail();
+    highlightEdges();
+    if (updateHistory) {
+      const hash = '#' + encodeURIComponent(state.view) + '/' + encodeURIComponent(state.node);
+      if (location.hash !== hash) history.pushState(null,'',hash);
+    }
+  }
+  function fromHash() {
+    let segments = [];
+    try { segments = location.hash.replace(/^#/,'').split('/').map(decodeURIComponent); } catch (_) { segments = []; }
+    const valid = segments.length === 2 && views.has(segments[0]) && catalog.nodes[segments[1]];
+    const next = valid ? {view:segments[0],node:segments[1]} : {view:defaultView,node:defaultNode};
+    applyState(next,false);
+    if (!valid) history.replaceState(null,'','#' + encodeURIComponent(next.view) + '/' + encodeURIComponent(next.node));
+  }
+  el('open-subview').addEventListener('click', () => {
+    selectView(el('open-subview').dataset.view);
+    if (matchMedia('(max-width:899px)').matches) el('diagram-panel').scrollIntoView({block:'start'});
+    tabButtons.get(state.view)?.focus({preventScroll:true});
+  });
+  el('jump-detail').addEventListener('click', () => {
+    el('detail-panel').scrollIntoView({block:'start'});
+    el('detail-title').focus({preventScroll:true});
+  });
+  el('back-to-diagram').addEventListener('click', () => {
+    el('diagram-panel').scrollIntoView({block:'start'});
+    const target = nodeButtons.get(state.node) || nodeButtons.get(lastNodeFocus) || tabButtons.get(state.view);
+    target?.focus({preventScroll:true});
+  });
+  window.addEventListener('hashchange',fromHash);
+  window.addEventListener('popstate',fromHash);
+  window.addEventListener('resize',scheduleEdges);
+  if ('ResizeObserver' in window) {
+    const observer = new ResizeObserver(scheduleEdges);
+    observer.observe(el('diagram-canvas'));
+    observer.observe(el('diagram'));
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleEdges);
+  fromHash();
+})();
+</script>
+</body>
+</html>

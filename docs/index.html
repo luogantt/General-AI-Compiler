@@ -39,6 +39,13 @@
     <p>当前源码分支：<code>lg/bevformer-vortex-full-ops</code>。源码分层重构基线：<code>49ac6aa</code>。</p>
   </header>
 
+  <section class="card" aria-labelledby="model-title">
+    <h2 id="model-title">BEVFormer-base · 模型架构与 PyTorch 源码</h2>
+    <p>从六相机输入、ResNet-101/DCNv2、FPN，到 BEV Encoder、检测 Decoder 和最终 3D 框。点击模块查看输入输出、张量形状与带行号的真实源码。</p>
+    <a class="primary" href="bevformer-model-architecture.html">打开模型架构图 →</a>
+    <p>可分别展开 Backbone、Encoder 和 Decoder；源码快照已内嵌，离线也能阅读。</p>
+  </section>
+
   <section class="current" aria-labelledby="current-title">
     <h2 id="current-title">当前入口：V8 · 分层源码与十个编译阶段</h2>
     <p>按重构后的目录查看 ModelAdapter、通用 Graph、编译流水线、Vortex 代码生成与执行之间的关系；每个阶段对应实际源码位置。</p>
