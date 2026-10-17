@@ -1,5 +1,9 @@
 # General AI Compiler（GAC）
 
+TensorRT 实验分支：**`lg/bevformer-tensorrt`**。已建立完整 BEVFormer 的上游源码
+获取与复现入口，见 [TensorRT 对照路线](tools/tensorrt/README.md)；尚未完成本机
+TensorRT engine 推理验证。
+
 当前主分支：**`main`**（已合入 `lg/bevformer-full-ops`）。CUDA PTX 与 Vortex 共用一套 C++ MLIR
 前端、图优化和算子语义，通过 `gac-compile --target=cuda` 或 `--target=vortex`
 选择设备后端；每次编译生成一个目标的产物，不要求同时使用两种设备。

@@ -1,0 +1,29 @@
+{
+  "sources": [
+    {
+      "name": "BEVFormer_tensorrt",
+      "url": "https://github.com/DerryHub/BEVFormer_tensorrt.git",
+      "commit": "303d3140c14016047c07f9db73312af364f0dd7c",
+      "required_files": [
+        "LICENCE",
+        "TensorRT/CMakeLists.txt",
+        "configs/bevformer/plugin/bevformer_base_trt_p2.py",
+        "samples/bevformer/plugin/base/pth2onnx_2.sh",
+        "samples/bevformer/plugin/base/onnx2trt_fp16_2.sh",
+        "samples/bevformer/plugin/base/trt_evaluate_fp16_2.sh"
+      ]
+    },
+    {
+      "name": "DL4AGX",
+      "url": "https://github.com/NVIDIA/DL4AGX.git",
+      "commit": "9f7b29104c253d5bc68334e7b83b3eecb72d4572",
+      "sparse_paths": ["AV-Solutions/bevformer-int8-eq"],
+      "required_files": [
+        "AV-Solutions/bevformer-int8-eq/LICENSE",
+        "AV-Solutions/bevformer-int8-eq/README.md",
+        "AV-Solutions/bevformer-int8-eq/bevformer_trt10.patch",
+        "AV-Solutions/bevformer-int8-eq/docker/tensorrt.Dockerfile"
+      ]
+    }
+  ]
+}
