@@ -1,0 +1,152 @@
+{
+  "status": "built",
+  "scope": "Engine construction only; no numerical validation",
+  "onnx_file_sha256": "8b6f0606b0678e04ce4bb1e09b0661cf387cd73a457832079454e1044b609f93",
+  "engine_sha256": "82a6e0c2e0ac24c41eb8cee27e6aee58f05d45da956cdaad544512c2007942e9",
+  "engine_bytes": 124234100,
+  "build_seconds": 542.5469476500002,
+  "io": [
+    {
+      "name": "images",
+      "mode": "INPUT",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_2/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_5/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_8/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_11/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_14/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_17/Relu_output_0",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT"
+    }
+  ],
+  "policy_fingerprint": "22bc2e83bb65b518dc46cfc620452dec235b08a506d23004bb58b796e64b7d02",
+  "workspace_limit_bytes": 536870912,
+  "max_aux_streams": 0,
+  "calibration": {
+    "scope": "Activation-range calibration for the supplied precision policy; not accuracy validation",
+    "source_directory": "/home/robot/project/gac-tensorrt-20261017/mini-calibration-20261017/inputs",
+    "fingerprint": "0cc8c2056df068835dca56a5ee7f61a99a0235fd46c219df4190dc92bdeaec04",
+    "cache_path": "/home/robot/project/gac-tensorrt-20261017/mini-static-20261017/backbone.cache",
+    "model_sha256": "8b6f0606b0678e04ce4bb1e09b0661cf387cd73a457832079454e1044b609f93",
+    "policy_fingerprint": "22bc2e83bb65b518dc46cfc620452dec235b08a506d23004bb58b796e64b7d02",
+    "tensorrt": "10.13.3.9",
+    "algorithm": "IInt8EntropyCalibrator2",
+    "api_status": "legacy PTQ, deprecated in TensorRT 10; unsupported in TensorRT 11",
+    "source_kind": "real_preprocessed",
+    "synthetic_interface_test": false,
+    "sample_count": 32,
+    "consumed_batches": 32,
+    "cache_hit": false,
+    "cache_written": true,
+    "error": null,
+    "dataset_manifest": {
+      "path": "calibration.json",
+      "sha256": "57793d1eb210c65ec2ec7c80a3f05a85de6500a0b760ef45b0b82fe7d62ef536"
+    }
+  },
+  "backbone_extraction": {
+    "source_full_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+    "subgraph_onnx_sha256": "8b6f0606b0678e04ce4bb1e09b0661cf387cd73a457832079454e1044b609f93",
+    "source_node_count": 22538,
+    "subgraph_node_count": 4736,
+    "source_initializer_count": 867,
+    "subgraph_initializer_count": 338,
+    "preservation": {
+      "node_protobufs_identical": true,
+      "initializer_protobufs_identical": true,
+      "input_value_info_identical": true,
+      "tensor_names_identical": true
+    }
+  },
+  "precision_audit": {
+    "status": "passed_backbone_only",
+    "checks": {
+      "exactly_462_unique_target_convs": true,
+      "cache_header_version": true,
+      "cache_binding_checksum": true,
+      "cache_payload_checksum": true,
+      "cache_policy_matches_backbone_build": true,
+      "cache_model_matches_subgraph_and_backbone_build": true,
+      "cache_tensor_rt_version": true,
+      "cache_algorithm": true,
+      "cache_payload_format": true,
+      "manifest_source_full_hash_valid": true,
+      "cache_real_input_source": true,
+      "backbone_policy_target_coverage": true,
+      "backbone_policy_rule_matches_manifest": true,
+      "backbone_engine_built": true
+    },
+    "target_count": 462,
+    "counts": {
+      "passed": 462
+    }
+  },
+  "source_build_report_sha256": "549e94f2955c4e1f1c23c4acd13a3497bda79851f8243f925f317fee87799edc",
+  "actual_precision_scope": "Backbone only; full engine and numerical accuracy not established by this report"
+}

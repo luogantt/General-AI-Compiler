@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "status": "precision_plan_only",
+  "scope": "Full BEVFormer Base requested precision constraints only; no full-model calibration, engine, accuracy or FPS result",
+  "full_plan": {
+    "local_path": "build/tensorrt-session/mixed-int8-plan.json",
+    "sha256": "15da6bd3cd56526baab3d065522f45f17af24a50169162491fb3c54c054ad28b",
+    "bytes": 905646,
+    "tracked_in_git": false
+  },
+  "onnx_file_sha256": "0f24cc097292b6a56336175a992254b42086256169336bae4f2f22ea4c663552",
+  "io": [
+    {
+      "name": "images",
+      "mode": "INPUT",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "bev_embed",
+      "mode": "OUTPUT",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "all_cls_scores",
+      "mode": "OUTPUT",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "all_bbox_preds",
+      "mode": "OUTPUT",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT"
+    }
+  ],
+  "environment": {
+    "utc": "2026-10-17T08:11:27.880563+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 59, 1410 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": null,
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": null,
+    "torch_installed_version": "2.7.0",
+    "torch_imported": false,
+    "cuda_initialization": "ctypes CUDA Driver primary context; no PyTorch initialization",
+    "cuda_driver_api_version": 13000,
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    },
+    "memory_snapshot_before_builder": {
+      "free_bytes": 8036089856,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 184811520,
+      "scope": "One device-wide cuMemGetInfo snapshot after CUDA/TRT initialization; not a peak"
+    }
+  },
+  "requested_policy_fingerprint_sha256": "e3537f69349b98d05e23dfa9080e3d7f22151ca57daa0d869dd61c8a3a371167",
+  "rule_fingerprint_sha256": "cd573896bf2bcbd45a4160e20277817bf1325eb1573be7a79da267477e6938e9",
+  "rules": {
+    "version": "gac.trt.backbone-conv-int8.v1",
+    "network_typing": "weak",
+    "precision_constraints": "OBEY_PRECISION_CONSTRAINTS",
+    "backbone_scopes": "img_backbone or img_backbone_<camera>/layer1..layer4",
+    "backbone_convolution_compute": "int8",
+    "backbone_convolution_floating_output": "fp16",
+    "offset_mask_predictor_compute_and_output": "fp16",
+    "stem_and_other_floating_compute_and_output": "fp16",
+    "compute_layer_types": [
+      "CONVOLUTION",
+      "DECONVOLUTION",
+      "MATRIX_MULTIPLY",
+      "FULLY_CONNECTED",
+      "ACTIVATION",
+      "POOLING",
+      "ELEMENTWISE",
+      "REDUCE",
+      "SOFTMAX",
+      "NORMALIZATION",
+      "SCALE",
+      "UNARY",
+      "PARAMETRIC_RELU",
+      "GRID_SAMPLE"
+    ],
+    "plugin_floating_edges": "fp16",
+    "plugin_method": "Identity-constrained floating inputs and output types; no layer.precision",
+    "shape_integer_edges": "unchanged",
+    "public_input_output_dtypes": "unchanged",
+    "tensorRT_TF32_flag": false,
+    "calibration": "caller must supply representative real-data calibration; no synthetic ranges"
+  },
+  "parser_layer_count_before_policy": 60935,
+  "layer_count_after_policy": 61613,
+  "added_floating_input_boundary_layers": 678,
+  "explicit_constraint_count": 2853,
+  "constraint_counts": {
+    "fp16": 2391,
+    "int8": 462
+  },
+  "constraints_by_scope": {
+    "backbone_stem": 18,
+    "backbone_body": 1878,
+    "head_or_other": 957
+  },
+  "exceptions_count": 312,
+  "exceptions_by_reason": {
+    "Keep DCN offset/mask predictor floating to protect sampling coordinates": 156,
+    "Built-in DCNv2 plugin has no INT8 format": 156
+  },
+  "skipped_layer_counts": {
+    "layout_shape_or_unlisted_layer_type": 4692,
+    "integer_or_nonfloating_output": 53390
+  },
+  "validation": {
+    "calibration_quality": "not_checked",
+    "actual_engine_precision": "not_checked",
+    "numerical_accuracy": "not_checked",
+    "performance": "not_measured",
+    "internal_accumulation_precision": "backend dependent; not established by these constraints"
+  },
+  "layer_table": {
+    "path": "mixed-int8-layer-plan.csv",
+    "sha256": "898753feeb0160ad2f1be51802765585fa82b05e0509ab156701229313314913",
+    "rows": 2853,
+    "scope": "Only layers with explicit constraints; unlisted layers are summarized by skipped_layer_counts. constraint_index is not the TensorRT parser layer index."
+  },
+  "limitations": [
+    "Parser layer counts are not ONNX operator counts or GPU kernel counts.",
+    "Constraints do not establish actual full-model engine precisions.",
+    "Current FP32 public input/output dtypes are preserved.",
+    "Real nuScenes mini calibration data preparation is in progress; the existing random cold input is not calibration data."
+  ]
+}

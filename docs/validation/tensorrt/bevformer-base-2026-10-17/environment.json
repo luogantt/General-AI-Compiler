@@ -1,0 +1,46 @@
+{
+  "scope": "Environment and FP32 add smoke test only; not BEVFormer validation",
+  "passed": true,
+  "host": "lg-robot",
+  "python": "3.11.16",
+  "tensorrt": "10.13.3.9",
+  "torch": "2.7.0+cu126",
+  "torch_cuda": "12.6",
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 8192 MiB",
+  "plugins": [
+    {
+      "name": "ModulatedDeformConv2d",
+      "version": "2",
+      "namespace": ""
+    },
+    {
+      "name": "MultiscaleDeformableAttnPlugin_TRT",
+      "version": "2",
+      "namespace": ""
+    }
+  ],
+  "actual": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ],
+  "expected": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ]
+}

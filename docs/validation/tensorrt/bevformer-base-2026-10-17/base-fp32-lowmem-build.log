@@ -1,0 +1,401 @@
+[10/17/2026-15:54:04] [TRT] [I] [MemUsageChange] Init CUDA: CPU +21, GPU +0, now: CPU 131, GPU 176 (MiB)
+[10/17/2026-15:54:06] [TRT] [I] [MemUsageChange] Init builder kernel library: CPU +1578, GPU +8, now: CPU 1910, GPU 184 (MiB)
+[10/17/2026-15:54:07] [TRT] [I] ----------------------------------------------------------------
+[10/17/2026-15:54:07] [TRT] [I] Input filename:   /home/robot/project/gac-tensorrt-20261017/models/bevformer-base-trt.onnx
+[10/17/2026-15:54:07] [TRT] [I] ONNX IR version:  0.0.8
+[10/17/2026-15:54:07] [TRT] [I] Opset version:    17
+[10/17/2026-15:54:07] [TRT] [I] Producer name:    pytorch
+[10/17/2026-15:54:07] [TRT] [I] Producer version: 2.0.1
+[10/17/2026-15:54:07] [TRT] [I] Domain:           
+[10/17/2026-15:54:07] [TRT] [I] Model version:    0
+[10/17/2026-15:54:07] [TRT] [I] Doc string:       
+[10/17/2026-15:54:07] [TRT] [I] ----------------------------------------------------------------
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: ModulatedDeformConv2d, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: ModulatedDeformConv2d
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:07] [TRT] [I] Searching for plugin: MultiscaleDeformableAttnPlugin_TRT, plugin_version: 2, plugin_namespace: 
+[10/17/2026-15:54:07] [TRT] [I] Successfully created plugin: MultiscaleDeformableAttnPlugin_TRT
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.0/attentions.1/Reshape_21: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_15: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.1/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_15: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.2/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_15: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.3/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_15: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.4/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_15: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_16: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_17: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_18: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_19: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:09] [TRT] [W] /pts_bbox_head/transformer/encoder/layers.5/attentions.1/Reshape_20: IShuffleLayer with zeroIsPlaceHolder=true has reshape dimension at position 1 that might or might not be zero. TensorRT resolves it at runtime, but this may cause excessive memory consumption and is usually a sign of a bug in the network.
+[10/17/2026-15:54:11] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
+[10/17/2026-15:54:11] [TRT] [I] Compiler backend is used during engine build.
+[10/17/2026-15:54:19] [TRT] [W] UNSUPPORTED_STATE: Skipping tactic 0 due to insufficient memory on requested size of 321922560 detected for tactic 0x0000000000000000.
+[10/17/2026-15:54:19] [TRT] [E] IBuilder::buildSerializedNetwork: Error Code 10: Internal Error (Could not find any implementation for node {ForeignNode[ONNXTRT_ShapeShuffle_52156_output[Constant].../pts_bbox_head/transformer/encoder/layers.0/attentions.1/ReduceSum]}. In computeCosts at optimizer/common/tactic/optimizer.cpp:4115)
+RuntimeError: TensorRT could not build the engine; inspect builder diagnostics

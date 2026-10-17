@@ -1,0 +1,215 @@
+[
+  {
+    "case": "dcn_fractional_zero_padding",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/dcn_fractional_zero_padding/expected.npz",
+      "reference_sha256": "63511da924b021b4c74dd4133b5c8e4c56444fab1ba76924c5153ca5bc970919",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            1,
+            1,
+            2,
+            3
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 6,
+          "max_absolute_error": 0.0,
+          "max_relative_error_floor_1e_12": 0.0
+        }
+      }
+    }
+  },
+  {
+    "case": "dcn_mask_bias",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/dcn_mask_bias/expected.npz",
+      "reference_sha256": "87bf7d7a226b4c36c17bd6389b649b718f5035eb37091c231c4cb68b26fd6227",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            1,
+            3,
+            5,
+            6
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 90,
+          "max_absolute_error": 2.384185791015625e-07,
+          "max_relative_error_floor_1e_12": 1.2235720669264555e-06
+        }
+      }
+    }
+  },
+  {
+    "case": "dcn_zero_offset_conv_equivalence",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/dcn_zero_offset_conv_equivalence/expected.npz",
+      "reference_sha256": "e6c1d8138c2b4cfdf4ef3a97e0d29457a9c4407a05eeeb92d7c180bc6b1f7864",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            1,
+            4,
+            5,
+            6
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 120,
+          "max_absolute_error": 2.980232238769531e-07,
+          "max_relative_error_floor_1e_12": 3.2371309617924246e-06
+        }
+      }
+    }
+  },
+  {
+    "case": "msda_batch_three_levels",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/msda_batch_three_levels/expected.npz",
+      "reference_sha256": "9c4a38244d261de32849de4baac8ab96f2b8e56a6939441ee41602a6ae74cc0b",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            2,
+            4,
+            6
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 48,
+          "max_absolute_error": 1.4901161193847656e-08,
+          "max_relative_error_floor_1e_12": 2.245819967585332e-06
+        }
+      }
+    }
+  },
+  {
+    "case": "msda_exact_pixel_centers",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/msda_exact_pixel_centers/expected.npz",
+      "reference_sha256": "b9a26711b1011fbfbb2f99486c82658fbc2efc61b4fdd5adbea0095b05799c13",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 16,
+          "max_absolute_error": 0.0,
+          "max_relative_error_floor_1e_12": 0.0
+        }
+      }
+    }
+  },
+  {
+    "case": "msda_multilevel_heads",
+    "adapt": 0,
+    "build": 0,
+    "run": 0,
+    "validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "Y": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/plugin-fixtures/msda_multilevel_heads/expected.npz",
+      "reference_sha256": "65033bcc4f6a121a2391386fa855faeaf5b6eaf1f1cef5e11a4eaa959a882154",
+      "rtol": 2e-05,
+      "atol": 2e-05,
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "shape": [
+            1,
+            3,
+            6
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 18,
+          "max_absolute_error": 1.4901161193847656e-08,
+          "max_relative_error_floor_1e_12": 8.467344584853715e-08
+        }
+      }
+    }
+  }
+]

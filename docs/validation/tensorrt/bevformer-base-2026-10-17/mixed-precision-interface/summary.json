@@ -1,0 +1,62 @@
+{
+  "scope": "Synthetic three-Conv GPU integration only; not BEVFormer calibration/accuracy/performance",
+  "calibration_batches": 8,
+  "cache_reused": true,
+  "validation": {
+    "status": "passed",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "head_conv": true
+    },
+    "scope": "Final output of the last measured execution only",
+    "reference": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-interface-test/expected.npz",
+    "reference_sha256": "fe470c6bf5c86adb6a6c4560bbca57527bcd2421d5d88a1723e622f1cbb80c99",
+    "rtol": 0.05,
+    "atol": 0.002,
+    "outputs": {
+      "head_conv": {
+        "passed": true,
+        "shape": [
+          1,
+          4,
+          8,
+          8
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 256,
+        "max_absolute_error": 0.0002794833853840828,
+        "max_relative_error_floor_1e_12": 0.9458668279031656
+      }
+    }
+  },
+  "inspection": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-interface-test/cached-build.layers.json",
+  "actual_precisions": [
+    {
+      "name": "/img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+      "input_and_weight_type": "Half",
+      "tactic": "sm80_xmma_fprop_implicit_gemm_indexed_wo_smem_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x16x64_stage1_warpsize4x1x1_g1_tensor16x8x16_alignc4",
+      "output_formats": [
+        "Half"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer1/layer1.0/conv1/Conv",
+      "input_and_weight_type": "Int8",
+      "tactic": "sm80_xmma_fprop_implicit_gemm_interleaved_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize32x64x64_stage6_warpsize2x2x1_g1_tensor16x8x32_t1r3s3",
+      "output_formats": [
+        "Half"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/output/Conv",
+      "input_and_weight_type": "Half",
+      "tactic": "sm80_xmma_gemm_f16f16_f16f16_f16_tn_n_tilesize64x32x64_stage7_warpsize4x1x1_tensor16x8x16",
+      "output_formats": [
+        "Half"
+      ]
+    }
+  ]
+}

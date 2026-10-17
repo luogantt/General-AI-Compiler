@@ -1,0 +1,193 @@
+{
+  "scope": "Synthetic three-Conv GPU integration only; not BEVFormer calibration/accuracy/performance",
+  "calibration_batches": 8,
+  "cache_reused": true,
+  "validation": {
+    "status": "passed",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "head_conv": true
+    },
+    "scope": "Final output of the last measured execution only",
+    "reference": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/expected.npz",
+    "reference_sha256": "fe470c6bf5c86adb6a6c4560bbca57527bcd2421d5d88a1723e622f1cbb80c99",
+    "rtol": 0.05,
+    "atol": 0.002,
+    "outputs": {
+      "head_conv": {
+        "passed": true,
+        "shape": [
+          1,
+          4,
+          8,
+          8
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 256,
+        "max_absolute_error": 0.0002794833853840828,
+        "max_relative_error_floor_1e_12": 0.9458668279031656
+      }
+    }
+  },
+  "inspection": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/cached-build.layers.json",
+  "actual_precisions": [
+    {
+      "name": "/img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+      "input_and_weight_type": "Half",
+      "tactic": "sm80_xmma_fprop_implicit_gemm_indexed_wo_smem_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x16x64_stage1_warpsize4x1x1_g1_tensor16x8x16_alignc8",
+      "output_formats": [
+        "Half"
+      ]
+    },
+    {
+      "name": "/img_backbone/layer1/layer1.0/conv1/Conv",
+      "input_and_weight_type": "Int8",
+      "tactic": "sm86_xmma_fprop_implicit_gemm_interleaved_indexed_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize32x32x64_stage5_warpsize2x1x1_g1_tensor16x8x32",
+      "output_formats": [
+        "Half"
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/output/Conv",
+      "input_and_weight_type": "Half",
+      "tactic": "sm80_xmma_fprop_implicit_gemm_indexed_wo_smem_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x32x16_stage1_warpsize4x1x1_g1_tensor16x8x16_aligna2_alignc4",
+      "output_formats": [
+        "Half"
+      ]
+    }
+  ],
+  "ranges": {
+    "artifact": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/measured-ranges.json",
+    "artifact_sha256": "d279ca30e281d132d3bf73e16341d606f585fc9b718285ba0812b30c97f6bd92",
+    "identity_manifest": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/identity-subgraph.json",
+    "build": {
+      "status": "measured_ranges_applied_actual_engine_unverified",
+      "scope": "INT8 Conv input0 and floating outputs only; no full-model calibrator/cache",
+      "artifact_sha256": "d279ca30e281d132d3bf73e16341d606f585fc9b718285ba0812b30c97f6bd92",
+      "source_full_onnx_sha256": "4d7da6b88fecb760f04c06aa6cb5cec86bfaf37bcb5148f32426997f4fa29f3f",
+      "subgraph_onnx_sha256": "4d7da6b88fecb760f04c06aa6cb5cec86bfaf37bcb5148f32426997f4fa29f3f",
+      "source_cache_sha256": "ee829bb810dae7947eb0098dc3dd213b32c818ace8e846af8995fd5cb24fa482",
+      "source_manifest_sha256": "31ea33d5522be3851f167e90a94ee1f227027338e88a18b80b1a1e55ef68e70f",
+      "tensorrt": "10.13.3.9",
+      "synthetic_interface_test": true,
+      "calibration_sample_count": 8,
+      "covered_int8_convolutions": 1,
+      "applied_tensor_count": 2,
+      "edges": [
+        {
+          "layer": "/img_backbone/layer1/layer1.0/conv1/Conv",
+          "edge": "input0",
+          "tensor": "stem_relu",
+          "max_abs": 0.43274504668079317
+        },
+        {
+          "layer": "/img_backbone/layer1/layer1.0/conv1/Conv",
+          "edge": "output0",
+          "tensor": "body_conv",
+          "max_abs": 0.12669323734007776
+        }
+      ],
+      "unused_measured_tensor_count": 4,
+      "weights": "Original constant Conv weights; TensorRT derives their quantization scales",
+      "validation": {
+        "actual_engine_precision": "not_checked",
+        "numerical_accuracy": "not_checked"
+      }
+    },
+    "inspection": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/ranges-build.layers.json",
+    "actual_precisions": [
+      {
+        "name": "/img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+        "input_and_weight_type": "Half",
+        "tactic": "sm75_xmma_fprop_implicit_gemm_indexed_wo_smem_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x16x32_stage1_warpsize4x1x1_g1_tensor16x8x8_alignc8",
+        "output_formats": [
+          "Half"
+        ]
+      },
+      {
+        "name": "/img_backbone/layer1/layer1.0/conv1/Conv",
+        "input_and_weight_type": "Int8",
+        "tactic": "sm80_xmma_fprop_implicit_gemm_interleaved_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize32x64x64_stage6_warpsize2x2x1_g1_tensor16x8x32_t1r3s3",
+        "output_formats": [
+          "Half"
+        ]
+      },
+      {
+        "name": "/pts_bbox_head/output/Conv",
+        "input_and_weight_type": "Half",
+        "tactic": "sm80_xmma_gemm_f16f16_f16f16_f16_tn_n_tilesize32x32x64_stage6_warpsize2x2x1_tensor16x8x16",
+        "output_formats": [
+          "Half"
+        ]
+      }
+    ],
+    "reference_validation": {
+      "status": "passed",
+      "all_outputs_finite": true,
+      "output_finite": {
+        "head_conv": true
+      },
+      "scope": "Final output of the last measured execution only",
+      "reference": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/expected.npz",
+      "reference_sha256": "fe470c6bf5c86adb6a6c4560bbca57527bcd2421d5d88a1723e622f1cbb80c99",
+      "rtol": 0.05,
+      "atol": 0.002,
+      "outputs": {
+        "head_conv": {
+          "passed": true,
+          "shape": [
+            1,
+            4,
+            8,
+            8
+          ],
+          "actual_dtype": "float32",
+          "reference_dtype": "float32",
+          "reference_finite": true,
+          "mismatched_elements": 0,
+          "elements": 256,
+          "max_absolute_error": 0.0002794833853840828,
+          "max_relative_error_floor_1e_12": 0.9458668279031656
+        }
+      }
+    }
+  },
+  "cache_vs_ranges": {
+    "status": "passed",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "head_conv": true
+    },
+    "scope": "Final output of the last measured execution only",
+    "reference": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/run/outputs.npz",
+    "reference_sha256": "411073a4936d56cba1622ffd1366980f83107c69876681ec0e15615e8d02aafb",
+    "rtol": 0.001,
+    "atol": 1e-05,
+    "outputs": {
+      "head_conv": {
+        "passed": true,
+        "shape": [
+          1,
+          4,
+          8,
+          8
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 256,
+        "max_absolute_error": 0.0,
+        "max_relative_error_floor_1e_12": 0.0
+      }
+    }
+  },
+  "reference_tolerances": {
+    "rtol": 0.05,
+    "atol": 0.002
+  },
+  "status": "passed"
+}

@@ -1,0 +1,209 @@
+{
+  "scope": "Six-camera backbone only; one held-out mini_val frame, not full BEVFormer or nuScenes mAP/NDS",
+  "reference": "TensorRT FP32 engine of identical backbone ONNX; no FP16/TF32 allowed; not an independent framework reference",
+  "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "precision_acceptance": "No detection-accuracy acceptance threshold; raw feature errors only",
+  "outputs": {
+    "/img_backbone/layer4/layer4.2/relu_2/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 3.655231475830078,
+      "mean_absolute_error": 0.00788949101560163,
+      "rmse": 0.05532747995051156,
+      "reference_rms": 0.41908962185519916,
+      "relative_rmse": 0.13201825353152724,
+      "cosine_similarity": 0.991279891922139
+    },
+    "/img_backbone/layer4/layer4.2/relu_5/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 4.864633560180664,
+      "mean_absolute_error": 0.011795526314105293,
+      "rmse": 0.06972472255483236,
+      "reference_rms": 0.5281318348191167,
+      "relative_rmse": 0.13202143472133776,
+      "cosine_similarity": 0.991318673703894
+    },
+    "/img_backbone/layer4/layer4.2/relu_8/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 4.379019737243652,
+      "mean_absolute_error": 0.009189076002151304,
+      "rmse": 0.05822948138017764,
+      "reference_rms": 0.506952953466555,
+      "relative_rmse": 0.11486170655877082,
+      "cosine_similarity": 0.993425096252071
+    },
+    "/img_backbone/layer4/layer4.2/relu_11/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 4.47360897064209,
+      "mean_absolute_error": 0.008534807530593063,
+      "rmse": 0.0606672841584495,
+      "reference_rms": 0.39981190576958664,
+      "relative_rmse": 0.1517395637372848,
+      "cosine_similarity": 0.9884890671557215
+    },
+    "/img_backbone/layer4/layer4.2/relu_14/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 3.147094964981079,
+      "mean_absolute_error": 0.00889074146451533,
+      "rmse": 0.058768595595750865,
+      "reference_rms": 0.4507541304241056,
+      "relative_rmse": 0.1303783850864698,
+      "cosine_similarity": 0.9915454123973981
+    },
+    "/img_backbone/layer4/layer4.2/relu_17/Relu_output_0": {
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "elements": 2969600,
+      "all_finite": true,
+      "max_absolute_error": 3.347723960876465,
+      "mean_absolute_error": 0.011294921485371968,
+      "rmse": 0.07223742397772205,
+      "reference_rms": 0.47504302991021075,
+      "relative_rmse": 0.1520650118608747,
+      "cosine_similarity": 0.9884456236735126
+    }
+  },
+  "latency": {
+    "fp32": {
+      "cuda_event_ms": {
+        "samples": [
+          399.1295471191406,
+          394.9486083984375,
+          394.0912780761719,
+          398.668701171875,
+          396.015625
+        ],
+        "mean": 396.570751953125,
+        "median": 396.015625,
+        "min": 394.0912780761719,
+        "max": 399.1295471191406,
+        "p95": 399.0373779296875
+      },
+      "host_submit_and_sync_ms": {
+        "samples": [
+          399.1415299969958,
+          394.94857800309546,
+          394.08924800227396,
+          398.66590399469715,
+          396.0131300118519
+        ],
+        "mean": 396.57167800178286,
+        "median": 396.0131300118519,
+        "min": 394.08924800227396,
+        "max": 399.1415299969958,
+        "p95": 399.0464047965361
+      },
+      "warmup": 2,
+      "repeat": 5,
+      "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+      "engine_sha256": "6ced3ad87e266a94431a6f5c6dc45fb309c0a810a2f4a76f1ac05fd2c12fe874"
+    },
+    "mixed_int8": {
+      "cuda_event_ms": {
+        "samples": [
+          146.68873596191406,
+          146.52313232421875,
+          146.72486877441406,
+          147.2593994140625,
+          150.76541137695312
+        ],
+        "mean": 147.5923095703125,
+        "median": 146.72486877441406,
+        "min": 146.52313232421875,
+        "max": 150.76541137695312,
+        "p95": 150.064208984375
+      },
+      "host_submit_and_sync_ms": {
+        "samples": [
+          146.7542960017454,
+          146.52815798763186,
+          146.7293979949318,
+          147.26401500229258,
+          150.76939600112382
+        ],
+        "mean": 147.6090525975451,
+        "median": 146.7542960017454,
+        "min": 146.52815798763186,
+        "max": 150.76939600112382,
+        "p95": 150.06831980135757
+      },
+      "warmup": 2,
+      "repeat": 5,
+      "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+      "engine_sha256": "82a6e0c2e0ac24c41eb8cee27e6aee58f05d45da956cdaad544512c2007942e9"
+    }
+  },
+  "build_search_levels": {
+    "fp32": 0,
+    "mixed_int8": 3
+  },
+  "comparison_limit": "Different build search levels; latency difference is not solely an isolated INT8 effect",
+  "held_out_provenance": {
+    "scope": "One held-out mini_val frame; never used for calibration; fixed synthetic geometry remains in both graphs",
+    "sample_token": "5b03af7a953245b5a3b23191ed4da62a",
+    "scene_name": "scene-0103",
+    "camera_order": [
+      "CAM_FRONT",
+      "CAM_FRONT_RIGHT",
+      "CAM_FRONT_LEFT",
+      "CAM_BACK",
+      "CAM_BACK_LEFT",
+      "CAM_BACK_RIGHT"
+    ],
+    "shape": [
+      1,
+      6,
+      3,
+      928,
+      1600
+    ],
+    "dtype": "float32",
+    "images_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+    "sources": [
+      "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151613362404.jpg",
+      "samples/CAM_FRONT_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_RIGHT__1533151613370482.jpg",
+      "samples/CAM_FRONT_LEFT/n008-2018-08-01-15-16-36-0400__CAM_FRONT_LEFT__1533151613354799.jpg",
+      "samples/CAM_BACK/n008-2018-08-01-15-16-36-0400__CAM_BACK__1533151613387558.jpg",
+      "samples/CAM_BACK_LEFT/n008-2018-08-01-15-16-36-0400__CAM_BACK_LEFT__1533151613397405.jpg",
+      "samples/CAM_BACK_RIGHT/n008-2018-08-01-15-16-36-0400__CAM_BACK_RIGHT__1533151613378113.jpg"
+    ]
+  }
+}

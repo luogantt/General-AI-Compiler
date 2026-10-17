@@ -1,0 +1,250 @@
+{"Layers": [{
+  "Name": "Reformatting CopyNode for Input Tensor 0 to /img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+  "LayerType": "Reformat",
+  "Inputs": [
+  {
+    "Name": "images",
+    "Location": "Device",
+    "Dimensions": [1,3,8,8],
+    "Format/Datatype": "Float"
+  }],
+  "Outputs": [
+  {
+    "Name": "Reformatted Input Tensor 0 to /img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+    "Location": "Device",
+    "Dimensions": [1,3,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "Reformat",
+  "Origin": "REFORMAT",
+  "TacticValue": "0x0000000000000000",
+  "StreamId": 0,
+  "Metadata": ""
+},{
+  "Name": "/img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+  "LayerType": "CaskConvolution",
+  "Inputs": [
+  {
+    "Name": "Reformatted Input Tensor 0 to /img_backbone/conv1/Conv + /img_backbone/conv1/Relu",
+    "Location": "Device",
+    "Dimensions": [1,3,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "stem_relu",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "Convolution",
+  "Kernel": [3,3],
+  "PaddingMode": "kEXPLICIT_ROUND_DOWN",
+  "PrePadding": [1,1],
+  "PostPadding": [1,1],
+  "Stride": [1,1],
+  "Dilation": [1,1],
+  "OutMaps": 8,
+  "Groups": 1,
+  "Weights": {"Type": "Half", "Count": 216},
+  "Bias": {"Type": "Half", "Count": 8},
+  "HasBias": 1,
+  "HasReLU": 1,
+  "HasSparseWeights": 0,
+  "HasDynamicFilter": 0,
+  "HasDynamicBias": 0,
+  "HasResidual": 0,
+  "ConvXAsActInputIdx": -1,
+  "BiasAsActInputIdx": -1,
+  "ResAsActInputIdx": -1,
+  "Activation": "RELU",
+  "TacticName": "sm80_xmma_fprop_implicit_gemm_indexed_wo_smem_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x16x64_stage1_warpsize4x1x1_g1_tensor16x8x16_alignc4",
+  "TacticValue": "0xa5a46bfbd719d757",
+  "StreamId": 0,
+  "Metadata": "[ONNX Layer: /img_backbone/conv1/Conv]\u001e[ONNX Layer: /img_backbone/conv1/Relu]"
+},{
+  "Name": "Reformatting CopyNode for Input Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+  "LayerType": "Reformat",
+  "Inputs": [
+  {
+    "Name": "stem_relu",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "Reformatted Input Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Int8"
+  }],
+  "ParameterType": "Reformat",
+  "Origin": "REFORMAT",
+  "TacticValue": "0x0000000000000000",
+  "StreamId": 0,
+  "Metadata": ""
+},{
+  "Name": "/img_backbone/layer1/layer1.0/conv1/Conv",
+  "LayerType": "CaskConvolution",
+  "Inputs": [
+  {
+    "Name": "Reformatted Input Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Int8"
+  }],
+  "Outputs": [
+  {
+    "Name": "Reformatted Output Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "Convolution",
+  "Kernel": [3,3],
+  "PaddingMode": "kEXPLICIT_ROUND_DOWN",
+  "PrePadding": [1,1],
+  "PostPadding": [1,1],
+  "Stride": [1,1],
+  "Dilation": [1,1],
+  "OutMaps": 8,
+  "Groups": 1,
+  "Weights": {"Type": "Int8", "Count": 576},
+  "Bias": {"Type": "Float", "Count": 8},
+  "HasBias": 1,
+  "HasReLU": 0,
+  "HasSparseWeights": 0,
+  "HasDynamicFilter": 0,
+  "HasDynamicBias": 0,
+  "HasResidual": 0,
+  "ConvXAsActInputIdx": -1,
+  "BiasAsActInputIdx": -1,
+  "ResAsActInputIdx": -1,
+  "Activation": "NONE",
+  "TacticName": "sm80_xmma_fprop_implicit_gemm_interleaved_i8f16_i8i32_f32_nchw_vect_c_32kcrs_vect_c_32_nchw_vect_c_32_tilesize32x64x64_stage6_warpsize2x2x1_g1_tensor16x8x32_t1r3s3",
+  "TacticValue": "0xc5159665a920f22c",
+  "StreamId": 0,
+  "Metadata": "[ONNX Layer: /img_backbone/layer1/layer1.0/conv1/Conv]"
+},{
+  "Name": "Reformatting CopyNode for Output Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+  "LayerType": "Reformat",
+  "Inputs": [
+  {
+    "Name": "Reformatted Output Tensor 0 to /img_backbone/layer1/layer1.0/conv1/Conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "body_conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "Reformat",
+  "Origin": "REFORMAT",
+  "TacticValue": "0x00000000000003e8",
+  "StreamId": 0,
+  "Metadata": ""
+},{
+  "Name": "PWN(/img_backbone/layer1/layer1.0/conv1/Relu)",
+  "LayerType": "PointWiseV2",
+  "Inputs": [
+  {
+    "Name": "body_conv",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "body_relu",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "PointWise",
+  "ParameterSubType": "PointWiseExpression",
+  "NbInputArgs": 1,
+  "InputArgs": ["arg0"],
+  "NbOutputVars": 1,
+  "OutputVars": ["var0"],
+  "NbParams": 0,
+  "Params": [],
+  "NbLiterals": 4,
+  "Literals": ["0.000000e+00f", "1.000000e+00f", "0.000000e+00f", "0.000000e+00f"],
+  "NbOperations": 1,
+  "Operations": ["auto const var0 = pwgen::iMax(arg0, literal0);"],
+  "TacticValue": "0x0000000000000019",
+  "StreamId": 0,
+  "Metadata": "[ONNX Layer: /img_backbone/layer1/layer1.0/conv1/Relu]"
+},{
+  "Name": "/pts_bbox_head/output/Conv",
+  "LayerType": "CaskGemmConvolution",
+  "Inputs": [
+  {
+    "Name": "body_relu",
+    "Location": "Device",
+    "Dimensions": [1,8,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "Reformatted Output Tensor 0 to /pts_bbox_head/output/Conv",
+    "Location": "Device",
+    "Dimensions": [1,4,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "ParameterType": "Convolution",
+  "Kernel": [1,1],
+  "PaddingMode": "kEXPLICIT_ROUND_DOWN",
+  "PrePadding": [0,0],
+  "PostPadding": [0,0],
+  "Stride": [1,1],
+  "Dilation": [1,1],
+  "OutMaps": 4,
+  "Groups": 1,
+  "Weights": {"Type": "Half", "Count": 32},
+  "Bias": {"Type": "Half", "Count": 4},
+  "HasBias": 1,
+  "HasReLU": 0,
+  "HasSparseWeights": 0,
+  "HasDynamicFilter": 0,
+  "HasDynamicBias": 0,
+  "HasResidual": 0,
+  "ConvXAsActInputIdx": -1,
+  "BiasAsActInputIdx": -1,
+  "ResAsActInputIdx": -1,
+  "Activation": "NONE",
+  "TacticName": "sm80_xmma_gemm_f16f16_f16f16_f16_tn_n_tilesize64x32x64_stage7_warpsize4x1x1_tensor16x8x16",
+  "TacticValue": "0x0000000000020721",
+  "StreamId": 0,
+  "Metadata": "[ONNX Layer: /pts_bbox_head/output/Conv]"
+},{
+  "Name": "Reformatting CopyNode for Output Tensor 0 to /pts_bbox_head/output/Conv",
+  "LayerType": "Reformat",
+  "Inputs": [
+  {
+    "Name": "Reformatted Output Tensor 0 to /pts_bbox_head/output/Conv",
+    "Location": "Device",
+    "Dimensions": [1,4,8,8],
+    "Format/Datatype": "Half"
+  }],
+  "Outputs": [
+  {
+    "Name": "head_conv",
+    "Location": "Device",
+    "Dimensions": [1,4,8,8],
+    "Format/Datatype": "Float"
+  }],
+  "ParameterType": "Reformat",
+  "Origin": "REFORMAT",
+  "TacticValue": "0x0000000000000000",
+  "StreamId": 0,
+  "Metadata": ""
+}],
+"Bindings": ["images"
+,"head_conv"
+]}

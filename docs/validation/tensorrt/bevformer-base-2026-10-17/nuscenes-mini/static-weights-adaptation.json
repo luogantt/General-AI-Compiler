@@ -1,0 +1,33 @@
+{
+  "plugin_domain": "trt.plugins",
+  "plugin_version": "2",
+  "converted": {
+    "mmcv::MMCVModulatedDeformConv2d": 156,
+    "gac::MSDeformAttn": 18
+  },
+  "source_node_count": 22412,
+  "adapted_node_count": 22538,
+  "inputs": [
+    "images"
+  ],
+  "outputs": [
+    "bev_embed",
+    "all_cls_scores",
+    "all_bbox_preds"
+  ],
+  "limitations": [
+    "MSDA spatial_shapes must be constant",
+    "asymmetric DCN attributes are rejected"
+  ],
+  "source": "build\\bevformer-base-onnx\\bevformer-base-cold.onnx",
+  "destination": "build\\tensorrt-session\\base-cold-plugins-static-weights.onnx",
+  "source_onnx_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "destination_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "hash_scope": "ONNX files only; source external weight files are not included",
+  "static_conv_weight_aliases": {
+    "rewritten_input_count": 780,
+    "rewritten_conv_count": 390
+  },
+  "adapt_report_sha256": "bbf2a6481506857e4956656d6ca79842d514fd0e0627c5c1ba5cb74ba1f531fd",
+  "scope": "Structural adaptation; not a full-model numerical validation"
+}

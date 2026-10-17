@@ -1,0 +1,2380 @@
+{
+  "schema_version": 1,
+  "source_kind": "real_preprocessed",
+  "dataset": "nuScenes v1.0-mini official mini_train camera key frames",
+  "preprocessing": "OpenCV unchanged BGR uint8 -> float32; subtract BGR [103.53,116.28,123.675], std=1; no RGB conversion, resize, flip or augmentation; then bottom zero-pad 900x1600 to 928x1600; N,V,C,H,W",
+  "files": [
+    "frame_0000.npy",
+    "frame_0001.npy",
+    "frame_0002.npy",
+    "frame_0003.npy",
+    "frame_0004.npy",
+    "frame_0005.npy",
+    "frame_0006.npy",
+    "frame_0007.npy",
+    "frame_0008.npy",
+    "frame_0009.npy",
+    "frame_0010.npy",
+    "frame_0011.npy",
+    "frame_0012.npy",
+    "frame_0013.npy",
+    "frame_0014.npy",
+    "frame_0015.npy",
+    "frame_0016.npy",
+    "frame_0017.npy",
+    "frame_0018.npy",
+    "frame_0019.npy",
+    "frame_0020.npy",
+    "frame_0021.npy",
+    "frame_0022.npy",
+    "frame_0023.npy",
+    "frame_0024.npy",
+    "frame_0025.npy",
+    "frame_0026.npy",
+    "frame_0027.npy",
+    "frame_0028.npy",
+    "frame_0029.npy",
+    "frame_0030.npy",
+    "frame_0031.npy"
+  ],
+  "input_name": "images",
+  "input_shape": [
+    1,
+    6,
+    3,
+    928,
+    1600
+  ],
+  "input_dtype": "float32",
+  "camera_order": [
+    "CAM_FRONT",
+    "CAM_FRONT_RIGHT",
+    "CAM_FRONT_LEFT",
+    "CAM_BACK",
+    "CAM_BACK_LEFT",
+    "CAM_BACK_RIGHT"
+  ],
+  "preprocessing_contract": {
+    "mean_bgr": [
+      103.53,
+      116.28,
+      123.675
+    ],
+    "std": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "to_rgb": false,
+    "original_hw": [
+      900,
+      1600
+    ],
+    "pad_divisor": 32,
+    "pad_after_normalization": true,
+    "normalized_pad_value": 0.0,
+    "sources": [
+      "https://github.com/fundamentalvision/BEVFormer/blob/master/projects/configs/bevformer/bevformer_base.py",
+      "https://github.com/fundamentalvision/BEVFormer/blob/master/tools/data_converter/nuscenes_converter.py",
+      "https://github.com/fundamentalvision/BEVFormer/blob/master/projects/mmdet3d_plugin/datasets/pipelines/transform_3d.py"
+    ],
+    "export_report": {
+      "path": "/home/robot/project/gac-tensorrt-20261017/models/export-report.json",
+      "sha256": "1e1b4571a75a1d7155f5b99c3fbd54b744790d65082bf6b61ed23a0c30af67eb",
+      "config_sha256": "45905ac50a8afa841f0be43c81152277dd694de62054c3595dfd56efd33d6324"
+    }
+  },
+  "sampling": {
+    "method": "balanced scene quotas; nearest frames to uniform time-bin centers",
+    "max_samples": 32,
+    "selected_samples": 32,
+    "calibration_split": "mini_train",
+    "calibration_scene_names": [
+      "scene-0061",
+      "scene-0553",
+      "scene-0655",
+      "scene-0757",
+      "scene-0796",
+      "scene-1077",
+      "scene-1094",
+      "scene-1100"
+    ],
+    "held_out_split": "mini_val",
+    "held_out_scene_names": [
+      "scene-0103",
+      "scene-0916"
+    ],
+    "split_source": "https://github.com/nutonomy/nuscenes-devkit/blob/master/python-sdk/nuscenes/utils/splits.py"
+  },
+  "source_tables": {
+    "scene": {
+      "file": "v1.0-mini/scene.json",
+      "sha256": "cc4dfeac83ac4f5d3e7fc899f90156891a21fa08bc0f8a1ac0e0a27cc1a0bfa6"
+    },
+    "sample": {
+      "file": "v1.0-mini/sample.json",
+      "sha256": "3c47794e2e6c09af4be7907b83f50750351180008d059899f42a9d405ed68586"
+    },
+    "sample_data": {
+      "file": "v1.0-mini/sample_data.json",
+      "sha256": "db18a189bd73648013d3e77ce6f5236d7c5997c0bdbf71166ddd8a6cb5c2c288"
+    },
+    "calibrated_sensor": {
+      "file": "v1.0-mini/calibrated_sensor.json",
+      "sha256": "13d35eeb08bfbc4d0c9eaede7824ff65efe16f8bf345aa7ba9fd75f9866a8d0f"
+    },
+    "sensor": {
+      "file": "v1.0-mini/sensor.json",
+      "sha256": "4d5c96570e2d8b09b88ce4c605e40ee43c4909f97bea5741185f18f92eb491ae"
+    }
+  },
+  "dataset_root": "/home/robot/datasets/nuscenes",
+  "opencv_version": "4.11.0",
+  "samples": [
+    {
+      "sample_token": "f1e3d9d08f044c439ce86a2d6fcca57b",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198",
+      "scene_name": "scene-0061",
+      "timestamp": 1532402930152601,
+      "file": "frame_0000.npy",
+      "sha256": "dd857181037a5f0a3906005067170555eb7e207886d0cc87bd860d193e0f0b36",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "ddbc1befa70f4b49a0824f63a920676b",
+          "calibrated_sensor_token": "1d31c729b073425e8e0202c5c6e66ee1",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "ddbc1befa70f4b49a0824f63a920676b",
+          "timestamp": 1532402930112460,
+          "filename": "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402930112460.jpg",
+          "source_sha256": "6437c4c6b54a9d69aee4a4e9742ed4ae7528da2fcea06f374bf3b0b7e9225f2b"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "c22c792ba1d448feba303495ebda3e3b",
+          "calibrated_sensor_token": "f8d0aaa1a8234ba3aeed5867e0aa81aa",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "c22c792ba1d448feba303495ebda3e3b",
+          "timestamp": 1532402930120339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_RIGHT__1532402930120339.jpg",
+          "source_sha256": "04cb320789ef6afc28c15c7145768a24a227234e85b8b5f3a1bfb6c9dc40fd96"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "084af9b8a7804851842c8996ca8388df",
+          "calibrated_sensor_token": "75ad8e2a8a3f4594a13db2398430d097",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "084af9b8a7804851842c8996ca8388df",
+          "timestamp": 1532402930104844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_LEFT__1532402930104844.jpg",
+          "source_sha256": "90923f55b8ef3b80dba7bb65c1d160c02a0b9d4fe8e3bb86a27118cedd68b825"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "c2dc484b195f4bce9eed1ef604be8270",
+          "calibrated_sensor_token": "4ff47c4950f04cb4be1876bc0b028326",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "c2dc484b195f4bce9eed1ef604be8270",
+          "timestamp": 1532402930137525,
+          "filename": "samples/CAM_BACK/n015-2018-07-24-11-22-45+0800__CAM_BACK__1532402930137525.jpg",
+          "source_sha256": "f601634acf75663ad970003e656afdfe197ed9e25b092f63586f8f2cd30b0b4d"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "ceeec46bb59d4bd3afc316996aee8f97",
+          "calibrated_sensor_token": "3bc29be787ea4fc79144c4a46a3c91ca",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "ceeec46bb59d4bd3afc316996aee8f97",
+          "timestamp": 1532402930147423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-07-24-11-22-45+0800__CAM_BACK_LEFT__1532402930147423.jpg",
+          "source_sha256": "e631bca38d43134f3d1059df17249e3d900c704980e1da5546c9e5454e06e883"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "a1e783e1c8c1482e96cacbbd130b61e9",
+          "calibrated_sensor_token": "3b00acc55ed941fa9f405e0c1fd2b639",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "a1e783e1c8c1482e96cacbbd130b61e9",
+          "timestamp": 1532402930127893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_BACK_RIGHT__1532402930127893.jpg",
+          "source_sha256": "0a6e5d0a13462aeae9796957a6f7855eca71a3fbc2f8737591abac4496a5c884"
+        }
+      ]
+    },
+    {
+      "sample_token": "2afb9d32310e4546a71cbe432911eca2",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198",
+      "scene_name": "scene-0061",
+      "timestamp": 1532402934696555,
+      "file": "frame_0001.npy",
+      "sha256": "786236974b0a9209e2d630c9c423c6c6d0d5e9df6816b7618de5d2c8f5304c51",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "5941e77ca4bd478e99e17114ca8759ab",
+          "calibrated_sensor_token": "1d31c729b073425e8e0202c5c6e66ee1",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "5941e77ca4bd478e99e17114ca8759ab",
+          "timestamp": 1532402934662484,
+          "filename": "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402934662484.jpg",
+          "source_sha256": "dd27df927249dad941dfc055717d5f16333de83b9d28b5b3fc34e33cbabeb3d1"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "f9e7a360410d4102a1442f0db909bfc1",
+          "calibrated_sensor_token": "f8d0aaa1a8234ba3aeed5867e0aa81aa",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "f9e7a360410d4102a1442f0db909bfc1",
+          "timestamp": 1532402934670339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_RIGHT__1532402934670339.jpg",
+          "source_sha256": "c383de659b6c633fe9495d0265fb6d8b723dae583b86288fafdffea2808e6484"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "d3c7350133c64a19b09727cf2b346bc7",
+          "calibrated_sensor_token": "75ad8e2a8a3f4594a13db2398430d097",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "d3c7350133c64a19b09727cf2b346bc7",
+          "timestamp": 1532402934654844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_LEFT__1532402934654844.jpg",
+          "source_sha256": "eb1a9fd8d060adc813ef133376202a91e938fd85ba90438419d9908159a41456"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "aac8a20a65a04a17b7d989970f80aca7",
+          "calibrated_sensor_token": "4ff47c4950f04cb4be1876bc0b028326",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "aac8a20a65a04a17b7d989970f80aca7",
+          "timestamp": 1532402934687525,
+          "filename": "samples/CAM_BACK/n015-2018-07-24-11-22-45+0800__CAM_BACK__1532402934687525.jpg",
+          "source_sha256": "e1fa69ccd516171c862b260779b904d686c37ede467f27e92a24f586164ddd38"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "d1db05d720344e41b469da6975f7d927",
+          "calibrated_sensor_token": "3bc29be787ea4fc79144c4a46a3c91ca",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "d1db05d720344e41b469da6975f7d927",
+          "timestamp": 1532402934697423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-07-24-11-22-45+0800__CAM_BACK_LEFT__1532402934697423.jpg",
+          "source_sha256": "ae9b1b197f6945670b01fbc7b9d3aaec37f11447947f913ec15a6c0b91376bec"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "0fff238ed6a14690b4b88dd1a8b0f8af",
+          "calibrated_sensor_token": "3b00acc55ed941fa9f405e0c1fd2b639",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "0fff238ed6a14690b4b88dd1a8b0f8af",
+          "timestamp": 1532402934677893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_BACK_RIGHT__1532402934677893.jpg",
+          "source_sha256": "599ce2f5286094c1469538e06c5e3f8412f3ccfeb977f70135b467dd92dd778f"
+        }
+      ]
+    },
+    {
+      "sample_token": "a34fabc7aa674713b71f98ec541eb2d4",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198",
+      "scene_name": "scene-0061",
+      "timestamp": 1532402939697511,
+      "file": "frame_0002.npy",
+      "sha256": "9a69387743cef6bd325c69978320a03aaf623e259b6ef444b095df05e6670e1f",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "8fe9b9f55bd14e25b8fde193d6b6a503",
+          "calibrated_sensor_token": "1d31c729b073425e8e0202c5c6e66ee1",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "8fe9b9f55bd14e25b8fde193d6b6a503",
+          "timestamp": 1532402939662460,
+          "filename": "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402939662460.jpg",
+          "source_sha256": "50c7e600f1f18b52b6296facf2bf5fdba964e10011bae3f271442056795516c5"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "37138cdbf39f4201a6521a84bb3424fc",
+          "calibrated_sensor_token": "f8d0aaa1a8234ba3aeed5867e0aa81aa",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "37138cdbf39f4201a6521a84bb3424fc",
+          "timestamp": 1532402939670339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_RIGHT__1532402939670339.jpg",
+          "source_sha256": "11eb7320696d2bc57aca2197e93d4922af2c30c8ce223761c58c31f19386c141"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "aa04a5c048c643dab2f8dee445fbde38",
+          "calibrated_sensor_token": "75ad8e2a8a3f4594a13db2398430d097",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "aa04a5c048c643dab2f8dee445fbde38",
+          "timestamp": 1532402939654844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_LEFT__1532402939654844.jpg",
+          "source_sha256": "fd645556c08f85f2483dbdf9af76470476e7f3e3797251d74e52f8429196e9b7"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "d3629f1b1775493fb4244d5b86836dd2",
+          "calibrated_sensor_token": "4ff47c4950f04cb4be1876bc0b028326",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "d3629f1b1775493fb4244d5b86836dd2",
+          "timestamp": 1532402939687525,
+          "filename": "samples/CAM_BACK/n015-2018-07-24-11-22-45+0800__CAM_BACK__1532402939687525.jpg",
+          "source_sha256": "3a52cae45c29460c64d508c68554382088c90cd0cbb0e0747e533ca950825e0a"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "554db7eaf1f844f3ada0706b190a7e22",
+          "calibrated_sensor_token": "3bc29be787ea4fc79144c4a46a3c91ca",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "554db7eaf1f844f3ada0706b190a7e22",
+          "timestamp": 1532402939697423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-07-24-11-22-45+0800__CAM_BACK_LEFT__1532402939697423.jpg",
+          "source_sha256": "2897741de480e20e5435e9e25ff71683471046dd592d21f0315ca8f9c578dfa4"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "9c6ae14d31234014975a55f9b530ba35",
+          "calibrated_sensor_token": "3b00acc55ed941fa9f405e0c1fd2b639",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "9c6ae14d31234014975a55f9b530ba35",
+          "timestamp": 1532402939677893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_BACK_RIGHT__1532402939677893.jpg",
+          "source_sha256": "69e5fc5b55b3221e0935e74e6871a6713c9155c00f35fb11f11075a79d6e09f7"
+        }
+      ]
+    },
+    {
+      "sample_token": "b73152cab88f49d9ba195da81fde1809",
+      "scene_token": "cc8c0bf57f984915a77078b10eb33198",
+      "scene_name": "scene-0061",
+      "timestamp": 1532402944198088,
+      "file": "frame_0003.npy",
+      "sha256": "8019aba4422a3a2958a58b4d8a610354d3f49cb20fd8a3332469da4267da5895",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "3789c6c9d01449e7baf981a6f185825d",
+          "calibrated_sensor_token": "1d31c729b073425e8e0202c5c6e66ee1",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "3789c6c9d01449e7baf981a6f185825d",
+          "timestamp": 1532402944162460,
+          "filename": "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402944162460.jpg",
+          "source_sha256": "95e8a05cd26b244d4c56be28c37a3e7a74e20e5029aaeb69b4bf21601ed2eed0"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "9885bb4fe7b348da82e5de99b8633fb1",
+          "calibrated_sensor_token": "f8d0aaa1a8234ba3aeed5867e0aa81aa",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "9885bb4fe7b348da82e5de99b8633fb1",
+          "timestamp": 1532402944170339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_RIGHT__1532402944170339.jpg",
+          "source_sha256": "2b994d910f1399b21aa344439f6aef194737ccd5299a17dc2455ab41186b0231"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "5b1c06c900934203bce4924ad42b0679",
+          "calibrated_sensor_token": "75ad8e2a8a3f4594a13db2398430d097",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "5b1c06c900934203bce4924ad42b0679",
+          "timestamp": 1532402944154844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-07-24-11-22-45+0800__CAM_FRONT_LEFT__1532402944154844.jpg",
+          "source_sha256": "dff375f6fc9f311b4a4216669b3219b6cded15f941a430d5beea989bd39851e6"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "18c1e4299d82434b9b8fc7b43dc69a83",
+          "calibrated_sensor_token": "4ff47c4950f04cb4be1876bc0b028326",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "18c1e4299d82434b9b8fc7b43dc69a83",
+          "timestamp": 1532402944187525,
+          "filename": "samples/CAM_BACK/n015-2018-07-24-11-22-45+0800__CAM_BACK__1532402944187525.jpg",
+          "source_sha256": "8cdbb282418b9dbbbfd2b308e0996f293fa4389c045efdcf5478f369fa9b71b2"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "64fdb642edb84bf79d8d520e742889db",
+          "calibrated_sensor_token": "3bc29be787ea4fc79144c4a46a3c91ca",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "64fdb642edb84bf79d8d520e742889db",
+          "timestamp": 1532402944197423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-07-24-11-22-45+0800__CAM_BACK_LEFT__1532402944197423.jpg",
+          "source_sha256": "9b409c22eba4040bcedfc3233a0b04ac1413ca32ca3a607840972b4a34bb9130"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "85e9d1289c39470e9a0dbac6c16dd65f",
+          "calibrated_sensor_token": "3b00acc55ed941fa9f405e0c1fd2b639",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "85e9d1289c39470e9a0dbac6c16dd65f",
+          "timestamp": 1532402944177893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-07-24-11-22-45+0800__CAM_BACK_RIGHT__1532402944177893.jpg",
+          "source_sha256": "8c37d45041bb93e1aad1f3ab3cb118cf0250f677af85cd181e9ce774211b76c7"
+        }
+      ]
+    },
+    {
+      "sample_token": "7315022fc89147a6afc7f978601f8f38",
+      "scene_token": "6f83169d067343658251f72e1dd17dbc",
+      "scene_name": "scene-0553",
+      "timestamp": 1535489298547291,
+      "file": "frame_0004.npy",
+      "sha256": "8a16bb018ef06730501a02636d560c9807eb072816151498e71e43cf0b783a6f",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "9ac08955983e41ea8f4bf16b49bfa79c",
+          "calibrated_sensor_token": "89b9d32d6d084953b8a7a1584e7e21f0",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "9ac08955983e41ea8f4bf16b49bfa79c",
+          "timestamp": 1535489298512404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489298512404.jpg",
+          "source_sha256": "f6760ccbbd13ea17a19af7ff8b186b24e154c4fb1be5551d53e102e378a540a6"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "838212b279334718bd4c8f1bf270c2f5",
+          "calibrated_sensor_token": "bb8dcf29b2804613b8046929a60dd4c9",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "838212b279334718bd4c8f1bf270c2f5",
+          "timestamp": 1535489298520482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_RIGHT__1535489298520482.jpg",
+          "source_sha256": "ee9389319429444d228ee7ade11d72c26786948caff0a35be26cac7bd6c9ced3"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "ef0c1644c6e4443297925c38f095c4c2",
+          "calibrated_sensor_token": "f255377bb7044dd787fa75e2723014dd",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "ef0c1644c6e4443297925c38f095c4c2",
+          "timestamp": 1535489298504799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_LEFT__1535489298504799.jpg",
+          "source_sha256": "be74bc9dad7f0f146a67dccd019f5c680af56c3bd33a986a662e75101747f5e0"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "3671c6e2aae849719c5de70db68291e6",
+          "calibrated_sensor_token": "b349cf16e24f4de380546d4ba67e94d8",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "3671c6e2aae849719c5de70db68291e6",
+          "timestamp": 1535489298537558,
+          "filename": "samples/CAM_BACK/n008-2018-08-28-16-43-51-0400__CAM_BACK__1535489298537558.jpg",
+          "source_sha256": "fe9a7ca6450a52882ad1446bd806553cad77c21275bbc56a3e8ad9a46e8d236c"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "5ec5461a41bd49ada4d84ba75a8917ba",
+          "calibrated_sensor_token": "920e2b14fa3e4895853a88d03edb91a6",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "5ec5461a41bd49ada4d84ba75a8917ba",
+          "timestamp": 1535489298547405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-28-16-43-51-0400__CAM_BACK_LEFT__1535489298547405.jpg",
+          "source_sha256": "d75ee54e8f2bc352636d8d1610ecda1e44f68953aad089f896a6cda63b4718ad"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "830d4bc251b54db38e384f84a23e6027",
+          "calibrated_sensor_token": "b7655ab592e646d4b58d637b27e5bcc8",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "830d4bc251b54db38e384f84a23e6027",
+          "timestamp": 1535489298528113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_BACK_RIGHT__1535489298528113.jpg",
+          "source_sha256": "388304c2d4552b77d519d0590d9fa3b0b540ed6b1493cdbfb80988f01b3ac9c0"
+        }
+      ]
+    },
+    {
+      "sample_token": "3ffc4360d1084e6eae5067e87d79503f",
+      "scene_token": "6f83169d067343658251f72e1dd17dbc",
+      "scene_name": "scene-0553",
+      "timestamp": 1535489303447089,
+      "file": "frame_0005.npy",
+      "sha256": "d428b9171dc3af1d9d5db6bddaf9398b71f4e01d0d2b1d58cac240e2827d2dc1",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "23e08a928077488685ab3138f3e4164f",
+          "calibrated_sensor_token": "89b9d32d6d084953b8a7a1584e7e21f0",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "23e08a928077488685ab3138f3e4164f",
+          "timestamp": 1535489303412404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489303412404.jpg",
+          "source_sha256": "a1512312daff339462dbaabbce2ad1ec65469cc4142a0706dcf120887f43cabd"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "9143205fefb24b149a8fdd559a8c5578",
+          "calibrated_sensor_token": "bb8dcf29b2804613b8046929a60dd4c9",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "9143205fefb24b149a8fdd559a8c5578",
+          "timestamp": 1535489303420482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_RIGHT__1535489303420482.jpg",
+          "source_sha256": "a6ee1758848149d333489224ccca53b6c41a51b7d820e1cbf139b10016d1d601"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "e2911d176def40a9947f732c00ec8308",
+          "calibrated_sensor_token": "f255377bb7044dd787fa75e2723014dd",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "e2911d176def40a9947f732c00ec8308",
+          "timestamp": 1535489303404799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_LEFT__1535489303404799.jpg",
+          "source_sha256": "1980fb4be461c40c7178bd3d3513bfba24b70ad2eb8cf40bd98ed0b4e3872eb2"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "ddda3c2db260437f8180d19d173ccaca",
+          "calibrated_sensor_token": "b349cf16e24f4de380546d4ba67e94d8",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "ddda3c2db260437f8180d19d173ccaca",
+          "timestamp": 1535489303437558,
+          "filename": "samples/CAM_BACK/n008-2018-08-28-16-43-51-0400__CAM_BACK__1535489303437558.jpg",
+          "source_sha256": "966fd848a8d494d7a82bcb63c469e09abbce4307cd11f0e30098a3500c20b5a0"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "3e1a0749be164e36abf8433a3582aa8d",
+          "calibrated_sensor_token": "920e2b14fa3e4895853a88d03edb91a6",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "3e1a0749be164e36abf8433a3582aa8d",
+          "timestamp": 1535489303447405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-28-16-43-51-0400__CAM_BACK_LEFT__1535489303447405.jpg",
+          "source_sha256": "00d091599407e889f0c078091779eb36b1a72a3d2fe526a0eb848772e0a2ec4c"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "9a3f399e8aa24c6cb667352a4d52ea46",
+          "calibrated_sensor_token": "b7655ab592e646d4b58d637b27e5bcc8",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "9a3f399e8aa24c6cb667352a4d52ea46",
+          "timestamp": 1535489303428113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_BACK_RIGHT__1535489303428113.jpg",
+          "source_sha256": "c67966c354c2d9fe7c5ac62ef18879f0584ce37b9e87f995b4a0664b86eea948"
+        }
+      ]
+    },
+    {
+      "sample_token": "313a60afcab5481a94a4815e0d1a6496",
+      "scene_token": "6f83169d067343658251f72e1dd17dbc",
+      "scene_name": "scene-0553",
+      "timestamp": 1535489308396618,
+      "file": "frame_0006.npy",
+      "sha256": "0c353776cdf072873b66714de63b8141bd7c510a8b676940d114c3cdd14d02e3",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "c218bb82f11c47bc864e72a3e26db2c9",
+          "calibrated_sensor_token": "89b9d32d6d084953b8a7a1584e7e21f0",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "c218bb82f11c47bc864e72a3e26db2c9",
+          "timestamp": 1535489308362404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489308362404.jpg",
+          "source_sha256": "1aa7c3a592971ecef9244fd30174e8bc5de945b0a87f0169fedc1acbb718b1cc"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "d63a68bd0b63426e97dc451a70e1b9d2",
+          "calibrated_sensor_token": "bb8dcf29b2804613b8046929a60dd4c9",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "d63a68bd0b63426e97dc451a70e1b9d2",
+          "timestamp": 1535489308370482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_RIGHT__1535489308370482.jpg",
+          "source_sha256": "29e09b31e23ba8a509e7acb6919a7f99131a7ac5601a15cab2f6535435767119"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "78b8de7e1f984209b343ab5bfb641e00",
+          "calibrated_sensor_token": "f255377bb7044dd787fa75e2723014dd",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "78b8de7e1f984209b343ab5bfb641e00",
+          "timestamp": 1535489308354799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_LEFT__1535489308354799.jpg",
+          "source_sha256": "8f9ca385bdd954413c117fea0c1cc0ffe85eea4c9b49624fdcaf121e9ce62d61"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "24ef91aafb1d47538872ffb28445859d",
+          "calibrated_sensor_token": "b349cf16e24f4de380546d4ba67e94d8",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "24ef91aafb1d47538872ffb28445859d",
+          "timestamp": 1535489308387558,
+          "filename": "samples/CAM_BACK/n008-2018-08-28-16-43-51-0400__CAM_BACK__1535489308387558.jpg",
+          "source_sha256": "047953a0e4e48cd16331c0fefc8a9d1d9c331cdee91a199e26bb501f708140c6"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "0c8bb8c753db451eaa9be13ff2b5def3",
+          "calibrated_sensor_token": "920e2b14fa3e4895853a88d03edb91a6",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "0c8bb8c753db451eaa9be13ff2b5def3",
+          "timestamp": 1535489308397405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-28-16-43-51-0400__CAM_BACK_LEFT__1535489308397405.jpg",
+          "source_sha256": "da568a7e15bbf2fee22e5cb613cf53b25bc3a01b0e10cc71e189f1e02bbfbc35"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "acc2a808d5064c548f5153365bc3f1e7",
+          "calibrated_sensor_token": "b7655ab592e646d4b58d637b27e5bcc8",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "acc2a808d5064c548f5153365bc3f1e7",
+          "timestamp": 1535489308378113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_BACK_RIGHT__1535489308378113.jpg",
+          "source_sha256": "db6749a5c70cbcff372d3727be02c4aac6c0a209b395285409c0eae6f4852e12"
+        }
+      ]
+    },
+    {
+      "sample_token": "47188ae2bc8c4faf83c909b135701176",
+      "scene_token": "6f83169d067343658251f72e1dd17dbc",
+      "scene_name": "scene-0553",
+      "timestamp": 1535489313398193,
+      "file": "frame_0007.npy",
+      "sha256": "65ba1b94b3ecd1275cde6cff8099446038ed4086f20867200ff446afbf811bb7",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "7036599cb4d44e9d98c2cfad3332c4f6",
+          "calibrated_sensor_token": "89b9d32d6d084953b8a7a1584e7e21f0",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "7036599cb4d44e9d98c2cfad3332c4f6",
+          "timestamp": 1535489313362404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489313362404.jpg",
+          "source_sha256": "fc6e7f09731c2fecc05cf98ea4fdf284cadd7507d96d7799034fd6c29dab3c82"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "77b36fcc6aaf42949f7bb53f403cd1ae",
+          "calibrated_sensor_token": "bb8dcf29b2804613b8046929a60dd4c9",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "77b36fcc6aaf42949f7bb53f403cd1ae",
+          "timestamp": 1535489313370491,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_RIGHT__1535489313370491.jpg",
+          "source_sha256": "08f323e2f58d48a1643db2db38e8172a8b4db6311b6c27b87f11758c20cc7801"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "a399068a61aa484cb9bbd0fb1c88fe57",
+          "calibrated_sensor_token": "f255377bb7044dd787fa75e2723014dd",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "a399068a61aa484cb9bbd0fb1c88fe57",
+          "timestamp": 1535489313354799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-28-16-43-51-0400__CAM_FRONT_LEFT__1535489313354799.jpg",
+          "source_sha256": "8c7cc7dfc0aef765cec0bd4872f14b97bf32be790631bcc8b87135e78e4c521e"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "0cf7b4690fd446d493534db0ea8a9521",
+          "calibrated_sensor_token": "b349cf16e24f4de380546d4ba67e94d8",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "0cf7b4690fd446d493534db0ea8a9521",
+          "timestamp": 1535489313387558,
+          "filename": "samples/CAM_BACK/n008-2018-08-28-16-43-51-0400__CAM_BACK__1535489313387558.jpg",
+          "source_sha256": "5421d11f413165cb98e96b69f9b660512c81fd0f9641a0915d578deea9b0a4a2"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "b0a0b9295584407daf872fae7f3a2920",
+          "calibrated_sensor_token": "920e2b14fa3e4895853a88d03edb91a6",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "b0a0b9295584407daf872fae7f3a2920",
+          "timestamp": 1535489313397405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-28-16-43-51-0400__CAM_BACK_LEFT__1535489313397405.jpg",
+          "source_sha256": "a071747fa1784df54916748a2ba34c07f252ae8445b75e3655c6ed7426c506e0"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "08cb3fa59e1942f5bafd2a6f2c601982",
+          "calibrated_sensor_token": "b7655ab592e646d4b58d637b27e5bcc8",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "08cb3fa59e1942f5bafd2a6f2c601982",
+          "timestamp": 1535489313378113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-28-16-43-51-0400__CAM_BACK_RIGHT__1535489313378113.jpg",
+          "source_sha256": "8ecc542befb8ba4a6006920fc28cc650e9537528d3533a0da5d1ae3f8e5696e0"
+        }
+      ]
+    },
+    {
+      "sample_token": "df7066fa5f0d4b708982747cc3feed14",
+      "scene_token": "bebf5f5b2a674631ab5c88fd1aa9e87a",
+      "scene_name": "scene-0655",
+      "timestamp": 1535385094550004,
+      "file": "frame_0008.npy",
+      "sha256": "15aa34257d0aab19f21e48ed466632649d7a97c88437b2a8071cfaf1d6b32fb0",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "ef8ebee2c9b54a79a58c65c4bed11502",
+          "calibrated_sensor_token": "da8dac846b474a8a9a95cd4d929b6097",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "ef8ebee2c9b54a79a58c65c4bed11502",
+          "timestamp": 1535385094512404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-27-11-48-51-0400__CAM_FRONT__1535385094512404.jpg",
+          "source_sha256": "c5a7e09b64ab0d6869df4945719c53fb9ab286b1c0e6021f26772f5c0ffd24f0"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "7b737a2536a84d90937fb116887f4b43",
+          "calibrated_sensor_token": "8667d247a1e248d5888361ba3080163b",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "7b737a2536a84d90937fb116887f4b43",
+          "timestamp": 1535385094520482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_RIGHT__1535385094520482.jpg",
+          "source_sha256": "1a69252c70a1e9a1f7ab1ff30e422b15dda4d8f91eaa187f128fdeaeabb7c4eb"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "1e6392b5b1cb44a893cddb74367d6a19",
+          "calibrated_sensor_token": "17c2936e57db48809ba36e21e466aba9",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "1e6392b5b1cb44a893cddb74367d6a19",
+          "timestamp": 1535385094504799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_LEFT__1535385094504799.jpg",
+          "source_sha256": "4965a48d05e171dfce974048a5f19bdeed0618649be6ba47812e7ea05a145fbd"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "b462d53a1b164d85b84344811c2a5982",
+          "calibrated_sensor_token": "1c0a27b9bde24e3297029ded26e5c85c",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "b462d53a1b164d85b84344811c2a5982",
+          "timestamp": 1535385094537558,
+          "filename": "samples/CAM_BACK/n008-2018-08-27-11-48-51-0400__CAM_BACK__1535385094537558.jpg",
+          "source_sha256": "23784fac6a9d4e7444784aa2d5fe98f789e02a18e3881f419a8d683daa5913a2"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "7e0399cd10b9401a8bd72a357873a2b9",
+          "calibrated_sensor_token": "5415fa359d294928be3fbd7810b3b682",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "7e0399cd10b9401a8bd72a357873a2b9",
+          "timestamp": 1535385094547405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-27-11-48-51-0400__CAM_BACK_LEFT__1535385094547405.jpg",
+          "source_sha256": "34cee3dbfed80ae52984c228c7b2f787254673f5da0bc4c15d9aff5abc7b7118"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "354c43d7800d4b9d9166ed176e0661f5",
+          "calibrated_sensor_token": "ef10fbb1ccf34f08aca38b4bfd9a91fe",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "354c43d7800d4b9d9166ed176e0661f5",
+          "timestamp": 1535385094528113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_BACK_RIGHT__1535385094528113.jpg",
+          "source_sha256": "32a494ad4e671a6b5e3fab4c3c7458086b57c765c167339e6d0dc5b7c1805372"
+        }
+      ]
+    },
+    {
+      "sample_token": "0fa505e5dd804d3b9f9f076d23b28d6d",
+      "scene_token": "bebf5f5b2a674631ab5c88fd1aa9e87a",
+      "scene_name": "scene-0655",
+      "timestamp": 1535385099400097,
+      "file": "frame_0009.npy",
+      "sha256": "5827d38147af6c223ff4ebdeea8356ebd398116744170dbcc49643ad603e3b1a",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "7d017f5a0bda42e0968d127852faac11",
+          "calibrated_sensor_token": "da8dac846b474a8a9a95cd4d929b6097",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "7d017f5a0bda42e0968d127852faac11",
+          "timestamp": 1535385099362404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-27-11-48-51-0400__CAM_FRONT__1535385099362404.jpg",
+          "source_sha256": "fd63a862e3f02a25c9651966bb5ae070150bc1ac767bb777580d6e48ed491e75"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "113c459f917541a2bb0f62d63e6bd1e2",
+          "calibrated_sensor_token": "8667d247a1e248d5888361ba3080163b",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "113c459f917541a2bb0f62d63e6bd1e2",
+          "timestamp": 1535385099370482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_RIGHT__1535385099370482.jpg",
+          "source_sha256": "323de9e819ba4e136f99347a00304c015f50404de2f487225035f29f9082b163"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "a28180668d3c404185098833840a3a26",
+          "calibrated_sensor_token": "17c2936e57db48809ba36e21e466aba9",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "a28180668d3c404185098833840a3a26",
+          "timestamp": 1535385099354799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_LEFT__1535385099354799.jpg",
+          "source_sha256": "d16667dce80d3949396439044cb827b65f90724f34a9864dc3bdfb2914f054f2"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "df8790c366404788b30ba6817ef4611e",
+          "calibrated_sensor_token": "1c0a27b9bde24e3297029ded26e5c85c",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "df8790c366404788b30ba6817ef4611e",
+          "timestamp": 1535385099387558,
+          "filename": "samples/CAM_BACK/n008-2018-08-27-11-48-51-0400__CAM_BACK__1535385099387558.jpg",
+          "source_sha256": "b36593a836623b427b70eca8517e5fb7a62606f8111e7e3283f1a7858c97200f"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "8b45b9ad756b4470a32536470195220d",
+          "calibrated_sensor_token": "5415fa359d294928be3fbd7810b3b682",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "8b45b9ad756b4470a32536470195220d",
+          "timestamp": 1535385099397405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-27-11-48-51-0400__CAM_BACK_LEFT__1535385099397405.jpg",
+          "source_sha256": "74995dcf640d0cd6e560757c38d68e71bded6d3ec0d2bc93c7616308368a3dc6"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "53ba46305ce64644a7b96da20f723f35",
+          "calibrated_sensor_token": "ef10fbb1ccf34f08aca38b4bfd9a91fe",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "53ba46305ce64644a7b96da20f723f35",
+          "timestamp": 1535385099378113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_BACK_RIGHT__1535385099378113.jpg",
+          "source_sha256": "e59d2794b2d83915c55a2788b857be490647424be94d6370e3c8262ddaf30151"
+        }
+      ]
+    },
+    {
+      "sample_token": "0402e40724984f3b833496067d46c771",
+      "scene_token": "bebf5f5b2a674631ab5c88fd1aa9e87a",
+      "scene_name": "scene-0655",
+      "timestamp": 1535385104448758,
+      "file": "frame_0010.npy",
+      "sha256": "f9a821fffb155c1fb7598fc23cd1d6dd41effc888f0972bfe174d0cbd425af02",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "db33b7a532744b56b05413a8323a6b87",
+          "calibrated_sensor_token": "da8dac846b474a8a9a95cd4d929b6097",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "db33b7a532744b56b05413a8323a6b87",
+          "timestamp": 1535385104412404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-27-11-48-51-0400__CAM_FRONT__1535385104412404.jpg",
+          "source_sha256": "18f14ac1a53093e3437f2516e06fc208fdc952a8ee863965e14134ee92cf0086"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "c92652812b734bdda82cce407057298b",
+          "calibrated_sensor_token": "8667d247a1e248d5888361ba3080163b",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "c92652812b734bdda82cce407057298b",
+          "timestamp": 1535385104420482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_RIGHT__1535385104420482.jpg",
+          "source_sha256": "fa1d34c6d364ca1b3be48bb6a6c5c9a220fd1007d7ddc99dc66236ae168ed119"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "71de28b116a24196a078eb2157278a83",
+          "calibrated_sensor_token": "17c2936e57db48809ba36e21e466aba9",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "71de28b116a24196a078eb2157278a83",
+          "timestamp": 1535385104404799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_LEFT__1535385104404799.jpg",
+          "source_sha256": "8cb4a891317ccda0fadd4412cd2d1565fa259a4d6a25345f88b07ac5d3651e8a"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "0e1a0687cda84923ba262783ff5a8d73",
+          "calibrated_sensor_token": "1c0a27b9bde24e3297029ded26e5c85c",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "0e1a0687cda84923ba262783ff5a8d73",
+          "timestamp": 1535385104437558,
+          "filename": "samples/CAM_BACK/n008-2018-08-27-11-48-51-0400__CAM_BACK__1535385104437558.jpg",
+          "source_sha256": "01216b4ef785cc643cdfbed79ae76fe7918172c23161d483f117f0e1bce2f2a4"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "c77e056d963e42f49003f59bb35e738d",
+          "calibrated_sensor_token": "5415fa359d294928be3fbd7810b3b682",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "c77e056d963e42f49003f59bb35e738d",
+          "timestamp": 1535385104447405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-27-11-48-51-0400__CAM_BACK_LEFT__1535385104447405.jpg",
+          "source_sha256": "8571afcffe36960f9b88c967515eb7b18afff67eef3c7db63b49e1db386d1832"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "3f235ea41a5f453198069feaf040068e",
+          "calibrated_sensor_token": "ef10fbb1ccf34f08aca38b4bfd9a91fe",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "3f235ea41a5f453198069feaf040068e",
+          "timestamp": 1535385104428113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_BACK_RIGHT__1535385104428113.jpg",
+          "source_sha256": "9bb5d883fe45c18c7a0e40593478d02b1ba337c3219e4d38f17e2c90c07e54c2"
+        }
+      ]
+    },
+    {
+      "sample_token": "e426ccb3e7874894b16e06774ae5ec42",
+      "scene_token": "bebf5f5b2a674631ab5c88fd1aa9e87a",
+      "scene_name": "scene-0655",
+      "timestamp": 1535385109400618,
+      "file": "frame_0011.npy",
+      "sha256": "08a9890d5c0648d4e089d13db0d0a6b91a7d207c3721d530803fa808d517c276",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "8f4376cb2da3448abf42221512917c4d",
+          "calibrated_sensor_token": "da8dac846b474a8a9a95cd4d929b6097",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "8f4376cb2da3448abf42221512917c4d",
+          "timestamp": 1535385109362404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-27-11-48-51-0400__CAM_FRONT__1535385109362404.jpg",
+          "source_sha256": "a5592279bbf6953a8954fc8379933c4df62bc83a96952ccd2f3cbc289c33c363"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "c51183bf006b4587ae38e0ccca98daf7",
+          "calibrated_sensor_token": "8667d247a1e248d5888361ba3080163b",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "c51183bf006b4587ae38e0ccca98daf7",
+          "timestamp": 1535385109370482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_RIGHT__1535385109370482.jpg",
+          "source_sha256": "f286e726f0d34edf20df20439965f67a12838343ddf13e805c8b2e1f0fbb1979"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "d606b3dab69d4e25a5b030c683cf57f2",
+          "calibrated_sensor_token": "17c2936e57db48809ba36e21e466aba9",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "d606b3dab69d4e25a5b030c683cf57f2",
+          "timestamp": 1535385109354799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-27-11-48-51-0400__CAM_FRONT_LEFT__1535385109354799.jpg",
+          "source_sha256": "8030a32dbd8dd25208298d1afca50178a952745258a562beec4fead481a22b7d"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "170be673778945caa53415b6dbdaaf03",
+          "calibrated_sensor_token": "1c0a27b9bde24e3297029ded26e5c85c",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "170be673778945caa53415b6dbdaaf03",
+          "timestamp": 1535385109387558,
+          "filename": "samples/CAM_BACK/n008-2018-08-27-11-48-51-0400__CAM_BACK__1535385109387558.jpg",
+          "source_sha256": "41b1e90c6a9ccd8cf0a410fdd968e278b704b73a56bd3d205e89a2ab5dbdf257"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "cbf28a05c1b44c6dbf847f5f10722d1e",
+          "calibrated_sensor_token": "5415fa359d294928be3fbd7810b3b682",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "cbf28a05c1b44c6dbf847f5f10722d1e",
+          "timestamp": 1535385109397417,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-27-11-48-51-0400__CAM_BACK_LEFT__1535385109397417.jpg",
+          "source_sha256": "b2fef8d2463f1a503c6449ea32508be3c41993d26408548d6e73f5372b50047d"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "89729ea9d389416f9aa43f6399fa9a61",
+          "calibrated_sensor_token": "ef10fbb1ccf34f08aca38b4bfd9a91fe",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "89729ea9d389416f9aa43f6399fa9a61",
+          "timestamp": 1535385109378113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-27-11-48-51-0400__CAM_BACK_RIGHT__1535385109378113.jpg",
+          "source_sha256": "85da0c733fa5c83826cec160f5e8dcd6ed59e094ef29d69cffa23d2c7993adb5"
+        }
+      ]
+    },
+    {
+      "sample_token": "12e1aa58e9d04068a33f37b896b901a3",
+      "scene_token": "2fc3753772e241f2ab2cd16a784cc680",
+      "scene_name": "scene-0757",
+      "timestamp": 1535657110651414,
+      "file": "frame_0012.npy",
+      "sha256": "ffa1e4bd927621572d5bcf971c93e174e458bc16ed93481477ba7d6756a0d95f",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "bf4b00d2af9344c3b3f444206f75cf14",
+          "calibrated_sensor_token": "354cf376c1444b54a2c1752ada037963",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "bf4b00d2af9344c3b3f444206f75cf14",
+          "timestamp": 1535657110612404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-30-15-16-55-0400__CAM_FRONT__1535657110612404.jpg",
+          "source_sha256": "70b6491ba73be1ff5ed352b1bbf1646e6def6e4b6100061d4e863ad65d6bd5cc"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "838ef32ae65d4f7db010fa6a5a4b5b95",
+          "calibrated_sensor_token": "d924eaf2d356426398afb062d03e63ab",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "838ef32ae65d4f7db010fa6a5a4b5b95",
+          "timestamp": 1535657110620482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_RIGHT__1535657110620482.jpg",
+          "source_sha256": "b90b03005f65a017e54aad39ebf69e9d5f545d5a7ef9ef9742c238123d21403c"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "18563b48233f4859b1143732ba70dcd1",
+          "calibrated_sensor_token": "19eeff32f00f414fb9489ccab9c6c2c7",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "18563b48233f4859b1143732ba70dcd1",
+          "timestamp": 1535657110604799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_LEFT__1535657110604799.jpg",
+          "source_sha256": "70a1c9b971ce4fc051ee52b437ce15da375ba66000cc64fd690fe913c4f81441"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "4dd2e4c71cdf4531b2388184a3049970",
+          "calibrated_sensor_token": "47f388daed5a40418adeb18122d924d9",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "4dd2e4c71cdf4531b2388184a3049970",
+          "timestamp": 1535657110637558,
+          "filename": "samples/CAM_BACK/n008-2018-08-30-15-16-55-0400__CAM_BACK__1535657110637558.jpg",
+          "source_sha256": "e25925ee9a4e6ecf441fb04a9358fa93103b58922fb38744e33077b2a2b50df5"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "5ac20ace219c4dad83547e8b73e5ef42",
+          "calibrated_sensor_token": "6e4d0a4577254c19a1389b950eb67894",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "5ac20ace219c4dad83547e8b73e5ef42",
+          "timestamp": 1535657110647405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-30-15-16-55-0400__CAM_BACK_LEFT__1535657110647405.jpg",
+          "source_sha256": "2a34cf936fd01e2b011e077f2120e75b7e7baad50d3f405632a6fe4ea1faa623"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "14e6ad56d3d24cfea2d12b0ac0ba66fb",
+          "calibrated_sensor_token": "590b5f8e95a44fec853a2916f13a13a1",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "14e6ad56d3d24cfea2d12b0ac0ba66fb",
+          "timestamp": 1535657110628113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_BACK_RIGHT__1535657110628113.jpg",
+          "source_sha256": "736d4099d2b759c1869026285e09f266d7d59802ba52cd68f1c373a1e2a2bd82"
+        }
+      ]
+    },
+    {
+      "sample_token": "7ae00681137b40f5bd7bef3823a82ee2",
+      "scene_token": "2fc3753772e241f2ab2cd16a784cc680",
+      "scene_name": "scene-0757",
+      "timestamp": 1535657115648632,
+      "file": "frame_0013.npy",
+      "sha256": "7cfc89d7d25ad0be408eb6a5dc5a58b865cd852f68aba2349158f59c5e5169ae",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "731b03604b4849f0aa646d0b46571451",
+          "calibrated_sensor_token": "354cf376c1444b54a2c1752ada037963",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "731b03604b4849f0aa646d0b46571451",
+          "timestamp": 1535657115612404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-30-15-16-55-0400__CAM_FRONT__1535657115612404.jpg",
+          "source_sha256": "9776e5948c2b5870ac428742bd17609900d775c1423af475d811d484fabbbd2f"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "f48f93d4e65c4f9fad4285e73d93b4b5",
+          "calibrated_sensor_token": "d924eaf2d356426398afb062d03e63ab",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "f48f93d4e65c4f9fad4285e73d93b4b5",
+          "timestamp": 1535657115620482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_RIGHT__1535657115620482.jpg",
+          "source_sha256": "d91c060f9f72edc0d615dca87094b168d824aa6e5501c22d139f0bd12f98af2a"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "9d65d6c66c0d45feaa41419922952590",
+          "calibrated_sensor_token": "19eeff32f00f414fb9489ccab9c6c2c7",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "9d65d6c66c0d45feaa41419922952590",
+          "timestamp": 1535657115604799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_LEFT__1535657115604799.jpg",
+          "source_sha256": "5010bafe505fe57bd4141e6017e751354d267fe3c63eeb68b5ec8ef46bc9fdc0"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "7f67f302c1824fca95f8a0cd3418e0b8",
+          "calibrated_sensor_token": "47f388daed5a40418adeb18122d924d9",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "7f67f302c1824fca95f8a0cd3418e0b8",
+          "timestamp": 1535657115637558,
+          "filename": "samples/CAM_BACK/n008-2018-08-30-15-16-55-0400__CAM_BACK__1535657115637558.jpg",
+          "source_sha256": "882a5799af937479746a410ca952c739453741236545756b27d8145726302519"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "58f57171f4f44c04969a688a64eb1cae",
+          "calibrated_sensor_token": "6e4d0a4577254c19a1389b950eb67894",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "58f57171f4f44c04969a688a64eb1cae",
+          "timestamp": 1535657115647405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-30-15-16-55-0400__CAM_BACK_LEFT__1535657115647405.jpg",
+          "source_sha256": "495a1116cb5416cfeed659e35b38f3d6db29cea80b5cd7608f54057067449035"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "c300ed887a9e4ceea2c6b65c7304fce0",
+          "calibrated_sensor_token": "590b5f8e95a44fec853a2916f13a13a1",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "c300ed887a9e4ceea2c6b65c7304fce0",
+          "timestamp": 1535657115628113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_BACK_RIGHT__1535657115628113.jpg",
+          "source_sha256": "78f6ba0d1c862ab2f852fe1bafd65d6566176a00a4d91887f59c85e9c37ae4f8"
+        }
+      ]
+    },
+    {
+      "sample_token": "c15f8261acfd4013a735798770fad71a",
+      "scene_token": "2fc3753772e241f2ab2cd16a784cc680",
+      "scene_name": "scene-0757",
+      "timestamp": 1535657120649535,
+      "file": "frame_0014.npy",
+      "sha256": "24461c9897d5a6d4982a290e3147cb22e2ae5a2bf801061433241cf82f41aa7c",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "17b8884e21844ad9bf5df19a141a1156",
+          "calibrated_sensor_token": "354cf376c1444b54a2c1752ada037963",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "17b8884e21844ad9bf5df19a141a1156",
+          "timestamp": 1535657120612404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-30-15-16-55-0400__CAM_FRONT__1535657120612404.jpg",
+          "source_sha256": "5127f1563576f86041b87268b6528f706b312c1ec49b7ff8ad5ecfe59f9ce48f"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "1d8915e5ceee48e5a064aa006b5b8525",
+          "calibrated_sensor_token": "d924eaf2d356426398afb062d03e63ab",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "1d8915e5ceee48e5a064aa006b5b8525",
+          "timestamp": 1535657120620482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_RIGHT__1535657120620482.jpg",
+          "source_sha256": "6e4b5c8a0f005271adfafc53ec3d124b2e1b14ab0f89365520d0d8157d75ec84"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "fd4e09b53541474c9cf69aa906de1f10",
+          "calibrated_sensor_token": "19eeff32f00f414fb9489ccab9c6c2c7",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "fd4e09b53541474c9cf69aa906de1f10",
+          "timestamp": 1535657120604799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_LEFT__1535657120604799.jpg",
+          "source_sha256": "8cda9f09c2825194c5a2b5642701c602147d7c64927964c3eecff8be51159894"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "4ecb756d2a644068b916799feb01f4ee",
+          "calibrated_sensor_token": "47f388daed5a40418adeb18122d924d9",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "4ecb756d2a644068b916799feb01f4ee",
+          "timestamp": 1535657120637558,
+          "filename": "samples/CAM_BACK/n008-2018-08-30-15-16-55-0400__CAM_BACK__1535657120637558.jpg",
+          "source_sha256": "1c30c166dfc3b8d75e36368967c0151e57e1205e4d82a423c7a6b707239835fa"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "54ab45d975774d91b7cb6db6b46c7779",
+          "calibrated_sensor_token": "6e4d0a4577254c19a1389b950eb67894",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "54ab45d975774d91b7cb6db6b46c7779",
+          "timestamp": 1535657120647405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-30-15-16-55-0400__CAM_BACK_LEFT__1535657120647405.jpg",
+          "source_sha256": "38fb494935dcea88ce7f54ae9a9d0617557679c69e930a2c1a86451ee9da52df"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "a05c532ecd2f42079750088d149534bc",
+          "calibrated_sensor_token": "590b5f8e95a44fec853a2916f13a13a1",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "a05c532ecd2f42079750088d149534bc",
+          "timestamp": 1535657120628113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_BACK_RIGHT__1535657120628113.jpg",
+          "source_sha256": "55f5486ced7f52000f79a41fc1b3cfbbe0a6f506a6aa8d9685a3a335451a1f72"
+        }
+      ]
+    },
+    {
+      "sample_token": "9e6ce5a26025462fbd9bdac2d18c07eb",
+      "scene_token": "2fc3753772e241f2ab2cd16a784cc680",
+      "scene_name": "scene-0757",
+      "timestamp": 1535657125649405,
+      "file": "frame_0015.npy",
+      "sha256": "1ddcf90aba61e62695d9bd41836596ed05bcca8085d1f2b49510e4add5e4ea66",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "834ce773cfa04be8b56d9614ed1dcf7f",
+          "calibrated_sensor_token": "354cf376c1444b54a2c1752ada037963",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "834ce773cfa04be8b56d9614ed1dcf7f",
+          "timestamp": 1535657125612404,
+          "filename": "samples/CAM_FRONT/n008-2018-08-30-15-16-55-0400__CAM_FRONT__1535657125612404.jpg",
+          "source_sha256": "f059314b5b858f85ad79c147ad7dee06626b28507b326d14b61d77c55022f33a"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "6040b4ad270843fea46e8e96ac3aed51",
+          "calibrated_sensor_token": "d924eaf2d356426398afb062d03e63ab",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "6040b4ad270843fea46e8e96ac3aed51",
+          "timestamp": 1535657125620482,
+          "filename": "samples/CAM_FRONT_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_RIGHT__1535657125620482.jpg",
+          "source_sha256": "f54c114b30ba6ba4dd3eeeca32938c52574caef422d22edde733579019f08aab"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "45f73365414e4e9ba34b8413166178b3",
+          "calibrated_sensor_token": "19eeff32f00f414fb9489ccab9c6c2c7",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "45f73365414e4e9ba34b8413166178b3",
+          "timestamp": 1535657125604799,
+          "filename": "samples/CAM_FRONT_LEFT/n008-2018-08-30-15-16-55-0400__CAM_FRONT_LEFT__1535657125604799.jpg",
+          "source_sha256": "4f1234c0fc3638c9c12e3075a0180d164147e985e37aefa17a20fe5472366e0b"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "198884767c7b4a00b9828c90fa419c03",
+          "calibrated_sensor_token": "47f388daed5a40418adeb18122d924d9",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "198884767c7b4a00b9828c90fa419c03",
+          "timestamp": 1535657125637558,
+          "filename": "samples/CAM_BACK/n008-2018-08-30-15-16-55-0400__CAM_BACK__1535657125637558.jpg",
+          "source_sha256": "80b54a63cbde50197987be35555caa920f2ca810e247cbc3725cb181ec3af07c"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "157092b195ca4058b3cc5f370ac1aad7",
+          "calibrated_sensor_token": "6e4d0a4577254c19a1389b950eb67894",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "157092b195ca4058b3cc5f370ac1aad7",
+          "timestamp": 1535657125647405,
+          "filename": "samples/CAM_BACK_LEFT/n008-2018-08-30-15-16-55-0400__CAM_BACK_LEFT__1535657125647405.jpg",
+          "source_sha256": "aa6c40aec3af398fe6147eefdd6f7e0bb7457a545a87ab27e417c687b93ccd24"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "db2bab764b0043fa87b1c13374d8429a",
+          "calibrated_sensor_token": "590b5f8e95a44fec853a2916f13a13a1",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "db2bab764b0043fa87b1c13374d8429a",
+          "timestamp": 1535657125628113,
+          "filename": "samples/CAM_BACK_RIGHT/n008-2018-08-30-15-16-55-0400__CAM_BACK_RIGHT__1535657125628113.jpg",
+          "source_sha256": "4ec95ab69cf22efc9cec7767eeb0c3601cc43bb2cebe271023ce18a9f0ab0b38"
+        }
+      ]
+    },
+    {
+      "sample_token": "feaef544d11646ed806b53d9e1f39cd9",
+      "scene_token": "c5224b9b454b4ded9b5d2d2634bbda8a",
+      "scene_name": "scene-0796",
+      "timestamp": 1538448747047643,
+      "file": "frame_0016.npy",
+      "sha256": "692e1c265fb31db8fe62faa22995ffd8cbc35f699342a3c8be409948de4dc9ce",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "a3e361c213684133a4c73f432928f4a0",
+          "calibrated_sensor_token": "1e2441fdd3bd41f2badbeb0a1775d1e6",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "a3e361c213684133a4c73f432928f4a0",
+          "timestamp": 1538448747012460,
+          "filename": "samples/CAM_FRONT/n015-2018-10-02-10-50-40+0800__CAM_FRONT__1538448747012460.jpg",
+          "source_sha256": "9648bd922b19d5ab9f6ef5af51549830fdd16f74546bc109b80342d4f21dbf0f"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "c0e1a9f02de744f191409c0fa25babf5",
+          "calibrated_sensor_token": "2aa2cc8c15544f0d8128870d37f87a98",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "c0e1a9f02de744f191409c0fa25babf5",
+          "timestamp": 1538448747020339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_RIGHT__1538448747020339.jpg",
+          "source_sha256": "5397e2c66862f13740b60944402041754d08f22cad5acc108056bac5241d0b6e"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "0a6129c27f5643cc8c4ae011de763a1c",
+          "calibrated_sensor_token": "fa972f3a7727463c9c6df3eee526cff0",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "0a6129c27f5643cc8c4ae011de763a1c",
+          "timestamp": 1538448747004844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_LEFT__1538448747004844.jpg",
+          "source_sha256": "8e97155af9bcf537d90f9d48f18f6669967b347d50805eedaf82d2486b4d1c58"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "579b4214e58544d1921331abca2cf18c",
+          "calibrated_sensor_token": "ec65341b9c89462d8a4a60e0ec5ff4d3",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "579b4214e58544d1921331abca2cf18c",
+          "timestamp": 1538448747037525,
+          "filename": "samples/CAM_BACK/n015-2018-10-02-10-50-40+0800__CAM_BACK__1538448747037525.jpg",
+          "source_sha256": "eacc775fdb3c2582aa4adc5f965613cf62479ed808c28825bb1f8a946f6729b3"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "8c167f21a7114201ba11ede1c1c1c0c6",
+          "calibrated_sensor_token": "eac55956ec594aa090397201a59fd31b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "8c167f21a7114201ba11ede1c1c1c0c6",
+          "timestamp": 1538448747047423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-10-02-10-50-40+0800__CAM_BACK_LEFT__1538448747047423.jpg",
+          "source_sha256": "f5c115e7198dd7f14c50926a11f0b8591fa42a7277489cf9ca71d8d17a39ac73"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "1a7448a180484287afa00b445b0e7ea8",
+          "calibrated_sensor_token": "716c1901ea754791842610c2799c3d4b",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "1a7448a180484287afa00b445b0e7ea8",
+          "timestamp": 1538448747027893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_BACK_RIGHT__1538448747027893.jpg",
+          "source_sha256": "2ccf6cf6c41f0768c80ff894c87ed14bbea65de3c70ad1a3bac0f966d03e57f6"
+        }
+      ]
+    },
+    {
+      "sample_token": "312cd4d3bef1476a9211d3dab50dd0b7",
+      "scene_token": "c5224b9b454b4ded9b5d2d2634bbda8a",
+      "scene_name": "scene-0796",
+      "timestamp": 1538448751548178,
+      "file": "frame_0017.npy",
+      "sha256": "8ce0bfc5fa812e360b9c53f2bd10211af2983ad4e36d11553f95080b4fda12f8",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "a96757f814f343b2aab3b8749ad555f1",
+          "calibrated_sensor_token": "1e2441fdd3bd41f2badbeb0a1775d1e6",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "a96757f814f343b2aab3b8749ad555f1",
+          "timestamp": 1538448751512460,
+          "filename": "samples/CAM_FRONT/n015-2018-10-02-10-50-40+0800__CAM_FRONT__1538448751512460.jpg",
+          "source_sha256": "48daa7836b71123c658cdde20ed04df9e974503fde4aa763e8e731e3bc8e7356"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "b36623fc47734fb49167245e0934dee0",
+          "calibrated_sensor_token": "2aa2cc8c15544f0d8128870d37f87a98",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "b36623fc47734fb49167245e0934dee0",
+          "timestamp": 1538448751520339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_RIGHT__1538448751520339.jpg",
+          "source_sha256": "7b1e67c7fae324f0d3cd8a10ac127086e04cfa8260217824d24eabbea4b721d0"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "ab8c620234af4436ae4788d2fe59b850",
+          "calibrated_sensor_token": "fa972f3a7727463c9c6df3eee526cff0",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "ab8c620234af4436ae4788d2fe59b850",
+          "timestamp": 1538448751504844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_LEFT__1538448751504844.jpg",
+          "source_sha256": "d9db86f1323b9487a730a1aca8ebf0067b7ef125f8847781b3edb14d8a09f855"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "f3664ffaf2b445ee9b7309b885aa55f5",
+          "calibrated_sensor_token": "ec65341b9c89462d8a4a60e0ec5ff4d3",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "f3664ffaf2b445ee9b7309b885aa55f5",
+          "timestamp": 1538448751537525,
+          "filename": "samples/CAM_BACK/n015-2018-10-02-10-50-40+0800__CAM_BACK__1538448751537525.jpg",
+          "source_sha256": "a768f00999f5668fcc9f9170cb62f4014f517d2ad8088c4ac63d33f9dea160dd"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "8f6d4bb2144d41c3a29bb2883edbede5",
+          "calibrated_sensor_token": "eac55956ec594aa090397201a59fd31b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "8f6d4bb2144d41c3a29bb2883edbede5",
+          "timestamp": 1538448751547423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-10-02-10-50-40+0800__CAM_BACK_LEFT__1538448751547423.jpg",
+          "source_sha256": "3f3ea2b2b68f1b47c5b6fcb4c997a7e1883fe3e7225bedc4efa2fd1cc8a7b4d1"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "cf62c216dd47450297e4e7d0e6aa27f8",
+          "calibrated_sensor_token": "716c1901ea754791842610c2799c3d4b",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "cf62c216dd47450297e4e7d0e6aa27f8",
+          "timestamp": 1538448751527893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_BACK_RIGHT__1538448751527893.jpg",
+          "source_sha256": "fe562948054c5398bad3d0a5b4e0de9ca152df73e46a7d31621621ad4da63f09"
+        }
+      ]
+    },
+    {
+      "sample_token": "7df1288fed8a403b8e7a35112b392d7c",
+      "scene_token": "c5224b9b454b4ded9b5d2d2634bbda8a",
+      "scene_name": "scene-0796",
+      "timestamp": 1538448756547528,
+      "file": "frame_0018.npy",
+      "sha256": "062d3b62830700a5a917583bce249a4fe784e32755044bb457dce68a27c1b466",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "3299ffab259345fdaa4928d665a2c59d",
+          "calibrated_sensor_token": "1e2441fdd3bd41f2badbeb0a1775d1e6",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "3299ffab259345fdaa4928d665a2c59d",
+          "timestamp": 1538448756512460,
+          "filename": "samples/CAM_FRONT/n015-2018-10-02-10-50-40+0800__CAM_FRONT__1538448756512460.jpg",
+          "source_sha256": "6fef287d4099b5ac45dd740ebc3afd0f2d8e894eb55f087f737a1d488b628ec6"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "026baace2303407daa533c64b9f01a03",
+          "calibrated_sensor_token": "2aa2cc8c15544f0d8128870d37f87a98",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "026baace2303407daa533c64b9f01a03",
+          "timestamp": 1538448756520339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_RIGHT__1538448756520339.jpg",
+          "source_sha256": "6cb7a649b51c12e62b4fe9fd18bdef661349d21f43890dd76495dcd53cb79e0c"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "c0401590262b4c8bbddd88fec98ccec7",
+          "calibrated_sensor_token": "fa972f3a7727463c9c6df3eee526cff0",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "c0401590262b4c8bbddd88fec98ccec7",
+          "timestamp": 1538448756504844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_LEFT__1538448756504844.jpg",
+          "source_sha256": "db14d2bae3632545b22c293389c31aceea5b1affa96aa16ed494631fe8e0a931"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "6808ff7d60a945fa855959cae7fa5737",
+          "calibrated_sensor_token": "ec65341b9c89462d8a4a60e0ec5ff4d3",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "6808ff7d60a945fa855959cae7fa5737",
+          "timestamp": 1538448756537525,
+          "filename": "samples/CAM_BACK/n015-2018-10-02-10-50-40+0800__CAM_BACK__1538448756537525.jpg",
+          "source_sha256": "b720fcda04c47d0b963d4b1f8a97b807c34cfba0b1a64a3ef957d1bfa6862a67"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "c6c4ad62bda14165a7c609219f2f6b3b",
+          "calibrated_sensor_token": "eac55956ec594aa090397201a59fd31b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "c6c4ad62bda14165a7c609219f2f6b3b",
+          "timestamp": 1538448756547423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-10-02-10-50-40+0800__CAM_BACK_LEFT__1538448756547423.jpg",
+          "source_sha256": "c0c53fd42144d49c133b3bf9a146fedc3aceabd95532e385850d3122b6b48266"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "865a1ff840704c4d95538f23435a8696",
+          "calibrated_sensor_token": "716c1901ea754791842610c2799c3d4b",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "865a1ff840704c4d95538f23435a8696",
+          "timestamp": 1538448756527893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_BACK_RIGHT__1538448756527893.jpg",
+          "source_sha256": "9b1c41508b7a5813a516d6391a2a227df040ae63d97aadf918696e1f00e957c9"
+        }
+      ]
+    },
+    {
+      "sample_token": "26e594c412e84bdda76e344933fe305a",
+      "scene_token": "c5224b9b454b4ded9b5d2d2634bbda8a",
+      "scene_name": "scene-0796",
+      "timestamp": 1538448761548500,
+      "file": "frame_0019.npy",
+      "sha256": "e7de0828f13969ccba8a479414354d4e476eb1232c8122cce062712ea9c00665",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "55b484d8b9ce410abb64e18066ff8114",
+          "calibrated_sensor_token": "1e2441fdd3bd41f2badbeb0a1775d1e6",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "55b484d8b9ce410abb64e18066ff8114",
+          "timestamp": 1538448761512460,
+          "filename": "samples/CAM_FRONT/n015-2018-10-02-10-50-40+0800__CAM_FRONT__1538448761512460.jpg",
+          "source_sha256": "1ccf420357094f14b93e05ef42edee5371d08f1cdc116a7d30071bd4bafe81fa"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "823d9ee1ca3344598d647352bf1c22d1",
+          "calibrated_sensor_token": "2aa2cc8c15544f0d8128870d37f87a98",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "823d9ee1ca3344598d647352bf1c22d1",
+          "timestamp": 1538448761520339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_RIGHT__1538448761520339.jpg",
+          "source_sha256": "53276b872df63b4f295e028091dde61109169eda26932a12d89af2ed52ed6ea0"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "70941b979dd04cabad44c6b8d86dd76a",
+          "calibrated_sensor_token": "fa972f3a7727463c9c6df3eee526cff0",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "70941b979dd04cabad44c6b8d86dd76a",
+          "timestamp": 1538448761504844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-10-02-10-50-40+0800__CAM_FRONT_LEFT__1538448761504844.jpg",
+          "source_sha256": "278a26a4fc7c3e2d3652f1d4ce58b19086ce04117f874e5d6c5895db17729626"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "6e9ba3a035004943821455360f1f640c",
+          "calibrated_sensor_token": "ec65341b9c89462d8a4a60e0ec5ff4d3",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "6e9ba3a035004943821455360f1f640c",
+          "timestamp": 1538448761537525,
+          "filename": "samples/CAM_BACK/n015-2018-10-02-10-50-40+0800__CAM_BACK__1538448761537525.jpg",
+          "source_sha256": "8c5585f00e7afd8e15dfef51e3728ab514b0bf7be2e80e28a461be86f695b38e"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "fac247c1e3bc4c7cbf8c82a06e5a6281",
+          "calibrated_sensor_token": "eac55956ec594aa090397201a59fd31b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "fac247c1e3bc4c7cbf8c82a06e5a6281",
+          "timestamp": 1538448761547423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-10-02-10-50-40+0800__CAM_BACK_LEFT__1538448761547423.jpg",
+          "source_sha256": "1bfcdd27de6e7384720efbd8f003572aaaf137b02b36d84c4c7551f2f6193941"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "0be976cc26b84b4ea833e481189598a0",
+          "calibrated_sensor_token": "716c1901ea754791842610c2799c3d4b",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "0be976cc26b84b4ea833e481189598a0",
+          "timestamp": 1538448761527893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-10-02-10-50-40+0800__CAM_BACK_RIGHT__1538448761527893.jpg",
+          "source_sha256": "46cda8d3e3e05a99074627e9e8b1436a11e3d382a688f245bbe5336f10afa443"
+        }
+      ]
+    },
+    {
+      "sample_token": "7220a2aaebf347cda4efedc88dcae96e",
+      "scene_token": "d25718445d89453381c659b9c8734939",
+      "scene_name": "scene-1077",
+      "timestamp": 1542800370450291,
+      "file": "frame_0020.npy",
+      "sha256": "42f1bafdc31d82866fbe867548c0bdf4207c0716472c0fe1d8026763a24383f5",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "3a308cf9cf9a4e60a103da1b9edb4850",
+          "calibrated_sensor_token": "0c739ca39f9e4650af95c0b196164416",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "3a308cf9cf9a4e60a103da1b9edb4850",
+          "timestamp": 1542800370412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800370412460.jpg",
+          "source_sha256": "58de712b26118ab908bd3521c4db8233451f2bed6df3c881c9c050e0470321d2"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "0b5e8cecbd1440b490212a2d6beae756",
+          "calibrated_sensor_token": "616f65e5a2934a85a22d5bdd4a6f2952",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "0b5e8cecbd1440b490212a2d6beae756",
+          "timestamp": 1542800370420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800370420339.jpg",
+          "source_sha256": "ee63f46298c1d866d7c0092583ca5c1c8c04d12ae5716b80c26b833517dcaa82"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "ddf3463d83df4ecb9fb927bd00da989d",
+          "calibrated_sensor_token": "8720056964094065b96cd2667ed62b5d",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "ddf3463d83df4ecb9fb927bd00da989d",
+          "timestamp": 1542800370404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800370404844.jpg",
+          "source_sha256": "9d4f69fee1539244ad14b3ec670cfa946d0b9225116181cc6efa00f6a04ae789"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "558f25d8abf8472c80b4223cbeee7588",
+          "calibrated_sensor_token": "39349465290b4c859036caaeb491418e",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "558f25d8abf8472c80b4223cbeee7588",
+          "timestamp": 1542800370437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800370437525.jpg",
+          "source_sha256": "34be5dd7ce8d6f21baf87967d1b24c441bdbdfc3092b8177573408213619a250"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "abfeab6cb6e6455ab29f962cd6014de0",
+          "calibrated_sensor_token": "7f30d23a96af408d883f8466e525ef57",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "abfeab6cb6e6455ab29f962cd6014de0",
+          "timestamp": 1542800370447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800370447423.jpg",
+          "source_sha256": "8d78e0c90ab4071a1748db42cb888d24114e6b49a3376a4d82f2f7809f8abd1a"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "464d39a66a5f4d1a9fc9085a70beb27e",
+          "calibrated_sensor_token": "7d40e6ed1d5b487f9ba4f60833b5e587",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "464d39a66a5f4d1a9fc9085a70beb27e",
+          "timestamp": 1542800370427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800370427893.jpg",
+          "source_sha256": "95eef70f73c745f84d8d4614a5a641a20f69540be81df84559b29cd57c88baaf"
+        }
+      ]
+    },
+    {
+      "sample_token": "7f49d07afdf64212a4eea699cb5ab17c",
+      "scene_token": "d25718445d89453381c659b9c8734939",
+      "scene_name": "scene-1077",
+      "timestamp": 1542800375447384,
+      "file": "frame_0021.npy",
+      "sha256": "0799af5e0bd54baad3f2f52bbfd959537e8d775ff0d764558fb9399a88dc006e",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "53bf4f9f335b4180bf3ffa998853d6c2",
+          "calibrated_sensor_token": "0c739ca39f9e4650af95c0b196164416",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "53bf4f9f335b4180bf3ffa998853d6c2",
+          "timestamp": 1542800375412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800375412460.jpg",
+          "source_sha256": "a3dce0a575999a5e23ee1f2512de4d6986a08b2f8f23e9a7da68e42e8fb1dc85"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "7c5f0d5aee144718910dae7d47076005",
+          "calibrated_sensor_token": "616f65e5a2934a85a22d5bdd4a6f2952",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "7c5f0d5aee144718910dae7d47076005",
+          "timestamp": 1542800375420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800375420339.jpg",
+          "source_sha256": "62c8fafb6280c7eadadcb146f84c58b15c3c77d14aaddb645ceb3e6860fbcfff"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "8b1509b0becb4735ac4a53553cd8f563",
+          "calibrated_sensor_token": "8720056964094065b96cd2667ed62b5d",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "8b1509b0becb4735ac4a53553cd8f563",
+          "timestamp": 1542800375404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800375404844.jpg",
+          "source_sha256": "16f0c658f7a79d3e2359e87e0a85c1a1ba21969deac19a26f56672d3ca206931"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "6c2befc2d26649828eae9e8e69b983c1",
+          "calibrated_sensor_token": "39349465290b4c859036caaeb491418e",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "6c2befc2d26649828eae9e8e69b983c1",
+          "timestamp": 1542800375437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800375437525.jpg",
+          "source_sha256": "a8175114a20ff08fbd2604b79a46e67d7b5b9ac5a548dbd6df6b4fbb06b544da"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "8394a0848303470e85274ccd4402729f",
+          "calibrated_sensor_token": "7f30d23a96af408d883f8466e525ef57",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "8394a0848303470e85274ccd4402729f",
+          "timestamp": 1542800375447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800375447423.jpg",
+          "source_sha256": "a1b1aa55f6fc651cfac4c9d1dbb845662d94ba1ca28f274f7cbeec86c6b3af22"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "eeb1ea4ac9ee412da3804485aa8a4cf1",
+          "calibrated_sensor_token": "7d40e6ed1d5b487f9ba4f60833b5e587",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "eeb1ea4ac9ee412da3804485aa8a4cf1",
+          "timestamp": 1542800375427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800375427893.jpg",
+          "source_sha256": "22798087323679746c65ef9cde08b22075db251a9b7cab84331e2e3c31777ae5"
+        }
+      ]
+    },
+    {
+      "sample_token": "7ca3502caf394d6d9c0a80b822b3ff48",
+      "scene_token": "d25718445d89453381c659b9c8734939",
+      "scene_name": "scene-1077",
+      "timestamp": 1542800380398024,
+      "file": "frame_0022.npy",
+      "sha256": "ab10de6f5c3234a0f6b66edf79047086d46ab4a19194ab695057e91d31c2013f",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "da25480e018a40f5b86e16e5432e4fc8",
+          "calibrated_sensor_token": "0c739ca39f9e4650af95c0b196164416",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "da25480e018a40f5b86e16e5432e4fc8",
+          "timestamp": 1542800380362460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800380362460.jpg",
+          "source_sha256": "5b68d8633486598460bf87d674adfc93fadb6ec054d3f8509e315a920f893719"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "d47bbdd1c8f94337ab4a6a9176233c1d",
+          "calibrated_sensor_token": "616f65e5a2934a85a22d5bdd4a6f2952",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "d47bbdd1c8f94337ab4a6a9176233c1d",
+          "timestamp": 1542800380370339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800380370339.jpg",
+          "source_sha256": "410debc3aa4a8955be74b237c2ddfe1d226121b32fdd65872aa448cf13e7cef6"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "6fc71143b0c646aeabbdb9d203657ed8",
+          "calibrated_sensor_token": "8720056964094065b96cd2667ed62b5d",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "6fc71143b0c646aeabbdb9d203657ed8",
+          "timestamp": 1542800380354844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800380354844.jpg",
+          "source_sha256": "dbf2649b9061edcc62123ed869050562249042d81e54c9678da013c74e65b755"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "28c9f0a4e3fa47f6bf36ed378914546e",
+          "calibrated_sensor_token": "39349465290b4c859036caaeb491418e",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "28c9f0a4e3fa47f6bf36ed378914546e",
+          "timestamp": 1542800380387525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800380387525.jpg",
+          "source_sha256": "a5e529cc3f3ea7bf9028201f7c5cc389ccdc705699bac770ca8162e85d0f48a3"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "d4f48399cff7455bbfa36bcc68c59483",
+          "calibrated_sensor_token": "7f30d23a96af408d883f8466e525ef57",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "d4f48399cff7455bbfa36bcc68c59483",
+          "timestamp": 1542800380397423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800380397423.jpg",
+          "source_sha256": "23064e7edc31545ad35f791f8eb1befb10177ca62a87a15163a354369d900a3e"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "b71d699df52f49b39c667757f2cfd7af",
+          "calibrated_sensor_token": "7d40e6ed1d5b487f9ba4f60833b5e587",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "b71d699df52f49b39c667757f2cfd7af",
+          "timestamp": 1542800380377893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800380377893.jpg",
+          "source_sha256": "5e5dc109139f15d6123acdeb30a789837f7e55f860e301ebb83f01500dde1268"
+        }
+      ]
+    },
+    {
+      "sample_token": "64134c75d5f547fdb4a6862b192f06cd",
+      "scene_token": "d25718445d89453381c659b9c8734939",
+      "scene_name": "scene-1077",
+      "timestamp": 1542800385448218,
+      "file": "frame_0023.npy",
+      "sha256": "deeb324a8fdbca6a3f1ef07b51e3a33399d9b5169a219358d511e6ec89a15bbd",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "2d35f62a9daf41a18c15c7a946b0d141",
+          "calibrated_sensor_token": "0c739ca39f9e4650af95c0b196164416",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "2d35f62a9daf41a18c15c7a946b0d141",
+          "timestamp": 1542800385412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800385412460.jpg",
+          "source_sha256": "bc1eade1812353b8b4d50b36a8f8638acf5f42b8074bef59cfa554d24ef00a6e"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "33a63d6c64424e93807ce22e82565a0f",
+          "calibrated_sensor_token": "616f65e5a2934a85a22d5bdd4a6f2952",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "33a63d6c64424e93807ce22e82565a0f",
+          "timestamp": 1542800385420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800385420339.jpg",
+          "source_sha256": "5f27702c47f0851eb2442a4eb232226773fe95948f768e27f174ba174cb1d76e"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "8115df631dbc4f6590b761ada1b940bf",
+          "calibrated_sensor_token": "8720056964094065b96cd2667ed62b5d",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "8115df631dbc4f6590b761ada1b940bf",
+          "timestamp": 1542800385404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800385404844.jpg",
+          "source_sha256": "be7feaf7de8bb08e9237901b368af158cac71b8f51b1e16ba08659c2553d4d52"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "4865db4a0f324379b494aa0e30e3b03c",
+          "calibrated_sensor_token": "39349465290b4c859036caaeb491418e",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "4865db4a0f324379b494aa0e30e3b03c",
+          "timestamp": 1542800385437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800385437525.jpg",
+          "source_sha256": "6c3336e58e9e5cb44599a91e77cf9939e7b5d6a5c30587ebaf701aeb669ba38c"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "1ef97588d2104e70a252db0889978fba",
+          "calibrated_sensor_token": "7f30d23a96af408d883f8466e525ef57",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "1ef97588d2104e70a252db0889978fba",
+          "timestamp": 1542800385447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800385447423.jpg",
+          "source_sha256": "c797eb3e8fbd6ccbea818eae623595575efc47182549811ed3653810868cfa07"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "71a038da8675466d91ab064dad4c820b",
+          "calibrated_sensor_token": "7d40e6ed1d5b487f9ba4f60833b5e587",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "71a038da8675466d91ab064dad4c820b",
+          "timestamp": 1542800385427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800385427893.jpg",
+          "source_sha256": "42c992edc302ef737592ce871090770a675fba6c2cef904553f310de0303b704"
+        }
+      ]
+    },
+    {
+      "sample_token": "fb61d590dd1143ccb12ea56fbe9d9d07",
+      "scene_token": "de7d80a1f5fb4c3e82ce8a4f213b450a",
+      "scene_name": "scene-1094",
+      "timestamp": 1542800850447485,
+      "file": "frame_0024.npy",
+      "sha256": "be9b98c533c6656935a0aa7d74ded807ef5528d8bac43f3ce1cb3af23b5ab4f4",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "cd7cd1aa05d04862a0b8c346f291167e",
+          "calibrated_sensor_token": "7ce942240a1f4e349c4c3c64d7b258b5",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "cd7cd1aa05d04862a0b8c346f291167e",
+          "timestamp": 1542800850412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800850412460.jpg",
+          "source_sha256": "aa36abb6c6ff4e737b3151faf0285c37b257a1f4f83a5fb2df6e52ec71c2bcfb"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "30877d615d7a457a81b9b14e4f6faa95",
+          "calibrated_sensor_token": "4c571600df1c4432b0179648b58567f3",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "30877d615d7a457a81b9b14e4f6faa95",
+          "timestamp": 1542800850420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800850420339.jpg",
+          "source_sha256": "179727bb87e13a990cd314b5fd81b08b9108a418fd6c1b6f31f9ff853d819339"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "750696e5fcb9404dbd3aeb71e0a88ed3",
+          "calibrated_sensor_token": "bcda348ee5fc434c89f27342b0e229d3",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "750696e5fcb9404dbd3aeb71e0a88ed3",
+          "timestamp": 1542800850404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800850404844.jpg",
+          "source_sha256": "640a29f836bd565cf0a47bf652acbf53b3e89b592d0889cdf9dfeeaa489c417e"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "efd0d14b097348548ba19b4a977fbfc3",
+          "calibrated_sensor_token": "d9be46e9197f4eb684860472782409e2",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "efd0d14b097348548ba19b4a977fbfc3",
+          "timestamp": 1542800850437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800850437525.jpg",
+          "source_sha256": "d7b6fa52f6b9c3bee432bd4f0b3ea277a2a2a6b837cfd659d0ba33fe059fd2b9"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "7164f83d615b4ba0b1f188f13e659607",
+          "calibrated_sensor_token": "9339a854b5364d4295421df4d7748f7b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "7164f83d615b4ba0b1f188f13e659607",
+          "timestamp": 1542800850447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800850447423.jpg",
+          "source_sha256": "894ca249c32586d84b63dcd10327cf6d99c60abd7f6dc1527ae2f57e92dd7fe7"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "00b18db052954d4e8fc5d2d095661e77",
+          "calibrated_sensor_token": "193486c93d6b4cb894a2f5ff342f5820",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "00b18db052954d4e8fc5d2d095661e77",
+          "timestamp": 1542800850427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800850427893.jpg",
+          "source_sha256": "8ab5e56c64b5a4859275fe8946ac6947e05d3ff1d345e539934f6d2c928e8961"
+        }
+      ]
+    },
+    {
+      "sample_token": "7d82aa0c679141d1a71733b85fdcd3ed",
+      "scene_token": "de7d80a1f5fb4c3e82ce8a4f213b450a",
+      "scene_name": "scene-1094",
+      "timestamp": 1542800855448455,
+      "file": "frame_0025.npy",
+      "sha256": "9f16182042f0c2cde6b7173b922946a8eddab7aa9cec436445b5b1b324e81ea2",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "a05d0c1ad7d541d9a6f7c4e963555fb0",
+          "calibrated_sensor_token": "7ce942240a1f4e349c4c3c64d7b258b5",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "a05d0c1ad7d541d9a6f7c4e963555fb0",
+          "timestamp": 1542800855412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800855412460.jpg",
+          "source_sha256": "9de03f514f4657b2d112accc0a642a682dd17f6f2fdddbf311e260d13ceb2f2f"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "71fceeb0c69a427a8b63dbcf8a9cca0b",
+          "calibrated_sensor_token": "4c571600df1c4432b0179648b58567f3",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "71fceeb0c69a427a8b63dbcf8a9cca0b",
+          "timestamp": 1542800855420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800855420339.jpg",
+          "source_sha256": "c904f97e14706d96507497ae772ce18c1e51763eeb6ec9337f09f49930ff9583"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "72f33a28189c4520b29765b109b42cd1",
+          "calibrated_sensor_token": "bcda348ee5fc434c89f27342b0e229d3",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "72f33a28189c4520b29765b109b42cd1",
+          "timestamp": 1542800855404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800855404844.jpg",
+          "source_sha256": "67ece5ea2f82d9e404c149e62b6c4733bb00cc9ae2116bb12fa5eb71072495dc"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "1d205b55615344c6926f0a4afd71e72a",
+          "calibrated_sensor_token": "d9be46e9197f4eb684860472782409e2",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "1d205b55615344c6926f0a4afd71e72a",
+          "timestamp": 1542800855437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800855437525.jpg",
+          "source_sha256": "bce5d960c5abe44d8bd36ac15b3e1441c045fbf903e16ce8268705651b031f34"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "9e45153d7f57452eaaa0dc22f3750651",
+          "calibrated_sensor_token": "9339a854b5364d4295421df4d7748f7b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "9e45153d7f57452eaaa0dc22f3750651",
+          "timestamp": 1542800855447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800855447423.jpg",
+          "source_sha256": "6116acb12aac35648ac7eaa4251e63d49a8b107c2d63ce2fa98c5937fc1fdf57"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "e597a66490bb459c83eac6a415f1477f",
+          "calibrated_sensor_token": "193486c93d6b4cb894a2f5ff342f5820",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "e597a66490bb459c83eac6a415f1477f",
+          "timestamp": 1542800855427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800855427893.jpg",
+          "source_sha256": "22b6d7edbce5f3695a9cf2f3ec94a6730c36aca9aea891635bd1234fcd95680f"
+        }
+      ]
+    },
+    {
+      "sample_token": "a84f43c4ef52461d940a6c7d0768b86f",
+      "scene_token": "de7d80a1f5fb4c3e82ce8a4f213b450a",
+      "scene_name": "scene-1094",
+      "timestamp": 1542800859947349,
+      "file": "frame_0026.npy",
+      "sha256": "f7439fbaa62369d5d7be344bff9fa53d424f47c4135b13a52ef3e08605b79db5",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "ffa9bd002e7f47ec93caaa9f45fa03e6",
+          "calibrated_sensor_token": "7ce942240a1f4e349c4c3c64d7b258b5",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "ffa9bd002e7f47ec93caaa9f45fa03e6",
+          "timestamp": 1542800859912460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800859912460.jpg",
+          "source_sha256": "1d876ac775fec818824c3f3bd0e6caca2d4ffa25fbccabc180067b46d67c95bd"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "2e5cb9189d204bba80af4f06c42188d5",
+          "calibrated_sensor_token": "4c571600df1c4432b0179648b58567f3",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "2e5cb9189d204bba80af4f06c42188d5",
+          "timestamp": 1542800859920339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800859920339.jpg",
+          "source_sha256": "b632931b80da3b0d386eea354de11deb0f480bfc4e4d7a60e44190dd692bbd76"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "ac837afa590f462e94f2a4e1e0cd9fa7",
+          "calibrated_sensor_token": "bcda348ee5fc434c89f27342b0e229d3",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "ac837afa590f462e94f2a4e1e0cd9fa7",
+          "timestamp": 1542800859904844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800859904844.jpg",
+          "source_sha256": "7820914260b8b6c49d67f2b378079df29b1be3689a3e3e0f1b225efffd7cffb2"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "c10b392b640a434dab1ae145adb8639b",
+          "calibrated_sensor_token": "d9be46e9197f4eb684860472782409e2",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "c10b392b640a434dab1ae145adb8639b",
+          "timestamp": 1542800859937525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800859937525.jpg",
+          "source_sha256": "545b120ff9c8875726e2a5936e2b5c6da787bfed53f0a59e234a3ab2e63e414c"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "9752692495674ac0a7240589cf2dea17",
+          "calibrated_sensor_token": "9339a854b5364d4295421df4d7748f7b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "9752692495674ac0a7240589cf2dea17",
+          "timestamp": 1542800859947447,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800859947447.jpg",
+          "source_sha256": "ce4ebfadbb4adf88279f1238d75305e1fefecdda8db03a4de7f8b972e395ba29"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "f8c49956f213485188ce30a6f1409188",
+          "calibrated_sensor_token": "193486c93d6b4cb894a2f5ff342f5820",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "f8c49956f213485188ce30a6f1409188",
+          "timestamp": 1542800859927893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800859927893.jpg",
+          "source_sha256": "9c2908b9c4cbf1371750e6c4e5c9573503a5e7a1ceae9db29c99721c5087aba4"
+        }
+      ]
+    },
+    {
+      "sample_token": "daae21dc94b74898a7362922e8792415",
+      "scene_token": "de7d80a1f5fb4c3e82ce8a4f213b450a",
+      "scene_name": "scene-1094",
+      "timestamp": 1542800864948320,
+      "file": "frame_0027.npy",
+      "sha256": "af60491cf9d37e81218b83f76b276af316f6406dc7b1b23c3854b9b6aa0c21ed",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "cb4de282449d47259956e27cbaacbbab",
+          "calibrated_sensor_token": "7ce942240a1f4e349c4c3c64d7b258b5",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "cb4de282449d47259956e27cbaacbbab",
+          "timestamp": 1542800864912460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800864912460.jpg",
+          "source_sha256": "54bc1ca41059268f44baf8265b1c5824a028a04a9f3f9eb7f7d0187d1e0b48c3"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "2ba9fae3adfc433aa2b3ea2539c74562",
+          "calibrated_sensor_token": "4c571600df1c4432b0179648b58567f3",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "2ba9fae3adfc433aa2b3ea2539c74562",
+          "timestamp": 1542800864920339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800864920339.jpg",
+          "source_sha256": "8cfe50d818fd6672c8ad3594058e1f7560c960e3a31d274734cfe282bc8eb8e3"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "72060b9936ea4b579d0b79a74bb502e5",
+          "calibrated_sensor_token": "bcda348ee5fc434c89f27342b0e229d3",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "72060b9936ea4b579d0b79a74bb502e5",
+          "timestamp": 1542800864904844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800864904844.jpg",
+          "source_sha256": "bb8ada948a8d467e5444fd3ff4292356043863fc1e58f4a138665147fa07fbe3"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "24627b1398204ff7b2d104e86031c56b",
+          "calibrated_sensor_token": "d9be46e9197f4eb684860472782409e2",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "24627b1398204ff7b2d104e86031c56b",
+          "timestamp": 1542800864937525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800864937525.jpg",
+          "source_sha256": "981b8adde257a88193e670ffb78e1e031819cb18a8e4aed5c50f83b7508fe7cc"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "ea4bf02ef95a4affae9959d119067c25",
+          "calibrated_sensor_token": "9339a854b5364d4295421df4d7748f7b",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "ea4bf02ef95a4affae9959d119067c25",
+          "timestamp": 1542800864947423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800864947423.jpg",
+          "source_sha256": "22c7fa34a0fd5a5b601fcdc241fa219b79eefbea09d49626ccb55bab588769a8"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "69c82d3e1ffe4f5fb562b72b36b1ea48",
+          "calibrated_sensor_token": "193486c93d6b4cb894a2f5ff342f5820",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "69c82d3e1ffe4f5fb562b72b36b1ea48",
+          "timestamp": 1542800864927893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800864927893.jpg",
+          "source_sha256": "40d3e9bbbb862e7d2940671634c8b44653ab1e4bebd6221e4dc2b52dd4665ba9"
+        }
+      ]
+    },
+    {
+      "sample_token": "c9e812f2705b4b198f4675dfaa33812d",
+      "scene_token": "e233467e827140efa4b42d2b4c435855",
+      "scene_name": "scene-1100",
+      "timestamp": 1542800990447665,
+      "file": "frame_0028.npy",
+      "sha256": "f3cd2465b1a3b54073be181b8f3e258bf6ff150ecf44698232a87f33e13e2786",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "cec0634dd47c47288a246deeb5f589a2",
+          "calibrated_sensor_token": "d47224c723db443cb30a6c9d111adb7b",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "cec0634dd47c47288a246deeb5f589a2",
+          "timestamp": 1542800990412460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800990412460.jpg",
+          "source_sha256": "71b97c394452548a8ceb09c915435fcb678cacfe5c8c9bc69bb2b3304100b5f0"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "195b67c2802c403aa72797edeac253e4",
+          "calibrated_sensor_token": "302e35d6ff604f17adf2ccdebce473d1",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "195b67c2802c403aa72797edeac253e4",
+          "timestamp": 1542800990420339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800990420339.jpg",
+          "source_sha256": "fab00221cf133b8db4ac0b2ddc6b691dd1795cb7cb397dd96d239066ac7e91ea"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "d5e7555fc97446d786c58f3aa0e81a07",
+          "calibrated_sensor_token": "a858134f587548429f781b26b3348d1f",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "d5e7555fc97446d786c58f3aa0e81a07",
+          "timestamp": 1542800990404844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800990404844.jpg",
+          "source_sha256": "20438c780b0076cd28fb8632bdf7ba9e0a6da7f360d48121785dcf5692c9554f"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "bde9d28cd10d4bae92a7756260ceee5d",
+          "calibrated_sensor_token": "d554c8b1480e42679bec69c7b29f3c2a",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "bde9d28cd10d4bae92a7756260ceee5d",
+          "timestamp": 1542800990437525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800990437525.jpg",
+          "source_sha256": "4b8fa40bfbe6cd534f3dfde1baac99922e033e0dba458058efe86264a19bc75a"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "eeb2f34634a14ccca363d8a99c8dcaec",
+          "calibrated_sensor_token": "2dbc97f826174617b24cc75707c580b5",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "eeb2f34634a14ccca363d8a99c8dcaec",
+          "timestamp": 1542800990447423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800990447423.jpg",
+          "source_sha256": "1119539e465e6f2d3db41b63b7fb5080be2e1aa51afc7bedc720c1003ab269a5"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "790b095a34794a48b525ed36b876c11e",
+          "calibrated_sensor_token": "6a46edcebe58409798fbfa062a05cbc3",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "790b095a34794a48b525ed36b876c11e",
+          "timestamp": 1542800990427893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800990427893.jpg",
+          "source_sha256": "c8ea36873b54554fd486c3ad5a296a87f6dc585e384eca62e74c269907ac10c2"
+        }
+      ]
+    },
+    {
+      "sample_token": "99f903d3f74a4f76a05a4f1e10e49329",
+      "scene_token": "e233467e827140efa4b42d2b4c435855",
+      "scene_name": "scene-1100",
+      "timestamp": 1542800995397176,
+      "file": "frame_0029.npy",
+      "sha256": "599b719ceefb90fcd938780d72145c70ca3c5937b55c82f6b1ebad1eb83f168f",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "93f325d6ad2e47cb951226809c28f7d2",
+          "calibrated_sensor_token": "d47224c723db443cb30a6c9d111adb7b",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "93f325d6ad2e47cb951226809c28f7d2",
+          "timestamp": 1542800995362460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800995362460.jpg",
+          "source_sha256": "511dd5c7a372d141418742f5c6307a18133381c246bf32ccc6fe638326b183ab"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "2521948c295a434d94cba15688b9bd3d",
+          "calibrated_sensor_token": "302e35d6ff604f17adf2ccdebce473d1",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "2521948c295a434d94cba15688b9bd3d",
+          "timestamp": 1542800995370339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800995370339.jpg",
+          "source_sha256": "7c92ce467a152b10fa9dafc540bfdb339e875bba178411045601916e460c3252"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "45a29efd683a4516bbd6b66654a6b998",
+          "calibrated_sensor_token": "a858134f587548429f781b26b3348d1f",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "45a29efd683a4516bbd6b66654a6b998",
+          "timestamp": 1542800995354844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800995354844.jpg",
+          "source_sha256": "c6d7e3127648f49dbb1533c1f3eac5bdb717087a79bf890a47c8a286e03e8471"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "f72957478dcd42b5ae0531706c627c7c",
+          "calibrated_sensor_token": "d554c8b1480e42679bec69c7b29f3c2a",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "f72957478dcd42b5ae0531706c627c7c",
+          "timestamp": 1542800995387525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800995387525.jpg",
+          "source_sha256": "b6da95f915ba8a81cb382963c11d69fa2f50fd8de70a2e584b8db48bd0e31bff"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "b871ab67eeac45968d27088600aecf9c",
+          "calibrated_sensor_token": "2dbc97f826174617b24cc75707c580b5",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "b871ab67eeac45968d27088600aecf9c",
+          "timestamp": 1542800995397423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800995397423.jpg",
+          "source_sha256": "7388fe65fe29776bd54db402b29fbfc8563ae644e75809e68dba0596fbefac65"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "4e93fd92b0cc44279ac39cc27410c8dc",
+          "calibrated_sensor_token": "6a46edcebe58409798fbfa062a05cbc3",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "4e93fd92b0cc44279ac39cc27410c8dc",
+          "timestamp": 1542800995377893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800995377893.jpg",
+          "source_sha256": "3c4c80ecc5b6db833e650147e67ac4381496d8adf0e1ae88bbed23132a192f1b"
+        }
+      ]
+    },
+    {
+      "sample_token": "8e5512a630dc44c08d3e3f692b34f808",
+      "scene_token": "e233467e827140efa4b42d2b4c435855",
+      "scene_name": "scene-1100",
+      "timestamp": 1542800999948064,
+      "file": "frame_0030.npy",
+      "sha256": "10b9f90c5ef9291fcec76e24a8abc7b112bdfb307202445e35901c9bfe22c4b4",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "9ee04d160a514511a093dd35ea6f5604",
+          "calibrated_sensor_token": "d47224c723db443cb30a6c9d111adb7b",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "9ee04d160a514511a093dd35ea6f5604",
+          "timestamp": 1542800999912460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800999912460.jpg",
+          "source_sha256": "5c1c91b1a8a3fe233af489d3d282133d35f377ca1d31571af6ffe85bf56316c0"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "d9dfe1e2c69f43569e1d647db300c25e",
+          "calibrated_sensor_token": "302e35d6ff604f17adf2ccdebce473d1",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "d9dfe1e2c69f43569e1d647db300c25e",
+          "timestamp": 1542800999920342,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542800999920342.jpg",
+          "source_sha256": "092e3c533f124866508037e88df58671f02207b91e8b05da12dc9264dee8f608"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "5a67893e381944839ab085ceee2d7894",
+          "calibrated_sensor_token": "a858134f587548429f781b26b3348d1f",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "5a67893e381944839ab085ceee2d7894",
+          "timestamp": 1542800999904844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542800999904844.jpg",
+          "source_sha256": "5520bcbdcda3e7136a9964756c6916f3ae132de8d959fe1cb13deeda024e10e1"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "adcc601a1ee249b6bc4e5ed954bad1e1",
+          "calibrated_sensor_token": "d554c8b1480e42679bec69c7b29f3c2a",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "adcc601a1ee249b6bc4e5ed954bad1e1",
+          "timestamp": 1542800999939651,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542800999939651.jpg",
+          "source_sha256": "def9e5991791fbe8c2867bc53922df334f0634df27477ec0fe5fa13f2b2ba455"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "cf598ac80a414c13a0c3ce8221db36e1",
+          "calibrated_sensor_token": "2dbc97f826174617b24cc75707c580b5",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "cf598ac80a414c13a0c3ce8221db36e1",
+          "timestamp": 1542800999947423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542800999947423.jpg",
+          "source_sha256": "9ca274f1b1c176c02e08d70ff08de4b6ad8aff0e13265c81cd4e89638ec47728"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "84cb858ba83d41ac9a6461cc7e3d414b",
+          "calibrated_sensor_token": "6a46edcebe58409798fbfa062a05cbc3",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "84cb858ba83d41ac9a6461cc7e3d414b",
+          "timestamp": 1542800999927893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542800999927893.jpg",
+          "source_sha256": "2c3b5dfda7a2036a2dd66cee1cce49f081035376777a5f69b1c34f76b9c23e04"
+        }
+      ]
+    },
+    {
+      "sample_token": "8336b62c3f6f4bb988c3865cc5df4446",
+      "scene_token": "e233467e827140efa4b42d2b4c435855",
+      "scene_name": "scene-1100",
+      "timestamp": 1542801004947354,
+      "file": "frame_0031.npy",
+      "sha256": "40367e34433ea1b9a52ee6b6089e19c5b8923f5874e6ce828ae8b098e283a7fa",
+      "cameras": [
+        {
+          "channel": "CAM_FRONT",
+          "sample_data_token": "83be17e597cc4144bb776fe42336caf7",
+          "calibrated_sensor_token": "d47224c723db443cb30a6c9d111adb7b",
+          "sensor_token": "725903f5b62f56118f4094b46a4470d8",
+          "ego_pose_token": "83be17e597cc4144bb776fe42336caf7",
+          "timestamp": 1542801004912460,
+          "filename": "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542801004912460.jpg",
+          "source_sha256": "23aaff0eef573af345e60fc43573d9e731ff33ec374db122ebb56ce73e84e075"
+        },
+        {
+          "channel": "CAM_FRONT_RIGHT",
+          "sample_data_token": "7adb9309b20c4c37bf06e30695ddb847",
+          "calibrated_sensor_token": "302e35d6ff604f17adf2ccdebce473d1",
+          "sensor_token": "2f7ad058f1ac5557bf321c7543758f43",
+          "ego_pose_token": "7adb9309b20c4c37bf06e30695ddb847",
+          "timestamp": 1542801004920339,
+          "filename": "samples/CAM_FRONT_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_RIGHT__1542801004920339.jpg",
+          "source_sha256": "e07917ad4f8e34699c2d71644d3cfd538836c65167ea3ceabe953f34669c15ba"
+        },
+        {
+          "channel": "CAM_FRONT_LEFT",
+          "sample_data_token": "91c0da53e32242da9a96dff25607fbae",
+          "calibrated_sensor_token": "a858134f587548429f781b26b3348d1f",
+          "sensor_token": "ec4b5d41840a509984f7ec36419d4c09",
+          "ego_pose_token": "91c0da53e32242da9a96dff25607fbae",
+          "timestamp": 1542801004904844,
+          "filename": "samples/CAM_FRONT_LEFT/n015-2018-11-21-19-38-26+0800__CAM_FRONT_LEFT__1542801004904844.jpg",
+          "source_sha256": "26cc1642f58ae53a287312f2262ba8ab238d50239f2cf606c850fd664f13c8a4"
+        },
+        {
+          "channel": "CAM_BACK",
+          "sample_data_token": "bfd59534128c43e28ff166cdfe2c483d",
+          "calibrated_sensor_token": "d554c8b1480e42679bec69c7b29f3c2a",
+          "sensor_token": "ce89d4f3050b5892b33b3d328c5e82a3",
+          "ego_pose_token": "bfd59534128c43e28ff166cdfe2c483d",
+          "timestamp": 1542801004937525,
+          "filename": "samples/CAM_BACK/n015-2018-11-21-19-38-26+0800__CAM_BACK__1542801004937525.jpg",
+          "source_sha256": "57f433333d86be0998fa83acb2bb5ec906d4b7c993c77b12ec06fdd4f46e9c5d"
+        },
+        {
+          "channel": "CAM_BACK_LEFT",
+          "sample_data_token": "6462d7d2e63240bca1e9fc7655104401",
+          "calibrated_sensor_token": "2dbc97f826174617b24cc75707c580b5",
+          "sensor_token": "a89643a5de885c6486df2232dc954da2",
+          "ego_pose_token": "6462d7d2e63240bca1e9fc7655104401",
+          "timestamp": 1542801004947423,
+          "filename": "samples/CAM_BACK_LEFT/n015-2018-11-21-19-38-26+0800__CAM_BACK_LEFT__1542801004947423.jpg",
+          "source_sha256": "0dd12cf59670c536a561faced3c25d1b5e63e4d42021e7705530f68abd7cd011"
+        },
+        {
+          "channel": "CAM_BACK_RIGHT",
+          "sample_data_token": "219a8fdebcc743b8aba94e8f9bd22533",
+          "calibrated_sensor_token": "6a46edcebe58409798fbfa062a05cbc3",
+          "sensor_token": "ca7dba2ec9f95951bbe67246f7f2c3f7",
+          "ego_pose_token": "219a8fdebcc743b8aba94e8f9bd22533",
+          "timestamp": 1542801004927893,
+          "filename": "samples/CAM_BACK_RIGHT/n015-2018-11-21-19-38-26+0800__CAM_BACK_RIGHT__1542801004927893.jpg",
+          "source_sha256": "9eaf2969789bd47522476419be3a1e9ccc6a66c0038c8386379f2bb9ab8e7cc5"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "The ONNX model still uses fixed synthetic all-visible projection and zero CAN-bus; real per-frame geometry is not supplied.",
+    "This calibrates real image inputs for that fixed cold graph; head activation statistics may differ from a real-geometry temporal deployment.",
+    "Calibration is not nuScenes mAP/NDS evaluation; mini_val is held out and must not be used to fit quantization ranges."
+  ]
+}

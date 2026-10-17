@@ -1,0 +1,56 @@
+{
+  "status": "full_engine_build_failed_out_of_memory",
+  "scope": "Build-time OOM; neither inference peak nor proof that every 8GB execution strategy fails",
+  "full_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "calibrated_ranges_file_sha256": "b213446406e19f32c71b5fd0df191db40c08103bd13e746ddca5c13f586ead6a",
+  "production_code_sha256": {
+    "run_engine.py": "c83f0f2db9f79c85b305c959c5a385d2d182fb00d3059c83456db3e7d5d0ce1b",
+    "calibration_ranges.py": "90d8a46ed38a97f4556d09843ad18d881c29d2b5ae5b75edcd0e5da1372ac63c"
+  },
+  "runs": [
+    {
+      "kind": "diagnostic_all_measured_backbone_ranges",
+      "log_file_on_gpu": "/home/robot/project/gac-tensorrt-20261017/mini-static-20261017/all-ranges-probe.log",
+      "log_sha256": "b6d137615fc07d4d03132ea620b0325bd3e6219368e0becc6d3dd48db9f67d05",
+      "log_bytes": 1776909,
+      "builder_optimization_level": 3,
+      "tactic_dram_mib": null,
+      "workspace_mib": 512,
+      "max_aux_streams": 0,
+      "fatal_errors": [
+        {
+          "line": 8011,
+          "text": "[10/17/2026-17:43:14] [TRT] [E] [localCheckMacros.cpp::getErrorStr::79] Error Code 2: OutOfMemory (Requested size was 655520000 bytes.)"
+        },
+        {
+          "line": 8012,
+          "text": "RuntimeError: TensorRT could not build the engine; inspect builder diagnostics"
+        }
+      ],
+      "engine_built": false
+    },
+    {
+      "kind": "production_measured_activation_ranges",
+      "log_file_on_gpu": "/home/robot/project/gac-tensorrt-20261017/mini-static-20261017/full-memorysafe-4g.log",
+      "log_sha256": "c49d779ccd39fd07df7632da4889a3534cce9b52b0319559bf6100aaa83c3731",
+      "log_bytes": 1773315,
+      "builder_optimization_level": 0,
+      "tactic_dram_mib": 4096,
+      "workspace_mib": 512,
+      "max_aux_streams": 0,
+      "fatal_errors": [
+        {
+          "line": 7990,
+          "text": "[10/17/2026-17:48:00] [TRT] [E] [localCheckMacros.cpp::getErrorStr::79] Error Code 2: OutOfMemory (Requested size was 655520000 bytes.)"
+        },
+        {
+          "line": 7991,
+          "text": "RuntimeError: TensorRT could not build the engine; inspect builder diagnostics"
+        }
+      ],
+      "engine_built": false
+    }
+  ],
+  "full_inference_fps": null,
+  "next_requirement": "Reduce whole-model build/runtime residency by explicit staged engines or validate on a larger-memory GPU; do not truncate the network or relabel backbone latency as full inference"
+}

@@ -1,0 +1,195 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-17T09:51:41.852422+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 60, 1410 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-17T09:51:43.791637+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 68, 1335 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "/home/robot/project/gac-tensorrt-20261017/mini-static-20261017/backbone.engine",
+  "engine_sha256": "82a6e0c2e0ac24c41eb8cee27e6aee58f05d45da956cdaad544512c2007942e9",
+  "inputs": "/home/robot/project/gac-tensorrt-20261017/mini-calibration-20261017/held-out/images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_2/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_5/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_8/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_11/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_14/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/relu_17/Relu_output_0",
+      "shape": [
+        1,
+        2048,
+        29,
+        50
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 432154624,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 7272726528,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 948174848
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 2,
+  "repeat": 5,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      146.68873596191406,
+      146.52313232421875,
+      146.72486877441406,
+      147.2593994140625,
+      150.76541137695312
+    ],
+    "mean": 147.5923095703125,
+    "median": 146.72486877441406,
+    "min": 146.52313232421875,
+    "max": 150.76541137695312,
+    "p95": 150.064208984375
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      146.7542960017454,
+      146.52815798763186,
+      146.7293979949318,
+      147.26401500229258,
+      150.76939600112382
+    ],
+    "mean": 147.6090525975451,
+    "median": 146.7542960017454,
+    "min": 146.52815798763186,
+    "max": 150.76939600112382,
+    "p95": 150.06831980135757
+  },
+  "validation": {
+    "status": "not_checked",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "/img_backbone/layer4/layer4.2/relu_2/Relu_output_0": true,
+      "/img_backbone/layer4/layer4.2/relu_5/Relu_output_0": true,
+      "/img_backbone/layer4/layer4.2/relu_8/Relu_output_0": true,
+      "/img_backbone/layer4/layer4.2/relu_11/Relu_output_0": true,
+      "/img_backbone/layer4/layer4.2/relu_14/Relu_output_0": true,
+      "/img_backbone/layer4/layer4.2/relu_17/Relu_output_0": true
+    },
+    "scope": "Final output of the last measured execution only"
+  }
+}

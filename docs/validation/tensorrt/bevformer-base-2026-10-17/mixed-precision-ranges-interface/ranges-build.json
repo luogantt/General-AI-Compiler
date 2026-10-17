@@ -1,0 +1,214 @@
+{
+  "status": "built",
+  "scope": "Engine construction only; no numerical validation",
+  "environment": {
+    "utc": "2026-10-17T09:15:15.712336+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 54, 1620 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": null,
+    "torch_installed_version": "2.7.0",
+    "torch_imported": false,
+    "cuda_math_libraries": [
+      "/home/robot/miniconda3/envs/isaac/lib/python3.11/site-packages/nvidia/cublas/lib/libcublasLt.so.12",
+      "/home/robot/miniconda3/envs/isaac/lib/python3.11/site-packages/nvidia/cublas/lib/libcublas.so.12"
+    ],
+    "cuda_initialization": "ctypes CUDA Driver primary context; no PyTorch initialization",
+    "cuda_driver_api_version": 13000,
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    },
+    "memory_snapshot_before_builder": {
+      "free_bytes": 8019312640,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 201588736,
+      "scope": "One device-wide cuMemGetInfo snapshot after CUDA/TRT initialization; not a peak"
+    }
+  },
+  "onnx": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/model.onnx",
+  "onnx_file_sha256": "4d7da6b88fecb760f04c06aa6cb5cec86bfaf37bcb5148f32426997f4fa29f3f",
+  "hash_scope": "ONNX file itself; separate external weight files are not included",
+  "engine": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/ranges.engine",
+  "engine_sha256": "4ccb3bc6e835c600250e86b47571f2a539d382a9451d6f701f62e301509165fc",
+  "engine_bytes": 255244,
+  "build_seconds": 13.288149183004862,
+  "io": [
+    {
+      "name": "images",
+      "mode": "INPUT",
+      "shape": [
+        1,
+        3,
+        8,
+        8
+      ],
+      "dtype": "DataType.FLOAT"
+    },
+    {
+      "name": "head_conv",
+      "mode": "OUTPUT",
+      "shape": [
+        1,
+        4,
+        8,
+        8
+      ],
+      "dtype": "DataType.FLOAT"
+    }
+  ],
+  "precision_policy": {
+    "requested": "mixed-int8",
+    "network_typing": "weak",
+    "tf32_builder_flag": false,
+    "fp16_allowed": true,
+    "plugins_fp32": false,
+    "fp32_plugin_layers": [],
+    "mixed_layer_policy": {
+      "status": "constraints_applied_actual_engine_unverified",
+      "rules": {
+        "version": "gac.trt.backbone-conv-int8.v1",
+        "network_typing": "weak",
+        "precision_constraints": "OBEY_PRECISION_CONSTRAINTS",
+        "backbone_scopes": "img_backbone or img_backbone_<camera>/layer1..layer4",
+        "backbone_convolution_compute": "int8",
+        "backbone_convolution_floating_output": "fp16",
+        "offset_mask_predictor_compute_and_output": "fp16",
+        "stem_and_other_floating_compute_and_output": "fp16",
+        "compute_layer_types": [
+          "CONVOLUTION",
+          "DECONVOLUTION",
+          "MATRIX_MULTIPLY",
+          "FULLY_CONNECTED",
+          "ACTIVATION",
+          "POOLING",
+          "ELEMENTWISE",
+          "REDUCE",
+          "SOFTMAX",
+          "NORMALIZATION",
+          "SCALE",
+          "UNARY",
+          "PARAMETRIC_RELU",
+          "GRID_SAMPLE"
+        ],
+        "plugin_floating_edges": "fp16",
+        "plugin_method": "Identity-constrained floating inputs and output types; no layer.precision",
+        "shape_integer_edges": "unchanged",
+        "public_input_output_dtypes": "unchanged",
+        "tensorRT_TF32_flag": false,
+        "calibration": "caller must supply representative real-data calibration; no synthetic ranges"
+      },
+      "fingerprint_sha256": "cd573896bf2bcbd45a4160e20277817bf1325eb1573be7a79da267477e6938e9",
+      "original_layer_count": 5,
+      "result_layer_count": 5,
+      "constraint_counts": {
+        "fp16": 4,
+        "int8": 1
+      },
+      "layers": [
+        {
+          "name": "/img_backbone/conv1/Conv",
+          "scope": "backbone_stem",
+          "compute_precision": "fp16",
+          "floating_output_precision": "fp16",
+          "float_output_indices": [
+            0
+          ]
+        },
+        {
+          "name": "/img_backbone/conv1/Relu",
+          "scope": "backbone_stem",
+          "compute_precision": "fp16",
+          "floating_output_precision": "fp16",
+          "float_output_indices": [
+            0
+          ]
+        },
+        {
+          "name": "/img_backbone/layer1/layer1.0/conv1/Conv",
+          "scope": "backbone_body",
+          "compute_precision": "int8",
+          "floating_output_precision": "fp16",
+          "float_output_indices": [
+            0
+          ]
+        },
+        {
+          "name": "/img_backbone/layer1/layer1.0/conv1/Relu",
+          "scope": "backbone_body",
+          "compute_precision": "fp16",
+          "floating_output_precision": "fp16",
+          "float_output_indices": [
+            0
+          ]
+        },
+        {
+          "name": "/pts_bbox_head/output/Conv",
+          "scope": "head_or_other",
+          "compute_precision": "fp16",
+          "floating_output_precision": "fp16",
+          "float_output_indices": [
+            0
+          ]
+        }
+      ],
+      "exceptions": [],
+      "skipped": {},
+      "validation": {
+        "calibration_quality": "not_checked",
+        "actual_engine_precision": "not_checked",
+        "numerical_accuracy": "not_checked",
+        "performance": "not_measured",
+        "internal_accumulation_precision": "backend dependent; not established by these constraints"
+      }
+    }
+  },
+  "policy_fingerprint": "3176674ce5bcf7c03060677cf95afa64d427d9592a1c03d087066260f276d2ff",
+  "calibration": null,
+  "calibrated_ranges": {
+    "status": "measured_ranges_applied_actual_engine_unverified",
+    "scope": "INT8 Conv input0 and floating outputs only; no full-model calibrator/cache",
+    "artifact_sha256": "d279ca30e281d132d3bf73e16341d606f585fc9b718285ba0812b30c97f6bd92",
+    "source_full_onnx_sha256": "4d7da6b88fecb760f04c06aa6cb5cec86bfaf37bcb5148f32426997f4fa29f3f",
+    "subgraph_onnx_sha256": "4d7da6b88fecb760f04c06aa6cb5cec86bfaf37bcb5148f32426997f4fa29f3f",
+    "source_cache_sha256": "ee829bb810dae7947eb0098dc3dd213b32c818ace8e846af8995fd5cb24fa482",
+    "source_manifest_sha256": "31ea33d5522be3851f167e90a94ee1f227027338e88a18b80b1a1e55ef68e70f",
+    "tensorrt": "10.13.3.9",
+    "synthetic_interface_test": true,
+    "calibration_sample_count": 8,
+    "covered_int8_convolutions": 1,
+    "applied_tensor_count": 2,
+    "edges": [
+      {
+        "layer": "/img_backbone/layer1/layer1.0/conv1/Conv",
+        "edge": "input0",
+        "tensor": "stem_relu",
+        "max_abs": 0.43274504668079317
+      },
+      {
+        "layer": "/img_backbone/layer1/layer1.0/conv1/Conv",
+        "edge": "output0",
+        "tensor": "body_conv",
+        "max_abs": 0.12669323734007776
+      }
+    ],
+    "unused_measured_tensor_count": 4,
+    "weights": "Original constant Conv weights; TensorRT derives their quantization scales",
+    "validation": {
+      "actual_engine_precision": "not_checked",
+      "numerical_accuracy": "not_checked"
+    }
+  },
+  "workspace_limit_bytes": 67108864,
+  "max_aux_streams": 0,
+  "workspace_note": "Workspace limit is not a limit on total GPU memory",
+  "engine_layer_inspection": "/home/robot/project/gac-tensorrt-20261017/mixed-precision-ranges-interface-test/ranges-build.layers.json"
+}
