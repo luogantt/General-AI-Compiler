@@ -1,0 +1,3 @@
+/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-full-check/inspection.mlir:674:12: error: 'gac.reshape' op Reshape dimension product overflows i64
+    %671 = "gac.reshape"(%666, %670) {allowzero = 0 : i64, gac.input_positions = array<i64: 0, 1>, gac.opset = 17 : i64, gac.output_names = ["/pts_bbox_head/transformer/encoder/Reshape_output_0"], gac.source_domain = "", gac.source_name = "/pts_bbox_head/transformer/encoder/Reshape", gac.source_op = "Reshape"} : (tensor<*xf64>, tensor<1xi64>) -> tensor<*xf64>
+           ^

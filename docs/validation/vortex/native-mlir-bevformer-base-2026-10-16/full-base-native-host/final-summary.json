@@ -1,0 +1,67 @@
+{
+  "mode": "native_cpu_generated_kernels",
+  "target": "native",
+  "full_model_executed": true,
+  "dispatch_count": 3224,
+  "completed_dispatches": 3224,
+  "output_numerical_validation": "passed",
+  "artifact_identity": {
+    "manifest_sha256": "e4b1c0356dab16d5e25f00efdd8d47efcdd9bbeb2c50fdd6d136cf9ab0da3907",
+    "library_sha256": "ed24193a729c30b93ea31e353fe15b89cb00734e632163239c6c1cdbeb2b94c2",
+    "inputs_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+    "constants_sha256": "5d50a0bd738ba54caedf54ad160d81f0e61a5f404dc6f10990f4575692ccfe71"
+  },
+  "minimum_storage_bytes_excluding_code_runtime": 2032441772,
+  "storage_budget_scope": "Includes embedded constant globals; excludes instructions, stack and runtime metadata",
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "this_invocation_wall_seconds": 10600.844775622,
+  "summed_host_kernel_wall_seconds": 10556.216366594052,
+  "outputs": {
+    "bev_embed": {
+      "passed": true,
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 2.300739288330078E-05,
+      "mean_abs_error": 5.622457812468465E-07
+    },
+    "all_cls_scores": {
+      "passed": true,
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 1.9788742065429688E-05,
+      "mean_abs_error": 1.4038174240677445E-06
+    },
+    "all_bbox_preds": {
+      "passed": true,
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 6.537139415740967E-05,
+      "mean_abs_error": 1.8238746705787048E-06
+    }
+  },
+  "passed": true
+}

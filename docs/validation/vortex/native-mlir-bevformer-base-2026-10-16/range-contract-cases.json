@@ -1,0 +1,464 @@
+{
+  "cases": [
+    {
+      "name": "range_i64_positive",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_negative",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_above_double_exactness",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_below_double_exactness",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_max_no_terminal_overflow",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_min_no_terminal_overflow",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_cross_extremes",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": false,
+        "authoritative_oracle": "Python arbitrary-precision integer range",
+        "expected_values": [
+          -9223372036854775808,
+          -1,
+          9223372036854775806
+        ],
+        "onnx_reference_values": [
+          -9223372036854775808,
+          -1
+        ],
+        "reason": "INT64 endpoint distance needs 65 bits; exact integer formula and ReferenceEvaluator differ. This fixture validates the explicit exact-integer contract, not ReferenceEvaluator or ORT parity."
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i64_minimum_delta",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i32_max_no_terminal_overflow",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_i16_min_no_terminal_overflow",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_empty_positive_concat",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_empty_negative_concat",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_empty_equal_concat",
+      "valid": true,
+      "reject_device": false,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": true,
+      "reference_contract": {
+        "onnx_version": "1.21.0",
+        "onnx_reference_exactly_agrees": true
+      },
+      "expect_optimized_absent": [
+        "\"gac.range\"(",
+        "\"gac.concat\"("
+      ]
+    },
+    {
+      "name": "range_reject_zero_delta",
+      "valid": false,
+      "reject_device": false,
+      "expected_diagnostic": "delta must not be zero",
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false
+    },
+    {
+      "name": "range_exceeds_default_fold_budget",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": "gac.range",
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_reject_shape_length_overflow",
+      "valid": false,
+      "reject_device": false,
+      "expected_diagnostic": "length",
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false
+    },
+    {
+      "name": "range_runtime_start_not_constant",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "start"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_runtime_parameters_not_constant",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [
+        "start",
+        "limit",
+        "delta"
+      ],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_f32_positive",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_f64_negative",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_f64_source_precision",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_reject_nan_start",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_reject_inf_limit",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    },
+    {
+      "name": "range_reject_inf_delta",
+      "valid": true,
+      "reject_device": true,
+      "expected_diagnostic": null,
+      "unsupported": false,
+      "expect_fusion": false,
+      "inputs": [],
+      "outputs": [
+        "Y"
+      ],
+      "check_constant_payload_exact": false,
+      "expect_optimized_contains": [
+        "\"gac.range\"("
+      ]
+    }
+  ]
+}

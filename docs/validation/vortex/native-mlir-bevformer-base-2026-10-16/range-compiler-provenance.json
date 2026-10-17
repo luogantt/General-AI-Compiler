@@ -1,0 +1,23 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_before": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "runner_sha256": "6467404e69bb1efd66442fa6d4768335ce75b07da444560d16c5e59d89515ace",
+  "fixture_cases_sha256": "dc9a031dbdd54c368009ed01315ebebde18ceafc56c4ff5399ddf464a049f76e",
+  "command": [
+    "/home/thomas/gac-bev-export-env/bin/python",
+    "native/tests/run_range_tests.py",
+    "--compiler",
+    "/home/thomas/gac-native-build/gac-compile",
+    "--optimizer",
+    "/home/thomas/gac-native-build/gac-opt",
+    "--mlir-translate",
+    "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+    "--clang",
+    "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+    "--fixtures",
+    "build/native-range-tests"
+  ],
+  "regression_exit_code": 0,
+  "compiler_sha256_after": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+  "compiler_unchanged": true
+}

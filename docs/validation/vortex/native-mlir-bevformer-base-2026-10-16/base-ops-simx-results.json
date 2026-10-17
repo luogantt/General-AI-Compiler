@@ -1,0 +1,224 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_at_start": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "cases": [
+    {
+      "name": "dcn_mask_bias",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "torchvision.ops.deform_conv2d compiled CPU operator",
+      "model_sha256": "1666307674d071dc72943789e59a56a170e77c3ef19372db915b37b1c9bad94d",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      },
+      "library_sha256": "2e13ea00d9c4fa211ae182d2256a8246c5d8692338416e96a960cd13826cc418",
+      "simx": {
+        "passed": true,
+        "physical_device_execution": false,
+        "max_absolute_errors": {
+          "Y": 2.384185791015625e-07
+        },
+        "vxbin_sha256": "437fb67f8a972189da80dbdc2420f8aecc6ccfce11e668dea836213bd77d8de8",
+        "live_buffer_overlap_check": "passed",
+        "runtime_report": {
+          "arena_bytes": 384,
+          "dispatch_wall_ms": 253.226689,
+          "dispatches": 1,
+          "download_ms": 5.50392,
+          "driver": "simx",
+          "embedded_constant_bytes": 0,
+          "execution": "vortex-device",
+          "host_operator_fallback": false,
+          "initialization_ms": 82.261795,
+          "inputs": [
+            {
+              "file": "input_0.bin",
+              "name": "X",
+              "tensor_index": 0
+            },
+            {
+              "file": "input_1.bin",
+              "name": "offset",
+              "tensor_index": 1
+            },
+            {
+              "file": "input_2.bin",
+              "name": "mask",
+              "tensor_index": 2
+            }
+          ],
+          "outputs": [
+            {
+              "dtype": "float32",
+              "file": "output_0.bin",
+              "name": "Y",
+              "shape": [
+                1,
+                3,
+                5,
+                6
+              ],
+              "tensor_index": 5
+            }
+          ],
+          "schema_version": 1,
+          "threads_per_block": 16,
+          "timing_kind": "host_wall_clock",
+          "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+          "total_host_wall_ms": 350.125316,
+          "trace_dispatches": false,
+          "upload_ms": 9.132912
+        }
+      },
+      "test_wall_seconds": 1.9170963519999873
+    },
+    {
+      "name": "resize_fpn_2x",
+      "kind": "Resize",
+      "reference": "torch.nn.functional.interpolate nearest CPU",
+      "model_sha256": "f5439bee0ee0dd631d4da4f3f5888df91e3f4b973c3c24d1940865b6ee992486",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "library_sha256": "3320e604c984b606eecefff260488d3fad25a18b9975727f6c8c9dff44160825",
+      "simx": {
+        "passed": true,
+        "physical_device_execution": false,
+        "max_absolute_errors": {
+          "Y": 0.0
+        },
+        "vxbin_sha256": "86a958b9538b1c11016842beb6b2b0ab9bb755ddca878b4cc27096a12845d706",
+        "live_buffer_overlap_check": "passed",
+        "runtime_report": {
+          "arena_bytes": 384,
+          "dispatch_wall_ms": 5.192642,
+          "dispatches": 1,
+          "download_ms": 4.943675,
+          "driver": "simx",
+          "embedded_constant_bytes": 0,
+          "execution": "vortex-device",
+          "host_operator_fallback": false,
+          "initialization_ms": 47.028344,
+          "inputs": [
+            {
+              "file": "input_0.bin",
+              "name": "X",
+              "tensor_index": 0
+            }
+          ],
+          "outputs": [
+            {
+              "dtype": "float32",
+              "file": "output_0.bin",
+              "name": "Y",
+              "shape": [
+                1,
+                2,
+                6,
+                8
+              ],
+              "tensor_index": 2
+            }
+          ],
+          "schema_version": 1,
+          "threads_per_block": 16,
+          "timing_kind": "host_wall_clock",
+          "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+          "total_host_wall_ms": 61.555028,
+          "trace_dispatches": false,
+          "upload_ms": 4.390367
+        }
+      },
+      "test_wall_seconds": 1.1399519889999965
+    },
+    {
+      "name": "msda_multilevel_heads",
+      "kind": "MSDeformAttn",
+      "reference": "torch grid_sample bilinear zeros align_corners=False + weighted sum",
+      "model_sha256": "01cc3e655f51c67d2573e5d417be52877150baf72e2a3d629e0ea2442bf905c5",
+      "passed": true,
+      "arena_bytes": 128,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      },
+      "library_sha256": "6d794836d5e86382ae7017d9fdfb0cdb1090af281b5b36fc30ffbf517de2e355",
+      "simx": {
+        "passed": true,
+        "physical_device_execution": false,
+        "max_absolute_errors": {
+          "Y": 1.4901161193847656e-08
+        },
+        "vxbin_sha256": "9688d2677c687ddb384f3bb6045e41b873a85cac9d969a173b38b3dfecb7b029",
+        "live_buffer_overlap_check": "passed",
+        "runtime_report": {
+          "arena_bytes": 128,
+          "dispatch_wall_ms": 9.827516,
+          "dispatches": 1,
+          "download_ms": 3.881356,
+          "driver": "simx",
+          "embedded_constant_bytes": 0,
+          "execution": "vortex-device",
+          "host_operator_fallback": false,
+          "initialization_ms": 63.84878,
+          "inputs": [
+            {
+              "file": "input_0.bin",
+              "name": "value",
+              "tensor_index": 0
+            },
+            {
+              "file": "input_1.bin",
+              "name": "locations",
+              "tensor_index": 1
+            },
+            {
+              "file": "input_2.bin",
+              "name": "attention_weights",
+              "tensor_index": 2
+            }
+          ],
+          "outputs": [
+            {
+              "dtype": "float32",
+              "file": "output_0.bin",
+              "name": "Y",
+              "shape": [
+                1,
+                3,
+                6
+              ],
+              "tensor_index": 4
+            }
+          ],
+          "schema_version": 1,
+          "threads_per_block": 16,
+          "timing_kind": "host_wall_clock",
+          "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+          "total_host_wall_ms": 84.944592,
+          "trace_dispatches": false,
+          "upload_ms": 7.38694
+        }
+      },
+      "test_wall_seconds": 1.5456169629999863
+    }
+  ],
+  "passed": true,
+  "evidence_note": "Earlier stable compiler build before constant-folding view changes. This is simulator correctness, not physical-device latency or full-model validation."
+}

@@ -1,0 +1,302 @@
+{
+  "schema_version": 1,
+  "scope": "Complete exported BEVFormer-tiny cold-frame ONNX; full six-camera input; generated native CPU machine-code correctness",
+  "model_scope_limits": [
+    "One fixed seeded image fixture and fixed calibration/CAN-bus data",
+    "Three raw model outputs, without detection postprocessing or dataset accuracy evaluation",
+    "Warm/history-frame path not included in this exported cold model"
+  ],
+  "complete_execution": true,
+  "passed": true,
+  "dispatches_executed": 1548,
+  "execution_target": "native CPU",
+  "vortex_device_execution": false,
+  "physical_device_latency_ms": null,
+  "python_role": "Input/artifact I/O, sequential ctypes invocation of generated kernels, timing and comparison. No Python/NumPy/BLAS/ORT operator substitution.",
+  "input": {
+    "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-onnx-inspect/images.npy",
+    "bytes": 27648128,
+    "sha256": "d3e5d4a8bf084fd74f27c5d9496f18ca7219c91f4df7c6208c45851bacca7aa4",
+    "name": "images",
+    "shape": [
+      1,
+      6,
+      3,
+      480,
+      800
+    ],
+    "dtype": "float32",
+    "resized_for_this_test": false
+  },
+  "model": {
+    "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-onnx-inspect/bevformer-tiny-cold.onnx",
+    "bytes": 200663543,
+    "sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070"
+  },
+  "pytorch_reference": {
+    "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-onnx-inspect/pytorch-outputs.npz",
+    "bytes": 2992792,
+    "sha256": "5695575cfbd854d44f05ef49a2816fb5ed2a023e9bd0a5194ffcbde2cce70298"
+  },
+  "artifacts": {
+    "llvm.mlir": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/llvm.mlir",
+      "bytes": 9941935,
+      "sha256": "f05d173288ab263909943830bfb372c4942a8fce49f7d9e1e52e3b16a3f01d07"
+    },
+    "kernel.ll": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/kernel.ll",
+      "bytes": 8615530,
+      "sha256": "b03c0a0574e34747eacea46cb74cd2770ce355d9548e8a56649598593de733d8"
+    },
+    "kernels.so": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/kernels.so",
+      "bytes": 971608,
+      "sha256": "e8619b795c7ba95ec5d3d4186af3b12ee08177d3f94997236a87ca7b47e1f98f"
+    },
+    "plan.json": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/plan.json",
+      "bytes": 987870,
+      "sha256": "a9114b3be5e851b8b5d1da87fb66d4362f8370588a0d4b6bee1909d012c735b7"
+    }
+  },
+  "execution_start_identity": {
+    "manifest_sha256": "a9114b3be5e851b8b5d1da87fb66d4362f8370588a0d4b6bee1909d012c735b7",
+    "library_sha256": "e8619b795c7ba95ec5d3d4186af3b12ee08177d3f94997236a87ca7b47e1f98f",
+    "inputs_sha256": "d3e5d4a8bf084fd74f27c5d9496f18ca7219c91f4df7c6208c45851bacca7aa4",
+    "constants_sha256": "3816db3e37a7a49e20337d4e91f750e777b2e663d022d926e82ac8016a57dd42"
+  },
+  "tools": {
+    "mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "bytes": 51580488,
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a",
+      "version": "LLVM (http://llvm.org/):\n  LLVM version 20.1.8\n  Optimized build with assertions."
+    },
+    "clang": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+      "bytes": 177879328,
+      "sha256": "f1af489a7b7a2a51b9743c8f8796b6cef0fb3ecd2d4f0bf4a0196d7b0aa3b9a4",
+      "version": "clang version 20.1.8 (/mnt/c/Users/Thomas/Desktop/universal_ai_compile/llvm-project b2ecfe086df2d00233a87f3d3ebe6a74aba129e2)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /home/thomas/gac-volt-llvm20/build-release/bin\nBuild config: +assertions"
+    },
+    "gac-compile": {
+      "path": "/home/thomas/gac-native-build/gac-compile",
+      "sha256": null,
+      "reason": "Exact compiler binary hash was not captured when this artifact was produced. Later rebuilds are not evidence of the original producing binary."
+    }
+  },
+  "test_harness": {
+    "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/run_full_model.py",
+    "bytes": 18717,
+    "sha256": "b86cf14d3ce5b51271f17d3116de1bc38fb5fdd556178077de213b372ae306d3"
+  },
+  "host_environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "compile_flags": [
+      "-shared",
+      "-fPIC",
+      "-O2",
+      "-lm"
+    ]
+  },
+  "validation": {
+    "rtol": 0.001,
+    "atol": 0.0001,
+    "outputs": {
+      "bev_embed": {
+        "passed": true,
+        "shape": [
+          2500,
+          1,
+          256
+        ],
+        "actual_dtype": "float32",
+        "expected_dtype": "float32",
+        "finite": true,
+        "mismatched_elements": 0,
+        "max_abs_error": 3.4570693969726562e-06,
+        "mean_abs_error": 2.7437549567821406e-07
+      },
+      "all_cls_scores": {
+        "passed": true,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "expected_dtype": "float32",
+        "finite": true,
+        "mismatched_elements": 0,
+        "max_abs_error": 1.2874603271484375e-05,
+        "mean_abs_error": 7.114057187680845e-07
+      },
+      "all_bbox_preds": {
+        "passed": true,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "expected_dtype": "float32",
+        "finite": true,
+        "mismatched_elements": 0,
+        "max_abs_error": 4.9591064453125e-05,
+        "mean_abs_error": 1.4244294013005183e-06
+      }
+    }
+  },
+  "intermediate_validation": {
+    "/img_backbone/layer4/layer4.2/relu_2/Relu": {
+      "passed": true,
+      "shape": [
+        6,
+        2048,
+        15,
+        25
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 4.351139068603516e-06,
+      "mean_abs_error": 1.4775077438066041e-08
+    },
+    "/img_neck/lateral_convs.0/conv/Conv": {
+      "passed": true,
+      "shape": [
+        6,
+        256,
+        15,
+        25
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 1.043081283569336e-06,
+      "mean_abs_error": 1.4193164207022668e-07
+    },
+    "/img_neck/fpn_convs.0/conv/Conv": {
+      "passed": true,
+      "shape": [
+        6,
+        256,
+        15,
+        25
+      ],
+      "actual_dtype": "float32",
+      "expected_dtype": "float32",
+      "finite": true,
+      "mismatched_elements": 0,
+      "max_abs_error": 1.0013580322265625e-05,
+      "mean_abs_error": 8.405065317573543e-07
+    }
+  },
+  "independent_onnx_reference": {
+    "reference_only": true,
+    "generated_gac_model_executed": false,
+    "onnxruntime_version": "1.31.0",
+    "onnx_version": "1.23.2",
+    "threads": 1,
+    "reference_execution_wall_seconds": 5.404528318000018,
+    "model_outputs": [
+      "bev_embed",
+      "all_cls_scores",
+      "all_bbox_preds"
+    ],
+    "nodes": [
+      {
+        "source_node": "/img_backbone/layer4/layer4.2/relu_2/Relu",
+        "onnx_output": "/img_backbone/layer4/layer4.2/relu_2/Relu_output_0",
+        "shape": [
+          6,
+          2048,
+          15,
+          25
+        ],
+        "dtype": "float32"
+      },
+      {
+        "source_node": "/img_neck/lateral_convs.0/conv/Conv",
+        "onnx_output": "/img_neck/lateral_convs.0/conv/Conv_output_0",
+        "shape": [
+          6,
+          256,
+          15,
+          25
+        ],
+        "dtype": "float32"
+      },
+      {
+        "source_node": "/img_neck/fpn_convs.0/conv/Conv",
+        "onnx_output": "/img_neck/fpn_convs.0/conv/Conv_output_0",
+        "shape": [
+          6,
+          256,
+          15,
+          25
+        ],
+        "dtype": "float32"
+      }
+    ],
+    "collector": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/native/tests/collect_onnx_references.py",
+      "bytes": 3624,
+      "sha256": "b8b80976442fd8bfd9bbdf0fbfbc51f5d0510e10585c8b1eb09ab6f90905999a"
+    },
+    "model_reference": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/reference/model-reference.npz",
+      "bytes": 2992792,
+      "sha256": "7dbe08fd0d7f4a0b6d2c03822d250ce28f6477c55c49bdac92ff920307803687"
+    },
+    "node_reference": {
+      "path": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-bevformer-complete/reference/node-references.npz",
+      "bytes": 23040932,
+      "sha256": "8089c68565dcda87c42f36905ecf9b3bf543bc75d7daf7335bf1d10506037380"
+    }
+  },
+  "timing": {
+    "summed_generated_kernel_host_call_seconds": 435.5611756119996,
+    "dispatch_loop_wall_seconds": 572.245679077,
+    "dispatch_loop_includes": [
+      "Sequential generated-kernel execution",
+      "Progress logging",
+      "714316800-byte arena checkpoint every 50 dispatches",
+      "Selected intermediate tensor dumps"
+    ],
+    "dispatch_loop_excludes": [
+      "Compilation",
+      "Loading shared library and input/constant files",
+      "Final output file writing and final comparison"
+    ],
+    "stages_seconds": {
+      "heads_and_other": 2.1946316830006793,
+      "backbone": 313.375428456,
+      "fpn": 4.155740588000015,
+      "encoder": 9.913319525000361,
+      "decoder": 105.92205535999847
+    },
+    "checkpoint_interval": 50,
+    "resumed": false,
+    "not_a_benchmark_claim": "Single correctness run with concurrent tool activity and checkpoint I/O; not physical GPU latency or a warmed repeated-run benchmark."
+  },
+  "memory_budget": {
+    "logical_tensor_bytes": {
+      "input": 27648000,
+      "constant": 159899584,
+      "arena": 7896629120
+    },
+    "arena_bytes": 714316800,
+    "embedded_constant_bytes": 3333600,
+    "minimum_storage_bytes_excluding_code_runtime": 905197984,
+    "storage_budget_scope": "Includes embedded constant globals; excludes instructions, stack and runtime metadata"
+  },
+  "full_dispatch_timings": "build/native-bevformer-complete/host-results/full-model-report.json",
+  "operation_profile": "host-native-profile-summary.json"
+}

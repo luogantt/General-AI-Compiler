@@ -1,0 +1,615 @@
+{
+  "scope": "Independent MatMul+bias references versus generated native CPU machine code",
+  "reference": "ONNX Runtime CPU for FP32; ONNX ReferenceEvaluator for FP16 boundaries; no compiler implementation in Python",
+  "reference_versions": {
+    "onnx": "1.21.0",
+    "onnxruntime": "1.23.2",
+    "numpy": "1.26.4"
+  },
+  "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "python_operator_fallback": false,
+  "cases": [
+    {
+      "name": "bias_right_scalar",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "19a674d27a82de233f0838a52cab0024fd93249d7d1a8d36d6558f98154af6a6",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "edfbb2393a327bc4234edd223978b1da61f08b1b057cebb400987e8c7e655512",
+        "library_sha256": "75a28a4a409f985ca8ecbe7e923a069f7bbab79da06ac549b74ea91ec2baa621",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "39daa32205371826bc1ca3cd8724744d51f32cb19f77436c2f5037af95ead9ae"
+      }
+    },
+    {
+      "name": "bias_left_channel",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "a386c887fdcb31b03c59074c6a4f0fd2879d28a4d8cdb774b640957c21e8062a",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "a8ffc90613725c4bc48ab1deb99acbada743156bc576e8baca3eb713848cac95",
+        "library_sha256": "a63de69af8f24a9e42a1232ceb0dc65217c5fac7d4f7604377b725a58a71bce2",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "0bc95f7bd3a38b43cba26f8a55420f7da2315f86d34e332329d917cdecc4617c"
+      }
+    },
+    {
+      "name": "bias_right_matrix",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "add90ad97ce45da8ea955a596eb1b6d607e5e3df3ef5bd62cd78384fb4c0e756",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "17f3762291a4061b2fe17a8c1e51d1c47ac1ef7f2ef904bbcc4d38062dd491e6",
+        "library_sha256": "9af02c25073876f9879b5294f4fd9b72779ebaa6fd30b32538b36cc93a992fb8",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "751dd5b17c86092885c445dbc7a815dcbe86917b3027da97129518d62ba074a2"
+      }
+    },
+    {
+      "name": "bias_left_column",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "5938ebbc66be4365f0a2fa3a93a65826896d1c6e7fceec3fe4506ed62f1f7d42",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.1175870895385742e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "9974ae39fb9668de25bd8300a8bf9954f129c4ed9d52b412a126db5eefa31d0a",
+        "library_sha256": "958fc98370134da73e83caaae485a36095bac8a1b9731b6cb06c79170b56640a",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "ab016ab44e5416ba2bcfcd7728c34da0238f4b8dd227c9b60ace9862f4b73738"
+      }
+    },
+    {
+      "name": "bias_batched_channel",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "69c38f850eed2a0bceab3d0466e1cb2de76cff13839e8644b7fc010a92847f38",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 128,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "f05b29c30ed57105c2d90d1c21e58c848f5dd36fdcdb37d12a4f793045fcfc16",
+        "library_sha256": "0dd5c35ba195a619fdf98697d359b9882e0781203d8e949b9ed2970178fbe183",
+        "inputs_sha256": "5acbae4a33956b10c3104c9abd32d6c4cc86de95bf9da7f087b66b3719cd824f",
+        "constants_sha256": "c90f70d0da311e49f5880ed82204f48c3502a102eb20c2fa49b6f84bc5e0a689"
+      }
+    },
+    {
+      "name": "bias_batched_middle_axis",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "78676d68c4224dd67fae7df7a55e49c947f0988aab2c068904cb5806c301e8c1",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 128,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "17c4cb674d677f8aa082cabe55c7dfee7bbbcd4e4df6778efbe23b8fd62cdca3",
+        "library_sha256": "6e40798fc2d78d0d0f7df25e0cb14ed63c825b1a4996913a4e7bc71eb28aae89",
+        "inputs_sha256": "fb563305232cc6048fd9a0cc00eb83596deea4e6681a1ef019f072edfdc85ed4",
+        "constants_sha256": "a249b30cec3aa27c2a3d6e0995891bca4b6774e3bf982a583fccf84d8de96142"
+      }
+    },
+    {
+      "name": "bias_batch_broadcast",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "b004aa37853d70fbfaab2a0d66c01d2e50656280f99f1c56aca5e285fbc25f74",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 512,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.1920928955078125e-07,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "6726e49c1c8008a0e558c9a4c65e20b8564f99638b19789102f311e0b91dde36",
+        "library_sha256": "6e4e99eb858e223552634622ca6343a1e718576b1f319958fde41492e916ff52",
+        "inputs_sha256": "ef86e2eafbb40dd73866e403c207ee766f52fb96b0fb79a6acbb5a6701bae365",
+        "constants_sha256": "a383536267609e24f04a0219eb7cfe53711421768d23e878dffbf951fbf8b77d"
+      }
+    },
+    {
+      "name": "matmul_public_output_retained",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "d2da94dea47be2653f672302ee0bb33f80e7ab7da179f0e37890dabec11cb12a",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 128,
+      "dispatch_operation_counts": {
+        "gac.matmul": 1,
+        "gac.add": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "M": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "a7ed0ffa8483bdcd075d9a19b5c7c193a944e3682b76a30bdb7918ed20fe975c",
+        "library_sha256": "7634e91691ad47f0a3416dc7267f6a416be00bf3afcd7100dbc516dbfa79ee14",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "b452a3de0daeae3f50f463c72738edaee38664090ccafb42fa8a54543e48ecea"
+      }
+    },
+    {
+      "name": "matmul_extra_consumer_retained",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "7421000af2b127a3f6df4c8b2fe92059580e4078ae323ccdc07dcf8e843a1b8b",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.matmul": 1,
+        "gac.add": 1,
+        "gac.mul": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        },
+        "other": {
+          "passed": true,
+          "max_finite_absolute_error": 2.9802322387695312e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "3747b327a8100da882370069467b2d2c222b9bd72af796cf98552016e9444d2e",
+        "library_sha256": "c88bcc7d72ddbe34bb61acf0ac82679734bae77ecfbc0241ba593fd85c0053c5",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "aad728042caa4132d1d14b61e2a36efc22ef0b9211e90d66b7de6da8eb006819"
+      }
+    },
+    {
+      "name": "fp16_rounding_boundary",
+      "passed": true,
+      "reference": "ONNX ReferenceEvaluator; explicit FP16 operator boundaries",
+      "model_sha256": "80921b1a8ead570eee316e84b6bfb4d1ba15b20cc7f7031e549b6a55cedd3314",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 128,
+      "dispatch_operation_counts": {
+        "gac.matmul": 1,
+        "gac.add": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "3d09a528b06da11c55b6d01f4445a7c4d33878528c36b4195a3ded8610ce2d22",
+        "library_sha256": "92bd8c007ade67e3f9fb034b968aca16d28cbb8569ae4fcedc0115a4f0176726",
+        "inputs_sha256": "a9ec2592af72088bfdf3d1131960fa0d43df5b27c3865146c2017bfb1383fb86",
+        "constants_sha256": "0d436b7af7dad37638cbe3883c1b52b4138d0fde3b812cf0ad9ca6fae2a8dabf"
+      }
+    },
+    {
+      "name": "bias_expands_output_domain",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "75b39e38b1c8734dce3990fd6f4c99c2a67306065393402f3395dc3d1e285f21",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 192,
+      "dispatch_operation_counts": {
+        "gac.matmul": 1,
+        "gac.add": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.1920928955078125e-07,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "a3f011c372f4f9b948c86f86a5a7eaecba1f30a998b3aa145beb5fd482599042",
+        "library_sha256": "4f457f2cc367c33e40e229fe94c65635d5f17dc0ff9e171c21b9bb6c505b9125",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "a2bbca3821f0a99f17d6e47c59b55e2f77fcb79f91e70870d536f00343f53201"
+      }
+    },
+    {
+      "name": "bias_right_relu",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "d7a609ae24bd09a0480e3ac8e93d266cdfc4f9ae1cf3ca94e56b242215671084",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias_relu": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 5.960464477539063e-08,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "52eecac5a40cc1bbf6c83a91226ddaf9c96ddb69c0974c8e82186b3dbb2bfda0",
+        "library_sha256": "2ff08b79d985d8804ccd568f3380d0df1d3b4ec4c7c80b51549c07b94d03bec9",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "c3ef13da4ca395ae1ddc569f9882967911e3def82d236c2dac0077c3a8adbbac"
+      }
+    },
+    {
+      "name": "bias_left_relu",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "88a8b7a1876ed037881e0fe01704bb0c922199b403988188e61007733438afa6",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias_relu": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 1.1920928955078125e-07,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "52eecac5a40cc1bbf6c83a91226ddaf9c96ddb69c0974c8e82186b3dbb2bfda0",
+        "library_sha256": "2ff08b79d985d8804ccd568f3380d0df1d3b4ec4c7c80b51549c07b94d03bec9",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "7a0481a5857d84ca3695f33bc722cde4efa1a8ca272dafd02bfcbc6dcae2da3f"
+      }
+    },
+    {
+      "name": "bias_after_complete_reduction",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "911191af97c584c84dd09238b8a30a17640f1870d1b2fa24ad42d48bbfc2aae4",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "fabfbe2854600d83daf95fe14f57aad9eb1e637c2cc6b6179080a06d18f37974",
+        "library_sha256": "ba8367d87b493b09bbacb4fad73413d566c0bb37d0682d9a9d40fd9d5d9a88c6",
+        "inputs_sha256": "c0eb8849886e2fdcacaf8e233ce4d4936bebde0a4e4ec8483991a73dd2114bde",
+        "constants_sha256": "dcf400068e611f650b792b9e8cc438735b3a578dd93062571fc7adc93cb313a1"
+      }
+    },
+    {
+      "name": "nan_inf_semantics",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "c1b20e3e5933d124aa137866cc6a008e0968455abbf06f6c6e44dc738c96cc91",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 4,
+          "positive_infinities": 1,
+          "negative_infinities": 1
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "e0ee816b66eeceebfeb1e16bceec1bf6915a34805b0a1ed0b60329632cc53a1d",
+        "library_sha256": "3c56a796a1b439514471c99299f07b6aa09fbbf65b6f1d1334c066fa317ed503",
+        "inputs_sha256": "b936ff8d464fb93360506c9bdb11d573472180ebee4a38b4f0eca760e6e73fcf",
+        "constants_sha256": "92623781068ff40ea517a079d3574efe9d8eee4d1743af03312ac9234c61e791"
+      }
+    },
+    {
+      "name": "zero_inputs_and_bias",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "297273761a368c062908a4a602ae390f12c4029712f8c8b0abfc32e94be4c99c",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "775121a9c46054fd9e58261ebdb9dae016bee512344c248c934a97b77f9e1d9c",
+        "library_sha256": "0b175facb393e2d8ab46ce8cd45078a2b78ef66fd4fbfc4fa96a6af35cf32298",
+        "inputs_sha256": "169bb8f7601da8d1e8d9b5c7a25f0cb7c3064e41e5f22a7dd771a243efb02f1c",
+        "constants_sha256": "6627b490c18251d1deca57640277a8aad9a20a15dab336a5d69708c840ab96bf"
+      }
+    },
+    {
+      "name": "reject_incompatible_bias_shape",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "568460c91d79a086abdce0db68e9d29b4fd98936784311ee0b5d039620a28c57",
+      "expected_rejection": "loc(\"bias_add\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-matmul-bias-tests-rank-one/reject_incompatible_bias_shape/model.onnx\":2:0)): error: 'gac.add' op incompatible broadcast dimensions 5 and 7"
+    },
+    {
+      "name": "dot_rank_one_scalar_bias",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "71941b44dae6da8799261d78e6a3ce69fa18a6f980a8dfe5c440c653f6f90f6e",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "0840847d663314ebe82a21b6795783b3e5d3203a11a5b5faf409494f9a72646d",
+        "library_sha256": "d657aa5235b35280c249fc1f73981ec65cc102f14afe4d4c5356decf5bebdfac",
+        "inputs_sha256": "9b9e167c753c2d38913ed56abfd0be9c12d160db62b13d577b9d3be28fa4e68d",
+        "constants_sha256": "25003c243b2fd2cf702142800e2de75d3a286688153d1d474145bae4da620b2f"
+      }
+    },
+    {
+      "name": "vector_matrix_channel_bias",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "6433953f3446f2f869f971bd45ee45b6130098c39b88b0dcc314a004ee401b25",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "a4e77d219f4f6212e96141e346b0461ee819e74ccfdacd45ee2db74a653ede17",
+        "library_sha256": "fd3bcd3361493b04efd8ec41c676a8103e6df260e41e8a0e004e4039065f6398",
+        "inputs_sha256": "80fd411bb8f3df404ca44292561ab807e2b923c83341b97f9b515fb86705918d",
+        "constants_sha256": "e7a9f39ab00e52f2fab937dda6db45337a98790ca395e21897184e006927eeb6"
+      }
+    },
+    {
+      "name": "matrix_vector_scalar_bias_first",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "4a9dd5fd214b55fac670a775006a6bdb063da7e4a76e2b4e09851b30a370411a",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "2d6c241ff60046de26544047a66a9cf547bc980c6bf7572904ad18d6823090fe",
+        "library_sha256": "533aad42be7b7f82d9ef5df9fcd2d217b2e2b396434b10f0e9741d01dbc810b4",
+        "inputs_sha256": "581cef8d4bea0e036320465ff70024e4a272ca48a68106ad7e64d02c20b8f2a7",
+        "constants_sha256": "a3c305ab347e19a17887aa2de9069f2da5827332cc586119f634dc58501d5d59"
+      }
+    },
+    {
+      "name": "vector_batched_matrix_bias_first",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "1a4593aff7ac67c0696aedf1b083dd90955a6b5748b4c465d7801169aae2cfd7",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "b2994b7d68cbc52a6057ae5062597d86cea9404cf7a6d46d2eff33b92a85f640",
+        "library_sha256": "01952c06ae0a7d4b238b93553947475a2c62420d2a24e7c81eb3898eefe52e59",
+        "inputs_sha256": "f3f58d4b83fe5f9fe0fe6e8137f89a85334f77af5e2677459584f639279d236b",
+        "constants_sha256": "ecf239db734b3e2ffc667054465108c91bc372532298d40832fac439e1aa6fc8"
+      }
+    },
+    {
+      "name": "batched_matrix_vector_bias",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "f12d8ce33ff50d751308cce8497e18b61e5725afa9adcdbcb91532ecddacf4c8",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 64,
+      "dispatch_operation_counts": {
+        "gac.matmul_bias": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "ae652fc6f006f8ba194be1ab4cab295b497976379795333f1dfe02c5ede5ff12",
+        "library_sha256": "9fb425628f7a74d8fde1ae35de02977e1519f324f90fda342d865e38ab230fa6",
+        "inputs_sha256": "1c868c5fe8271d3a0137e3e38b462cda09cfc08204e8ee439e3214dc00695979",
+        "constants_sha256": "0f3d8bcfff548f9f11b76ac73119c176ec07703bde845fa5c5af0052ed8a7aeb"
+      }
+    },
+    {
+      "name": "dot_vector_bias_expands_rank",
+      "passed": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "model_sha256": "7a57e6045425b74740a4ad823af5b9cfd94020892802b6c20164a72704358e47",
+      "live_buffer_overlap_check": "passed",
+      "arena_bytes": 128,
+      "dispatch_operation_counts": {
+        "gac.matmul": 1,
+        "gac.add": 1
+      },
+      "outputs": {
+        "Y": {
+          "passed": true,
+          "max_finite_absolute_error": 0.0,
+          "nan_elements": 0,
+          "positive_infinities": 0,
+          "negative_infinities": 0
+        }
+      },
+      "artifact_identity": {
+        "manifest_sha256": "6392c4b240d3bae58f30cf93172d3fd395a984b8f5fd946d9e362a1a5b4d9397",
+        "library_sha256": "41f7762e4edbfa66a28beb3ad197e123427715d1ab4b8fe21b8b84b11d864907",
+        "inputs_sha256": "67861641f63d2ee6e827134bb9d2f0860b75b4402b38666c7fdaab881fc7b0ff",
+        "constants_sha256": "2593aab5c1d98f174a8fa54c612f95afa4d30d207f0dbf698577e7bac26614ef"
+      }
+    }
+  ],
+  "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "compiler_stable_during_run": true,
+  "passed": true
+}

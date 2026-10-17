@@ -5,3 +5,7 @@ docs/validation/vortex/buffered-mlir-2026-10-14/smoke-kernel.opt.mlir -whitespac
 # Raw FP16/FP32 validation tensors must retain their exact IEEE bytes.
 docs/validation/vortex/full-graph-2026-10-15/*.bin -text
 
+# Keep archived reports/IR/logs byte-for-byte for their recorded SHA-256 values.
+# Native MLIR and symbol printers may intentionally emit trailing whitespace.
+docs/validation/vortex/native-mlir*/** -text -whitespace
+

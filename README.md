@@ -1,5 +1,27 @@
 # General AI Compiler（GAC）
 
+Vortex 原生编译器存档：`bevformer-base-mlir-vortex`，分支
+`lg/bevformer-vortex-full-ops`。源码恢复来源与验证范围见
+[Vortex 版本存档记录](docs/validation/vortex/native-mlir-snapshot-2026-10-17/README.md)。
+
+**新的 ONNX → Vortex 主入口：[原生 C++ MLIR 编译器](native/README.md)。**
+它直接把 ONNX ModelProto 导入注册的 `gac` Operations，使用真实 MLIR Pass 做
+shape 推导、常量折叠、CSE、条件融合和布局验证，再由 C++ Lowering/Buffer 规划生成
+Vortex 设备代码；小模型已完成 `VOLT → ELF → vxbin → C++ Runtime → SimX` 数值闭环。
+完整 BEVFormer-tiny 固定 cold ONNX 已通过严格原生编译，生成 **1,548 个 dispatch**；
+图像激活仍由生成的 Kernel 在运行时计算，常量几何在 MLIR Pass 中求值。完整
+Vortex ELF/vxbin 已生成并核对全部 1,548 个入口；主机生成的机器码已完整执行
+整网，三个输出与 PyTorch 参考对齐。完整 SimX 执行仍待验收，尚无物理设备 FPS，详见
+[整网验证记录](docs/validation/vortex/native-mlir-bevformer-full-2026-10-16/README.md)。
+官方 R101-DCNv2 / 200×200 / 四级 FPN 的适配单独记录在
+[BEVFormer-base 原生 MLIR 说明](native/README.bevformer-base.md)：完整 base 已生成
+**3,224 个 dispatch** 的 native 主机共享库和 Vortex ELF/vxbin，并核对全部设备
+入口。base 完整 CPU 数值验证已通过：3,224 个 dispatch 全部执行，三个输出与
+PyTorch 参考对齐，见[最终验证记录](docs/validation/vortex/native-mlir-bevformer-base-2026-10-16/README.md)。
+尚无整网 Vortex 执行或 30 FPS 结论。
+旧 Python Graph 路径作为兼容实现保留；以下历史能力
+与新原生路径的支持范围分别记录，不能混算。
+
 `lg/bevformer-vortex-full-ops` 分支新增[按照 V6 十层架构实现的整图 Vortex 后端](docs/bevformer_vortex_full_graph.md)：现有 BEVFormer streaming Graph 的 33 类规范算子均可生成独立软件 MLIR Kernel，统一在一台 Vortex 上执行。包含全局 Buffer 复用、事件调度和原生 DType Runtime；完整拓扑的小尺寸模型已通过真实 MLIR 编译及 SimX 数值验证。真实 checkpoint 的生产 Profile 已编译为 `.vxbin`，生产尺寸输入的精度与速度仍待验证。
 
 > 面向边缘推理的 AI 编译器与 Runtime 原型；当前生产闭环是固定 Profile 的 BEVFormer-tiny raw step 和 CUDA SM86，同时提供 tensor-level MLIR emitter、cuBLAS 混合 FFN、全 PTX FFN，以及两次 cuBLAS MatMul 配合两个 MLIR→PTX 融合 Kernel 的 `mlir-cublas-ptx-sm86` 生产候选。
@@ -141,7 +163,7 @@ V8 从真实函数提取代码、行号和文件 SHA-256，更新源码后运行
 
 ## MLIR / `mlir-opt` 文件在哪里？
 
-**`mlir-opt` 不是本仓库里的 Python 文件或动态库。** 它是 LLVM/MLIR 源码编译出来的外部命令行程序，体积、平台和 LLVM revision 都与构建环境有关，因此不提交到 General-AI-Compiler Git 仓库。GAC 通过子进程调用它：CUDA 路径把 GPU Dialect MLIR 降到 NVVM/SM86 PTX；Vortex direct 路径由固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect，再用同一工具树的 `mlir-translate` 生成 LLVM IR。部署已经离线编译好的 PTX artifact 时不再需要 `mlir-opt`。
+**`mlir-opt` 是 LLVM/MLIR 编译出来的命令行程序。** 新的 [native/](native/README.md) 核心直接链接 MLIR C++ 库，`gac-opt` 注册本项目方言，`gac-compile` 在进程内运行 PassManager。下述历史 Python 路径仍通过子进程调用上游 `mlir-opt`：CUDA 路径把 GPU Dialect 降到 NVVM/SM86 PTX；旧 Vortex direct 路径用固定的 VOLT LLVM 20.1.8 验证 LLVM Dialect。新旧路径均可用同版本 `mlir-translate` 生成 LLVM IR。编译器可执行文件由本机构建，不提交到 Git；部署已编译的设备产物不需要重新运行这些编译 Pass。
 
 GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`](https://github.com/luogantt/General-AI-Compiler/tree/lg/bevformer-mlir-ptx-opt) 分支；默认 `main` 当前没有下面这些工具链、lowering 和验证产物，因此直接浏览 `main` 会找不到。查看代码时请先切换到该分支。
 
@@ -150,7 +172,7 @@ GitHub 上完整的 BEVFormer MLIR/PTX 实现位于 [`lg/bevformer-mlir-ptx-opt`
 - [`src/gac/toolchains/mlir.py`](src/gac/toolchains/mlir.py) 负责查找 `mlir-opt`、构造无 shell 的命令参数、执行官方 GPU→NVVM pipeline、提取 PTX，并记录 LLVM revision、版本、命令和摘要。
 - [`src/gac/targets/cuda/ptx.py`](src/gac/targets/cuda/ptx.py) 是 BEVFormer 固定 FFN 的全 PTX lowering；[`src/gac/targets/cuda/cublas_ptx.py`](src/gac/targets/cuda/cublas_ptx.py) 保留两个 cuBLAS MatMul，并把两个融合 Kernel 由 MLIR 降到 PTX。
 - Git 中可直接查看的 MLIR 示例是 [`examples/mlir_sm86_add_relu.mlir`](examples/mlir_sm86_add_relu.mlir) 和 [`examples/mlir_sm86_layernorm_fusion.mlir`](examples/mlir_sm86_layernorm_fusion.mlir)。保存的真实 lowering 样例位于 [`docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.gpu.mlir)、[`production-ffn.binary.mlir`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.binary.mlir) 和 [`production-ffn.ptx`](docs/validation/sm86/mlir-ptx-2026-10-11/production-ffn.ptx)。
-- 普通编译生成的 `.mlir`、`.ptx`、manifest 和报告写入 `build/`；该目录不进入 Git。它们是编译产物，`src/gac/` 下的 Python 文件才是 emitter、lowering、artifact 校验和 Runtime 实现。
+- 普通编译生成的 `.mlir`、`.ptx`、manifest 和报告写入 `build/`；该目录不进入 Git。新 ONNX→Vortex 核心的实现位于 `native/` C++ 源码；历史路径的 emitter、lowering、artifact 校验和 Runtime 位于 `src/gac/`。
 
 在 Windows PowerShell 中构建并取得实际路径：
 

@@ -1,0 +1,37 @@
+{
+  "snapshot_at_utc": "2026-10-16T12:25:12.300740+00:00",
+  "status": "running_not_validated",
+  "scope": "Generated native CPU shared library full-model execution; not Vortex device execution",
+  "completed_dispatches_at_snapshot": 77,
+  "total_dispatches": 3224,
+  "last_completed_dispatch": {
+    "index": 76,
+    "kernel": "gac_op_76",
+    "op": "gac.sigmoid",
+    "output": "value_936",
+    "source_node": "/img_backbone/layer3/layer3.3/conv2/Sigmoid",
+    "source_output": null,
+    "host_kernel_wall_seconds": 0.0002339630000278703,
+    "event": "end"
+  },
+  "latest_event": {
+    "index": 77,
+    "kernel": "gac_op_77",
+    "op": "gac.deform_conv2d",
+    "output": "value_937",
+    "source_node": "/img_backbone/layer3/layer3.3/conv2/MMCVModulatedDeformConv2d",
+    "source_output": null,
+    "event": "begin"
+  },
+  "checkpoint_next_dispatch": 50,
+  "checkpoint_identity": {
+    "manifest_sha256": "e4b1c0356dab16d5e25f00efdd8d47efcdd9bbeb2c50fdd6d136cf9ab0da3907",
+    "library_sha256": "ed24193a729c30b93ea31e353fe15b89cb00734e632163239c6c1cdbeb2b94c2",
+    "inputs_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+    "constants_sha256": "5d50a0bd738ba54caedf54ad160d81f0e61a5f404dc6f10990f4575692ccfe71"
+  },
+  "first_dcn_host_kernel_seconds": 69.993543972,
+  "full_model_executed": false,
+  "output_numerical_validation": "not_completed",
+  "performance_scope": "Partial scalar CPU progress; no full-frame latency, Vortex latency or FPS conclusion"
+}

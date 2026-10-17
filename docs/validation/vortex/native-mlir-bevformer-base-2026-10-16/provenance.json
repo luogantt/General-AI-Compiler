@@ -1,0 +1,726 @@
+{
+  "scope": "Operator and small-graph validation for BEVFormer-base adaptation; not full-model execution",
+  "python_operator_fallback": false,
+  "physical_gpu_benchmark": false,
+  "compiler_epoch_note": "Historical batches retain their own binary hashes, including uncaptured If21 hashes. Complete 73-case regressions were separately repeated on 7b2819fcbe64 and 050f89d4f3ff; these do not retroactively change earlier evidence.",
+  "full_bevformer_base_model": {
+    "complete_onnx_produced": true,
+    "onnx_nodes": 22412,
+    "complete_cpu_reference_produced": true,
+    "native_compile_status": "Original ONNX to native LLVM and host shared library generated. CPU full-model numerical execution is still running; no final output comparison yet.",
+    "full_generated_native_inference_verified": false,
+    "full_vortex_inference_verified": false,
+    "physical_device_fps": null,
+    "export_record": "export-attempt.json",
+    "export_record_sha256_at_update": "a63f43ab61bf075d7220a9ebaf477d2759b0b1bf04efa8be7488e5624ef307a9",
+    "full_import_passed": true,
+    "full_shape_inference_passed": true,
+    "full_graph_optimization_passed": true,
+    "device_machine_code_complete": true,
+    "optimized_graph_memory_probe_passed": true,
+    "memory_metrics_scope": "Native manifest minimum aggregate input/constants/arena/embedded globals; excludes instruction code, stack, runtime metadata and driver/device allocations.",
+    "historical_pre_fusion_budget_rejection": {
+      "planned_dispatches": 3460,
+      "aggregate_buffer_bytes": 2857401828,
+      "signed_rv32_budget_bytes": 2147483647,
+      "arena_bytes": 2292224000,
+      "peak_simultaneously_live_arena_bytes": 1935257600,
+      "peak_dispatch_index": 2216,
+      "embedded_constant_bytes": 42393600,
+      "budget_diagnostic": "full-base-rv32-budget-before-matmul-bias.log",
+      "live_memory_diagnostic": "full-base-memory-before-matmul-bias.log"
+    },
+    "native_llvm_compilation_passed": true,
+    "native_shared_library_execution_verified": false,
+    "dispatches": 3224,
+    "input_bytes": 106905600,
+    "constant_bytes": 368518572,
+    "arena_bytes": 1554944000,
+    "embedded_constant_bytes": 2073600,
+    "minimum_storage_bytes_excluding_code_runtime": 2032441772,
+    "resource_audit": "full-base-native-resource-audit.json",
+    "plan_summary": "full-base-native-plan-summary.json",
+    "compile_time_report": "full-base-native-compile-time.log",
+    "native_compile_seconds": 174.26,
+    "native_compile_max_rss_kib": 1298172,
+    "native_compile_swaps": 0,
+    "native_resource_audit_passed": true,
+    "vortex_artifact_compilation_passed": true,
+    "vortex_artifact_audit_passed": true,
+    "vortex_dispatches": 3224,
+    "vortex_elf_kernel_entries": 3224,
+    "vortex_vxbin_kernel_entries": 3224,
+    "vortex_undefined_elf_symbols": [],
+    "vortex_artifact_report": "full-base-vortex/artifact-audit.json",
+    "native_shared_library_generated": true,
+    "native_execution_progress_report": "full-base-native-execution-progress.json",
+    "native_execution_management_snapshot": "full-base-native-host/running-status.json"
+  },
+  "contract_geometry": {
+    "wall_seconds": 3.42,
+    "source_sha256": "a05b5f15fbaa9c4e59807fdf12bc37baef6951e4e5328bf7f2c4bf1b7c869ce7",
+    "cases": 11,
+    "passed": true,
+    "timing_scope": "entire contract fixture test command, not kernel latency",
+    "peak_rss_kib": 73560,
+    "compiler_hash_capture": "Original report did not capture the binary hash; the executing agent associated its window with the initial 71ef6dab89a9 build.",
+    "report": "base-contract-geometry-results.json",
+    "swaps": 0
+  },
+  "initial_round_started_at_utc": "2026-10-16T10:52:30.043363+00:00",
+  "initial_round_finished_at_utc": "2026-10-16T10:52:47.716560+00:00",
+  "initial_round_compiler_stable_during_regressions": true,
+  "initial_round_tools": {
+    "gac-compile": {
+      "path": "/home/thomas/gac-native-build/gac-compile",
+      "sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10"
+    },
+    "gac-opt": {
+      "path": "/home/thomas/gac-native-build/gac-opt",
+      "sha256": "223b1e89ffb125f48a414d0485312f2b24efeba29206c9b73934370754e560e8"
+    },
+    "mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a"
+    },
+    "opt": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+      "sha256": "dbfd31ba64fd2f4e1b5d011552a889336353dd68c183f8356e3a7a82eb30e9d4"
+    },
+    "clang": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+      "sha256": "f1af489a7b7a2a51b9743c8f8796b6cef0fb3ecd2d4f0bf4a0196d7b0aa3b9a4"
+    }
+  },
+  "initial_round_test_source_sha256": {
+    "native/tests/generate_base_ops_models.py": "bb8ca936c00b6721ecc40f9585a2b0df3d0c9f9db918898b788316d40e305e69",
+    "native/tests/run_base_ops_tests.py": "a5333cfbc026198a68c07e71dbe23fab25e3641fb04b36073aa6679481d202f6",
+    "native/tests/run_tests.py": "b14dde02b3c0bde223a95088f3cafa0bb2fa0dff3276d70022e1bfb54084dddb",
+    "native/tests/run_full_model.py": "b86cf14d3ce5b51271f17d3116de1bc38fb5fdd556178077de213b372ae306d3"
+  },
+  "initial_round_native_regressions": [
+    {
+      "filename": "native-regression-results.json",
+      "cases": 31,
+      "passed": true
+    },
+    {
+      "filename": "geometry-regression-results.json",
+      "cases": 6,
+      "passed": true
+    },
+    {
+      "filename": "full-ops-regression-results.json",
+      "cases": 15,
+      "passed": true
+    },
+    {
+      "filename": "base-ops-native-results.json",
+      "cases": 21,
+      "passed": true
+    }
+  ],
+  "initial_operator_simx_compiler_sha256": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+  "initial_actual_export_contract_compiler_sha256": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+  "dcn_coordinate_guard_simx_compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+  "schema_version": 3,
+  "validation_batches": [
+    {
+      "report": "native-regression-results.json",
+      "cases": 31,
+      "passed": true,
+      "compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+      "compiler_hash_evidence": "external stable-run wrapper",
+      "report_sha256": "79f0f775a1098fc760d063e1aa70d5787a9e6a0ecf78ac8992a2f890a5460741"
+    },
+    {
+      "report": "geometry-regression-results.json",
+      "cases": 6,
+      "passed": true,
+      "compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+      "compiler_hash_evidence": "external stable-run wrapper",
+      "report_sha256": "89525495d945f6db91e2e8fd38aed45a07b84936ef68152b6dd2be02cc1f4d30"
+    },
+    {
+      "report": "full-ops-regression-results.json",
+      "cases": 15,
+      "passed": true,
+      "compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+      "compiler_hash_evidence": "external stable-run wrapper",
+      "report_sha256": "5e9f5beaa245d0ebaf589b2020b26f28388232df2af1e55a9071665a2d3b31b2"
+    },
+    {
+      "report": "base-ops-native-results.json",
+      "cases": 21,
+      "passed": true,
+      "compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+      "compiler_hash_evidence": "report start/end hashes",
+      "report_sha256": "7e96fd4bc89feb917bcdcf39658995bfb0492c19036cf7f3567681115de516a1"
+    },
+    {
+      "report": "base-ops-simx-results.json",
+      "cases": 3,
+      "passed": true,
+      "compiler_sha256": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+      "compiler_hash_evidence": "report start hash",
+      "report_sha256": "2e242574e0e12c38425643bc5ccf0a087563b11078d9cec6ef25305f3114bd13"
+    },
+    {
+      "report": "base-dcn-final-simx-results.json",
+      "cases": 1,
+      "passed": true,
+      "compiler_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10",
+      "compiler_hash_evidence": "report start/end hashes; repeat DCN",
+      "report_sha256": "7dca73cbfbe195cf4a31a20b502ce7197d5e6ba6cc6875319abc815578aceddf"
+    },
+    {
+      "report": "actual-export-contract-results.json",
+      "cases": 3,
+      "passed": true,
+      "compiler_sha256": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+      "compiler_hash_evidence": "report start/end hashes",
+      "report_sha256": "fc798ae568e96d9d7b461588cd969b2e08e754da0bd49347b7c21719f51b5955"
+    },
+    {
+      "report": "base-contract-geometry-results.json",
+      "cases": 11,
+      "passed": true,
+      "compiler_sha256": null,
+      "compiler_hash_evidence": "not captured; agent window association only",
+      "report_sha256": "77140b00f5bc537f96b9fceb4662ee54c8bc25cb07df2c0556659e658192b59b",
+      "associated_execution_window_sha256": "71ef6dab89a9d9350e2d6b580d684b161443cf41b7ba1be7c759d10ebdbb7b10"
+    },
+    {
+      "report": "view-alias-native-results.json",
+      "cases": 12,
+      "passed": true,
+      "compiler_sha256": "99de4ef2e5590c3df4dcdea2c0f1d1548a5fd4d28b18976f2cb2fc98c25efb46",
+      "compiler_hash_evidence": "report start/end hashes",
+      "report_sha256": "e37f05ba3cbe5d67d55f84b65b87227c018e02b395a87726eead456c83b6e099"
+    },
+    {
+      "report": "shape-if-native-results.json",
+      "cases": 21,
+      "passed": true,
+      "compiler_sha256": null,
+      "compiler_hash_evidence": "not captured; root build-log window association only",
+      "report_sha256": "8126fa87232c2db496086416e90378bd12fd911716f7c1c8e2eaeeda7bf5f670",
+      "associated_execution_window_sha256": "99de4ef2e5590c3df4dcdea2c0f1d1548a5fd4d28b18976f2cb2fc98c25efb46",
+      "association_note": "Root reported execution after the 99de4e build and before the later snapshot build; original report has no self-contained binary hash proof."
+    },
+    {
+      "report": "view-alias-simx-results.json",
+      "cases": 2,
+      "passed": true,
+      "compiler_sha256": "91891c9873d9429c8df754c9d225e7f8c80e64caa6636be06c3a7f5b595aae2e",
+      "compiler_hash_evidence": "report start/end hashes",
+      "report_sha256": "d0ba305e3505cfc6c942716840eb82f706bc56425f942717d8cefd0f670fcce0"
+    },
+    {
+      "report": "memory-fork-after-views-results.json",
+      "cases": 1,
+      "passed": true,
+      "compiler_sha256": "99de4ef2e5590c3df4dcdea2c0f1d1548a5fd4d28b18976f2cb2fc98c25efb46",
+      "compiler_hash_evidence": "report start/end hashes; repeat memory DAG",
+      "report_sha256": "c7424d733114c44967410cbe69d5f58c1076f7fe1405241ba88a428593460162"
+    },
+    {
+      "report": "current-native-regression-results.json",
+      "cases": 31,
+      "passed": true,
+      "compiler_sha256": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+      "compiler_hash_evidence": "current-regressions-results.json stable start/end wrapper",
+      "report_sha256": "81d6711cea150da2e96ebdf34a0600446d6668a57f0a8b426b2b5c64caeb0644"
+    },
+    {
+      "report": "current-geometry-regression-results.json",
+      "cases": 6,
+      "passed": true,
+      "compiler_sha256": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+      "compiler_hash_evidence": "current-regressions-results.json stable start/end wrapper",
+      "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac"
+    },
+    {
+      "report": "current-full-ops-regression-results.json",
+      "cases": 15,
+      "passed": true,
+      "compiler_sha256": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+      "compiler_hash_evidence": "current-regressions-results.json stable start/end wrapper",
+      "report_sha256": "a86bb79498feca671ebacb6be1c630bb601ffd5477bac8e808f57ff20277d6c3"
+    },
+    {
+      "report": "current-base-regression-results.json",
+      "cases": 21,
+      "passed": true,
+      "compiler_sha256": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+      "compiler_hash_evidence": "current-regressions-results.json stable start/end wrapper",
+      "report_sha256": "b320a144961c75d3175d3687021cbe2026e5682e925df8ad2939901d81af3e4b"
+    },
+    {
+      "report": "range-native-results.json",
+      "cases": 24,
+      "passed": true,
+      "compiler_sha256": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+      "compiler_hash_evidence": "range-compiler-provenance.json stable start/end wrapper",
+      "report_sha256": "31ccd50be47e73cfcc71074a0f8e7f58e07b94c4fcc9600c2d364e1e580d5678"
+    },
+    {
+      "report": "scatter-legalization-native-results.json",
+      "cases": 16,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "scatter-compiler-provenance.json stable start/end wrapper",
+      "report_sha256": "ebee0da46d6834e7ea4e7ede3675028f9ac6b4b2f8e4f9911d995e511110589d"
+    },
+    {
+      "report": "scatter-legalization-simx-results.json",
+      "cases": 1,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "29dff3227d109c4b356cc2c54deae58f568868675e8cc14ec10bc684a5a20141"
+    },
+    {
+      "report": "matmul-bias-native-results.json",
+      "cases": 17,
+      "passed": true,
+      "compiler_sha256": "df0f1cdc73c48bf355dd5ae5382906c788025e1e91214a5c0ec01ab479bdc9a2",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "c595917b1b523007dd2065ed729e704e739d49e1a8edb6bdfa859d06790043a3"
+    },
+    {
+      "report": "matmul-bias-simx-results.json",
+      "cases": 2,
+      "passed": true,
+      "compiler_sha256": "df0f1cdc73c48bf355dd5ae5382906c788025e1e91214a5c0ec01ab479bdc9a2",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "585bcb090da44668487945d78af43209e7e6f066b588bebf066b501e44e628a0"
+    },
+    {
+      "report": "matmul-bias-rank-one-native-results.json",
+      "cases": 23,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "690d5a28b523766cccc7bd4096cea7cb8573c81715141e8686ed6b613c81f5f0"
+    },
+    {
+      "report": "msda-coordinate-native-results.json",
+      "cases": 16,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "04fe7ce245bb5d28d737db30ad56c7ec6a53b11ec6ed246d9b129a15c11aa5d8"
+    },
+    {
+      "report": "msda-coordinate-simx-results.json",
+      "cases": 2,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "c23f945ed950ca6f6fc79eacec962d0a6643eedaf1e6d6a894b0fee8b5b65b45"
+    },
+    {
+      "report": "memory-fusion-native-regression-results.json",
+      "cases": 31,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "memory-fusion-regressions-results.json stable start/end wrapper",
+      "report_sha256": "0d8d8c170a3c2d620d375cf160b82c2e4538da63f862fcd5d797b0673c1949a8"
+    },
+    {
+      "report": "memory-fusion-geometry-regression-results.json",
+      "cases": 6,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "memory-fusion-regressions-results.json stable start/end wrapper",
+      "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac"
+    },
+    {
+      "report": "memory-fusion-full-ops-regression-results.json",
+      "cases": 15,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "memory-fusion-regressions-results.json stable start/end wrapper",
+      "report_sha256": "32fda7c4983984bba083fc8d35e442e0e54c2c811d4b0d4e908532a528f663d0"
+    },
+    {
+      "report": "memory-fusion-base-regression-results.json",
+      "cases": 21,
+      "passed": true,
+      "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+      "compiler_hash_evidence": "report stable start/end hashes",
+      "report_sha256": "7c57defe689a5cdd9e08dcb562e2d575cc5e73f3da743a5a35f7b869af4d51ea"
+    }
+  ],
+  "archive_updated_at_utc": "2026-10-16T12:25:12.300740+00:00",
+  "source_hashes_at_this_archive_update": {
+    "native\\tests\\generate_view_alias_models.py": "5e90d9bb8b052ee4c71584b04d55293f4da809fa71779bec19c20a694c8ad7ce",
+    "native\\tests\\run_view_alias_tests.py": "62cf754a0f195a6b67fcd123db9382947780f0e77d47e9b66383b8b8627d6d2f",
+    "native\\tests\\generate_shape_if_models.py": "eb25455baf752343a07e2d787623452a28ad5e19d1f04ba508b882581f754f2d",
+    "native/tests/generate_range_models.py": "0890057a0cd383893e0d4abd2ee49d015de905c7878d5fdc527559181e92ee60",
+    "native/tests/run_range_tests.py": "6467404e69bb1efd66442fa6d4768335ce75b07da444560d16c5e59d89515ace",
+    "native/tests/generate_scatter_legalization_models.py": "21ebeeab87ed36a63596980668d117aeb644d9117ca2bc3b44e16068df0d13ee",
+    "native/tests/run_scatter_legalization_tests.py": "1c0740982b13763a6a39fb9242de6b1788b78bb861f3867576aa9058aa8e7a9e"
+  },
+  "source_hash_note": "Current source hashes at archival time are not retroactive proof of the compiler sources used for historical reports.",
+  "current_regression_batch": {
+    "scope": "Existing 73 native regression cases rerun after view/Range changes",
+    "started_at_utc": "2026-10-16T11:44:16.962293+00:00",
+    "python_operator_fallback": false,
+    "physical_device_benchmark": false,
+    "compiler_sha256_at_start": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+    "optimizer_sha256_at_start": "dd71c0a340cd1293a89dcbe26f01702bc5ccd98036eb2deb8fc3a9e1796c8856",
+    "groups": [
+      {
+        "name": "native",
+        "expected_cases": 31,
+        "passed": true,
+        "actual_cases": 31,
+        "live_overlap_manifests_checked": 19,
+        "report": "build/native-current-regressions/native/results.json",
+        "report_sha256": "81d6711cea150da2e96ebdf34a0600446d6668a57f0a8b426b2b5c64caeb0644",
+        "specification_sha256": "59e7ca43e35ed96e0ba898299736209b29e282a339600625357f7d86150dbefe"
+      },
+      {
+        "name": "geometry",
+        "expected_cases": 6,
+        "passed": true,
+        "actual_cases": 6,
+        "live_overlap_manifests_checked": 6,
+        "report": "build/native-current-regressions/geometry/results.json",
+        "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+        "specification_sha256": "5a38de304502df7141589ffcf9e47bf8a4d5cb5fdbea13a26347cfd8fbdd5132"
+      },
+      {
+        "name": "full-ops",
+        "expected_cases": 15,
+        "passed": true,
+        "actual_cases": 15,
+        "live_overlap_manifests_checked": 8,
+        "report": "build/native-current-regressions/full-ops/results.json",
+        "report_sha256": "a86bb79498feca671ebacb6be1c630bb601ffd5477bac8e808f57ff20277d6c3",
+        "specification_sha256": "e959241ffdac3d9a4d355eee09adc82e3a616d28a8c66203fe133f9a985d7f35"
+      },
+      {
+        "name": "base",
+        "expected_cases": 21,
+        "passed": true,
+        "actual_cases": 21,
+        "live_overlap_manifests_checked": 14,
+        "report": "build/native-current-regressions/base/results.json",
+        "report_sha256": "b320a144961c75d3175d3687021cbe2026e5682e925df8ad2939901d81af3e4b",
+        "specification_sha256": "4e156cfcc67800e3e5e908bf35aa663603da4ea623778cdf1b67357e3adb3cd7"
+      }
+    ],
+    "passed": true,
+    "compiler_sha256_at_end": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+    "optimizer_sha256_at_end": "dd71c0a340cd1293a89dcbe26f01702bc5ccd98036eb2deb8fc3a9e1796c8856",
+    "compiler_stable_during_run": true,
+    "optimizer_stable_during_run": true,
+    "test_process_wall_seconds": 16.604437510000025,
+    "finished_at_utc": "2026-10-16T11:44:33.692114+00:00"
+  },
+  "range_batch": {
+    "compiler": "/home/thomas/gac-native-build/gac-compile",
+    "compiler_sha256_before": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+    "runner_sha256": "6467404e69bb1efd66442fa6d4768335ce75b07da444560d16c5e59d89515ace",
+    "fixture_cases_sha256": "dc9a031dbdd54c368009ed01315ebebde18ceafc56c4ff5399ddf464a049f76e",
+    "command": [
+      "/home/thomas/gac-bev-export-env/bin/python",
+      "native/tests/run_range_tests.py",
+      "--compiler",
+      "/home/thomas/gac-native-build/gac-compile",
+      "--optimizer",
+      "/home/thomas/gac-native-build/gac-opt",
+      "--mlir-translate",
+      "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "--clang",
+      "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+      "--fixtures",
+      "build/native-range-tests"
+    ],
+    "regression_exit_code": 0,
+    "compiler_sha256_after": "7b2819fcbe64b25ab85561c317067ad8625e3d26907cd493fd0038c1e92cfcd4",
+    "compiler_unchanged": true,
+    "cases": 24,
+    "exact_constant_payload_cases": 13,
+    "compilation_rejections": 2,
+    "device_rejections": 9,
+    "exact_integer_contract_reference": "https://onnx.ai/onnx/operators/onnx__Range.html#range-11",
+    "extreme_reference_difference": "Range(INT64_MIN, INT64_MAX, INT64_MAX): exact integer formula gives 3 elements; ONNX 1.21 ReferenceEvaluator gives 2. The extreme fixture validates explicit exact-integer semantics and does not claim interpreter/ORT parity. Ordinary base geometry ranges are unaffected."
+  },
+  "current_archive_files": {
+    "range-native-results.json": "31ccd50be47e73cfcc71074a0f8e7f58e07b94c4fcc9600c2d364e1e580d5678",
+    "range-exact-results.json": "24d5db2c2d4fbc7aec848d48dc58030400c7e473328cbb52fb1a6115174d0716",
+    "range-compiler-provenance.json": "6a6575dabe28680727373b0975d2fcd39bb21c643ebff2d9444fd50e85796926",
+    "range-contract-cases.json": "dc9a031dbdd54c368009ed01315ebebde18ceafc56c4ff5399ddf464a049f76e",
+    "current-regressions-results.json": "b14b45037c9db26875614b20c54279e21dc8d7735a24ea5628a91f19ea2520d8",
+    "current-native-regression-results.json": "81d6711cea150da2e96ebdf34a0600446d6668a57f0a8b426b2b5c64caeb0644",
+    "current-geometry-regression-results.json": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+    "current-full-ops-regression-results.json": "a86bb79498feca671ebacb6be1c630bb601ffd5477bac8e808f57ff20277d6c3",
+    "current-base-regression-results.json": "b320a144961c75d3175d3687021cbe2026e5682e925df8ad2939901d81af3e4b",
+    "full-base-rv32-budget-before-matmul-bias.log": "4978b9012659b10cc8e1008ecfc7f612ae41bd76cf3d8bfb534b8244825c05a6",
+    "full-base-memory-before-matmul-bias.log": "63047598aca97d0e0024d0e63f01a7e9910c943cd209bb90e183159098b2f688",
+    "scatter-legalization-native-results.json": "ebee0da46d6834e7ea4e7ede3675028f9ac6b4b2f8e4f9911d995e511110589d",
+    "scatter-buffer-elimination-results.json": "e88f7920643b683208edd1e806bb23eaa31855b3b510bae6a842596eaa8eaa6f",
+    "scatter-compiler-provenance.json": "c67e02129058b8382f38045c41c117711ecdb92c192d6b2cbf61efe992d3c027",
+    "scatter-contract-cases.json": "1eb65603c985257c7172829d89f797e55ba92c8cbf3b863f2833d1d874d14def",
+    "scatter-legalization-simx-results.json": "29dff3227d109c4b356cc2c54deae58f568868675e8cc14ec10bc684a5a20141",
+    "matmul-bias-native-results.json": "c595917b1b523007dd2065ed729e704e739d49e1a8edb6bdfa859d06790043a3",
+    "matmul-bias-simx-results.json": "585bcb090da44668487945d78af43209e7e6f066b588bebf066b501e44e628a0",
+    "memory-fusion-regressions-results.json": "10c10544830129c20e780326322eb650fb0e936c04109dfb47ba39a1c0020577",
+    "matmul-bias-rank-one-native-results.json": "690d5a28b523766cccc7bd4096cea7cb8573c81715141e8686ed6b613c81f5f0",
+    "msda-coordinate-native-results.json": "04fe7ce245bb5d28d737db30ad56c7ec6a53b11ec6ed246d9b129a15c11aa5d8",
+    "msda-coordinate-simx-results.json": "c23f945ed950ca6f6fc79eacec962d0a6643eedaf1e6d6a894b0fee8b5b65b45",
+    "memory-fusion-native-regression-results.json": "0d8d8c170a3c2d620d375cf160b82c2e4538da63f862fcd5d797b0673c1949a8",
+    "memory-fusion-geometry-regression-results.json": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+    "memory-fusion-full-ops-regression-results.json": "32fda7c4983984bba083fc8d35e442e0e54c2c811d4b0d4e908532a528f663d0",
+    "memory-fusion-base-regression-results.json": "7c57defe689a5cdd9e08dcb562e2d575cc5e73f3da743a5a35f7b869af4d51ea",
+    "full-base-native-resource-audit.json": "39d2cfa8e056d3f11bfc3194b2a095ef559d24faea79b445b562d11889760d90",
+    "full-base-native-plan-summary.json": "ed92d254fb846a3bfe8a9640138ee6af5b54000300426313c7b7777e7d7fb267",
+    "full-base-native-compile-time.log": "d64a6c631c22a94f5c8d041d004b76014c2a3b610740187ad17d19c44c71b362",
+    "full-base-vortex/artifact-audit.json": "adcdc2867095508607f40fd6ee0fb459c3f2a3a3dad091493f312ef968605273",
+    "full-base-vortex/compile-time.txt": "b45b966c7c3198dfc2bb40d2ecea82bb217849d78ca79db32b88b1685580e483",
+    "full-base-vortex/compiler-after.sha256": "2bf4c24d5c48dd261db28c200cdd560710039905cb20edd56c01d18e18657606",
+    "full-base-vortex/compiler-before.sha256": "2bf4c24d5c48dd261db28c200cdd560710039905cb20edd56c01d18e18657606",
+    "full-base-vortex/config.stamp": "4df75a54246e77fcf34e58c85e60327797a25706bedb54f81d0789bff9f4679e",
+    "full-base-vortex/elf-header.txt": "c14dfa10bada2a6771ac2be30523a94692f67bbc155f7ee7e6e0fd0cf2f9d295",
+    "full-base-vortex/symbols.txt": "ec25161d912dc7738d8c867e70929d8d4243916ce56ef8392521475d71ca3ddf",
+    "full-base-native-execution-progress.json": "d53c441f5866dca1baecdeb2ede92fa01b95aa28216323d47424753548e910e3",
+    "full-base-native-execution-source-hashes.txt": "8aa6494208dae2a9ed50a85d73ab18373ee4fdcb244e0fa50df863f360653e37",
+    "full-base-native-host\\checkpoint-artifact-identity.json": "781c5a20ffb0417ebafcd1eeba10a660304641ed26d813c454c64c1b040ae86f",
+    "full-base-native-host\\host-build.log": "5e3c9054d18ec3a1fab2a7aafb344c181ef27aef1f8b6619b83eae43e82b6a56",
+    "full-base-native-host\\running-status.json": "574614868766180f01fe3fd6c2c055b51bb71fbfdfc452c569bb44e799033044",
+    "full-base-native-host\\source-artifact-hashes.txt": "8aa6494208dae2a9ed50a85d73ab18373ee4fdcb244e0fa50df863f360653e37",
+    "full-base-native-host\\start-audit.json": "39d2cfa8e056d3f11bfc3194b2a095ef559d24faea79b445b562d11889760d90"
+  },
+  "memory_fusion_regression_batch": {
+    "scope": "Existing 73 native regression cases rerun after MatMul bias, coordinate fusion and ScatterND proofs",
+    "started_at_utc": "2026-10-16T12:09:51.694418+00:00",
+    "python_operator_fallback": false,
+    "physical_device_benchmark": false,
+    "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+    "optimizer_sha256_at_start": "537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8",
+    "groups": [
+      {
+        "name": "native",
+        "expected_cases": 31,
+        "passed": true,
+        "actual_cases": 31,
+        "live_overlap_manifests_checked": 19,
+        "report": "build/native-memory-fusion-regressions/native/results.json",
+        "report_sha256": "0d8d8c170a3c2d620d375cf160b82c2e4538da63f862fcd5d797b0673c1949a8",
+        "specification_sha256": "59e7ca43e35ed96e0ba898299736209b29e282a339600625357f7d86150dbefe"
+      },
+      {
+        "name": "geometry",
+        "expected_cases": 6,
+        "passed": true,
+        "actual_cases": 6,
+        "live_overlap_manifests_checked": 6,
+        "report": "build/native-memory-fusion-regressions/geometry/results.json",
+        "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+        "specification_sha256": "5a38de304502df7141589ffcf9e47bf8a4d5cb5fdbea13a26347cfd8fbdd5132"
+      },
+      {
+        "name": "full-ops",
+        "expected_cases": 15,
+        "passed": true,
+        "actual_cases": 15,
+        "live_overlap_manifests_checked": 8,
+        "report": "build/native-memory-fusion-regressions/full-ops/results.json",
+        "report_sha256": "32fda7c4983984bba083fc8d35e442e0e54c2c811d4b0d4e908532a528f663d0",
+        "specification_sha256": "e959241ffdac3d9a4d355eee09adc82e3a616d28a8c66203fe133f9a985d7f35"
+      },
+      {
+        "name": "base",
+        "expected_cases": 21,
+        "passed": true,
+        "actual_cases": 21,
+        "live_overlap_manifests_checked": 14,
+        "report": "build/native-memory-fusion-regressions/base/results.json",
+        "report_sha256": "7c57defe689a5cdd9e08dcb562e2d575cc5e73f3da743a5a35f7b869af4d51ea",
+        "specification_sha256": "4e156cfcc67800e3e5e908bf35aa663603da4ea623778cdf1b67357e3adb3cd7"
+      }
+    ],
+    "passed": true,
+    "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+    "optimizer_sha256_at_end": "537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8",
+    "compiler_stable_during_run": true,
+    "optimizer_stable_during_run": true,
+    "test_process_wall_seconds": 32.607419832000005,
+    "finished_at_utc": "2026-10-16T12:10:24.402652+00:00"
+  },
+  "vortex_full_compile_audit": {
+    "status": "pass",
+    "scope": "full original-resolution BEVFormer base compilation; not whole-model device execution",
+    "compiler_sha256": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d  /home/thomas/gac-native-build/gac-compile\n537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8  /home/thomas/gac-native-build/gac-opt\n",
+    "dispatch_count": 3224,
+    "elf_kernel_entry_count": 3224,
+    "vxbin_kernel_entry_count": 3224,
+    "resident_bytes": 2032441772,
+    "constant_file_count": 859,
+    "constant_file_bytes": 368518572,
+    "arena_bytes": 1554944000,
+    "embedded_constant_bytes": 2073600,
+    "kernel_address_start": 2147483648,
+    "kernel_address_end": 2148483072,
+    "op_counts": {
+      "gac.slice": 594,
+      "gac.conv2d_relu": 246,
+      "gac.max_pool2d": 6,
+      "gac.conv2d": 420,
+      "gac.add_relu": 198,
+      "gac.concat": 177,
+      "gac.sigmoid": 175,
+      "gac.deform_conv2d": 156,
+      "gac.batch_norm": 156,
+      "gac.relu": 170,
+      "gac.resize": 12,
+      "gac.add": 152,
+      "gac.transpose": 76,
+      "gac.expand": 68,
+      "gac.tile": 2,
+      "gac.cast": 1,
+      "gac.gemm": 8,
+      "gac.layer_norm": 49,
+      "gac.matmul_bias": 133,
+      "gac.softmax": 24,
+      "gac.ms_deform_attn_offsets": 18,
+      "gac.reduce_mean": 6,
+      "gac.gather": 125,
+      "gac.div": 30,
+      "gac.matmul_bias_relu": 36,
+      "gac.matmul": 12,
+      "gac.clamp": 54,
+      "gac.sub": 18,
+      "gac.log": 18,
+      "gac.scatter_nd": 66,
+      "gac.mul": 18
+    },
+    "view_elision": {
+      "dispatches_removed": 331,
+      "logical_copy_bytes_removed": 16368553824,
+      "public_output_views_materialized": true
+    },
+    "undefined_elf_symbols": [],
+    "llvm_declarations": [
+      "declare ptr @llvm.riscv.vx.uniform.p0.p0(ptr) #1",
+      "declare i32 @llvm.riscv.vx.uniform.i32.i32(i32) #1",
+      "declare float @llvm.maximum.f32(float, float) #2",
+      "declare float @llvm.exp.f32(float) #2",
+      "declare float @llvm.sqrt.f32(float) #2",
+      "declare float @llvm.log.f32(float) #2"
+    ],
+    "artifacts": {
+      "plan.json": {
+        "bytes": 2041652,
+        "sha256": "1d21dcb5340d405e7e5d59f17ff390e1e14b48c10f6a85326d5d79958de5e2ad"
+      },
+      "kernel.mlir": {
+        "bytes": 23741937,
+        "sha256": "e92c52a665be9209f5ad35f940667a3ba6a73bfe74379375d1bb16eeb09bde78"
+      },
+      "kernel.ll": {
+        "bytes": 13289789,
+        "sha256": "a73b2a45ca5100b25f76482f69e0e210e25228b2d9596e24387bd65872263000"
+      },
+      "kernel.elf": {
+        "bytes": 1285396,
+        "sha256": "cedc39f79a60bdd2436584b46c56adffe6c4191f0bdb041585b1d879916c09fd"
+      },
+      "kernel.vxbin": {
+        "bytes": 1085390,
+        "sha256": "4dc4f23995852d3fef5bf6ae93004657d0db5103036bc26490db319185adc599"
+      },
+      "kernel.dump": {
+        "bytes": 8581032,
+        "sha256": "13e476918a7720fd190298c161d03b8be818cb1b240a242270875a88fc5b196e"
+      },
+      "config.stamp": {
+        "bytes": 13551,
+        "sha256": "4df75a54246e77fcf34e58c85e60327797a25706bedb54f81d0789bff9f4679e"
+      }
+    },
+    "input_shapes": {
+      "images": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ]
+    },
+    "outputs": [
+      {
+        "name": "bev_embed",
+        "shape": [
+          40000,
+          1,
+          256
+        ],
+        "dtype": "float32"
+      },
+      {
+        "name": "all_cls_scores",
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "dtype": "float32"
+      },
+      {
+        "name": "all_bbox_preds",
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "dtype": "float32"
+      }
+    ],
+    "compile_time": "\tCommand being timed: \"env GAC_CONSTANT_FOLD_PROFILE=bevformer-base GAC_NATIVE_BIN=/home/thomas/gac-native-build LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release VORTEX_BUILD=/home/thomas/vortex-gac-buffered-build32 bash native/tools/compile-vortex.sh build/bevformer-base-onnx/bevformer-base-cold.onnx /home/thomas/gac-base-vortex\"\n\tUser time (seconds): 233.52\n\tSystem time (seconds): 30.73\n\tPercent of CPU this job got: 94%\n\tElapsed (wall clock) time (h:mm:ss or m:ss): 4:39.46\n\tAverage shared text size (kbytes): 0\n\tAverage unshared data size (kbytes): 0\n\tAverage stack size (kbytes): 0\n\tAverage total size (kbytes): 0\n\tMaximum resident set size (kbytes): 1300316\n\tAverage resident set size (kbytes): 0\n\tMajor (requiring I/O) page faults: 33\n\tMinor (reclaiming a frame) page faults: 4915744\n\tVoluntary context switches: 37337\n\tInvoluntary context switches: 826\n\tSwaps: 0\n\tFile system inputs: 836550\n\tFile system outputs: 12842336\n\tSocket messages sent: 0\n\tSocket messages received: 0\n\tSignals delivered: 0\n\tPage size (bytes): 4096\n\tExit status: 0\n"
+  },
+  "vortex_compiler_start_end_sha256_equal": true,
+  "native_execution_progress_snapshot": {
+    "snapshot_at_utc": "2026-10-16T12:25:12.300740+00:00",
+    "status": "running_not_validated",
+    "scope": "Generated native CPU shared library full-model execution; not Vortex device execution",
+    "completed_dispatches_at_snapshot": 77,
+    "total_dispatches": 3224,
+    "last_completed_dispatch": {
+      "index": 76,
+      "kernel": "gac_op_76",
+      "op": "gac.sigmoid",
+      "output": "value_936",
+      "source_node": "/img_backbone/layer3/layer3.3/conv2/Sigmoid",
+      "source_output": null,
+      "host_kernel_wall_seconds": 0.0002339630000278703,
+      "event": "end"
+    },
+    "latest_event": {
+      "index": 77,
+      "kernel": "gac_op_77",
+      "op": "gac.deform_conv2d",
+      "output": "value_937",
+      "source_node": "/img_backbone/layer3/layer3.3/conv2/MMCVModulatedDeformConv2d",
+      "source_output": null,
+      "event": "begin"
+    },
+    "checkpoint_next_dispatch": 50,
+    "checkpoint_identity": {
+      "manifest_sha256": "e4b1c0356dab16d5e25f00efdd8d47efcdd9bbeb2c50fdd6d136cf9ab0da3907",
+      "library_sha256": "ed24193a729c30b93ea31e353fe15b89cb00734e632163239c6c1cdbeb2b94c2",
+      "inputs_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+      "constants_sha256": "5d50a0bd738ba54caedf54ad160d81f0e61a5f404dc6f10990f4575692ccfe71"
+    },
+    "first_dcn_host_kernel_seconds": 69.993543972,
+    "full_model_executed": false,
+    "output_numerical_validation": "not_completed",
+    "performance_scope": "Partial scalar CPU progress; no full-frame latency, Vortex latency or FPS conclusion"
+  }
+}

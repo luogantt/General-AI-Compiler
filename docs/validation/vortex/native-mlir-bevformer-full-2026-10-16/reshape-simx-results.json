@@ -1,0 +1,22 @@
+{
+  "target": "vortex",
+  "scope": "native MLIR to VOLT RV32 object validation",
+  "physical_device_execution": false,
+  "simx_execution_requested": true,
+  "cases": [
+    {
+      "name": "reshape_inferred_and_zero_copy",
+      "passed": true,
+      "dispatches": 3,
+      "object_bytes": 1792,
+      "simx": {
+        "passed": true,
+        "max_absolute_errors": {
+          "flat": 0.0,
+          "leading": 0.0,
+          "trailing": 0.0
+        }
+      }
+    }
+  ]
+}

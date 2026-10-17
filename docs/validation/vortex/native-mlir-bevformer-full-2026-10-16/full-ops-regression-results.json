@@ -1,0 +1,114 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "tile_runtime",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "split_explicit_negative_axis",
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "left": 0.0,
+        "middle": 0.0,
+        "right": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "split_equal_opset17",
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "first": 0.0,
+        "second": 0.0,
+        "third": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "split_uneven_opset18",
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "first": 0.0,
+        "second": 0.0,
+        "third": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "split_constant_multiresult",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "first": 0.0,
+        "second": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "split_runtime_sizes",
+      "device_rejection": "loc(\"Split#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/split_runtime_sizes/model.onnx\":1:0)): error: expected a supported, single-output GAC tensor operation",
+      "passed": true
+    },
+    {
+      "name": "split_invalid_sum",
+      "diagnostic": "loc(\"Split#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/split_invalid_sum/model.onnx\":1:0)): error: 'gac.split' op Split sizes must sum to the input axis extent\nloc(\"Split#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/split_invalid_sum/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "scatter_slice_negative_indices",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "scatter_element_negative_indices",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "scatter_duplicate_indices",
+      "device_rejection": "loc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/scatter_duplicate_indices/model.onnx\":1:0)): error: duplicate ScatterND indices with reduction=none are ambiguous",
+      "passed": true
+    },
+    {
+      "name": "scatter_invalid_update_shape",
+      "diagnostic": "loc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/scatter_invalid_update_shape/model.onnx\":1:0)): error: 'gac.scatter_nd' op ScatterND updates shape disagrees with index slices\nloc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/scatter_invalid_update_shape/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "scatter_unsigned_indices",
+      "diagnostic": "loc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/scatter_unsigned_indices/model.onnx\":1:0)): error: 'gac.scatter_nd' op ScatterND indices require rank >= 1 and i64 elements\nloc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/scatter_unsigned_indices/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "nonzero_constant",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "nonzero_runtime_dynamic",
+      "device_rejection": "loc(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/nonzero_runtime_dynamic/model.onnx\":0:0): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range",
+      "passed": true
+    },
+    {
+      "name": "tile_invalid_repeat_rank",
+      "diagnostic": "loc(\"Tile#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/tile_invalid_repeat_rank/model.onnx\":1:0)): error: 'gac.tile' op Tile repeats length must equal input rank\nloc(\"Tile#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-full-ops-tests/tile_invalid_repeat_rank/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    }
+  ]
+}

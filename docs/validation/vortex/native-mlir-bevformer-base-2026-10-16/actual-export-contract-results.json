@@ -1,0 +1,61 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_at_start": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+  "reference_versions": {
+    "source_manifest_sha256": "6cc52e4fd887cf92a4347d55cf339fa995d5b256b03b65f935adbd3ff6b3b206",
+    "torch": "2.0.1+cpu"
+  },
+  "cases": [
+    {
+      "name": "upstream_dcn_symbolic",
+      "kind": "MMCVModulatedDeformConv2d",
+      "reference": "Actual upstream torch.onnx.export symbolic; root independent numerical references",
+      "model_sha256": "f801df0705cca71b4a488d6164ec8b3c1404ff31e7a7d4780d90af5f7d8e71ea",
+      "passed": true,
+      "arena_bytes": 384,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 4.76837158203125e-07
+      },
+      "library_sha256": "9dbcd2a10063e78bee43829fc9cda8b63c262025c02914d36291bde576a4fb4a",
+      "test_wall_seconds": 0.6063332890000197
+    },
+    {
+      "name": "upstream_msda_1_levels_symbolic",
+      "kind": "MSDeformAttn",
+      "reference": "Actual upstream torch.onnx.export symbolic; root independent numerical references",
+      "model_sha256": "5591527027934376abfd8af06121a1828593282efd7a3beade1a2723c2783abb",
+      "passed": true,
+      "arena_bytes": 576,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 5.960464477539063e-08
+      },
+      "library_sha256": "7bcaea71d191ede281e06ed636fb274cd3f9e6760f41381e795650d288855098",
+      "test_wall_seconds": 0.2694336229999976
+    },
+    {
+      "name": "upstream_msda_4_levels_symbolic",
+      "kind": "MSDeformAttn",
+      "reference": "Actual upstream torch.onnx.export symbolic; root independent numerical references",
+      "model_sha256": "5fe6f5af92ef24afa08a87fcfde412108f3f9837f1d5648e8200571a1435f3f5",
+      "passed": true,
+      "arena_bytes": 576,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 3.5762786865234375e-07
+      },
+      "library_sha256": "488254296f57677d8375e1239d7b9d4d4b6d2f69ecfc2edf8d6a429284689c24",
+      "test_wall_seconds": 0.34046864099997265
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "f86f756103898218de58f63f1de27b47bb0b2ca33aed8d4bf435b7f41d913012",
+  "compiler_stable_during_run": true,
+  "evidence_note": "Real torch.onnx.export symbolic contract models, independently compiled and executed as native CPU machine code using the earlier stable compiler build."
+}

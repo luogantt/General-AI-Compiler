@@ -1,0 +1,227 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "full_ordered_identity",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "full_ordered_reshape",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "full_negative_indices",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "full_permuted_retained",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "partial_retained",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "duplicate_indices_rejected",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      },
+      "device_rejection": "loc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-scatter-legalization-tests/duplicate_indices_rejected/model.onnx\":1:0)): error: duplicate ScatterND indices with reduction=none are ambiguous",
+      "passed": true
+    },
+    {
+      "name": "reduction_add_retained",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          1,
+          1
+        ]
+      },
+      "device_rejection": "loc(\"ScatterND#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-scatter-legalization-tests/reduction_add_retained/model.onnx\":1:0)): error: ScatterND device template currently requires reduction=none",
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_complete",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_negative",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_reverse_stage_order",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_zero_source_eliminated",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          0
+        ]
+      },
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_missing_camera",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          2,
+          2
+        ]
+      },
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_overlap_across_stages",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      },
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_permuted_update_mapping",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      },
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_different_update_ssa",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      },
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "broadcast_chain_intermediate_public_output",
+      "cse_operation_counts": {
+        "scatter_nd": [
+          3,
+          3
+        ]
+      },
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0,
+        "stage0": 0.0
+      },
+      "passed": true
+    }
+  ]
+}

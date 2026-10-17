@@ -1,0 +1,60 @@
+[
+  {
+    "name": "dcn_contract",
+    "passed": true,
+    "expected_rejection": false
+  },
+  {
+    "name": "dcn_wrong_custom_version",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "dcn_unknown_attribute",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "dcn_input_hole",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "dcn_fp16_rejected",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "dcn_layout_not_guessed",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "msda_contract",
+    "passed": true,
+    "expected_rejection": false
+  },
+  {
+    "name": "msda_align_corners_rejected",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "msda_weights_shape_rejected",
+    "passed": true,
+    "expected_rejection": true
+  },
+  {
+    "name": "msda_deferred_constant_shapes",
+    "passed": true,
+    "expected_rejection": false
+  },
+  {
+    "name": "large_geometry_view",
+    "passed": true,
+    "dispatches": 0,
+    "logical_tile_elements": 4194320,
+    "output_elements": 1048580,
+    "fp64_cancellation_result": 1.0
+  }
+]

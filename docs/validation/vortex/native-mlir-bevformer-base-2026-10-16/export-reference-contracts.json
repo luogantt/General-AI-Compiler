@@ -1,0 +1,101 @@
+{
+  "reference_contracts": {
+    "passed": true,
+    "rtol": 2e-05,
+    "atol": 2e-05,
+    "cases": [
+      {
+        "case": "dcn_groups_1_deform_groups_1",
+        "passed": true,
+        "max_abs_error": 1.9073486328125e-06
+      },
+      {
+        "case": "dcn_groups_2_deform_groups_2",
+        "passed": true,
+        "max_abs_error": 1.430511474609375e-06
+      },
+      {
+        "case": "msda_1_levels_query_chunks",
+        "passed": true,
+        "max_abs_error": 0.0
+      },
+      {
+        "case": "msda_4_levels_query_chunks",
+        "passed": true,
+        "max_abs_error": 1.1920928955078125e-07
+      }
+    ],
+    "dcn_offset_contract": "offset[:, deform_group*2*Kh*Kw + 2*(kh*Kw+kw) + {dy:0, dx:1}]"
+  },
+  "cases": [
+    {
+      "name": "upstream_dcn_symbolic",
+      "valid": true,
+      "kind": "MMCVModulatedDeformConv2d",
+      "domain": "mmcv",
+      "attributes": {
+        "deform_groups": 2,
+        "dilation": [
+          1,
+          2
+        ],
+        "groups": 2,
+        "padding": [
+          1,
+          2
+        ],
+        "stride": [
+          2,
+          1
+        ]
+      },
+      "nodes": 1,
+      "shape": [
+        1,
+        4,
+        3,
+        7
+      ],
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "upstream_msda_1_levels_symbolic",
+      "valid": true,
+      "kind": "MSDeformAttn",
+      "domain": "gac",
+      "attributes": {
+        "align_corners": 0,
+        "mode": "bilinear",
+        "padding_mode": "zeros",
+        "version": 1
+      },
+      "nodes": 1,
+      "shape": [
+        2,
+        11,
+        6
+      ],
+      "max_abs_error": 0.0
+    },
+    {
+      "name": "upstream_msda_4_levels_symbolic",
+      "valid": true,
+      "kind": "MSDeformAttn",
+      "domain": "gac",
+      "attributes": {
+        "align_corners": 0,
+        "mode": "bilinear",
+        "padding_mode": "zeros",
+        "version": 1
+      },
+      "nodes": 1,
+      "shape": [
+        2,
+        11,
+        6
+      ],
+      "max_abs_error": 1.341104507446289e-07
+    }
+  ],
+  "success": true
+}

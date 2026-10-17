@@ -1,0 +1,33 @@
+{
+  "scope": "C++ ONNX importer + MLIR passes + actual generated native CPU kernels",
+  "python_operator_fallback": false,
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "compiler_sha256_at_start": "99de4ef2e5590c3df4dcdea2c0f1d1548a5fd4d28b18976f2cb2fc98c25efb46",
+  "reference_versions": {
+    "torch": "2.0.1+cpu",
+    "torchvision": "0.15.2+cpu",
+    "onnx": "1.21.0",
+    "numpy": "1.26.4"
+  },
+  "cases": [
+    {
+      "name": "memory_fragmented_fork",
+      "kind": "StaticMemoryForkDAG",
+      "reference": "PyTorch eager matmul/relu/cat/add; two observable outputs",
+      "model_sha256": "c026a41fc58add8f54b7bf89d72c510a662fbf620bfde28a413d6a9793500bda",
+      "passed": true,
+      "arena_bytes": 1024,
+      "live_buffer_overlap_check": "passed",
+      "dispatches": 8,
+      "max_absolute_errors": {
+        "retained": 3.5762786865234375e-07,
+        "Y": 1.9073486328125e-06
+      },
+      "library_sha256": "5992ea5ec34906bb501b6b9ff35c1fe141d94bbfceb3c81b06c2b18fb7138898",
+      "test_wall_seconds": 0.4104817640000249
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "99de4ef2e5590c3df4dcdea2c0f1d1548a5fd4d28b18976f2cb2fc98c25efb46",
+  "compiler_stable_during_run": true
+}

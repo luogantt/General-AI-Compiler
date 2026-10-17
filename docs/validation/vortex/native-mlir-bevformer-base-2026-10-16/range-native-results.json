@@ -1,0 +1,167 @@
+{
+  "compiler": "/home/thomas/gac-native-build/gac-compile",
+  "target": "native",
+  "scope": "C++ ONNX import + MLIR passes + native scalar numerical validation",
+  "vortex_device_execution": false,
+  "cases": [
+    {
+      "name": "range_i64_positive",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_negative",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_above_double_exactness",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_below_double_exactness",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_max_no_terminal_overflow",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_min_no_terminal_overflow",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_cross_extremes",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i64_minimum_delta",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i32_max_no_terminal_overflow",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_i16_min_no_terminal_overflow",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_empty_positive_concat",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_empty_negative_concat",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_empty_equal_concat",
+      "dispatches": 0,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "passed": true
+    },
+    {
+      "name": "range_reject_zero_delta",
+      "diagnostic": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_zero_delta/model.onnx\":1:0)): error: 'gac.range' op Range delta must not be zero\nloc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_zero_delta/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "range_exceeds_default_fold_budget",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_exceeds_default_fold_budget/model.onnx\":1:0)): error: native Vortex lowering is not implemented for gac.range",
+      "passed": true
+    },
+    {
+      "name": "range_reject_shape_length_overflow",
+      "diagnostic": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_shape_length_overflow/model.onnx\":1:0)): error: 'gac.range' op Range length overflows i64\nloc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_shape_length_overflow/model.onnx\":1:0)): error: imported module failed registered MLIR verification",
+      "passed": true
+    },
+    {
+      "name": "range_runtime_start_not_constant",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_runtime_start_not_constant/model.onnx\":1:0)): error: native Vortex lowering is not implemented for gac.range",
+      "passed": true
+    },
+    {
+      "name": "range_runtime_parameters_not_constant",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_runtime_parameters_not_constant/model.onnx\":1:0)): error: native Vortex lowering is not implemented for gac.range",
+      "passed": true
+    },
+    {
+      "name": "range_f32_positive",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_f32_positive/model.onnx\":1:0)): error: native Vortex lowering is not implemented for gac.range",
+      "passed": true
+    },
+    {
+      "name": "range_f64_negative",
+      "device_rejection": "loc(\"start\"): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range:  : 'tensor<f64>'",
+      "passed": true
+    },
+    {
+      "name": "range_f64_source_precision",
+      "device_rejection": "loc(\"start\"): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range:  : 'tensor<f64>'",
+      "passed": true
+    },
+    {
+      "name": "range_reject_nan_start",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_nan_start/model.onnx\":1:0)): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range: Y : 'tensor<?xf32>'",
+      "passed": true
+    },
+    {
+      "name": "range_reject_inf_limit",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_inf_limit/model.onnx\":1:0)): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range: Y : 'tensor<?xf32>'",
+      "passed": true
+    },
+    {
+      "name": "range_reject_inf_delta",
+      "device_rejection": "loc(\"Range#0\"(\"/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/native-range-tests/range_reject_inf_delta/model.onnx\":1:0)): error: device requires positive static FP16/FP32/int32/int64/bool tensors within signed RV32 range: Y : 'tensor<?xf32>'",
+      "passed": true
+    }
+  ]
+}

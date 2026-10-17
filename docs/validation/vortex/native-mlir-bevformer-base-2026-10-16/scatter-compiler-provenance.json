@@ -1,0 +1,21 @@
+{
+  "compiler_sha256_before": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "command": [
+    "/home/thomas/gac-bev-export-env/bin/python",
+    "native/tests/run_scatter_legalization_tests.py",
+    "--compiler",
+    "/home/thomas/gac-native-build/gac-compile",
+    "--optimizer",
+    "/home/thomas/gac-native-build/gac-opt",
+    "--mlir-translate",
+    "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+    "--clang",
+    "/home/thomas/gac-volt-llvm20/build-release/bin/clang",
+    "--fixtures",
+    "build/native-scatter-legalization-tests"
+  ],
+  "python_operator_fallback": false,
+  "compiler_sha256_after": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "compiler_unchanged": true,
+  "regression_exit_code": 0
+}

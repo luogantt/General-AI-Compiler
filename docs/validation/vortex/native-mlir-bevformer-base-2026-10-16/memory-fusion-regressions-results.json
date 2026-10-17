@@ -1,0 +1,57 @@
+{
+  "scope": "Existing 73 native regression cases rerun after MatMul bias, coordinate fusion and ScatterND proofs",
+  "started_at_utc": "2026-10-16T12:09:51.694418+00:00",
+  "python_operator_fallback": false,
+  "physical_device_benchmark": false,
+  "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "optimizer_sha256_at_start": "537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8",
+  "groups": [
+    {
+      "name": "native",
+      "expected_cases": 31,
+      "passed": true,
+      "actual_cases": 31,
+      "live_overlap_manifests_checked": 19,
+      "report": "build/native-memory-fusion-regressions/native/results.json",
+      "report_sha256": "0d8d8c170a3c2d620d375cf160b82c2e4538da63f862fcd5d797b0673c1949a8",
+      "specification_sha256": "59e7ca43e35ed96e0ba898299736209b29e282a339600625357f7d86150dbefe"
+    },
+    {
+      "name": "geometry",
+      "expected_cases": 6,
+      "passed": true,
+      "actual_cases": 6,
+      "live_overlap_manifests_checked": 6,
+      "report": "build/native-memory-fusion-regressions/geometry/results.json",
+      "report_sha256": "9aa09631d3555fb46b8d0d570d7bc1b9f4d245f567b2a7620d593a67b10a32ac",
+      "specification_sha256": "5a38de304502df7141589ffcf9e47bf8a4d5cb5fdbea13a26347cfd8fbdd5132"
+    },
+    {
+      "name": "full-ops",
+      "expected_cases": 15,
+      "passed": true,
+      "actual_cases": 15,
+      "live_overlap_manifests_checked": 8,
+      "report": "build/native-memory-fusion-regressions/full-ops/results.json",
+      "report_sha256": "32fda7c4983984bba083fc8d35e442e0e54c2c811d4b0d4e908532a528f663d0",
+      "specification_sha256": "e959241ffdac3d9a4d355eee09adc82e3a616d28a8c66203fe133f9a985d7f35"
+    },
+    {
+      "name": "base",
+      "expected_cases": 21,
+      "passed": true,
+      "actual_cases": 21,
+      "live_overlap_manifests_checked": 14,
+      "report": "build/native-memory-fusion-regressions/base/results.json",
+      "report_sha256": "7c57defe689a5cdd9e08dcb562e2d575cc5e73f3da743a5a35f7b869af4d51ea",
+      "specification_sha256": "4e156cfcc67800e3e5e908bf35aa663603da4ea623778cdf1b67357e3adb3cd7"
+    }
+  ],
+  "passed": true,
+  "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "optimizer_sha256_at_end": "537fc823a230f6b762d076ace2a37b8c6b9ccbfe2d543d3ef31674d57c73add8",
+  "compiler_stable_during_run": true,
+  "optimizer_stable_during_run": true,
+  "test_process_wall_seconds": 32.607419832000005,
+  "finished_at_utc": "2026-10-16T12:10:24.402652+00:00"
+}

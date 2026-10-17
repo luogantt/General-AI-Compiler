@@ -1,0 +1,68 @@
+{
+  "scope": "Scatter chain to Expand: actual VOLT machine code executed by C++ runtime in SimX",
+  "physical_device_performance": false,
+  "python_operator_fallback": false,
+  "compiler_sha256_at_start": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "runner_sha256": "d1f238659abd9969cf7f9f565f4a647058324d00940e887234a1076e1cc25651",
+  "reference": "ONNX ReferenceEvaluator on original three-stage ScatterND graph",
+  "cases": [
+    {
+      "passed": true,
+      "physical_device_execution": false,
+      "max_absolute_errors": {
+        "Y": 0.0
+      },
+      "live_buffer_overlap_check": "passed",
+      "vxbin_sha256": "1d5041d6d5d382d000a312cf1734cd3db7b02b697f78cdb0a2aa91e8145f4150",
+      "name": "broadcast_chain_zero_source_eliminated",
+      "dispatches": 1,
+      "original_scatter_dispatches": 3,
+      "dead_zero_data_buffer_absent": true,
+      "arena_bytes": 128,
+      "model_sha256": "845b4dc568e764b287b1ca025e4c8e66d3baae3c8af2fb910d5e8d25a527c3b9",
+      "manifest_sha256": "03ee7101c4bd64e1775d7cbb8a9333be5ee5bf202e0ef9f31cf49ce30a81f447",
+      "runtime_report": {
+        "arena_bytes": 128,
+        "dispatch_wall_ms": 3.87488,
+        "dispatches": 1,
+        "download_ms": 6.217325,
+        "driver": "simx",
+        "embedded_constant_bytes": 0,
+        "execution": "vortex-device",
+        "host_operator_fallback": false,
+        "initialization_ms": 104.384896,
+        "inputs": [
+          {
+            "file": "input_0.bin",
+            "name": "U",
+            "tensor_index": 0
+          }
+        ],
+        "outputs": [
+          {
+            "dtype": "float32",
+            "file": "output_0.bin",
+            "name": "Y",
+            "shape": [
+              1,
+              3,
+              4,
+              2
+            ],
+            "tensor_index": 2
+          }
+        ],
+        "schema_version": 1,
+        "threads_per_block": 16,
+        "timing_kind": "host_wall_clock",
+        "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+        "total_host_wall_ms": 120.683729,
+        "trace_dispatches": false,
+        "upload_ms": 6.206628
+      }
+    }
+  ],
+  "compiler_sha256_at_end": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "compiler_stable_during_run": true,
+  "passed": true
+}

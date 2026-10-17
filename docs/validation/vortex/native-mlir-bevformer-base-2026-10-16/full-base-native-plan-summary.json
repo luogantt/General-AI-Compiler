@@ -1,0 +1,101 @@
+{
+  "scope": "Successful original ONNX to native LLVM Dialect compilation and manifest audit, not full-model execution",
+  "source_manifest": "/home/thomas/gac-base-native/plan.json",
+  "manifest_sha256": "e4b1c0356dab16d5e25f00efdd8d47efcdd9bbeb2c50fdd6d136cf9ab0da3907",
+  "onnx": "build/bevformer-base-onnx/bevformer-base-cold.onnx",
+  "onnx_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+  "compiler_sha256_observed_at_archive": "050f89d4f3fff055c8db68bbb9c86b3c8b6c3d5f10e59aa2e378024fa50f666d",
+  "binary_hash_scope": "Observed after compilation; this summary does not assert a separately captured start/end hash for the full compile command.",
+  "target": "native",
+  "compiler_backend": "native-mlir",
+  "dispatches": 3224,
+  "tensors": 4084,
+  "dispatch_operation_counts": {
+    "gac.slice": 594,
+    "gac.conv2d_relu": 246,
+    "gac.max_pool2d": 6,
+    "gac.conv2d": 420,
+    "gac.add_relu": 198,
+    "gac.concat": 177,
+    "gac.sigmoid": 175,
+    "gac.deform_conv2d": 156,
+    "gac.batch_norm": 156,
+    "gac.relu": 170,
+    "gac.resize": 12,
+    "gac.add": 152,
+    "gac.transpose": 76,
+    "gac.expand": 68,
+    "gac.tile": 2,
+    "gac.cast": 1,
+    "gac.gemm": 8,
+    "gac.layer_norm": 49,
+    "gac.matmul_bias": 133,
+    "gac.softmax": 24,
+    "gac.ms_deform_attn_offsets": 18,
+    "gac.reduce_mean": 6,
+    "gac.gather": 125,
+    "gac.div": 30,
+    "gac.matmul_bias_relu": 36,
+    "gac.matmul": 12,
+    "gac.clamp": 54,
+    "gac.sub": 18,
+    "gac.log": 18,
+    "gac.scatter_nd": 66,
+    "gac.mul": 18
+  },
+  "tensor_storage_counts": {
+    "input": 1,
+    "constant": 859,
+    "arena": 3224
+  },
+  "arena_bytes": 1554944000,
+  "embedded_constant_bytes": 2073600,
+  "outputs": [
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "float32",
+      "bytes": 40960000,
+      "storage": "arena"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "float32",
+      "bytes": 216000,
+      "storage": "arena"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "float32",
+      "bytes": 216000,
+      "storage": "arena"
+    }
+  ],
+  "compile_elapsed_seconds": 174.26,
+  "compile_max_rss_kib": 1298172,
+  "compile_swap_count": 0,
+  "compile_exit_code": 0,
+  "full_model_execution_verified": false,
+  "view_elision": {
+    "dispatches_removed": 331,
+    "logical_copy_bytes_removed": 16368553824,
+    "public_output_views_materialized": true
+  },
+  "lmem_bytes": 0
+}

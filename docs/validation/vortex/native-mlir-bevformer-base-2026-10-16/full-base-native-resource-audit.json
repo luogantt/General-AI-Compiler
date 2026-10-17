@@ -1,0 +1,22 @@
+{
+  "manifest": "/home/thomas/gac-base-native/plan.json",
+  "target": "native",
+  "physical_device_latency_ms": null,
+  "python_role": "artifact I/O, ctypes invocation and numerical comparison only",
+  "dispatch_count": 3224,
+  "logical_tensor_bytes": {
+    "input": 106905600,
+    "constant": 368518572,
+    "arena": 48715061696
+  },
+  "arena_bytes": 1554944000,
+  "embedded_constant_bytes": 2073600,
+  "minimum_storage_bytes_excluding_code_runtime": 2032441772,
+  "storage_budget_scope": "Includes embedded constant globals; excludes instructions, stack and runtime metadata",
+  "rtol": 0.001,
+  "atol": 0.0001,
+  "full_model_executed": false,
+  "output_numerical_validation": "not_run",
+  "mode": "manifest_resource_audit_only",
+  "passed": true
+}
