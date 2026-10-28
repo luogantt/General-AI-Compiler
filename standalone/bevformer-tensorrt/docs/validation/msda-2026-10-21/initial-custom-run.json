@@ -1,0 +1,250 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-21T12:38:38.414286+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 55, 210 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so",
+        "sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-21T12:38:48.708862+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 72, 1635 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so",
+        "sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "/home/robot/project/gac-msda-20261021/full-model-01/base-mixed.engine",
+  "engine_sha256": "64ee170cb641f22612b23e111126de98ff048db4b8c0ad086489f5adfe0654d7",
+  "inputs": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 2054008320,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 5626462208,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 2594439168
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 20,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      333.6374816894531,
+      339.78057861328125,
+      335.5228271484375,
+      337.56756591796875,
+      340.05218505859375,
+      337.0004577636719,
+      338.1309509277344,
+      341.4465026855469,
+      337.86572265625,
+      338.8487548828125,
+      341.3575744628906,
+      339.8318176269531,
+      337.6130676269531,
+      343.3656311035156,
+      341.4988708496094,
+      339.65057373046875,
+      342.0262451171875,
+      341.5603332519531,
+      340.16461181640625,
+      342.39898681640625
+    ],
+    "mean": 339.4660369873047,
+    "median": 339.8061981201172,
+    "min": 333.6374816894531,
+    "max": 343.3656311035156,
+    "p95": 342.4473190307617
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      333.71249699848704,
+      339.80672000325285,
+      335.5533989961259,
+      337.5992710061837,
+      340.09249799419194,
+      337.0295630011242,
+      338.1596230028663,
+      341.4756340207532,
+      337.89334702305496,
+      338.87725201202556,
+      341.38332700240426,
+      339.85944199957885,
+      337.64022402465343,
+      343.39184197597206,
+      341.5283109934535,
+      339.67858500545844,
+      342.0517250197008,
+      341.58793999813497,
+      340.1949529943522,
+      342.427098978078
+    ],
+    "mean": 339.4971626024926,
+    "median": 339.83308100141585,
+    "min": 333.71249699848704,
+    "max": 343.39184197597206,
+    "p95": 342.4753361279727
+  },
+  "validation": {
+    "status": "failed",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only",
+    "reference": "/home/robot/project/gac-msda-20261021/thermal-pairs-01/baseline-1/outputs.npz",
+    "reference_sha256": "79c01ecd6f5933e8d183654395f607dfb2a32e441854b5dfaeee1081483b4575",
+    "rtol": 0.001,
+    "atol": 0.001,
+    "outputs": {
+      "bev_embed": {
+        "passed": false,
+        "shape": [
+          40000,
+          1,
+          256
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 3219936,
+        "elements": 10240000,
+        "max_absolute_error": 0.0732421875,
+        "max_relative_error_floor_1e_12": 5549.0
+      },
+      "all_cls_scores": {
+        "passed": false,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 971,
+        "elements": 54000,
+        "max_absolute_error": 0.02734375,
+        "max_relative_error_floor_1e_12": 0.007795889440113395
+      },
+      "all_bbox_preds": {
+        "passed": false,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 11240,
+        "elements": 54000,
+        "max_absolute_error": 0.203125,
+        "max_relative_error_floor_1e_12": 49987792968.75
+      }
+    }
+  }
+}

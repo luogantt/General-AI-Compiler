@@ -1,0 +1,89 @@
+{
+  "arena_bytes": 512,
+  "compiler_backend": "native-mlir",
+  "compute_template_library": "GACComputeTemplates/v1",
+  "dispatches": [
+    {
+      "bufferization": "separate static FP32 input/output buffers; scalar reductions",
+      "compute_template": {
+        "id": "triton.vortex.softmax-fp32",
+        "reason": "validated static FP32 last-axis row-wise Softmax",
+        "selected": true
+      },
+      "depends_on": [],
+      "elements": 114,
+      "inputs": [
+        "A"
+      ],
+      "kernel": "gac_op_0",
+      "lowering": "linalg-to-triton",
+      "op": "linalg.softmax",
+      "output": "Y",
+      "schedule": "one row per TTIR program; masked max and sum tt.reduce stages",
+      "source_node": "Softmax#0",
+      "triton": {
+        "abi": "vortex-u64-pointers-i32-n",
+        "block_size": 4,
+        "grid_size": 6,
+        "kind": "softmax",
+        "lanes": 4,
+        "n": 19,
+        "num_warps": 1,
+        "rows": 6,
+        "tile": 32,
+        "ttir_file": "gac_op_0.ttir",
+        "width": 19
+      },
+      "wait_for_dispatch": -1
+    }
+  ],
+  "double_buffer": false,
+  "embedded_constant_bytes": 0,
+  "inputs": [
+    "A"
+  ],
+  "kernel_backends": "native-vortex + triton-vortex; single linked device module",
+  "linalg_dispatches": 1,
+  "linalg_fused_producers": 0,
+  "lmem_bytes": 0,
+  "outputs": [
+    "Y"
+  ],
+  "regular_lowering": "linalg",
+  "schedule": "serialized dispatches; SSA last-use buffer reuse",
+  "schema_version": 1,
+  "target": "vortex",
+  "template": "per-dispatch native kernels or flat masked Triton tiles",
+  "tensors": [
+    {
+      "bytes": 456,
+      "dtype": "float32",
+      "name": "A",
+      "offset": 0,
+      "shape": [
+        2,
+        3,
+        19
+      ],
+      "storage": "input"
+    },
+    {
+      "bytes": 456,
+      "dtype": "float32",
+      "name": "Y",
+      "offset": 0,
+      "shape": [
+        2,
+        3,
+        19
+      ],
+      "storage": "arena"
+    }
+  ],
+  "triton_dispatches": 1,
+  "view_elision": {
+    "dispatches_removed": 0,
+    "logical_copy_bytes_removed": 0,
+    "public_output_views_materialized": true
+  }
+}

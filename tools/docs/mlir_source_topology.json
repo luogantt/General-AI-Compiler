@@ -1,0 +1,1362 @@
+{
+  "example": {
+    "before": "func.func @demo(%x: i32, %y: i32) -> i32 {\n  %z = arith.constant 0 : i32\n  %a = arith.addi %x, %z : i32\n  %b = arith.addi %a, %y : i32\n  return %b : i32\n}",
+    "after": "func.func @demo(%x: i32, %y: i32) -> i32 {\n  %b = arith.addi %x, %y : i32\n  return %b : i32\n}",
+    "lowered": "llvm.func @demo(%x: i32, %y: i32) -> i32 {\n  %b = llvm.add %x, %y : i32\n  llvm.return %b : i32\n}",
+    "note": "按本地源码规则推演的教学片段，变量名为方便阅读而保留；不是本次实测的工具输出。示例用整数，避免把浮点运算的特殊语义混进来。"
+  },
+  "views": [
+    {
+      "id": "journey",
+      "title": "1 · 一个程序怎样穿过 MLIR",
+      "subtitle": "左侧追踪同一个程序；右侧展开它调用的公共设施与方言规则。",
+      "width": 1100,
+      "height": 1520,
+      "nodes": [
+        {
+          "id": "input",
+          "ref": "parser",
+          "x": 60,
+          "y": 55,
+          "w": 440,
+          "h": 185,
+          "kind": "data",
+          "title": "① 输入：函数里的算术文本",
+          "body": [
+            "x、y 是 i32 参数。此时还没有执行加法。"
+          ],
+          "code": [
+            "%z = arith.constant 0 : i32",
+            "%a = arith.addi %x, %z : i32",
+            "%b = arith.addi %a, %y : i32"
+          ]
+        },
+        {
+          "id": "parser",
+          "ref": "parse-hook",
+          "x": 60,
+          "y": 295,
+          "w": 440,
+          "h": 120,
+          "kind": "shared",
+          "title": "② Parser：文本 → OperationState",
+          "body": [
+            "读名字、操作数、类型，组织创建参数。",
+            "调用 Builder 创建真正的内存 IR。"
+          ]
+        },
+        {
+          "id": "rules",
+          "ref": "registration",
+          "x": 700,
+          "y": 295,
+          "w": 340,
+          "h": 120,
+          "kind": "specific",
+          "title": "方言注册的解析规则",
+          "body": [
+            "例如 arith.addi → AddIOp::parse。",
+            "MLIRContext 保存注册信息。"
+          ]
+        },
+        {
+          "id": "rawir",
+          "ref": "module",
+          "x": 60,
+          "y": 490,
+          "w": 440,
+          "h": 140,
+          "kind": "data",
+          "title": "③ 内存 IR：ModuleOp",
+          "body": [
+            "函数内包含 constant、两次 addi、return。",
+            "操作之间通过 Value 连接。",
+            "存的是程序结构，还不是计算结果。"
+          ]
+        },
+        {
+          "id": "core",
+          "ref": "operation",
+          "x": 700,
+          "y": 490,
+          "w": 340,
+          "h": 140,
+          "kind": "shared",
+          "title": "共享的 IR 数据结构",
+          "body": [
+            "Operation / Value / Region / Block",
+            "Arith、Func、LLVM 等方言都使用它们。",
+            "每个操作仍有自己的内存实例。"
+          ]
+        },
+        {
+          "id": "pass",
+          "ref": "pass",
+          "x": 60,
+          "y": 700,
+          "w": 440,
+          "h": 165,
+          "kind": "shared",
+          "title": "④ PassManager 按配置运行 Pass",
+          "body": [
+            "Canonicalizer：把 x + 0 替换为 x。",
+            "ArithToLLVM + FuncToLLVM：改变表示。",
+            "操作的是上面的内存 IR。",
+            "下一张图展开具体优化调用。"
+          ]
+        },
+        {
+          "id": "drivers",
+          "ref": "fold-driver",
+          "x": 700,
+          "y": 700,
+          "w": 340,
+          "h": 165,
+          "kind": "shared",
+          "title": "公共变换驱动 + 方言规则",
+          "body": [
+            "Greedy driver：反复尝试简化。",
+            "DialectConversion：应用转换规则，",
+            "并检查目标是否合法。",
+            "具体数学规则由操作 / 方言提供。"
+          ]
+        },
+        {
+          "id": "lowered",
+          "ref": "arith-lowering",
+          "x": 60,
+          "y": 935,
+          "w": 440,
+          "h": 140,
+          "kind": "data",
+          "title": "⑤ 变换后的 IR：LLVM dialect",
+          "body": [
+            "仍是 MLIR 对象；这条加法是原来的 x+y。"
+          ],
+          "code": [
+            "%b = llvm.add %x, %y : i32"
+          ]
+        },
+        {
+          "id": "export",
+          "ref": "llvm-export",
+          "x": 60,
+          "y": 1170,
+          "w": 440,
+          "h": 120,
+          "kind": "shared",
+          "title": "⑥ ModuleTranslation：导出 LLVM IR",
+          "body": [
+            "按操作所属方言找到翻译接口。",
+            "使用映射表把 MLIR Value 对应到 LLVM Value。"
+          ]
+        },
+        {
+          "id": "llvmiface",
+          "ref": "llvm-export",
+          "x": 700,
+          "y": 1170,
+          "w": 340,
+          "h": 120,
+          "kind": "specific",
+          "title": "LLVM 方言的翻译接口",
+          "body": [
+            "llvm.add 的导出规则调用",
+            "LLVM IRBuilder::CreateAdd。"
+          ]
+        },
+        {
+          "id": "output",
+          "ref": "translation",
+          "x": 60,
+          "y": 1365,
+          "w": 440,
+          "h": 140,
+          "kind": "output",
+          "title": "⑦ 输出：真正的 LLVM IR",
+          "body": [
+            "交给 LLVM 目标后端后，才继续生成机器码。"
+          ],
+          "code": [
+            "%b = add i32 %x, %y"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "read",
+          "from": "input",
+          "to": "parser",
+          "label": "读取文本，建立解析状态",
+          "kind": "data",
+          "points": [
+            [
+              280,
+              240
+            ],
+            [
+              280,
+              295
+            ]
+          ],
+          "labelAt": [
+            280,
+            267.5
+          ],
+          "refs": [
+            "parser",
+            "parse-hook"
+          ]
+        },
+        {
+          "id": "lookup",
+          "from": "parser",
+          "to": "rules",
+          "label": "按操作名查规则",
+          "kind": "call",
+          "points": [
+            [
+              500,
+              320
+            ],
+            [
+              700,
+              320
+            ]
+          ],
+          "labelAt": [
+            600,
+            307
+          ],
+          "refs": [
+            "parse-hook",
+            "registration"
+          ]
+        },
+        {
+          "id": "hook",
+          "from": "rules",
+          "to": "parser",
+          "label": "返回 parse 钩子",
+          "kind": "data",
+          "points": [
+            [
+              700,
+              380
+            ],
+            [
+              500,
+              380
+            ]
+          ],
+          "labelAt": [
+            600,
+            368
+          ],
+          "refs": [
+            "parse-hook"
+          ]
+        },
+        {
+          "id": "create",
+          "from": "parser",
+          "to": "rawir",
+          "label": "OperationState → Builder.create()",
+          "kind": "call",
+          "points": [
+            [
+              280,
+              415
+            ],
+            [
+              280,
+              490
+            ]
+          ],
+          "labelAt": [
+            280,
+            452.5
+          ],
+          "refs": [
+            "parse-hook",
+            "op-create"
+          ]
+        },
+        {
+          "id": "representation",
+          "from": "core",
+          "to": "rawir",
+          "label": "IR 的共同表示",
+          "kind": "reference",
+          "points": [
+            [
+              700,
+              550
+            ],
+            [
+              500,
+              550
+            ]
+          ],
+          "labelAt": [
+            600,
+            532
+          ],
+          "refs": [
+            "operation",
+            "module",
+            "value"
+          ]
+        },
+        {
+          "id": "run",
+          "from": "rawir",
+          "to": "pass",
+          "label": "把 ModuleOp 交给 pm.run()",
+          "kind": "data",
+          "points": [
+            [
+              280,
+              630
+            ],
+            [
+              280,
+              700
+            ]
+          ],
+          "labelAt": [
+            280,
+            665.0
+          ],
+          "refs": [
+            "pass"
+          ]
+        },
+        {
+          "id": "invoke",
+          "from": "pass",
+          "to": "drivers",
+          "label": "各 Pass 调用驱动",
+          "kind": "call",
+          "points": [
+            [
+              500,
+              740
+            ],
+            [
+              700,
+              740
+            ]
+          ],
+          "labelAt": [
+            600,
+            726
+          ],
+          "refs": [
+            "fold-driver",
+            "conversion"
+          ]
+        },
+        {
+          "id": "rewrite",
+          "from": "drivers",
+          "to": "pass",
+          "label": "返回状态；IR 已改写",
+          "kind": "data",
+          "points": [
+            [
+              700,
+              810
+            ],
+            [
+              500,
+              810
+            ]
+          ],
+          "labelAt": [
+            600,
+            796
+          ],
+          "refs": [
+            "replace",
+            "arith-lowering"
+          ]
+        },
+        {
+          "id": "lower",
+          "from": "pass",
+          "to": "lowered",
+          "label": "替换旧操作，生成目标方言操作",
+          "kind": "data",
+          "points": [
+            [
+              280,
+              865
+            ],
+            [
+              280,
+              935
+            ]
+          ],
+          "labelAt": [
+            280,
+            900.0
+          ],
+          "refs": [
+            "arith-lowering",
+            "conversion",
+            "func-lowering"
+          ]
+        },
+        {
+          "id": "translate",
+          "from": "lowered",
+          "to": "export",
+          "label": "满足导出要求的 MLIR Module",
+          "kind": "data",
+          "points": [
+            [
+              280,
+              1075
+            ],
+            [
+              280,
+              1170
+            ]
+          ],
+          "labelAt": [
+            280,
+            1122.5
+          ],
+          "refs": [
+            "translation",
+            "llvm-export"
+          ]
+        },
+        {
+          "id": "interface",
+          "from": "export",
+          "to": "llvmiface",
+          "label": "按方言分派",
+          "kind": "call",
+          "points": [
+            [
+              500,
+              1195
+            ],
+            [
+              700,
+              1195
+            ]
+          ],
+          "labelAt": [
+            600,
+            1183
+          ],
+          "refs": [
+            "llvm-export",
+            "interfaces",
+            "llvm-values"
+          ]
+        },
+        {
+          "id": "llvmobjects",
+          "from": "llvmiface",
+          "to": "export",
+          "label": "返回翻译状态",
+          "kind": "data",
+          "points": [
+            [
+              700,
+              1250
+            ],
+            [
+              500,
+              1250
+            ]
+          ],
+          "labelAt": [
+            600,
+            1238
+          ],
+          "refs": [
+            "llvm-export"
+          ]
+        },
+        {
+          "id": "emit",
+          "from": "export",
+          "to": "output",
+          "label": "生成 llvm::Module；可打印为 .ll",
+          "kind": "data",
+          "points": [
+            [
+              280,
+              1290
+            ],
+            [
+              280,
+              1365
+            ]
+          ],
+          "labelAt": [
+            280,
+            1327.5
+          ],
+          "refs": [
+            "translation"
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "x": 60,
+          "y": 15,
+          "text": "程序的数据 / 表示如何变化"
+        },
+        {
+          "x": 700,
+          "y": 15,
+          "text": "为什么同一个框架能支持不同方言"
+        }
+      ]
+    },
+    {
+      "id": "shared",
+      "title": "2 · 公共算法怎样调用方言规则",
+      "subtitle": "完整追踪一次整数 x + 0 → x：谁决定能简化，谁真正修改图。",
+      "width": 1100,
+      "height": 1090,
+      "nodes": [
+        {
+          "id": "definitions",
+          "ref": "registration",
+          "x": 40,
+          "y": 65,
+          "w": 400,
+          "h": 140,
+          "kind": "specific",
+          "title": "Arith 定义 AddIOp，并声明 hasFolder",
+          "body": [
+            "构建时：TableGen 生成 C++ 操作类。",
+            "加载方言时：initialize → addOperations。",
+            "AddIOp::fold 的数学规则写在 C++ 中。"
+          ]
+        },
+        {
+          "id": "registry",
+          "ref": "registration",
+          "x": 670,
+          "y": 65,
+          "w": 390,
+          "h": 140,
+          "kind": "shared",
+          "title": "公共注册表保存操作的钩子",
+          "body": [
+            "arith.addi → Model<AddIOp>",
+            "Model 连接 parse / verify / fold 等行为。",
+            "这是操作定义，不是用户程序中的实例。"
+          ]
+        },
+        {
+          "id": "dispatch",
+          "ref": "fold-dispatch",
+          "x": 40,
+          "y": 320,
+          "w": 400,
+          "h": 140,
+          "kind": "shared",
+          "title": "② Operation::fold：统一折叠入口",
+          "body": [
+            "收集操作数中的常量；查询注册的 foldHook。",
+            "通用 Model 转到该操作的具体实现。",
+            "公共代码无需硬编码所有数学算子。"
+          ]
+        },
+        {
+          "id": "greedy",
+          "ref": "fold-driver",
+          "x": 670,
+          "y": 320,
+          "w": 390,
+          "h": 140,
+          "kind": "shared",
+          "title": "① Canonicalizer → Greedy driver",
+          "body": [
+            "输入：程序中的 %a = addi %x, %z。",
+            "从工作表取出操作，尝试操作自带的 fold。",
+            "其他匹配改写也是该驱动的工作。"
+          ]
+        },
+        {
+          "id": "specific",
+          "ref": "addi-fold",
+          "x": 40,
+          "y": 545,
+          "w": 400,
+          "h": 185,
+          "kind": "specific",
+          "title": "③ AddIOp::fold：整数加的规则",
+          "body": [
+            "发现右操作数是整数 0。",
+            "知道 x + 0 等价于 x，返回左操作数。",
+            "此函数不负责遍历整个程序。"
+          ],
+          "code": [
+            "return getLhs();"
+          ]
+        },
+        {
+          "id": "result",
+          "ref": "addi-fold",
+          "x": 670,
+          "y": 545,
+          "w": 390,
+          "h": 140,
+          "kind": "data",
+          "title": "④ 返回：现有的 Value %x",
+          "body": [
+            "OpFoldResult 指向 %x。",
+            "意思是：%a 的所有使用可以改为使用 %x。",
+            "没有复制 x 的数值，也没有执行加法。"
+          ]
+        },
+        {
+          "id": "after",
+          "ref": "replace",
+          "x": 40,
+          "y": 805,
+          "w": 400,
+          "h": 160,
+          "kind": "output",
+          "title": "⑥ 程序使用关系已改变",
+          "body": [
+            "旧 %a 消失；无用的零常量随后可被清理。",
+            "剩下的加法直接使用函数参数 %x。"
+          ],
+          "code": [
+            "%b = arith.addi %x, %y : i32"
+          ]
+        },
+        {
+          "id": "rewriter",
+          "ref": "replace",
+          "x": 670,
+          "y": 805,
+          "w": 390,
+          "h": 140,
+          "kind": "shared",
+          "title": "⑤ Rewriter.replaceOp",
+          "body": [
+            "将旧结果的全部使用改到新 Value。",
+            "删除旧 addi，更新驱动的工作表。",
+            "继续处理可能受影响的操作。"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "register",
+          "from": "definitions",
+          "to": "registry",
+          "label": "登记 Model<AddIOp>",
+          "kind": "register",
+          "points": [
+            [
+              440,
+              132
+            ],
+            [
+              670,
+              132
+            ]
+          ],
+          "labelAt": [
+            555,
+            111
+          ],
+          "refs": [
+            "registration",
+            "tablegen"
+          ]
+        },
+        {
+          "id": "select",
+          "from": "registry",
+          "to": "dispatch",
+          "label": "已登记的钩子决定具体实现",
+          "kind": "reference",
+          "points": [
+            [
+              865,
+              205
+            ],
+            [
+              865,
+              260
+            ],
+            [
+              240,
+              260
+            ],
+            [
+              240,
+              320
+            ]
+          ],
+          "labelAt": [
+            555,
+            260
+          ],
+          "refs": [
+            "registration",
+            "fold-dispatch"
+          ]
+        },
+        {
+          "id": "callfold",
+          "from": "greedy",
+          "to": "dispatch",
+          "label": "调用 op->fold()",
+          "kind": "call",
+          "points": [
+            [
+              670,
+              380
+            ],
+            [
+              440,
+              380
+            ]
+          ],
+          "labelAt": [
+            555,
+            360
+          ],
+          "refs": [
+            "fold-driver",
+            "fold-dispatch"
+          ]
+        },
+        {
+          "id": "concrete",
+          "from": "dispatch",
+          "to": "specific",
+          "label": "分派到 AddIOp::fold()",
+          "kind": "call",
+          "points": [
+            [
+              240,
+              460
+            ],
+            [
+              240,
+              545
+            ]
+          ],
+          "labelAt": [
+            240,
+            502.5
+          ],
+          "refs": [
+            "fold-dispatch",
+            "addi-fold"
+          ]
+        },
+        {
+          "id": "foldresult",
+          "from": "specific",
+          "to": "result",
+          "label": "返回已有 Value：%x",
+          "kind": "data",
+          "points": [
+            [
+              440,
+              612
+            ],
+            [
+              670,
+              612
+            ]
+          ],
+          "labelAt": [
+            555,
+            591
+          ],
+          "refs": [
+            "addi-fold"
+          ]
+        },
+        {
+          "id": "apply",
+          "from": "result",
+          "to": "rewriter",
+          "label": "驱动应用替换结果",
+          "kind": "data",
+          "points": [
+            [
+              865,
+              685
+            ],
+            [
+              865,
+              805
+            ]
+          ],
+          "labelAt": [
+            865,
+            745.0
+          ],
+          "refs": [
+            "fold-driver",
+            "replace"
+          ]
+        },
+        {
+          "id": "uses",
+          "from": "rewriter",
+          "to": "after",
+          "label": "改使用边，删除旧节点",
+          "kind": "data",
+          "points": [
+            [
+              670,
+              872
+            ],
+            [
+              440,
+              872
+            ]
+          ],
+          "labelAt": [
+            555,
+            851
+          ],
+          "refs": [
+            "replace",
+            "value"
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "x": 40,
+          "y": 15,
+          "text": "先把语义接入框架：生成 C++ 操作类 → 加载并注册"
+        },
+        {
+          "x": 40,
+          "y": 1010,
+          "text": "复用的是遍历、分派和改写机制；x+0→x 这样的具体语义来自 Arith。不是所有方言共用一套数学算法。"
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "3 · 不同方言怎样共用底层存储",
+      "subtitle": "上半部是创建调用；下半部是内存结构。包含关系和 Value 使用关系是两种不同的边。",
+      "width": 1100,
+      "height": 1290,
+      "nodes": [
+        {
+          "id": "specific",
+          "ref": "op-create",
+          "x": 40,
+          "y": 65,
+          "w": 340,
+          "h": 140,
+          "kind": "specific",
+          "title": "每种操作自己的 build",
+          "body": [
+            "例如 arith::AddIOp、func::FuncOp。",
+            "补充操作数、结果类型、属性。",
+            "操作名由模板创建入口预先设置。"
+          ]
+        },
+        {
+          "id": "builder",
+          "ref": "op-create",
+          "x": 680,
+          "y": 65,
+          "w": 380,
+          "h": 140,
+          "kind": "shared",
+          "title": "统一创建入口：OpBuilder",
+          "body": [
+            "create<OpTy>(...) 创建 OperationState。",
+            "模板参数选择具体操作的 build。",
+            "OpTy 是 C++ 类型，例如 arith::AddIOp。"
+          ]
+        },
+        {
+          "id": "operation",
+          "ref": "operation",
+          "x": 40,
+          "y": 290,
+          "w": 340,
+          "h": 140,
+          "kind": "data",
+          "title": "公共 Operation 实例",
+          "body": [
+            "名字 / 操作数 / 结果 / 属性 / 区域。",
+            "每个 addi、func 都有自己的实例。",
+            "结构相同，名字和语义不同。"
+          ]
+        },
+        {
+          "id": "creator",
+          "ref": "op-create",
+          "x": 680,
+          "y": 290,
+          "w": 380,
+          "h": 165,
+          "kind": "shared",
+          "title": "公共分配与插入逻辑",
+          "body": [
+            "OpBuilder::create(state)",
+            "→ Operation::create(state)",
+            "→ insert 到当前 Block 的操作列表。",
+            "具体位置由 Builder 的插入点决定。"
+          ]
+        },
+        {
+          "id": "region",
+          "ref": "region",
+          "x": 40,
+          "y": 530,
+          "w": 340,
+          "h": 120,
+          "kind": "data",
+          "title": "Region：一个区域",
+          "body": [
+            "例如 func.func 的函数体。",
+            "区域内保存 Block 列表。"
+          ]
+        },
+        {
+          "id": "wrapper",
+          "ref": "opwrapper",
+          "x": 680,
+          "y": 530,
+          "w": 380,
+          "h": 140,
+          "kind": "shared",
+          "title": "返回 OpTy：类型化封装",
+          "body": [
+            "create<OpTy> 用 dyn_cast 转成包装。",
+            "OpState 内部保存 Operation*。",
+            "AddIOp 提供 getLhs() 等专用接口。"
+          ]
+        },
+        {
+          "id": "block",
+          "ref": "block",
+          "x": 40,
+          "y": 740,
+          "w": 340,
+          "h": 120,
+          "kind": "data",
+          "title": "Block：操作列表 + 块参数",
+          "body": [
+            "保存按顺序排列的 Operation。",
+            "本例函数参数 %x、%y 是块参数。"
+          ]
+        },
+        {
+          "id": "types",
+          "ref": "types",
+          "x": 680,
+          "y": 740,
+          "w": 380,
+          "h": 120,
+          "kind": "shared",
+          "title": "Type / Attribute：类型与属性",
+          "body": [
+            "i32 描述类型；整数 0 可以是属性。",
+            "它们的存储在 Context 中做唯一化。"
+          ]
+        },
+        {
+          "id": "nested",
+          "ref": "operation",
+          "x": 40,
+          "y": 950,
+          "w": 340,
+          "h": 140,
+          "kind": "data",
+          "title": "Block 内的 Operation",
+          "body": [
+            "constant → addi → addi → return",
+            "这个顺序是程序结构；",
+            "真正的数据依赖由 Value 连接。"
+          ]
+        },
+        {
+          "id": "value",
+          "ref": "value",
+          "x": 680,
+          "y": 950,
+          "w": 380,
+          "h": 140,
+          "kind": "data",
+          "title": "Value：带类型的 SSA 值",
+          "body": [
+            "来源是操作结果，或 BlockArgument。",
+            "后继操作把它记录为 operand。",
+            "保存定义 / 使用关系，不是运行时张量。"
+          ]
+        },
+        {
+          "id": "context",
+          "ref": "context",
+          "x": 680,
+          "y": 1160,
+          "w": 380,
+          "h": 120,
+          "kind": "shared",
+          "title": "MLIRContext：共享服务与存储",
+          "body": [
+            "管理类型 / 属性唯一化、方言注册等。",
+            "Operation 树本身不是由它统一拥有。"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "buildcall",
+          "from": "builder",
+          "to": "specific",
+          "label": "调用 OpTy::build()",
+          "kind": "call",
+          "points": [
+            [
+              680,
+              100
+            ],
+            [
+              380,
+              100
+            ]
+          ],
+          "labelAt": [
+            530,
+            82
+          ],
+          "refs": [
+            "op-create",
+            "builder"
+          ]
+        },
+        {
+          "id": "state",
+          "from": "specific",
+          "to": "builder",
+          "label": "填充 OperationState",
+          "kind": "data",
+          "points": [
+            [
+              380,
+              168
+            ],
+            [
+              680,
+              168
+            ]
+          ],
+          "labelAt": [
+            530,
+            151
+          ],
+          "refs": [
+            "op-create"
+          ]
+        },
+        {
+          "id": "commoncreate",
+          "from": "builder",
+          "to": "creator",
+          "label": "调用公共 create(state)",
+          "kind": "call",
+          "points": [
+            [
+              870,
+              205
+            ],
+            [
+              870,
+              290
+            ]
+          ],
+          "labelAt": [
+            870,
+            247.5
+          ],
+          "refs": [
+            "op-create"
+          ]
+        },
+        {
+          "id": "allocate",
+          "from": "creator",
+          "to": "operation",
+          "label": "分配并插入 Operation",
+          "kind": "call",
+          "points": [
+            [
+              680,
+              360
+            ],
+            [
+              380,
+              360
+            ]
+          ],
+          "labelAt": [
+            530,
+            342
+          ],
+          "refs": [
+            "op-create",
+            "operation"
+          ]
+        },
+        {
+          "id": "returnwrapper",
+          "from": "creator",
+          "to": "wrapper",
+          "label": "返回模板入口，再转为 OpTy",
+          "kind": "data",
+          "points": [
+            [
+              870,
+              455
+            ],
+            [
+              870,
+              530
+            ]
+          ],
+          "labelAt": [
+            870,
+            492.5
+          ],
+          "refs": [
+            "opwrapper",
+            "op-create"
+          ]
+        },
+        {
+          "id": "pointer",
+          "from": "wrapper",
+          "to": "operation",
+          "label": "引用 Operation*",
+          "kind": "reference",
+          "points": [
+            [
+              680,
+              585
+            ],
+            [
+              550,
+              585
+            ],
+            [
+              550,
+              400
+            ],
+            [
+              380,
+              400
+            ]
+          ],
+          "labelAt": [
+            550,
+            480
+          ],
+          "refs": [
+            "opwrapper"
+          ]
+        },
+        {
+          "id": "hasregion",
+          "from": "operation",
+          "to": "region",
+          "label": "有 Region 的操作拥有区域",
+          "kind": "reference",
+          "points": [
+            [
+              210,
+              430
+            ],
+            [
+              210,
+              530
+            ]
+          ],
+          "labelAt": [
+            210,
+            480.0
+          ],
+          "refs": [
+            "operation",
+            "region"
+          ]
+        },
+        {
+          "id": "hasblock",
+          "from": "region",
+          "to": "block",
+          "label": "区域包含 Block 列表",
+          "kind": "reference",
+          "points": [
+            [
+              210,
+              650
+            ],
+            [
+              210,
+              740
+            ]
+          ],
+          "labelAt": [
+            210,
+            695.0
+          ],
+          "refs": [
+            "region",
+            "block"
+          ]
+        },
+        {
+          "id": "hasop",
+          "from": "block",
+          "to": "nested",
+          "label": "Block 包含 Operation 列表",
+          "kind": "reference",
+          "points": [
+            [
+              210,
+              860
+            ],
+            [
+              210,
+              950
+            ]
+          ],
+          "labelAt": [
+            210,
+            905.0
+          ],
+          "refs": [
+            "block",
+            "operation"
+          ]
+        },
+        {
+          "id": "ssa",
+          "from": "nested",
+          "to": "value",
+          "label": "结果 / 操作数\n通过 Value 连接",
+          "kind": "reference",
+          "points": [
+            [
+              380,
+              1005
+            ],
+            [
+              680,
+              1005
+            ]
+          ],
+          "labelAt": [
+            530,
+            980
+          ],
+          "refs": [
+            "value",
+            "operation"
+          ]
+        },
+        {
+          "id": "gettype",
+          "from": "value",
+          "to": "types",
+          "label": "Value::getType()",
+          "kind": "call",
+          "points": [
+            [
+              870,
+              950
+            ],
+            [
+              870,
+              860
+            ]
+          ],
+          "labelAt": [
+            870,
+            905.0
+          ],
+          "refs": [
+            "value",
+            "types"
+          ]
+        },
+        {
+          "id": "owned",
+          "from": "types",
+          "to": "context",
+          "label": "类型 / 属性存储\n由 Context 管理",
+          "kind": "reference",
+          "points": [
+            [
+              1060,
+              795
+            ],
+            [
+              1080,
+              795
+            ],
+            [
+              1080,
+              1125
+            ],
+            [
+              870,
+              1125
+            ],
+            [
+              870,
+              1160
+            ]
+          ],
+          "labelAt": [
+            870,
+            1125
+          ],
+          "refs": [
+            "context",
+            "types"
+          ]
+        }
+      ],
+      "notes": [
+        {
+          "x": 40,
+          "y": 15,
+          "text": "方言提供语义与专用接口；底层仍使用公共 C++ 数据结构。"
+        },
+        {
+          "x": 40,
+          "y": 1170,
+          "text": "递归结构：Operation → Region → Block → Operation。"
+        },
+        {
+          "x": 40,
+          "y": 1205,
+          "text": "SSA 依赖：某个 Value 从定义处连接到它的所有使用处。"
+        }
+      ]
+    }
+  ]
+}

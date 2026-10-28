@@ -1,0 +1,37 @@
+{
+  "scope": "One held-out real image tensor; fixed synthetic geometry; feature errors are not mAP/NDS",
+  "mixed-level3-real": {
+    "bev_embed": {
+      "relative_rmse": 0.024040874228610343,
+      "cosine_similarity": 0.9997111135323431,
+      "max_absolute_error": 0.2134215533733368
+    },
+    "all_cls_scores": {
+      "relative_rmse": 0.005277372019127559,
+      "cosine_similarity": 0.9999860762513189,
+      "max_absolute_error": 0.6254291534423828
+    },
+    "all_bbox_preds": {
+      "relative_rmse": 0.004675402760220775,
+      "cosine_similarity": 0.9999890732781255,
+      "max_absolute_error": 1.1604936122894287
+    }
+  },
+  "fp32-real": {
+    "bev_embed": {
+      "relative_rmse": 8.307372046442891e-07,
+      "cosine_similarity": 0.9999999999996242,
+      "max_absolute_error": 1.2665987014770508e-05
+    },
+    "all_cls_scores": {
+      "relative_rmse": 1.992102213818684e-07,
+      "cosine_similarity": 0.9999999999999812,
+      "max_absolute_error": 2.288818359375e-05
+    },
+    "all_bbox_preds": {
+      "relative_rmse": 3.892908783012719e-07,
+      "cosine_similarity": 0.9999999999999262,
+      "max_absolute_error": 9.250640869140625e-05
+    }
+  }
+}

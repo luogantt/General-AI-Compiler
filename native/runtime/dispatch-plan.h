@@ -6,7 +6,9 @@
 #include "llvm/Support/JSON.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <filesystem>
 #include <map>
 #include <set>
@@ -66,12 +68,25 @@ struct Dispatch {
   size_t output;
   uint32_t elements;
   uint32_t blockSize = 0, gridSize = 0;
+  // A Triton program covers a logical tile, potentially larger than its
+  // physical CTA. Its grid is ceil(elements / block_elements), not / threads.
+  bool triton = false;
+  std::string tritonKind, tritonAbi;
+  uint32_t tritonBlockElements = 0, tritonNumWarps = 0;
+  uint32_t tritonReductionWidth = 0, tritonReductionTile = 0;
+  uint32_t tritonSoftmaxRows = 0, tritonSoftmaxWidth = 0;
+  uint32_t tritonSoftmaxN = 0;
+  uint32_t tritonSoftmaxTile = 0;
+  uint32_t tritonLayerNormRows = 0, tritonLayerNormWidth = 0;
+  uint32_t tritonLayerNormN = 0, tritonLayerNormTile = 0;
+  uint32_t tritonLayerNormEpsilonF32Bits = 0;
   std::string cudaSchedule;
   uint32_t staticSharedBytes = 0;
   // Empty schedule preserves the original scalar global-memory contract.
   std::string vortexSchedule;
   uint32_t m = 0, n = 0, k = 0, batches = 0;
   uint32_t tileM = 0, tileN = 0, tileK = 0;
+  std::string tritonMatmulBatchMode;
   uint32_t vortexThreadTileM = 1, vortexThreadTileN = 1;
   uint32_t lmemBytes = 0, stages = 0, lanes = 0;
 };
@@ -85,6 +100,304 @@ struct Plan {
 };
 
 enum class Target { Vortex, CUDA };
+
+inline void validateTritonSchedule(const json::Object &schedule,
+                                  Dispatch &dispatch, const Plan &plan) {
+  auto powerOfTwo = [&](llvm::StringRef name, uint64_t minimum,
+                        uint64_t maximum) {
+    uint64_t value = nonnegative(schedule, name);
+    if (value < minimum || value > maximum || (value & (value - 1)))
+      fail("unsupported Triton Vortex dimension: " + name.str());
+    return uint32_t(value);
+  };
+  dispatch.tritonKind = string(schedule, "kind");
+  dispatch.tritonAbi = string(schedule, "abi");
+  const std::string expectedAbi = dispatch.tritonKind == "softmax"
+                                      ? "vortex-u64-pointers-i32-n"
+                                  : dispatch.tritonKind == "layer_norm"
+                                      ? "vortex-u64-pointers-i32-n-f32-epsilon"
+                                      : "vortex-u64-pointers";
+  if (dispatch.tritonAbi != expectedAbi)
+    fail("unsupported Triton Vortex kernel ABI");
+  dispatch.tritonNumWarps = powerOfTwo("num_warps", 1, 4);
+  dispatch.lanes = powerOfTwo("lanes", 1, 32);
+  uint64_t block = nonnegative(schedule, "block_size");
+  uint64_t grid = nonnegative(schedule, "grid_size");
+  if (!grid || grid > INT32_MAX ||
+      block != uint64_t(dispatch.tritonNumWarps) * dispatch.lanes)
+    fail("Triton Vortex physical launch geometry disagrees");
+  dispatch.blockSize = uint32_t(block);
+  dispatch.gridSize = uint32_t(grid);
+  const Tensor &output = plan.tensors[dispatch.output];
+  if (dispatch.tritonKind == "pointwise") {
+    dispatch.tritonBlockElements = powerOfTwo("block_elements", 16, 1024);
+    if (grid !=
+        (uint64_t(dispatch.elements) + dispatch.tritonBlockElements - 1) /
+            dispatch.tritonBlockElements)
+      fail("Triton Vortex pointwise logical tile and grid disagree");
+    if ((output.dtype != "float32" && output.dtype != "int32") ||
+        output.bytes != uint64_t(dispatch.elements) * 4)
+      fail("Triton Vortex requires FP32 or I32 elementwise output");
+    for (size_t id : dispatch.inputs) {
+      const Tensor &input = plan.tensors[id];
+      // A Reshape alias names the original allocation. Its rank/dimensions may
+      // differ, but flattening must preserve the complete byte-identical tensor.
+      if (input.dtype != output.dtype || input.elements != output.elements ||
+          input.bytes != output.bytes)
+        fail("Triton Vortex inputs must match output dtype and element count");
+    }
+  } else if (dispatch.tritonKind == "softmax") {
+    uint64_t rows = nonnegative(schedule, "rows");
+    uint64_t width = nonnegative(schedule, "width");
+    uint64_t n = nonnegative(schedule, "n");
+    if (!rows || rows > INT32_MAX || !width || width > 1024 || n != width ||
+        rows > uint64_t(INT32_MAX) / width)
+      fail("invalid Triton Vortex Softmax rows/width/N contract");
+    dispatch.tritonSoftmaxRows = uint32_t(rows);
+    dispatch.tritonSoftmaxWidth = uint32_t(width);
+    dispatch.tritonSoftmaxN = uint32_t(n);
+    dispatch.tritonSoftmaxTile = powerOfTwo("tile", 16, 1024);
+    uint64_t expectedTile = 16;
+    while (expectedTile < width)
+      expectedTile *= 2;
+    if (dispatch.tritonSoftmaxTile != expectedTile || grid != rows)
+      fail("Triton Vortex Softmax tile or grid disagrees");
+    if (dispatch.inputs.size() != 1 ||
+        dispatch.elements != rows * width ||
+        dispatch.inputs[0] == dispatch.output)
+      fail("Triton Vortex Softmax pointer ABI contract disagrees");
+    const Tensor &input = plan.tensors[dispatch.inputs[0]];
+    if (input.dtype != "float32" || input.shape.empty() ||
+        input.shape.back() != int64_t(width) ||
+        input.elements != rows * width || input.bytes != rows * width * 4)
+      fail("Triton Vortex Softmax input must be static FP32 [...,width]");
+    uint64_t prefixRows = 1;
+    for (size_t axis = 0; axis + 1 < input.shape.size(); ++axis) {
+      if (input.shape[axis] <= 0 ||
+          uint64_t(input.shape[axis]) > uint64_t(INT32_MAX) / prefixRows)
+        fail("Triton Vortex Softmax input has an invalid prefix shape");
+      prefixRows *= uint64_t(input.shape[axis]);
+    }
+    if (prefixRows != rows || output.dtype != "float32" ||
+        output.shape != input.shape || output.elements != rows * width ||
+        output.bytes != rows * width * 4)
+      fail("Triton Vortex Softmax output must exactly match input");
+  } else if (dispatch.tritonKind == "layer_norm") {
+    uint64_t rows = nonnegative(schedule, "rows");
+    uint64_t width = nonnegative(schedule, "width");
+    uint64_t n = nonnegative(schedule, "n");
+    uint64_t epsilonBits = nonnegative(schedule, "epsilon_f32_bits");
+    uint32_t epsilonRaw = uint32_t(epsilonBits);
+    float epsilon = 0;
+    static_assert(sizeof(epsilon) == sizeof(epsilonRaw));
+    std::memcpy(&epsilon, &epsilonRaw, sizeof(epsilon));
+    if (!rows || rows > INT32_MAX || !width || width > 1024 || n != width ||
+        epsilonBits > UINT32_MAX || !std::isfinite(epsilon) || epsilon <= 0)
+      fail("invalid Triton Vortex LayerNorm rows/width/N/epsilon contract");
+    dispatch.tritonLayerNormRows = uint32_t(rows);
+    dispatch.tritonLayerNormWidth = uint32_t(width);
+    dispatch.tritonLayerNormN = uint32_t(n);
+    dispatch.tritonLayerNormTile = powerOfTwo("tile", 16, 1024);
+    dispatch.tritonLayerNormEpsilonF32Bits = uint32_t(epsilonBits);
+    uint64_t expectedTile = 16;
+    while (expectedTile < width)
+      expectedTile *= 2;
+    if (dispatch.tritonLayerNormTile != expectedTile || grid != rows)
+      fail("Triton Vortex LayerNorm tile or grid disagrees");
+    if (rows > uint64_t(INT32_MAX) / width ||
+        dispatch.elements != rows * width || dispatch.inputs.size() != 3 ||
+        dispatch.inputs[0] == dispatch.inputs[1] ||
+        dispatch.inputs[0] == dispatch.inputs[2] ||
+        dispatch.inputs[1] == dispatch.inputs[2] ||
+        dispatch.output == dispatch.inputs[0] ||
+        dispatch.output == dispatch.inputs[1] ||
+        dispatch.output == dispatch.inputs[2])
+      fail("Triton Vortex LayerNorm pointer ABI contract disagrees");
+    const Tensor &input = plan.tensors[dispatch.inputs[0]];
+    const Tensor &scale = plan.tensors[dispatch.inputs[1]];
+    const Tensor &bias = plan.tensors[dispatch.inputs[2]];
+    if (input.dtype != "float32" || input.shape.size() < 2 ||
+        input.shape.back() != int64_t(width) ||
+        input.elements != rows * width || input.bytes != rows * width * 4)
+      fail("Triton Vortex LayerNorm X must be static FP32 [...,width]");
+    uint64_t prefixRows = 1;
+    for (size_t axis = 0; axis + 1 < input.shape.size(); ++axis) {
+      if (input.shape[axis] <= 0 ||
+          uint64_t(input.shape[axis]) > uint64_t(INT32_MAX) / prefixRows)
+        fail("Triton Vortex LayerNorm X has an invalid prefix shape");
+      prefixRows *= uint64_t(input.shape[axis]);
+    }
+    if (prefixRows != rows || output.dtype != "float32" ||
+        output.shape != input.shape || output.elements != rows * width ||
+        output.bytes != rows * width * 4)
+      fail("Triton Vortex LayerNorm Y must exactly match X");
+    auto vectorParameter = [&](const Tensor &tensor) {
+      return tensor.dtype == "float32" && tensor.shape.size() == 1 &&
+             tensor.shape[0] == int64_t(width) && tensor.elements == width &&
+             tensor.bytes == width * 4;
+    };
+    if (!vectorParameter(scale) || !vectorParameter(bias))
+      fail("Triton Vortex LayerNorm Scale/Bias must be FP32 vector[width]");
+  } else if (dispatch.tritonKind == "reduction") {
+    uint64_t width = nonnegative(schedule, "width");
+    if (!width || width > 1024)
+      fail("invalid Triton Vortex reduction width");
+    dispatch.tritonReductionWidth = uint32_t(width);
+    dispatch.tritonReductionTile = powerOfTwo("tile", 16, 1024);
+    uint64_t expectedTile = 16;
+    while (expectedTile < width)
+      expectedTile *= 2;
+    if (dispatch.tritonReductionTile != expectedTile || grid != 1)
+      fail("Triton Vortex reduction tile or grid disagrees");
+    if (dispatch.inputs.size() != 1 || dispatch.elements != 1 ||
+        output.dtype != "float32" || output.elements != 1 ||
+        output.bytes != 4 ||
+        !(output.shape.empty() ||
+          (output.shape.size() == 1 && output.shape[0] == 1)))
+      fail("Triton Vortex reduction output must be one FP32 scalar");
+    const Tensor &input = plan.tensors[dispatch.inputs[0]];
+    if (input.dtype != "float32" || input.shape.size() != 1 ||
+        input.shape[0] != int64_t(width) || input.elements != width ||
+        input.bytes != width * 4)
+      fail("Triton Vortex reduction input must be FP32 vector[width]");
+  } else if (dispatch.tritonKind == "matmul") {
+    auto dimension = [&](llvm::StringRef name) {
+      uint64_t value = nonnegative(schedule, name);
+      if (!value || value > INT32_MAX)
+        fail("invalid Triton Vortex MatMul dimension: " + name.str());
+      return uint32_t(value);
+    };
+    dispatch.m = dimension("m");
+    dispatch.n = dimension("n");
+    dispatch.k = dimension("k");
+    dispatch.tileM = dimension("block_m");
+    dispatch.tileN = dimension("block_n");
+    dispatch.tileK = dimension("block_k");
+    uint64_t expectedTileK = 16;
+    while (expectedTileK < dispatch.k)
+      expectedTileK *= 2;
+    if (dispatch.tileM != 16 || dispatch.tileN != 16 ||
+        dispatch.k < 16 || dispatch.k > 65536 || dispatch.k % 16 ||
+        dispatch.tileK != expectedTileK)
+      fail("unsupported Triton Vortex MatMul tile contract");
+    if (dispatch.inputs.size() != 2 ||
+        dispatch.inputs[0] == dispatch.inputs[1] ||
+        dispatch.output == dispatch.inputs[0] ||
+        dispatch.output == dispatch.inputs[1])
+      fail("Triton Vortex MatMul pointer ABI contract disagrees");
+    const Tensor &a = plan.tensors[dispatch.inputs[0]];
+    const Tensor &b = plan.tensors[dispatch.inputs[1]];
+    bool hasBatches = schedule.get("batches");
+    bool hasMode = schedule.get("batch_mode");
+    bool hasA = schedule.get("a_shape");
+    bool hasB = schedule.get("b_shape");
+    bool hasC = schedule.get("c_shape");
+    unsigned batchFields = unsigned(hasBatches) + unsigned(hasMode) +
+                           unsigned(hasA) + unsigned(hasB) + unsigned(hasC);
+    if (batchFields != 0 && batchFields != 5)
+      fail("incomplete Triton Vortex batched MatMul contract");
+    auto logicalShape = [&](llvm::StringRef name, const Tensor &physical,
+                            bool legacy) {
+      if (legacy)
+        return physical.shape;
+      std::vector<int64_t> shape;
+      uint64_t elements = 1;
+      for (const auto &dim : array(schedule, name)) {
+        auto value = dim.getAsInteger();
+        if (!value || *value <= 0 || uint64_t(*value) > INT32_MAX / elements)
+          fail("invalid Triton Vortex MatMul logical shape: " + name.str());
+        elements *= uint64_t(*value);
+        shape.push_back(*value);
+      }
+      if (shape.size() < 2 || shape != physical.shape ||
+          elements != physical.elements || physical.bytes != elements * 4)
+        fail("Triton Vortex MatMul logical/physical shape disagrees: " +
+             name.str());
+      return shape;
+    };
+    bool legacyManifest = batchFields == 0;
+    dispatch.batches = legacyManifest ? 1 : dimension("batches");
+    dispatch.tritonMatmulBatchMode =
+        legacyManifest ? "rank2" : string(schedule, "batch_mode");
+    auto aShape = logicalShape("a_shape", a, legacyManifest);
+    auto bShape = logicalShape("b_shape", b, legacyManifest);
+    auto cShape = logicalShape("c_shape", output, legacyManifest);
+    auto endsWith = [](const std::vector<int64_t> &shape, uint32_t first,
+                       uint32_t second) {
+      return shape.size() >= 2 && shape[shape.size() - 2] == int64_t(first) &&
+             shape.back() == int64_t(second);
+    };
+    bool validShapes = false;
+    if (dispatch.tritonMatmulBatchMode == "rank2") {
+      validShapes = dispatch.batches == 1 && aShape.size() == 2 &&
+                    bShape.size() == 2 && cShape.size() == 2 &&
+                    endsWith(aShape, dispatch.m, dispatch.k) &&
+                    endsWith(bShape, dispatch.k, dispatch.n) &&
+                    endsWith(cShape, dispatch.m, dispatch.n);
+    } else if (dispatch.tritonMatmulBatchMode == "matched-prefix" ||
+               dispatch.tritonMatmulBatchMode == "shared-rhs") {
+      if (cShape.size() >= 3 && aShape.size() == cShape.size() &&
+          endsWith(aShape, dispatch.m, dispatch.k) &&
+          endsWith(cShape, dispatch.m, dispatch.n)) {
+        std::vector<int64_t> prefix(cShape.begin(), cShape.end() - 2);
+        uint64_t batches = 1;
+        for (int64_t dim : prefix) {
+          if (uint64_t(dim) > INT32_MAX / batches)
+            fail("Triton Vortex MatMul batch prefix exceeds signed i32");
+          batches *= uint64_t(dim);
+        }
+        bool aPrefix = std::equal(prefix.begin(), prefix.end(), aShape.begin());
+        bool bMatches =
+            dispatch.tritonMatmulBatchMode == "matched-prefix"
+                ? bShape.size() == cShape.size() &&
+                      std::equal(prefix.begin(), prefix.end(), bShape.begin()) &&
+                      endsWith(bShape, dispatch.k, dispatch.n)
+                : bShape.size() == 2 &&
+                      endsWith(bShape, dispatch.k, dispatch.n);
+        validShapes = aPrefix && bMatches && batches == dispatch.batches;
+      }
+    }
+    auto checkedProduct = [&](std::initializer_list<uint64_t> factors,
+                              llvm::StringRef label) {
+      uint64_t value = 1;
+      for (uint64_t factor : factors) {
+        if (!factor || factor > uint64_t(INT32_MAX) / value)
+          fail("Triton Vortex MatMul " + label.str() +
+               " exceeds signed i32");
+        value *= factor;
+      }
+      return value;
+    };
+    uint64_t expectedA =
+        checkedProduct({dispatch.batches, dispatch.m, dispatch.k}, "A size");
+    uint64_t expectedB = checkedProduct(
+        {dispatch.tritonMatmulBatchMode == "matched-prefix"
+             ? dispatch.batches
+             : 1,
+         dispatch.k, dispatch.n},
+        "B size");
+    uint64_t expectedC =
+        checkedProduct({dispatch.batches, dispatch.m, dispatch.n}, "C size");
+    if (!validShapes || a.dtype != "float32" || b.dtype != "float32" ||
+        output.dtype != "float32" ||
+        a.elements != expectedA || b.elements != expectedB ||
+        output.elements != expectedC || a.bytes != expectedA * 4 ||
+        b.bytes != expectedB * 4 || output.bytes != expectedC * 4 ||
+        dispatch.elements != expectedC)
+      fail("Triton Vortex MatMul tensor/batch contract disagrees");
+    uint64_t tilesM =
+        (uint64_t(dispatch.m) + dispatch.tileM - 1) / dispatch.tileM;
+    uint64_t tilesN =
+        (uint64_t(dispatch.n) + dispatch.tileN - 1) / dispatch.tileN;
+    if (tilesM > INT32_MAX / tilesN ||
+        tilesM * tilesN > uint64_t(INT32_MAX) / dispatch.batches ||
+        grid != tilesM * tilesN * dispatch.batches)
+      fail("Triton Vortex MatMul logical tile and grid disagree");
+  } else {
+    fail("unsupported Triton Vortex dispatch kind: " + dispatch.tritonKind);
+  }
+  dispatch.triton = true;
+}
 
 // Optimized launch geometry is part of the compiled kernel ABI. Validate it
 // against logical operand shapes (views may share a differently shaped buffer),
@@ -430,7 +743,18 @@ inline Plan parsePlan(const fs::path &path, Target target = Target::Vortex) {
     if (elements != result.elements || elements > INT32_MAX)
       fail("dispatch element count disagrees with its output");
     dispatch.elements = uint32_t(elements);
-    if (cuda) {
+    auto lowering = row.getString("lowering");
+    if (auto *triton = row.get("triton")) {
+      auto regular = root.getString("regular_lowering");
+      if (cuda || !regular || *regular != "linalg" || !lowering ||
+          *lowering != "linalg-to-triton" || root.get("cuda") ||
+          row.get("vortex") || row.get("vortex_schedule") ||
+          row.get("cuda_schedule"))
+        fail("Triton dispatch requires Vortex Linalg lowering without another schedule");
+      validateTritonSchedule(object(*triton), dispatch, plan);
+    } else if (lowering && *lowering == "linalg-to-triton") {
+      fail("Triton dispatch is missing its launch contract");
+    } else if (cuda) {
       uint64_t block = nonnegative(row, "block_size");
       uint64_t grid = nonnegative(row, "grid_size");
       if (!block || block > 1024 || !grid || grid > INT32_MAX ||

@@ -1,0 +1,443 @@
+{
+  "passed": true,
+  "status": "passed",
+  "scope": "Three-GPU mini preflight of full Base; not full trainval or an accuracy benchmark",
+  "world_size": 3,
+  "checks": {
+    "all_ranks_present": true,
+    "all_rank_checks_passed": true,
+    "four_updates_per_rank": true,
+    "parameter_probes_equal_across_ranks": true,
+    "three_finite_validation_samples": true,
+    "checkpoint_saved_and_matches": true
+  },
+  "ranks": [
+    {
+      "passed": true,
+      "rank": 0,
+      "world_size": 3,
+      "checks": {
+        "fresh_optimizer": true,
+        "four_real_updates": true,
+        "finite_losses": true,
+        "finite_parameter_probes": true,
+        "all_modules_updated": true,
+        "finite_gradients": true,
+        "history_synchronized": true
+      },
+      "training_steps": 4,
+      "losses": [
+        24.173091888427734,
+        23.891727447509766,
+        22.470550537109375,
+        21.55506134033203
+      ],
+      "optimizer_steps": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "optimizer_updates_per_iteration": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "module_checks": {
+        "backbone": {
+          "changed_parameters": [
+            "module.img_backbone.layer2.0.conv1.weight",
+            "module.img_backbone.layer2.0.conv2.weight",
+            "module.img_backbone.layer2.0.conv3.weight",
+            "module.img_backbone.layer2.0.downsample.0.weight",
+            "module.img_backbone.layer2.2.conv3.weight",
+            "module.img_backbone.layer2.3.conv1.weight",
+            "module.img_backbone.layer2.3.conv2.weight",
+            "module.img_backbone.layer2.3.conv3.weight"
+          ],
+          "gradient_observations": 32
+        },
+        "dcn_offset": {
+          "changed_parameters": [
+            "module.img_backbone.layer3.0.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.0.conv2.conv_offset.bias",
+            "module.img_backbone.layer3.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.2.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.2.conv2.conv_offset.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "fpn": {
+          "changed_parameters": [
+            "module.img_neck.lateral_convs.0.conv.weight",
+            "module.img_neck.lateral_convs.0.conv.bias",
+            "module.img_neck.lateral_convs.1.conv.weight",
+            "module.img_neck.lateral_convs.1.conv.bias",
+            "module.img_neck.fpn_convs.2.conv.weight",
+            "module.img_neck.fpn_convs.2.conv.bias",
+            "module.img_neck.fpn_convs.3.conv.weight",
+            "module.img_neck.fpn_convs.3.conv.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "temporal_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "spatial_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "decoder": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_bias",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "head": {
+          "changed_parameters": [
+            "module.pts_bbox_head.cls_branches.0.0.weight",
+            "module.pts_bbox_head.cls_branches.0.0.bias",
+            "module.pts_bbox_head.cls_branches.0.1.weight",
+            "module.pts_bbox_head.cls_branches.0.1.bias",
+            "module.pts_bbox_head.reg_branches.5.2.weight",
+            "module.pts_bbox_head.reg_branches.5.2.bias",
+            "module.pts_bbox_head.reg_branches.5.4.weight",
+            "module.pts_bbox_head.reg_branches.5.4.bias"
+          ],
+          "gradient_observations": 32
+        }
+      },
+      "parameter_probe_sha256": "e5b95d6cbd2b006b36db47bed25c6b083ddaaa4b74ac8fa0d10ba5eb163ad6d1",
+      "nonfinite_gradient_parameters": [],
+      "history_sync_checks": 5,
+      "history_mismatched_probes": [],
+      "cuda_max_allocated_bytes": 7124906496,
+      "cuda_max_reserved_bytes": 8394899456,
+      "validation": {
+        "validation_samples": 3,
+        "predicted_boxes": 900,
+        "finite_predictions": true,
+        "sample_tokens": [
+          "3e8750f331d7499e9b5123e9eb70f2e2",
+          "3950bd41f74548429c0f7700ff3d8269",
+          "c5f58c19249d4137ae063b0e9ecd8b8e"
+        ],
+        "accuracy_metrics_computed": false,
+        "note": "Subset inference only. Full official validation is required for AP/NDS."
+      },
+      "checkpoint": "/root/autodl-tmp/bevformer-base-trainval-20261019/work_dirs/ddp-smoke/epoch_1.pth",
+      "checkpoint_verified": true
+    },
+    {
+      "passed": true,
+      "rank": 1,
+      "world_size": 3,
+      "checks": {
+        "fresh_optimizer": true,
+        "four_real_updates": true,
+        "finite_losses": true,
+        "finite_parameter_probes": true,
+        "all_modules_updated": true,
+        "finite_gradients": true,
+        "history_synchronized": true
+      },
+      "training_steps": 4,
+      "losses": [
+        24.173091888427734,
+        23.891727447509766,
+        22.470550537109375,
+        21.55506134033203
+      ],
+      "optimizer_steps": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "optimizer_updates_per_iteration": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "module_checks": {
+        "backbone": {
+          "changed_parameters": [
+            "module.img_backbone.layer2.0.conv1.weight",
+            "module.img_backbone.layer2.0.conv2.weight",
+            "module.img_backbone.layer2.0.conv3.weight",
+            "module.img_backbone.layer2.0.downsample.0.weight",
+            "module.img_backbone.layer2.2.conv3.weight",
+            "module.img_backbone.layer2.3.conv1.weight",
+            "module.img_backbone.layer2.3.conv2.weight",
+            "module.img_backbone.layer2.3.conv3.weight"
+          ],
+          "gradient_observations": 32
+        },
+        "dcn_offset": {
+          "changed_parameters": [
+            "module.img_backbone.layer3.0.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.0.conv2.conv_offset.bias",
+            "module.img_backbone.layer3.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.2.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.2.conv2.conv_offset.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "fpn": {
+          "changed_parameters": [
+            "module.img_neck.lateral_convs.0.conv.weight",
+            "module.img_neck.lateral_convs.0.conv.bias",
+            "module.img_neck.lateral_convs.1.conv.weight",
+            "module.img_neck.lateral_convs.1.conv.bias",
+            "module.img_neck.fpn_convs.2.conv.weight",
+            "module.img_neck.fpn_convs.2.conv.bias",
+            "module.img_neck.fpn_convs.3.conv.weight",
+            "module.img_neck.fpn_convs.3.conv.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "temporal_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "spatial_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "decoder": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_bias",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "head": {
+          "changed_parameters": [
+            "module.pts_bbox_head.cls_branches.0.0.weight",
+            "module.pts_bbox_head.cls_branches.0.0.bias",
+            "module.pts_bbox_head.cls_branches.0.1.weight",
+            "module.pts_bbox_head.cls_branches.0.1.bias",
+            "module.pts_bbox_head.reg_branches.5.2.weight",
+            "module.pts_bbox_head.reg_branches.5.2.bias",
+            "module.pts_bbox_head.reg_branches.5.4.weight",
+            "module.pts_bbox_head.reg_branches.5.4.bias"
+          ],
+          "gradient_observations": 32
+        }
+      },
+      "parameter_probe_sha256": "e5b95d6cbd2b006b36db47bed25c6b083ddaaa4b74ac8fa0d10ba5eb163ad6d1",
+      "nonfinite_gradient_parameters": [],
+      "history_sync_checks": 5,
+      "history_mismatched_probes": [],
+      "cuda_max_allocated_bytes": 7124906496,
+      "cuda_max_reserved_bytes": 8396996608
+    },
+    {
+      "passed": true,
+      "rank": 2,
+      "world_size": 3,
+      "checks": {
+        "fresh_optimizer": true,
+        "four_real_updates": true,
+        "finite_losses": true,
+        "finite_parameter_probes": true,
+        "all_modules_updated": true,
+        "finite_gradients": true,
+        "history_synchronized": true
+      },
+      "training_steps": 4,
+      "losses": [
+        24.173091888427734,
+        23.891727447509766,
+        22.470550537109375,
+        21.55506134033203
+      ],
+      "optimizer_steps": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "optimizer_updates_per_iteration": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "module_checks": {
+        "backbone": {
+          "changed_parameters": [
+            "module.img_backbone.layer2.0.conv1.weight",
+            "module.img_backbone.layer2.0.conv2.weight",
+            "module.img_backbone.layer2.0.conv3.weight",
+            "module.img_backbone.layer2.0.downsample.0.weight",
+            "module.img_backbone.layer2.2.conv3.weight",
+            "module.img_backbone.layer2.3.conv1.weight",
+            "module.img_backbone.layer2.3.conv2.weight",
+            "module.img_backbone.layer2.3.conv3.weight"
+          ],
+          "gradient_observations": 32
+        },
+        "dcn_offset": {
+          "changed_parameters": [
+            "module.img_backbone.layer3.0.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.0.conv2.conv_offset.bias",
+            "module.img_backbone.layer3.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer3.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.1.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.1.conv2.conv_offset.bias",
+            "module.img_backbone.layer4.2.conv2.conv_offset.weight",
+            "module.img_backbone.layer4.2.conv2.conv_offset.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "fpn": {
+          "changed_parameters": [
+            "module.img_neck.lateral_convs.0.conv.weight",
+            "module.img_neck.lateral_convs.0.conv.bias",
+            "module.img_neck.lateral_convs.1.conv.weight",
+            "module.img_neck.lateral_convs.1.conv.bias",
+            "module.img_neck.fpn_convs.2.conv.weight",
+            "module.img_neck.fpn_convs.2.conv.bias",
+            "module.img_neck.fpn_convs.3.conv.weight",
+            "module.img_neck.fpn_convs.3.conv.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "temporal_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.0.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "spatial_attention": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.sampling_offsets.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.attention_weights.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.deformable_attention.value_proj.bias",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.weight",
+            "module.pts_bbox_head.transformer.encoder.layers.0.attentions.1.output_proj.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "decoder": {
+          "changed_parameters": [
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.in_proj_bias",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.0.attentions.0.attn.out_proj.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.1.bias",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.weight",
+            "module.pts_bbox_head.transformer.decoder.layers.5.norms.2.bias"
+          ],
+          "gradient_observations": 32
+        },
+        "head": {
+          "changed_parameters": [
+            "module.pts_bbox_head.cls_branches.0.0.weight",
+            "module.pts_bbox_head.cls_branches.0.0.bias",
+            "module.pts_bbox_head.cls_branches.0.1.weight",
+            "module.pts_bbox_head.cls_branches.0.1.bias",
+            "module.pts_bbox_head.reg_branches.5.2.weight",
+            "module.pts_bbox_head.reg_branches.5.2.bias",
+            "module.pts_bbox_head.reg_branches.5.4.weight",
+            "module.pts_bbox_head.reg_branches.5.4.bias"
+          ],
+          "gradient_observations": 32
+        }
+      },
+      "parameter_probe_sha256": "e5b95d6cbd2b006b36db47bed25c6b083ddaaa4b74ac8fa0d10ba5eb163ad6d1",
+      "nonfinite_gradient_parameters": [],
+      "history_sync_checks": 5,
+      "history_mismatched_probes": [],
+      "cuda_max_allocated_bytes": 7124906496,
+      "cuda_max_reserved_bytes": 8396996608
+    }
+  ],
+  "parameter_comparison": "SHA-256 of named first-256-value probes; not a full-state checksum",
+  "validation": {
+    "validation_samples": 3,
+    "predicted_boxes": 900,
+    "finite_predictions": true,
+    "sample_tokens": [
+      "3e8750f331d7499e9b5123e9eb70f2e2",
+      "3950bd41f74548429c0f7700ff3d8269",
+      "c5f58c19249d4137ae063b0e9ecd8b8e"
+    ],
+    "accuracy_metrics_computed": false,
+    "note": "Subset inference only. Full official validation is required for AP/NDS."
+  },
+  "checkpoint": "/root/autodl-tmp/bevformer-base-trainval-20261019/work_dirs/ddp-smoke/epoch_1.pth"
+}

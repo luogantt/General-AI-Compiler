@@ -1,0 +1,135 @@
+{
+  "status": "success",
+  "model": "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/model.onnx",
+  "compiler": "/home/thomas/gac-templates-20261021-make/gac-compile",
+  "model_sha256": "9c5fefba7326dcd6d09b7cc5117e246f087520a4ef73e589a6d8139609294780",
+  "compiler_sha256": "15fe1335d59691419ca7b16a30f3b3d695170141472d987195a2ea6f9510a1dd",
+  "backend_makefile": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+  "backend_makefile_sha256": "40c51b21f3d52f6333f4db2f33a29ed4b67fad144a2d3c08dfefe01d85e15b44",
+  "constant_fold_profile": "default",
+  "target": "vortex-rv32",
+  "steps": [
+    {
+      "name": "gac-compile",
+      "seconds": 0.007867589999989377,
+      "command": [
+        "/home/thomas/gac-templates-20261021-make/gac-compile",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/model.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--regular-lowering=linalg",
+        "--vortex-triton-dir=/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/triton",
+        "--constant-fold-profile=default",
+        "--triton-block=128",
+        "--triton-num-warps=1",
+        "--vortex-lanes=4",
+        "--save-stages",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact",
+        "--manifest",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/plan.json",
+        "--constants-dir",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/native.mlir"
+      ],
+      "returncode": 0,
+      "log": "gac-compile.log"
+    },
+    {
+      "name": "native-translate",
+      "seconds": 0.003357856999997466,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+        "--mlir-to-llvmir",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/native.mlir",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/native.ll"
+      ],
+      "returncode": 0,
+      "log": "native-translate.log"
+    },
+    {
+      "name": "llvm-link",
+      "seconds": 0.0023360350000132257,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+        "-S",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/native.ll",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/triton/gac_op_0.ll",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/kernel.ll"
+      ],
+      "returncode": 0,
+      "log": "llvm-link.log"
+    },
+    {
+      "name": "vortex-package",
+      "seconds": 0.496772639999989,
+      "command": [
+        "/usr/bin/make",
+        "-f",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+        "ROOT_DIR=/home/thomas/vortex-gac-buffered-build32",
+        "LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release",
+        "kernel.vxbin"
+      ],
+      "returncode": 0,
+      "log": "vortex-package.log"
+    },
+    {
+      "name": "disassemble",
+      "seconds": 0.004005255999999235,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-objdump",
+        "-d",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_batched_matched/artifact/kernel.elf"
+      ],
+      "returncode": 0,
+      "log": "disassemble.log"
+    }
+  ],
+  "triton_dispatches": [
+    {
+      "kernel": "gac_op_0",
+      "seconds": 2.235698811999981,
+      "config": {
+        "a_shape": [
+          2,
+          17,
+          32
+        ],
+        "abi": "vortex-u64-pointers",
+        "b_shape": [
+          2,
+          32,
+          19
+        ],
+        "batch_mode": "matched-prefix",
+        "batches": 2,
+        "block_k": 32,
+        "block_m": 16,
+        "block_n": 16,
+        "block_size": 4,
+        "c_shape": [
+          2,
+          17,
+          19
+        ],
+        "grid_size": 8,
+        "k": 32,
+        "kind": "matmul",
+        "lanes": 4,
+        "m": 17,
+        "n": 19,
+        "num_warps": 1,
+        "ttir_file": "gac_op_0.ttir"
+      }
+    }
+  ],
+  "timing_scope": "host compile wall time, including per-kernel packaging; not inference latency",
+  "triton_version": "3.8.0",
+  "dispatch_count": 1,
+  "triton_dispatch_count": 1,
+  "native_dispatch_count": 0,
+  "total_seconds": 3.013916980999994
+}

@@ -11,6 +11,7 @@ ONNX ModelProto
 MLIR ModuleOp / func.func / SSA / Tensor / 权重
     ↓ GraphPasses.cpp：形状、常量折叠、合法化、CSE、融合、布局检查
 优化后的 GAC 图
+    ↓ 默认：规则算子 → Linalg；不规则算子保留专用 GAC Lowering
     ↓ DeviceLowering.cpp：算子循环 + Dispatch + 静态全局 Buffer 规划
 SCF / Arith / Math / LLVM / NVVM
     ↓ CudaLowering.cpp：线程/Block ID、Kernel 标记、libdevice 调用
@@ -29,9 +30,10 @@ CUDA Driver JIT → SASS → NVIDIA GPU
 | 模块 | 代码 | 输出或契约 |
 |---|---|---|
 | C++ 导入、图优化 | [OnnxImporter.cpp](lib/OnnxImporter.cpp)、[GraphPasses.cpp](lib/GraphPasses.cpp) | 真正的 MLIR Module 和 Operation |
+| 规则算子结构化 | [LinalgLowering.cpp](lib/LinalgLowering.cpp)、[LinalgDevice.cpp](lib/LinalgDevice.cpp) | Linalg 索引/计算 region、同坐标融合、Buffer 映射和上游 Linalg→SCF |
 | 算子与内存共享层 | [DeviceLowering.cpp](lib/DeviceLowering.cpp) | SCF/Arith 操作、张量地址规划、dispatch 依赖 |
 | CUDA 目标层 | [CudaLowering.cpp](lib/CudaLowering.cpp) | NVVM 操作、`nvvm.kernel`、libdevice 数学函数 |
-| CUDA 计算模板 | [CudaMatmul.cpp](lib/CudaMatmul.cpp)、[CudaReduction.cpp](lib/CudaReduction.cpp) | 共享内存分块、线程寄存器块、CTA 协作归约 |
+| CUDA 计算模板 | [CudaMatmul.cpp](templates/cuda/Matmul.cpp)、[CudaReduction.cpp](templates/cuda/Reduction.cpp) | 共享内存分块、线程寄存器块、CTA 协作归约 |
 | 编译流水线 | [gac-compile.cpp](tools/gac-compile.cpp)、[compile-cuda.sh](tools/compile-cuda.sh) | 分阶段 MLIR、LLVM IR、PTX、manifest、工具哈希 |
 | manifest 校验 | [dispatch-plan.h](runtime/dispatch-plan.h) | 类型、大小、存活区间和地址重叠检查 |
 | 设备 Runtime | [cuda-run.cpp](runtime/cuda-run.cpp) | 显存分配、上传、提交、等待、下载和测量 |
@@ -79,6 +81,10 @@ build/native-cuda/gac-cuda-run \
 
 ## 选择优化模板
 
+本节是既有专用 CUDA 模板，使用前设置 `export GAC_REGULAR_LOWERING=legacy`
+（直接调用编译器时用 `--regular-lowering=legacy`）。默认 Linalg 路径的结构化
+调度入口见 [混合路径说明](README.md#linalg-混合路径与现有模板的边界)；旧模板尚未迁入其中。
+
 以下选项由 C++ MLIR Lowering 实现；Python 不参与设备算子计算。默认参数仍保留
 标量基线，便于同输入对比。可以在上述编译命令前显式设置：
 
@@ -122,7 +128,8 @@ manifest 的 `shared_memory_bytes=0` 表示**动态** shared memory 为零，不
 没有使用 shared memory；静态预算位于 `cuda_schedule.static_shared_memory_bytes`，
 Runtime 同时查询 PTX JIT 后的实际资源。当前 CUDA 模板尚未实现异步双缓冲。
 
-本次固定输入 BEVFormer-base 的静态预算如下：
+2026-10-17 旧 CUDA 路径固定输入 BEVFormer-base 的静态预算如下；新 Linalg
+路径的 arena 单独记录在下方的对照报告中：
 
 | 项目 | 字节数 |
 |---|---:|
@@ -142,6 +149,18 @@ RTX 3070 Ti Laptop 8 GB 的首次完整执行中，约一秒间隔的 `nvidia-sm
 不保证捕获短暂峰值；8 GB 已足以运行本次固定模型配置。
 
 ## 性能与验收边界
+
+2026-10-21 已完成同一 BEVFormer-base FP32 的旧标量、新 Linalg、旧优化路径对照：
+[编译、首次加载/JIT、预热后每帧耗时与数值验证](../docs/validation/cuda/linalg-comparison-2026-10-21/README.md)。
+本次未测得稳定的 Linalg 推理提升；旧优化路径约4.36秒/帧。GPU频率未锁定，
+不能把本次结果与历史6.43秒直接相比并声称新增优化收益。
+
+Runtime 的 `startup_timing_ms.module_load_ms` 单独记录 `cuModuleLoadDataEx`
+墙钟时间，包括模块加载与可能发生的JIT。`initialization_ms` 为包含该阶段的
+初始化总时间，不能重复相加。`first_dispatch_gpu_ms` 是第一次设备执行，
+`gpu_dispatch_samples_ms` 是预热后的样本。基准脚本禁用CUDA驱动磁盘缓存并
+采用EAGER加载，将首次加载与后续推理分开测量。驱动返回的
+`driver_reported_jit_wall_ms` 仅为嵌套诊断值，不能用它替代API墙钟时间。
 
 已有 FP32 标量与上述优化模板；尚未在这条原生整网路径实现 CUDA Tensor Core、
 异步双缓冲或实测 autotuning。编译成功或显存足够不代表达到 30 FPS。

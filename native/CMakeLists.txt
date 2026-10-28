@@ -28,24 +28,36 @@ protobuf_generate_cpp(ONNX_PROTO_SOURCES ONNX_PROTO_HEADERS "${ONNX_PROTO_DIR}/o
 add_library(GACOnnxProto STATIC ${ONNX_PROTO_SOURCES})
 target_link_libraries(GACOnnxProto PUBLIC protobuf::libprotobuf)
 
+add_library(GACTargetSupport STATIC lib/CudaLowering.cpp lib/VortexLowering.cpp)
+target_include_directories(GACTargetSupport PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_options(GACTargetSupport PRIVATE -fno-rtti)
+target_link_libraries(GACTargetSupport PUBLIC MLIRIR MLIRSupport
+  MLIRArithDialect MLIRMathDialect MLIRLLVMDialect MLIRNVVMDialect
+  MLIRSideEffectInterfaces)
+add_subdirectory(templates)
+
 add_library(GACCompiler STATIC
   lib/Dialect.cpp
   lib/GraphPasses.cpp
+  lib/fusion/GraphFusionPatterns.cpp
   lib/ConstantFolding.cpp
   lib/TensorLegalization.cpp
   lib/OnnxImporter.cpp
-  lib/DeviceLowering.cpp
-  lib/CudaLowering.cpp
-  lib/CudaMatmul.cpp
-  lib/CudaReduction.cpp
-  lib/VortexMatmul.cpp
-  lib/VortexTcu.cpp
-  lib/VortexLowering.cpp)
+  lib/LinalgLowering.cpp
+  lib/LinalgConvolution.cpp
+  lib/LinalgDevice.cpp
+  lib/TritonBridge.cpp
+  lib/CudaPass.cpp
+  lib/VortexPass.cpp
+  lib/DeviceLowering.cpp)
 target_compile_options(GACCompiler PRIVATE -fno-rtti)
-target_link_libraries(GACCompiler PUBLIC GACOnnxProto
+target_link_libraries(GACCompiler PUBLIC GACOnnxProto GACComputeTemplates
   MLIRIR MLIRParser MLIRPass MLIRTransforms MLIRSupport MLIRSideEffectInterfaces
   MLIRFuncDialect MLIRArithDialect MLIRMathDialect MLIRSCFDialect
   MLIRControlFlowDialect MLIRLLVMDialect MLIRNVVMDialect
+  MLIRLinalgDialect MLIRLinalgTransforms MLIRLinalgUtils
+  MLIRTensorDialect MLIRMemRefDialect MLIRAffineDialect
+  MLIRAffineToStandard MLIRMemRefToLLVM MLIRLLVMCommonConversion
   MLIRSCFToControlFlow MLIRArithToLLVM MLIRMathToLLVM
   MLIRControlFlowToLLVM MLIRReconcileUnrealizedCasts)
 
@@ -55,6 +67,18 @@ target_link_libraries(gac-compile PRIVATE GACCompiler)
 add_executable(gac-opt tools/gac-opt.cpp)
 target_compile_options(gac-opt PRIVATE -fno-rtti)
 target_link_libraries(gac-opt PRIVATE GACCompiler MLIROptLib)
+add_executable(gac-triton-layernorm-selector-contract
+  tests/triton_layernorm_selector_contract.cpp)
+target_compile_options(gac-triton-layernorm-selector-contract PRIVATE -fno-rtti)
+target_link_libraries(gac-triton-layernorm-selector-contract PRIVATE GACCompiler)
+add_executable(gac-triton-softmax-selector-contract
+  tests/triton_softmax_selector_contract.cpp)
+target_compile_options(gac-triton-softmax-selector-contract PRIVATE -fno-rtti)
+target_link_libraries(gac-triton-softmax-selector-contract PRIVATE GACCompiler)
+add_executable(gac-triton-batched-matmul-selector-contract
+  tests/triton_batched_matmul_selector_contract.cpp)
+target_compile_options(gac-triton-batched-matmul-selector-contract PRIVATE -fno-rtti)
+target_link_libraries(gac-triton-batched-matmul-selector-contract PRIVATE GACCompiler)
 install(TARGETS gac-compile gac-opt RUNTIME DESTINATION bin)
 
 # CUDA is optional: only NVIDIA's official headers are required to build the

@@ -1,0 +1,6640 @@
+{
+  "schema": "gac.msda.benchmark.v1",
+  "script_sha256": "ae94986fd8fcf0aa45b89ad11f792abaecd78f66db85f87476ab0b724853d385",
+  "scope": "Single-MSDA CUDA Graph replay; not whole-model FPS",
+  "library_sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd",
+  "environment": {
+    "torch": "2.7.0+cu126",
+    "tensorrt": "10.13.3.9",
+    "cuda": "12.6",
+    "device": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 63, 1410 MHz, 7001 MHz, 197 MiB, 7 %, 33.91 W"
+  },
+  "checks": [
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751251493872e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "kind": "serialized_plugin",
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    }
+  ],
+  "oracle_checks": [
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.1920928955078125e-07,
+        "relative_rmse": 7.879751962036607e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        2,
+        20,
+        2,
+        5
+      ],
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 3.725290298461914e-09,
+        "relative_rmse": 9.456496030679773e-08,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        20,
+        1,
+        1
+      ],
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float32",
+      "comparison": {
+        "finite": true,
+        "exact": false,
+        "max_abs": 1.341104507446289e-07,
+        "relative_rmse": 1.0561863206248745e-07,
+        "allclose": true
+      }
+    },
+    {
+      "shape": [
+        1,
+        83,
+        8,
+        32
+      ],
+      "dtype": "torch.float16",
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      }
+    }
+  ],
+  "candidates": [
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 66, 1380 MHz, 7001 MHz, 2447 MiB, 96 %, 51.44 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        25.49648094177246,
+        24.689664840698242,
+        25.971712112426758,
+        24.798080444335938,
+        26.017791748046875,
+        24.828767776489258,
+        26.089279174804688,
+        24.74928092956543,
+        25.942848205566406,
+        24.809247970581055,
+        26.187776565551758,
+        26.20102310180664,
+        27.286527633666992,
+        24.775680541992188,
+        26.34547233581543
+      ],
+      "candidate_ms": [
+        25.344255447387695,
+        24.856735229492188,
+        25.91321563720703,
+        24.810495376586914,
+        26.10483169555664,
+        24.909503936767578,
+        26.054655075073242,
+        24.821760177612305,
+        26.194944381713867,
+        24.848384857177734,
+        26.905439376831055,
+        26.09561538696289,
+        26.586111068725586,
+        25.17705535888672,
+        26.072063446044922
+      ],
+      "baseline_median_ms": 25.942848205566406,
+      "candidate_median_ms": 25.91321563720703,
+      "paired_median_speedup": 0.9984249726160622,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 73, 1455 MHz, 7001 MHz, 2447 MiB, 100 %, 112.41 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 73, 1455 MHz, 7001 MHz, 2447 MiB, 100 %, 111.18 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.376672744750977,
+        26.498048782348633,
+        26.558208465576172,
+        26.51852798461914,
+        26.71308708190918,
+        27.368736267089844,
+        27.59270477294922,
+        27.05504035949707,
+        27.057119369506836,
+        26.749183654785156,
+        26.7511043548584,
+        26.7509765625,
+        26.869760513305664,
+        26.749727249145508,
+        27.038496017456055
+      ],
+      "candidate_ms": [
+        49.63532638549805,
+        48.92860794067383,
+        49.119232177734375,
+        48.79033660888672,
+        49.21753692626953,
+        50.01523208618164,
+        50.66435241699219,
+        50.047935485839844,
+        49.66195297241211,
+        49.30080032348633,
+        49.302528381347656,
+        49.300479888916016,
+        49.59977722167969,
+        49.3015022277832,
+        49.45817565917969
+      ],
+      "baseline_median_ms": 26.7511043548584,
+      "candidate_median_ms": 49.302528381347656,
+      "paired_median_speedup": 0.5426108756502042,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 76, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 114.80 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 76, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 112.01 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.36739158630371,
+        27.367328643798828,
+        27.090944290161133,
+        27.238271713256836,
+        27.325279235839844,
+        27.230207443237305,
+        27.33568000793457,
+        27.36944007873535,
+        27.34886360168457,
+        28.226560592651367,
+        28.452064514160156,
+        27.682559967041016,
+        27.388927459716797,
+        27.227136611938477,
+        27.339679718017578
+      ],
+      "candidate_ms": [
+        12.35865592956543,
+        12.359647750854492,
+        12.221440315246582,
+        12.226304054260254,
+        12.223487854003906,
+        12.22009563446045,
+        12.221440315246582,
+        12.300288200378418,
+        12.224512100219727,
+        12.340959548950195,
+        12.522496223449707,
+        12.507904052734375,
+        12.225503921508789,
+        12.221440315246582,
+        12.222368240356445
+      ],
+      "baseline_median_ms": 27.34886360168457,
+      "candidate_median_ms": 12.225503921508789,
+      "paired_median_speedup": 2.2283137757489073,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 77, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 114.75 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 77, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 114.75 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        28.958656311035156,
+        29.638656616210938,
+        28.114944458007812,
+        30.079999923706055,
+        28.611583709716797,
+        29.749248504638672,
+        28.35865592956543,
+        30.15558433532715,
+        28.683263778686523,
+        30.522367477416992,
+        28.55526351928711,
+        30.088191986083984,
+        29.617151260375977,
+        30.730239868164062,
+        29.023231506347656
+      ],
+      "candidate_ms": [
+        15.07430362701416,
+        15.494144439697266,
+        14.744576454162598,
+        14.743583679199219,
+        14.624768257141113,
+        15.185791969299316,
+        14.750687599182129,
+        14.913536071777344,
+        14.837759971618652,
+        15.2009916305542,
+        14.744447708129883,
+        15.162367820739746,
+        14.654463768005371,
+        14.620672225952148,
+        14.900223731994629
+      ],
+      "baseline_median_ms": 29.617151260375977,
+      "candidate_median_ms": 14.837759971618652,
+      "paired_median_speedup": 1.9563786042042803,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 78, 1245 MHz, 7001 MHz, 2447 MiB, 100 %, 111.33 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 78, 1245 MHz, 7001 MHz, 2447 MiB, 100 %, 111.33 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        29.96531105041504,
+        30.842815399169922,
+        28.612415313720703,
+        31.089664459228516,
+        28.430112838745117,
+        31.693824768066406,
+        28.60032081604004,
+        31.124479293823242,
+        28.76723289489746,
+        30.807039260864258,
+        28.775423049926758,
+        32.32563018798828,
+        29.150175094604492,
+        30.81113624572754,
+        28.584928512573242
+      ],
+      "candidate_ms": [
+        22.08255958557129,
+        22.952959060668945,
+        21.4968318939209,
+        22.848512649536133,
+        21.21625518798828,
+        23.755775451660156,
+        21.26643180847168,
+        23.113727569580078,
+        21.48147201538086,
+        23.168960571289062,
+        21.918720245361328,
+        23.87660789489746,
+        21.560319900512695,
+        23.189504623413086,
+        21.05958366394043
+      ],
+      "baseline_median_ms": 29.96531105041504,
+      "candidate_median_ms": 22.08255958557129,
+      "paired_median_speedup": 1.3437402697249892,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 78, 1095 MHz, 7001 MHz, 2447 MiB, 100 %, 113.89 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 78, 1095 MHz, 7001 MHz, 2447 MiB, 100 %, 113.89 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.094911575317383,
+        27.055072784423828,
+        27.057024002075195,
+        27.054975509643555,
+        27.077632904052734,
+        27.058176040649414,
+        27.12985610961914,
+        27.071487426757812,
+        27.127647399902344,
+        27.298751831054688,
+        28.0053768157959,
+        27.2478084564209,
+        27.056127548217773,
+        27.053983688354492,
+        27.09894371032715
+      ],
+      "candidate_ms": [
+        13.395968437194824,
+        13.389599800109863,
+        13.378560066223145,
+        13.376511573791504,
+        13.432831764221191,
+        13.40998363494873,
+        13.44819164276123,
+        13.442879676818848,
+        13.455231666564941,
+        13.407232284545898,
+        13.748000144958496,
+        13.622271537780762,
+        13.35910415649414,
+        13.389823913574219,
+        14.068448066711426
+      ],
+      "baseline_median_ms": 27.077632904052734,
+      "candidate_median_ms": 13.40998363494873,
+      "paired_median_speedup": 2.020488384535658,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 80, 1320 MHz, 7001 MHz, 2447 MiB, 75 %, 113.80 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 80, 1320 MHz, 7001 MHz, 2447 MiB, 75 %, 113.21 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.36844825744629,
+        27.36332893371582,
+        27.36332893371582,
+        27.058176040649414,
+        27.059200286865234,
+        27.060224533081055,
+        27.056127548217773,
+        27.085599899291992,
+        27.620351791381836,
+        28.1167049407959,
+        27.511808395385742,
+        27.36332893371582,
+        27.364351272583008,
+        27.364608764648438,
+        28.54195213317871
+      ],
+      "candidate_ms": [
+        14.515199661254883,
+        14.519295692443848,
+        14.520288467407227,
+        14.410655975341797,
+        14.357503890991211,
+        14.359264373779297,
+        14.35647964477539,
+        14.358528137207031,
+        15.002911567687988,
+        15.201087951660156,
+        14.524255752563477,
+        14.517248153686523,
+        14.521344184875488,
+        14.51852798461914,
+        15.211520195007324
+      ],
+      "baseline_median_ms": 27.36332893371582,
+      "candidate_median_ms": 14.51852798461914,
+      "paired_median_speedup": 1.884593453107708,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 81, 1305 MHz, 7001 MHz, 2447 MiB, 100 %, 114.47 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 81, 1305 MHz, 7001 MHz, 2447 MiB, 100 %, 114.34 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.844608306884766,
+        27.898880004882812,
+        27.680767059326172,
+        27.870176315307617,
+        27.493375778198242,
+        28.223487854003906,
+        28.674047470092773,
+        28.644351959228516,
+        27.844608306884766,
+        28.090368270874023,
+        27.847488403320312,
+        27.682687759399414,
+        27.44816017150879,
+        28.33612823486328,
+        27.974655151367188
+      ],
+      "candidate_ms": [
+        45.29663848876953,
+        44.98329544067383,
+        43.87116622924805,
+        44.384254455566406,
+        43.60396957397461,
+        43.71660614013672,
+        45.69804763793945,
+        46.58073425292969,
+        44.06681442260742,
+        44.46412658691406,
+        43.4964485168457,
+        43.42348861694336,
+        43.91139221191406,
+        44.7077751159668,
+        44.291072845458984
+      ],
+      "baseline_median_ms": 27.870176315307617,
+      "candidate_median_ms": 44.291072845458984,
+      "paired_median_speedup": 0.6309558062505288,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 82, 1260 MHz, 7001 MHz, 2447 MiB, 100 %, 114.67 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 82, 1260 MHz, 7001 MHz, 2447 MiB, 100 %, 114.01 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        28.255231857299805,
+        28.014495849609375,
+        27.54969596862793,
+        27.889663696289062,
+        27.682016372680664,
+        29.394943237304688,
+        29.096832275390625,
+        28.219392776489258,
+        27.822080612182617,
+        27.810815811157227,
+        27.682815551757812,
+        28.297216415405273,
+        27.88332748413086,
+        28.5296630859375,
+        28.324575424194336
+      ],
+      "candidate_ms": [
+        47.257598876953125,
+        46.37491226196289,
+        44.96486282348633,
+        45.689857482910156,
+        45.15737533569336,
+        45.68793487548828,
+        47.54841613769531,
+        47.15827178955078,
+        45.18627166748047,
+        45.69190216064453,
+        45.158687591552734,
+        45.742366790771484,
+        45.74736022949219,
+        46.784576416015625,
+        45.689857482910156
+      ],
+      "baseline_median_ms": 28.014495849609375,
+      "candidate_median_ms": 45.69190216064453,
+      "paired_median_speedup": 0.6119411462861181,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 83, 1290 MHz, 7001 MHz, 2447 MiB, 100 %, 114.60 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 83, 1290 MHz, 7001 MHz, 2447 MiB, 100 %, 113.37 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        27.71558380126953,
+        27.115520477294922,
+        27.32134437561035,
+        26.75507164001465,
+        27.094079971313477,
+        27.073535919189453,
+        28.046335220336914,
+        28.17647933959961,
+        28.006399154663086,
+        27.152448654174805,
+        27.34592056274414,
+        27.054079055786133,
+        27.412479400634766,
+        27.385759353637695,
+        28.200735092163086
+      ],
+      "candidate_ms": [
+        44.11494445800781,
+        44.082977294921875,
+        43.40940856933594,
+        42.566654205322266,
+        43.282432556152344,
+        43.033790588378906,
+        45.39187240600586,
+        45.033470153808594,
+        44.21324920654297,
+        43.437950134277344,
+        43.284481048583984,
+        42.91475296020508,
+        43.7841911315918,
+        43.396095275878906,
+        44.411903381347656
+      ],
+      "baseline_median_ms": 27.34592056274414,
+      "candidate_median_ms": 43.437950134277344,
+      "paired_median_speedup": 0.6285453282506137,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 85, 1305 MHz, 7001 MHz, 2447 MiB, 100 %, 114.63 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 85, 1305 MHz, 7001 MHz, 2447 MiB, 100 %, 112.00 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        28.010496139526367,
+        28.476415634155273,
+        28.004352569580078,
+        28.791807174682617,
+        28.15283203125,
+        28.612607955932617,
+        28.15385627746582,
+        29.139968872070312,
+        28.779327392578125,
+        29.5380802154541,
+        28.32793617248535,
+        28.73753547668457,
+        28.258304595947266,
+        28.906496047973633,
+        28.545024871826172
+      ],
+      "candidate_ms": [
+        12.918784141540527,
+        12.918784141540527,
+        12.916576385498047,
+        12.917759895324707,
+        12.841983795166016,
+        12.801024436950684,
+        12.847295761108398,
+        12.877823829650879,
+        13.387776374816895,
+        13.583359718322754,
+        12.916543960571289,
+        12.91545581817627,
+        12.922944068908691,
+        13.012991905212402,
+        13.336383819580078
+      ],
+      "baseline_median_ms": 28.545024871826172,
+      "candidate_median_ms": 12.917759895324707,
+      "paired_median_speedup": 2.192249459296725,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 85, 1290 MHz, 7001 MHz, 2447 MiB, 100 %, 114.25 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 85, 1290 MHz, 7001 MHz, 2447 MiB, 100 %, 112.46 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        29.690879821777344,
+        29.892608642578125,
+        28.555007934570312,
+        30.052160263061523,
+        28.440576553344727,
+        29.919231414794922,
+        28.381183624267578,
+        30.459007263183594,
+        28.80182456970215,
+        29.860864639282227,
+        28.90118408203125,
+        31.353023529052734,
+        29.998144149780273,
+        30.439424514770508,
+        28.78873634338379
+      ],
+      "candidate_ms": [
+        22.321151733398438,
+        22.629375457763672,
+        21.68115234375,
+        22.600704193115234,
+        21.65350341796875,
+        22.631423950195312,
+        21.534719467163086,
+        22.71436882019043,
+        21.593984603881836,
+        23.002111434936523,
+        22.394880294799805,
+        23.953407287597656,
+        22.342655181884766,
+        23.10553550720215,
+        21.790496826171875
+      ],
+      "baseline_median_ms": 29.860864639282227,
+      "candidate_median_ms": 22.394880294799805,
+      "paired_median_speedup": 1.3209648095843753,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1275 MHz, 7001 MHz, 2447 MiB, 100 %, 112.93 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 85, 1275 MHz, 7001 MHz, 2447 MiB, 67 %, 113.93 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        25.239551544189453,
+        25.199615478515625,
+        27.16160011291504,
+        25.18943977355957,
+        27.0960636138916,
+        25.312448501586914,
+        27.5097599029541,
+        26.201984405517578,
+        28.20403289794922,
+        26.292224884033203,
+        28.247039794921875,
+        26.29305648803711,
+        28.212223052978516,
+        26.047487258911133,
+        28.274688720703125
+      ],
+      "candidate_ms": [
+        53.703678131103516,
+        50.4021110534668,
+        54.178558349609375,
+        50.41254425048828,
+        55.72505569458008,
+        51.185665130615234,
+        54.58124923706055,
+        51.86048126220703,
+        56.34764862060547,
+        52.42879867553711,
+        56.20121765136719,
+        52.253662109375,
+        56.248321533203125,
+        52.603904724121094,
+        56.160255432128906
+      ],
+      "baseline_median_ms": 26.29305648803711,
+      "candidate_median_ms": 53.703678131103516,
+      "paired_median_speedup": 0.5013348627263884,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 109.32 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1320 MHz, 7001 MHz, 2447 MiB, 100 %, 106.99 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        30.129152297973633,
+        30.12505531311035,
+        30.850048065185547,
+        30.124000549316406,
+        30.86729621887207,
+        30.121984481811523,
+        30.859264373779297,
+        30.121984481811523,
+        30.876672744750977,
+        30.124000549316406,
+        30.851072311401367,
+        30.12403106689453,
+        30.896127700805664,
+        30.12495994567871,
+        30.921728134155273
+      ],
+      "candidate_ms": [
+        49.532928466796875,
+        49.1407356262207,
+        50.18521499633789,
+        49.146881103515625,
+        50.161502838134766,
+        49.15507125854492,
+        50.15039825439453,
+        49.13228988647461,
+        50.17087936401367,
+        49.130496978759766,
+        50.21184158325195,
+        49.13151931762695,
+        50.14614486694336,
+        49.13151931762695,
+        50.132896423339844
+      ],
+      "baseline_median_ms": 30.129152297973633,
+      "candidate_median_ms": 49.532928466796875,
+      "paired_median_speedup": 0.6131493665181804,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1155 MHz, 7001 MHz, 2447 MiB, 100 %, 105.31 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1155 MHz, 7001 MHz, 2447 MiB, 100 %, 103.36 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        31.665151596069336,
+        32.15359878540039,
+        31.78803253173828,
+        32.01020812988281,
+        31.451135635375977,
+        32.071678161621094,
+        31.48784065246582,
+        32.114688873291016,
+        31.531007766723633,
+        32.15155029296875,
+        31.5850887298584,
+        32.154624938964844,
+        31.700992584228516,
+        32.1525764465332,
+        31.76959991455078
+      ],
+      "candidate_ms": [
+        26.289152145385742,
+        26.524415969848633,
+        26.245119094848633,
+        26.471424102783203,
+        26.33830451965332,
+        26.776447296142578,
+        26.290176391601562,
+        26.71820831298828,
+        26.245119094848633,
+        26.665855407714844,
+        26.245119094848633,
+        26.608640670776367,
+        26.245119094848633,
+        26.52569580078125,
+        26.245983123779297
+      ],
+      "baseline_median_ms": 31.78803253173828,
+      "candidate_median_ms": 26.33830451965332,
+      "paired_median_speedup": 1.2057198166486274,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1125 MHz, 7001 MHz, 2447 MiB, 100 %, 107.65 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1125 MHz, 7001 MHz, 2447 MiB, 100 %, 104.91 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        28.530527114868164,
+        27.934816360473633,
+        30.37081527709961,
+        27.59270477294922,
+        30.908416748046875,
+        28.098560333251953,
+        30.7271671295166,
+        27.76348876953125,
+        30.856895446777344,
+        27.820032119750977,
+        30.38595199584961,
+        28.04844856262207,
+        30.814207077026367,
+        27.78316879272461,
+        31.079423904418945
+      ],
+      "candidate_ms": [
+        56.09267044067383,
+        52.69401550292969,
+        56.80332946777344,
+        52.70016098022461,
+        57.14022445678711,
+        52.80972671508789,
+        56.95484924316406,
+        52.765567779541016,
+        57.6624641418457,
+        52.8455696105957,
+        56.70489501953125,
+        52.927486419677734,
+        56.930206298828125,
+        53.157920837402344,
+        57.50476837158203
+      ],
+      "baseline_median_ms": 28.530527114868164,
+      "candidate_median_ms": 56.09267044067383,
+      "paired_median_speedup": 0.5320716860521855,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1200 MHz, 7001 MHz, 2447 MiB, 100 %, 98.73 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1200 MHz, 7001 MHz, 2447 MiB, 100 %, 97.15 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        31.731679916381836,
+        31.537151336669922,
+        32.4505615234375,
+        31.481599807739258,
+        32.43622589111328,
+        31.482816696166992,
+        32.089088439941406,
+        31.62233543395996,
+        32.33059310913086,
+        31.426368713378906,
+        32.15564727783203,
+        31.316991806030273,
+        32.156673431396484,
+        31.529983520507812,
+        32.475135803222656
+      ],
+      "candidate_ms": [
+        26.427391052246094,
+        26.08844757080078,
+        26.875904083251953,
+        26.211135864257812,
+        26.68953514099121,
+        26.254112243652344,
+        26.73971176147461,
+        26.30860710144043,
+        26.5533447265625,
+        26.033151626586914,
+        26.479616165161133,
+        26.033151626586914,
+        26.51955223083496,
+        26.091520309448242,
+        26.877952575683594
+      ],
+      "baseline_median_ms": 31.731679916381836,
+      "candidate_median_ms": 26.427391052246094,
+      "paired_median_speedup": 1.2074221363090614,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1095 MHz, 7001 MHz, 2447 MiB, 100 %, 97.35 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1095 MHz, 7001 MHz, 2447 MiB, 100 %, 93.89 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        32.833534240722656,
+        32.59084701538086,
+        32.59801483154297,
+        32.58982467651367,
+        32.59187316894531,
+        32.59392166137695,
+        33.093505859375,
+        32.66764831542969,
+        33.2512321472168,
+        32.59174346923828,
+        32.591712951660156,
+        32.59187316894531,
+        32.67164611816406,
+        32.619361877441406,
+        32.63180923461914
+      ],
+      "candidate_ms": [
+        15.662079811096191,
+        15.6659517288208,
+        15.88316822052002,
+        15.718400001525879,
+        15.840255737304688,
+        15.763456344604492,
+        15.870976448059082,
+        15.79315185546875,
+        15.886336326599121,
+        15.828991889953613,
+        15.665151596069336,
+        15.664128303527832,
+        15.88310432434082,
+        15.861760139465332,
+        15.924223899841309
+      ],
+      "baseline_median_ms": 32.59801483154297,
+      "candidate_median_ms": 15.828991889953613,
+      "paired_median_speedup": 2.0684692083244767,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1080 MHz, 7001 MHz, 2447 MiB, 78 %, 94.90 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1080 MHz, 7001 MHz, 2447 MiB, 67 %, 94.92 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        31.311935424804688,
+        30.869504928588867,
+        32.691200256347656,
+        30.867263793945312,
+        32.37580871582031,
+        31.039583206176758,
+        32.491519927978516,
+        30.723072052001953,
+        32.829376220703125,
+        30.772319793701172,
+        32.95836639404297,
+        30.75481605529785,
+        32.62873458862305,
+        30.940160751342773,
+        32.729087829589844
+      ],
+      "candidate_ms": [
+        50.42790222167969,
+        48.379905700683594,
+        51.142398834228516,
+        48.700416564941406,
+        51.180545806884766,
+        48.652286529541016,
+        50.990081787109375,
+        48.537601470947266,
+        51.11296081542969,
+        48.9648323059082,
+        51.61164855957031,
+        48.90803146362305,
+        51.18783950805664,
+        48.760833740234375,
+        51.36076736450195
+      ],
+      "baseline_median_ms": 31.311935424804688,
+      "candidate_median_ms": 50.42790222167969,
+      "paired_median_speedup": 0.6372125477977284,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1110 MHz, 7001 MHz, 2447 MiB, 100 %, 94.17 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1110 MHz, 7001 MHz, 2447 MiB, 100 %, 94.11 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        33.5912971496582,
+        33.849342346191406,
+        34.895870208740234,
+        33.726463317871094,
+        34.84560012817383,
+        33.50624084472656,
+        34.63462448120117,
+        33.56159973144531,
+        34.716670989990234,
+        33.38252639770508,
+        34.83955383300781,
+        33.72236633300781,
+        34.78630447387695,
+        33.67116928100586,
+        34.7248649597168
+      ],
+      "candidate_ms": [
+        58.052608489990234,
+        56.7828483581543,
+        58.189823150634766,
+        56.74700927734375,
+        58.256385803222656,
+        56.74496078491211,
+        58.210304260253906,
+        56.74380874633789,
+        58.04441452026367,
+        56.348670959472656,
+        57.8682861328125,
+        56.751102447509766,
+        58.29529571533203,
+        56.74905776977539,
+        58.156959533691406
+      ],
+      "baseline_median_ms": 33.849342346191406,
+      "candidate_median_ms": 57.8682861328125,
+      "paired_median_speedup": 0.5949912978697443,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 92.69 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 91.01 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        33.734527587890625,
+        33.04345703125,
+        34.82316970825195,
+        33.20217514038086,
+        34.56422424316406,
+        33.362945556640625,
+        34.3449592590332,
+        33.265663146972656,
+        34.77094268798828,
+        33.26873779296875,
+        34.488319396972656,
+        33.01683044433594,
+        34.375614166259766,
+        33.2492790222168,
+        34.76582336425781
+      ],
+      "candidate_ms": [
+        29.02012825012207,
+        28.605440139770508,
+        29.79020881652832,
+        28.75904083251953,
+        29.809856414794922,
+        28.96691131591797,
+        29.423616409301758,
+        28.705791473388672,
+        29.90991973876953,
+        28.840959548950195,
+        29.624319076538086,
+        28.593151092529297,
+        29.700096130371094,
+        28.75801658630371,
+        29.84841537475586
+      ],
+      "baseline_median_ms": 33.734527587890625,
+      "candidate_median_ms": 29.02012825012207,
+      "paired_median_speedup": 1.1588484915251738,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 87.89 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 87.00 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        36.04172897338867,
+        36.608001708984375,
+        35.690494537353516,
+        36.56399917602539,
+        35.63315200805664,
+        36.60697555541992,
+        35.566593170166016,
+        36.85171127319336,
+        35.796993255615234,
+        36.726783752441406,
+        35.769344329833984,
+        36.24550247192383,
+        35.50310516357422,
+        36.72883224487305,
+        35.70380783081055
+      ],
+      "candidate_ms": [
+        15.849472045898438,
+        15.977472305297852,
+        15.827967643737793,
+        16.047103881835938,
+        15.866880416870117,
+        16.066560745239258,
+        15.827967643737793,
+        15.842144012451172,
+        15.826944351196289,
+        16.1114559173584,
+        15.867903709411621,
+        16.01535987854004,
+        15.828960418701172,
+        16.044031143188477,
+        15.871999740600586
+      ],
+      "baseline_median_ms": 36.04172897338867,
+      "candidate_median_ms": 15.867903709411621,
+      "paired_median_speedup": 2.2631712772493735,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 990 MHz, 7001 MHz, 2447 MiB, 80 %, 89.81 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 990 MHz, 7001 MHz, 2447 MiB, 100 %, 87.56 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        34.988033294677734,
+        34.985984802246094,
+        34.98495864868164,
+        34.985984802246094,
+        34.98495864868164,
+        34.985984802246094,
+        34.985984802246094,
+        34.985023498535156,
+        34.98393630981445,
+        34.986846923828125,
+        34.98495864868164,
+        34.98700714111328,
+        34.98700714111328,
+        34.98495864868164,
+        34.986209869384766
+      ],
+      "candidate_ms": [
+        18.165760040283203,
+        18.165760040283203,
+        18.164735794067383,
+        18.159616470336914,
+        18.162687301635742,
+        18.162656784057617,
+        18.164735794067383,
+        18.162687301635742,
+        18.162687301635742,
+        18.163679122924805,
+        18.165760040283203,
+        18.163711547851562,
+        18.165760040283203,
+        18.163711547851562,
+        18.164512634277344
+      ],
+      "baseline_median_ms": 34.985984802246094,
+      "candidate_median_ms": 18.163711547851562,
+      "paired_median_speedup": 1.9260908518897795,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 91.92 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1020 MHz, 7001 MHz, 2447 MiB, 100 %, 88.41 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        33.48992156982422,
+        32.099327087402344,
+        35.16505432128906,
+        32.66559982299805,
+        34.731040954589844,
+        32.3043212890625,
+        34.985984802246094,
+        32.66559982299805,
+        34.65727996826172,
+        32.282623291015625,
+        35.374977111816406,
+        32.55286407470703,
+        34.82521438598633,
+        32.73427200317383,
+        34.985984802246094
+      ],
+      "candidate_ms": [
+        32.04908752441406,
+        30.43827247619629,
+        32.452606201171875,
+        30.865535736083984,
+        32.484352111816406,
+        30.81011199951172,
+        32.456703186035156,
+        30.825471878051758,
+        32.47411346435547,
+        30.82137680053711,
+        32.71577453613281,
+        30.87990379333496,
+        32.891902923583984,
+        31.01372718811035,
+        32.3686408996582
+      ],
+      "baseline_median_ms": 33.48992156982422,
+      "candidate_median_ms": 32.04908752441406,
+      "paired_median_speedup": 1.0587777322246725,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1005 MHz, 7001 MHz, 2447 MiB, 100 %, 86.09 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 1005 MHz, 7001 MHz, 2447 MiB, 100 %, 86.04 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        35.79084777832031,
+        35.915775299072266,
+        37.284767150878906,
+        35.729408264160156,
+        37.25516891479492,
+        35.664894104003906,
+        37.07292938232422,
+        35.44473648071289,
+        36.785152435302734,
+        35.615745544433594,
+        37.161983489990234,
+        35.8737907409668,
+        37.161983489990234,
+        35.72428894042969,
+        37.17427062988281
+      ],
+      "candidate_ms": [
+        66.45350646972656,
+        65.52790069580078,
+        67.30950164794922,
+        65.46854400634766,
+        67.17644500732422,
+        65.49606323242188,
+        67.18566131591797,
+        64.85094451904297,
+        66.91327667236328,
+        65.46943664550781,
+        67.2696304321289,
+        65.46934509277344,
+        67.00646209716797,
+        65.46943664550781,
+        67.12422180175781
+      ],
+      "baseline_median_ms": 35.915775299072266,
+      "candidate_median_ms": 66.45350646972656,
+      "paired_median_speedup": 0.5480989764314829,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 990 MHz, 7001 MHz, 2447 MiB, 100 %, 86.22 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 990 MHz, 7001 MHz, 2447 MiB, 100 %, 86.10 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97343826293945,
+        38.968318939208984,
+        38.968318939208984,
+        38.96934509277344,
+        38.968318939208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.967201232910156,
+        38.968318939208984,
+        38.970462799072266,
+        38.96937561035156,
+        38.968318939208984,
+        38.968318939208984,
+        38.96934509277344,
+        38.96934509277344
+      ],
+      "candidate_ms": [
+        31.673343658447266,
+        31.672319412231445,
+        31.67420768737793,
+        31.67251205444336,
+        31.67535972595215,
+        31.674367904663086,
+        31.67523193359375,
+        31.675392150878906,
+        31.675296783447266,
+        31.673343658447266,
+        31.673343658447266,
+        31.674367904663086,
+        31.674240112304688,
+        31.674367904663086,
+        31.674367904663086
+      ],
+      "baseline_median_ms": 38.968318939208984,
+      "candidate_median_ms": 31.674367904663086,
+      "paired_median_speedup": 1.2302855157048722,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 85.29 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 84.71 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        37.79676818847656,
+        37.770240783691406,
+        38.347774505615234,
+        37.745662689208984,
+        38.31593704223633,
+        37.96992111206055,
+        38.347774505615234,
+        37.921791076660156,
+        38.347774505615234,
+        37.87263870239258,
+        38.453182220458984,
+        37.82758331298828,
+        38.347774505615234,
+        37.76716613769531,
+        38.347774505615234
+      ],
+      "candidate_ms": [
+        60.283905029296875,
+        59.986942291259766,
+        60.35753631591797,
+        60.00435256958008,
+        60.40662384033203,
+        59.99001693725586,
+        60.45267105102539,
+        59.9920654296875,
+        60.499969482421875,
+        59.98896026611328,
+        60.76211166381836,
+        59.98284912109375,
+        60.242942810058594,
+        59.988990783691406,
+        60.295169830322266
+      ],
+      "baseline_median_ms": 37.96992111206055,
+      "candidate_median_ms": 60.242942810058594,
+      "paired_median_speedup": 0.6328480226824714,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 930 MHz, 7001 MHz, 2447 MiB, 100 %, 86.66 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 930 MHz, 7001 MHz, 2447 MiB, 100 %, 86.18 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97651290893555,
+        38.05807876586914,
+        38.92940902709961,
+        38.04159927368164,
+        38.92326354980469,
+        38.27199935913086,
+        38.97129440307617,
+        38.024192810058594,
+        38.969505310058594,
+        37.99756622314453,
+        38.96934509277344,
+        37.88800048828125,
+        38.96934509277344,
+        38.075233459472656,
+        38.96934509277344
+      ],
+      "candidate_ms": [
+        30.17523193359375,
+        29.77177619934082,
+        30.16908836364746,
+        29.858623504638672,
+        30.17308807373047,
+        29.9169921875,
+        30.112895965576172,
+        29.479936599731445,
+        30.1648006439209,
+        29.547456741333008,
+        30.168031692504883,
+        29.613056182861328,
+        30.1711368560791,
+        29.721599578857422,
+        30.173248291015625
+      ],
+      "baseline_median_ms": 38.92326354980469,
+      "candidate_median_ms": 30.112895965576172,
+      "paired_median_speedup": 1.2899993349932375,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.67 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 86, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.90 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        36.29158401489258,
+        35.989505767822266,
+        38.296382904052734,
+        36.406272888183594,
+        38.96918487548828,
+        35.89311981201172,
+        38.968318939208984,
+        36.366336822509766,
+        38.83827209472656,
+        36.003841400146484,
+        38.968318939208984,
+        36.3950080871582,
+        38.787071228027344,
+        36.23116683959961,
+        38.967105865478516
+      ],
+      "candidate_ms": [
+        69.34025573730469,
+        65.94866943359375,
+        69.79170989990234,
+        66.16678619384766,
+        69.87264251708984,
+        66.02751922607422,
+        69.64838409423828,
+        66.05824279785156,
+        69.67501068115234,
+        66.0068130493164,
+        69.79788970947266,
+        66.04185485839844,
+        70.14492797851562,
+        66.18418884277344,
+        69.570556640625
+      ],
+      "baseline_median_ms": 36.406272888183594,
+      "candidate_median_ms": 69.34025573730469,
+      "paired_median_speedup": 0.5505192884678507,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 81.67 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 81.18 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.975486755371094,
+        38.96934509277344,
+        38.96931076049805,
+        38.970367431640625,
+        38.970367431640625,
+        38.970272064208984,
+        38.970367431640625,
+        38.9672966003418,
+        38.968318939208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.96934509277344,
+        38.97030258178711,
+        38.968318939208984,
+        38.968318939208984
+      ],
+      "candidate_ms": [
+        31.15622329711914,
+        31.15519905090332,
+        31.155168533325195,
+        31.153152465820312,
+        31.154176712036133,
+        31.153152465820312,
+        31.15519905090332,
+        31.153152465820312,
+        31.15724754333496,
+        31.15622329711914,
+        31.154176712036133,
+        31.153152465820312,
+        31.15510368347168,
+        31.153152465820312,
+        31.153152465820312
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 31.154176712036133,
+      "paired_median_speedup": 1.2508481107209901,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 88.98 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 88.33 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.992897033691406,
+        38.96934509277344,
+        38.96934509277344,
+        38.97139358520508,
+        38.970367431640625,
+        38.96934509277344,
+        38.96934509277344,
+        38.968318939208984,
+        38.970367431640625,
+        38.970367431640625,
+        38.9703369140625,
+        38.9672966003418,
+        38.97132873535156,
+        38.9672966003418,
+        38.97139358520508
+      ],
+      "candidate_ms": [
+        35.137630462646484,
+        35.136512756347656,
+        35.137535095214844,
+        35.137535095214844,
+        35.136512756347656,
+        35.137535095214844,
+        35.1354866027832,
+        35.1354866027832,
+        35.136512756347656,
+        35.137535095214844,
+        35.13740921020508,
+        35.136512756347656,
+        35.1374397277832,
+        35.137535095214844,
+        35.1374397277832
+      ],
+      "baseline_median_ms": 38.9703369140625,
+      "candidate_median_ms": 35.1374397277832,
+      "paired_median_speedup": 1.1090872137265966,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 88.41 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 87.18 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        39.29702377319336,
+        41.32233428955078,
+        38.97139358520508,
+        41.194496154785156,
+        38.98982238769531,
+        40.88614273071289,
+        38.96934509277344,
+        41.58464050292969,
+        38.972415924072266,
+        41.14329528808594,
+        38.968318939208984,
+        40.94464111328125,
+        38.968318939208984,
+        41.13817596435547,
+        38.99903869628906
+      ],
+      "candidate_ms": [
+        17.5861759185791,
+        17.5861759185791,
+        17.5861759185791,
+        17.586048126220703,
+        17.5861759185791,
+        18.24051284790039,
+        17.58515167236328,
+        18.519039154052734,
+        17.58515167236328,
+        18.05516815185547,
+        17.5850887298584,
+        17.684480667114258,
+        17.58515167236328,
+        17.852415084838867,
+        17.58515167236328
+      ],
+      "baseline_median_ms": 39.29702377319336,
+      "candidate_median_ms": 17.5861759185791,
+      "paired_median_speedup": 2.2345405820532935,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 89.87 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 88.50 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97343826293945,
+        38.968318939208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.970176696777344,
+        38.9703369140625,
+        38.968318939208984,
+        38.96815872192383,
+        38.970367431640625,
+        38.968257904052734,
+        38.96815872192383,
+        38.96934509277344,
+        38.96934509277344,
+        38.968318939208984,
+        38.968318939208984
+      ],
+      "candidate_ms": [
+        35.40991973876953,
+        35.408897399902344,
+        35.40787124633789,
+        35.40991973876953,
+        35.40991973876953,
+        35.40991973876953,
+        35.41078567504883,
+        35.41075134277344,
+        35.40991973876953,
+        35.40991973876953,
+        35.408897399902344,
+        35.408897399902344,
+        35.408897399902344,
+        35.408897399902344,
+        35.40991973876953
+      ],
+      "baseline_median_ms": 38.968318939208984,
+      "candidate_median_ms": 35.40991973876953,
+      "paired_median_speedup": 1.100523365613651,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 85.64 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 83.13 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97343826293945,
+        38.97139358520508,
+        38.968318939208984,
+        38.96944046020508,
+        38.96815872192383,
+        38.9703369140625,
+        38.96819305419922,
+        38.96934509277344,
+        38.970367431640625,
+        38.968318939208984,
+        38.96934509277344,
+        38.968318939208984,
+        38.968318939208984,
+        38.970497131347656,
+        38.970367431640625
+      ],
+      "candidate_ms": [
+        69.05241394042969,
+        69.05036926269531,
+        69.04940795898438,
+        69.05343627929688,
+        69.05856323242188,
+        69.05433654785156,
+        69.0483169555664,
+        69.04729461669922,
+        69.05123138427734,
+        69.05241394042969,
+        69.05359649658203,
+        69.07084655761719,
+        69.05036926269531,
+        69.05433654785156,
+        69.0513916015625
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 69.05241394042969,
+      "paired_median_speedup": 0.5643462787426649,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 75.08 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 73.75 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97139358520508,
+        38.96944046020508,
+        38.96934509277344,
+        38.970367431640625,
+        38.970367431640625,
+        38.96934509277344,
+        38.96934509277344,
+        38.968318939208984,
+        38.9672966003418,
+        38.970367431640625,
+        38.970367431640625,
+        38.96934509277344,
+        38.968318939208984,
+        38.968318939208984,
+        38.96934509277344
+      ],
+      "candidate_ms": [
+        21.67091178894043,
+        21.67305564880371,
+        21.670080184936523,
+        21.672800064086914,
+        21.67296028137207,
+        21.67091178894043,
+        21.67296028137207,
+        21.67296028137207,
+        21.67091178894043,
+        21.673856735229492,
+        21.67193603515625,
+        21.67091178894043,
+        21.67193603515625,
+        21.671903610229492,
+        21.67091178894043
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 21.67193603515625,
+      "paired_median_speedup": 1.7981233304605058,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 80.41 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 256,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 915 MHz, 7001 MHz, 2447 MiB, 65 %, 79.12 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.38566589355469,
+        38.968318939208984,
+        38.970367431640625,
+        38.966270446777344,
+        38.966270446777344,
+        38.970367431640625,
+        38.96931076049805,
+        38.96934509277344,
+        38.968318939208984,
+        38.968223571777344,
+        38.968318939208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.970367431640625
+      ],
+      "candidate_ms": [
+        17.7653751373291,
+        17.764352798461914,
+        17.764352798461914,
+        17.764352798461914,
+        17.764352798461914,
+        17.765344619750977,
+        17.763519287109375,
+        17.763328552246094,
+        17.764352798461914,
+        17.764352798461914,
+        17.764352798461914,
+        17.764352798461914,
+        17.7653751373291,
+        17.764352798461914,
+        17.763328552246094
+      ],
+      "baseline_median_ms": 38.968318939208984,
+      "candidate_median_ms": 17.764352798461914,
+      "paired_median_speedup": 2.193624467004673,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 86.21 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 83.98 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.974464416503906,
+        38.970176696777344,
+        38.970367431640625,
+        38.9692497253418,
+        38.9672966003418,
+        38.96934509277344,
+        38.9672966003418,
+        38.96934509277344,
+        38.972415924072266,
+        38.966270446777344,
+        38.96934509277344,
+        38.968318939208984,
+        38.970367431640625,
+        38.96934509277344,
+        38.97052764892578
+      ],
+      "candidate_ms": [
+        32.888832092285156,
+        32.8908805847168,
+        32.888832092285156,
+        32.889854431152344,
+        32.893951416015625,
+        32.8908805847168,
+        32.88876724243164,
+        32.889854431152344,
+        32.889854431152344,
+        32.889854431152344,
+        32.888832092285156,
+        32.891807556152344,
+        32.889854431152344,
+        32.890750885009766,
+        32.89107131958008
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 32.889854431152344,
+      "paired_median_speedup": 1.1848360690436557,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 86.38 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 512,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 84.12 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.972415924072266,
+        38.96934509277344,
+        38.972415924072266,
+        38.970272064208984,
+        38.970272064208984,
+        38.968318939208984,
+        38.968318939208984,
+        38.9692497253418,
+        38.968318939208984,
+        38.970367431640625,
+        38.96934509277344,
+        38.96934509277344,
+        38.970367431640625,
+        38.9672966003418,
+        38.970367431640625
+      ],
+      "candidate_ms": [
+        64.36249542236328,
+        64.36454772949219,
+        64.36557006835938,
+        64.36557006835938,
+        64.36659240722656,
+        64.36454772949219,
+        64.36656188964844,
+        64.36351776123047,
+        64.3664321899414,
+        64.36659240722656,
+        64.36454772949219,
+        64.36659240722656,
+        64.36557006835938,
+        64.36557006835938,
+        64.36454772949219
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 64.36557006835938,
+      "paired_median_speedup": 0.605447353666675,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 81.25 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 80.07 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.972415924072266,
+        38.968318939208984,
+        38.97139358520508,
+        38.9672966003418,
+        38.968318939208984,
+        38.96934509277344,
+        38.968318939208984,
+        38.9703369140625,
+        38.96934509277344,
+        43.463680267333984,
+        39.52739334106445,
+        43.146240234375,
+        39.361534118652344,
+        43.054080963134766,
+        49.40697479248047
+      ],
+      "candidate_ms": [
+        20.365312576293945,
+        20.364288330078125,
+        20.365312576293945,
+        20.364288330078125,
+        20.364288330078125,
+        20.364288330078125,
+        20.364288330078125,
+        20.364288330078125,
+        20.364288330078125,
+        22.193151473999023,
+        20.516864776611328,
+        21.98521614074707,
+        20.45030403137207,
+        21.58483123779297,
+        28.614591598510742
+      ],
+      "baseline_median_ms": 38.97139358520508,
+      "candidate_median_ms": 20.365312576293945,
+      "paired_median_speedup": 1.9136162746929488,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 810 MHz, 7001 MHz, 2447 MiB, 100 %, 88.94 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 810 MHz, 7001 MHz, 2447 MiB, 100 %, 86.53 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.974464416503906,
+        38.972415924072266,
+        38.96934509277344,
+        38.96934509277344,
+        38.970367431640625,
+        38.96934509277344,
+        38.96934509277344,
+        38.96934509277344,
+        38.970367431640625,
+        38.968318939208984,
+        38.96934509277344,
+        38.96928024291992,
+        38.97139358520508,
+        38.96934509277344,
+        38.97052764892578
+      ],
+      "candidate_ms": [
+        30.263296127319336,
+        30.258176803588867,
+        30.261247634887695,
+        30.266368865966797,
+        30.261247634887695,
+        30.262271881103516,
+        30.260223388671875,
+        30.259199142456055,
+        30.261247634887695,
+        30.261247634887695,
+        30.262271881103516,
+        30.26425552368164,
+        30.261247634887695,
+        30.265344619750977,
+        30.261247634887695
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 30.261247634887695,
+      "paired_median_speedup": 1.2877977769400468,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 80.64 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.48 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.975486755371094,
+        38.970367431640625,
+        38.9672966003418,
+        38.970367431640625,
+        38.968318939208984,
+        38.967166900634766,
+        38.96934509277344,
+        38.96934509277344,
+        38.968318939208984,
+        38.96934509277344,
+        38.968318939208984,
+        38.96934509277344,
+        38.970367431640625,
+        38.9672966003418,
+        38.9672966003418
+      ],
+      "candidate_ms": [
+        66.84774780273438,
+        66.84588623046875,
+        66.84569549560547,
+        66.84671783447266,
+        66.84671783447266,
+        66.84867095947266,
+        66.84553527832031,
+        66.84671783447266,
+        66.84979248046875,
+        66.8465576171875,
+        66.84671783447266,
+        66.84569549560547,
+        66.84671783447266,
+        66.8457260131836,
+        66.8476791381836
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 66.84671783447266,
+      "paired_median_speedup": 0.5829657215073776,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 80.94 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.75 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97343826293945,
+        39.47520065307617,
+        38.9703369140625,
+        42.413055419921875,
+        43.9582405090332,
+        45.13587188720703,
+        44.77849578857422,
+        45.21049499511719,
+        44.2562255859375,
+        45.14713668823242,
+        43.970558166503906,
+        45.34067153930664,
+        44.08729553222656,
+        44.77542495727539,
+        44.12416076660156
+      ],
+      "candidate_ms": [
+        20.376575469970703,
+        20.511743545532227,
+        20.377599716186523,
+        20.378623962402344,
+        22.995967864990234,
+        23.398399353027344,
+        23.425024032592773,
+        23.759872436523438,
+        22.994943618774414,
+        23.20476722717285,
+        23.104511260986328,
+        23.605247497558594,
+        23.033855438232422,
+        23.425024032592773,
+        22.996992111206055
+      ],
+      "baseline_median_ms": 44.12416076660156,
+      "candidate_median_ms": 23.033855438232422,
+      "paired_median_speedup": 1.9140215432215002,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 795 MHz, 7001 MHz, 2447 MiB, 100 %, 79.69 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 768,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 795 MHz, 7001 MHz, 2447 MiB, 100 %, 77.44 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.972415924072266,
+        38.96934509277344,
+        38.970367431640625,
+        38.96934509277344,
+        38.968318939208984,
+        38.970367431640625,
+        38.96646499633789,
+        38.970367431640625,
+        38.96934509277344,
+        38.9672966003418,
+        38.970367431640625,
+        38.968257904052734,
+        38.96828842163086,
+        38.96934509277344,
+        38.970367431640625
+      ],
+      "candidate_ms": [
+        22.10700798034668,
+        22.10304069519043,
+        22.105087280273438,
+        22.10598373413086,
+        22.104991912841797,
+        22.09996795654297,
+        22.105087280273438,
+        22.111072540283203,
+        22.10201644897461,
+        22.10201644897461,
+        22.105087280273438,
+        22.105087280273438,
+        22.10304069519043,
+        22.105087280273438,
+        22.105087280273438
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 22.105087280273438,
+      "paired_median_speedup": 1.7629592200894746,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 80.80 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.13 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        40.257537841796875,
+        43.5599365234375,
+        39.1987190246582,
+        56.974334716796875,
+        48.91545486450195,
+        62.72102355957031,
+        76.1743392944336,
+        81.3034896850586,
+        62.49059295654297,
+        64.90624237060547,
+        51.83488082885742,
+        58.4714241027832,
+        45.60166549682617,
+        50.473087310791016,
+        43.88249588012695
+      ],
+      "candidate_ms": [
+        17.175552368164062,
+        17.173503875732422,
+        17.482751846313477,
+        23.610368728637695,
+        20.917247772216797,
+        24.34662437438965,
+        36.0714225769043,
+        43.88249588012695,
+        27.800416946411133,
+        32.494590759277344,
+        21.83577537536621,
+        26.33216094970703,
+        19.181568145751953,
+        20.343807220458984,
+        18.921472549438477
+      ],
+      "baseline_median_ms": 51.83488082885742,
+      "candidate_median_ms": 21.83577537536621,
+      "paired_median_speedup": 2.338522514872803,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 87, 585 MHz, 7001 MHz, 2447 MiB, 100 %, 73.76 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 1,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 585 MHz, 7001 MHz, 2447 MiB, 100 %, 73.64 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.97340774536133,
+        38.97139358520508,
+        38.970367431640625,
+        49.07929611206055,
+        51.509246826171875,
+        48.352256774902344,
+        51.41183853149414,
+        47.6231689453125,
+        50.42073440551758,
+        47.81568145751953,
+        51.43756866455078,
+        48.031742095947266,
+        50.63987350463867,
+        48.16179275512695,
+        51.48566436767578
+      ],
+      "candidate_ms": [
+        66.12992095947266,
+        66.12684631347656,
+        66.12786865234375,
+        76.35968017578125,
+        84.17689514160156,
+        80.40243530273438,
+        82.98700714111328,
+        79.05587005615234,
+        82.76582336425781,
+        79.03539276123047,
+        84.11750030517578,
+        78.9903335571289,
+        83.90553283691406,
+        78.95654296875,
+        83.736572265625
+      ],
+      "baseline_median_ms": 48.352256774902344,
+      "candidate_median_ms": 79.05587005615234,
+      "paired_median_speedup": 0.6080711389984045,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 765 MHz, 7001 MHz, 2447 MiB, 100 %, 75.29 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 512,
+        "specialize": 0,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 88, 765 MHz, 7001 MHz, 2447 MiB, 100 %, 73.64 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.972415924072266,
+        38.97139358520508,
+        38.96934509277344,
+        38.96934509277344,
+        38.96934509277344,
+        38.968318939208984,
+        38.96934509277344,
+        38.96934509277344,
+        38.970367431640625,
+        38.96934509277344,
+        38.970176696777344,
+        38.9672966003418,
+        38.96934509277344,
+        38.968318939208984,
+        38.968318939208984
+      ],
+      "candidate_ms": [
+        35.699710845947266,
+        35.697662353515625,
+        35.6984977722168,
+        35.69868850708008,
+        35.699710845947266,
+        35.69868850708008,
+        35.701759338378906,
+        35.69868850708008,
+        35.699710845947266,
+        35.70073699951172,
+        35.699710845947266,
+        35.70278549194336,
+        35.69868850708008,
+        35.701568603515625,
+        35.69859313964844
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 35.699710845947266,
+      "paired_median_speedup": 1.0916104297018796,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 79.19 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 4,
+        "block_threads": 256,
+        "specialize": 0,
+        "prefetch": 0
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 77.96 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        39.84998321533203,
+        40.611839294433594,
+        39.67692947387695,
+        40.000511169433594,
+        39.613441467285156,
+        42.5101432800293,
+        44.77747344970703,
+        46.19059371948242,
+        45.211647033691406,
+        46.234622955322266,
+        45.628414154052734,
+        46.285823822021484,
+        44.909568786621094,
+        46.30732727050781,
+        45.63148880004883
+      ],
+      "candidate_ms": [
+        20.195327758789062,
+        20.40108871459961,
+        20.19331169128418,
+        20.45132827758789,
+        20.194303512573242,
+        20.462560653686523,
+        22.88947105407715,
+        23.377920150756836,
+        22.823936462402344,
+        23.333887100219727,
+        23.189504623413086,
+        23.310335159301758,
+        22.767616271972656,
+        23.628799438476562,
+        23.190528869628906
+      ],
+      "baseline_median_ms": 44.909568786621094,
+      "candidate_median_ms": 22.823936462402344,
+      "paired_median_speedup": 1.9725195756178295,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 795 MHz, 7001 MHz, 2447 MiB, 100 %, 79.95 W"
+    },
+    {
+      "options": {
+        "channels_per_thread": 2,
+        "block_threads": 768,
+        "specialize": 1,
+        "prefetch": 1
+      },
+      "comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "state_before": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 795 MHz, 7001 MHz, 2447 MiB, 100 %, 77.67 W",
+      "graph_comparison": {
+        "finite": true,
+        "exact": true,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0,
+        "allclose": true
+      },
+      "eligible": true,
+      "baseline_ms": [
+        38.972415924072266,
+        38.96928024291992,
+        38.97119903564453,
+        38.9672966003418,
+        38.97030258178711,
+        38.9672966003418,
+        38.968318939208984,
+        38.97139358520508,
+        38.970367431640625,
+        38.96934509277344,
+        38.96931076049805,
+        38.96934509277344,
+        38.97132873535156,
+        38.97139358520508,
+        38.96934509277344
+      ],
+      "candidate_ms": [
+        34.50563049316406,
+        34.507774353027344,
+        34.507774353027344,
+        34.50566482543945,
+        34.507774353027344,
+        34.504703521728516,
+        34.509822845458984,
+        34.502655029296875,
+        34.50787353515625,
+        34.50163269042969,
+        34.5076789855957,
+        34.507774353027344,
+        34.50262451171875,
+        34.509822845458984,
+        35.77753448486328
+      ],
+      "baseline_median_ms": 38.96934509277344,
+      "candidate_median_ms": 34.507774353027344,
+      "paired_median_speedup": 1.129318136393946,
+      "state_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 77.66 W"
+    }
+  ],
+  "dtype": "fp16",
+  "warmup": 5,
+  "repeat": 15,
+  "inputs": {
+    "path": "/home/robot/project/gac-msda-20261021/capture-run-01/capture.npz",
+    "sha256": "1c89b6611737eb9f87abe265f95c9972586b03d131b20a5bd2fcdce77dd1492a",
+    "scope": "Captured tensors; see capture manifest",
+    "manifest": {
+      "schema": "gac.msda.real_capture.v1",
+      "status": "captured",
+      "source_kind": "real_preprocessed_images",
+      "sources": {
+        "onnx": {
+          "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/models/bevformer-base/adapted.onnx",
+          "sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be"
+        },
+        "images": {
+          "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+          "sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968"
+        },
+        "ranges": {
+          "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/models/bevformer-base/ranges.json",
+          "sha256": "b213446406e19f32c71b5fd0df191db40c08103bd13e746ddca5c13f586ead6a"
+        }
+      },
+      "engine": "/home/robot/project/gac-msda-20261021/capture-build-01/capture.engine",
+      "engine_sha256": "b1d8915004fc66af26ef1d0b7bd21a18c02284b3cfaed6e5ad209fbf33b9fd5e",
+      "selected_node": {
+        "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+        "op_type": "MultiscaleDeformableAttnPlugin_TRT",
+        "domain": "trt.plugins",
+        "inputs": [
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_output_0",
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_5_output_0",
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_3_output_0"
+        ],
+        "outputs": [
+          "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+        ],
+        "plugin_version": "2",
+        "plugin_namespace": ""
+      },
+      "precision": "mixed-int8",
+      "engine_io": [
+        {
+          "name": "images",
+          "shape": [
+            1,
+            6,
+            3,
+            928,
+            1600
+          ],
+          "dtype": "DataType.FLOAT",
+          "mode": "input"
+        },
+        {
+          "name": "gac_msda_capture/value",
+          "shape": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "dtype": "DataType.HALF",
+          "mode": "output"
+        },
+        {
+          "name": "gac_msda_capture/shapes",
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "DataType.INT32",
+          "mode": "output"
+        },
+        {
+          "name": "gac_msda_capture/starts",
+          "shape": [
+            4
+          ],
+          "dtype": "DataType.INT32",
+          "mode": "output"
+        },
+        {
+          "name": "gac_msda_capture/locations",
+          "shape": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "dtype": "DataType.HALF",
+          "mode": "output"
+        },
+        {
+          "name": "gac_msda_capture/weights",
+          "shape": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "dtype": "DataType.HALF",
+          "mode": "output"
+        },
+        {
+          "name": "gac_msda_capture/expected",
+          "shape": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "dtype": "DataType.HALF",
+          "mode": "output"
+        }
+      ],
+      "capture_tensors": {
+        "value": "gac_msda_capture/value",
+        "shapes": "gac_msda_capture/shapes",
+        "starts": "gac_msda_capture/starts",
+        "locations": "gac_msda_capture/locations",
+        "weights": "gac_msda_capture/weights",
+        "expected": "gac_msda_capture/expected"
+      },
+      "arrays": {
+        "value": {
+          "shape": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "dtype": "float16",
+          "bytes": 94694400
+        },
+        "shapes": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "int32",
+          "bytes": 32
+        },
+        "starts": {
+          "shape": [
+            4
+          ],
+          "dtype": "int32",
+          "bytes": 16
+        },
+        "locations": {
+          "shape": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "dtype": "float16",
+          "bytes": 245760000
+        },
+        "weights": {
+          "shape": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "dtype": "float16",
+          "bytes": 122880000
+        },
+        "expected": {
+          "shape": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "dtype": "float16",
+          "bytes": 122880000
+        }
+      },
+      "archive": "/home/robot/project/gac-msda-20261021/capture-run-01/capture.npz",
+      "archive_sha256": "1c89b6611737eb9f87abe265f95c9972586b03d131b20a5bd2fcdce77dd1492a",
+      "validation": {
+        "status": "passed",
+        "metadata_in_bounds": true,
+        "finite": {
+          "value": true,
+          "locations": true,
+          "weights": true,
+          "expected": true
+        },
+        "spatial_shapes": [
+          [
+            116,
+            200
+          ],
+          [
+            58,
+            100
+          ],
+          [
+            29,
+            50
+          ],
+          [
+            15,
+            25
+          ]
+        ],
+        "level_starts": [
+          0,
+          23200,
+          29000,
+          30450
+        ],
+        "levels_exhaust_sequence": true,
+        "levels_contiguous": true,
+        "dimensions": {
+          "B": 6,
+          "S": 30825,
+          "H": 8,
+          "C": 32,
+          "Q": 40000,
+          "L": 4,
+          "P": 8
+        }
+      },
+      "environment": {
+        "utc": "2026-10-21T12:18:43.288281+00:00",
+        "host": "lg-robot",
+        "python": "3.11.16",
+        "tensorrt": "10.13.3.9",
+        "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 70, 1410 MHz, [N/A]",
+        "NVIDIA_TF32_OVERRIDE": "0",
+        "CUDA_VISIBLE_DEVICES": null,
+        "CUDA_MODULE_LOADING": "LAZY",
+        "plugin_libraries": [],
+        "torch": "2.7.0+cu126",
+        "torch_cuda": "12.6",
+        "cuda_initialization": "PyTorch; required for run buffers and events",
+        "gpu": {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+          "compute_capability": [
+            8,
+            6
+          ],
+          "total_memory_bytes": 8220901376
+        }
+      },
+      "impact": "Parsed the original complete ONNX, applied precision/range policy before changing outputs, then exposed only one official MSDA's five inputs and output. Added constrained Identity boundaries and removed original output marks; TensorRT may prune downstream work and select different tactics/reformats. These are real-image activations from this capture engine, not a claim of bitwise equality to the original full-model engine.",
+      "timing": "not measured",
+      "expected": "official NVIDIA MSDA output from capture engine",
+      "compute": "TensorRT; torch supplies buffers/copies only; Python validates saved metadata"
+    },
+    "floating_cast": false
+  },
+  "shapes": {
+    "value": [
+      6,
+      30825,
+      8,
+      32
+    ],
+    "shapes": [
+      4,
+      2
+    ],
+    "starts": [
+      4
+    ],
+    "locations": [
+      6,
+      40000,
+      8,
+      4,
+      8,
+      2
+    ],
+    "weights": [
+      6,
+      40000,
+      8,
+      4,
+      8
+    ]
+  },
+  "captured_reference_comparison": {
+    "finite": true,
+    "exact": true,
+    "max_abs": 0.0,
+    "relative_rmse": 0.0,
+    "allclose": true
+  },
+  "status": "measured",
+  "selection": {
+    "channels_per_thread": 4,
+    "block_threads": 128,
+    "specialize": 1,
+    "prefetch": 0
+  },
+  "selection_observed_speedup": 2.338522514872803,
+  "selection_note": "Search result; independent rerun and whole-model validation required",
+  "environment_after": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 580.178.04, 89, 915 MHz, 7001 MHz, 2447 MiB, 100 %, 77.66 W"
+}

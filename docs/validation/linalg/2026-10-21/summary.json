@@ -1,0 +1,415 @@
+{
+  "date": "2026-10-21",
+  "llvm_version": "20.1.8",
+  "compiler_sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3",
+  "regular_lowering": "linalg",
+  "cuda_or_vortex_hardware_execution": false,
+  "whole_model_numerical_validation": false,
+  "inference_performance_measured": false,
+  "native_regression_checks": 31,
+  "structured_checks": 28,
+  "target_codegen_checks": 8,
+  "legacy_selection_checks": 8,
+  "models": [
+    {
+      "model": "bevformer-tiny",
+      "model_sha256": "5a36e46d80541d7f1d3c2d897c9db021da9f729d49b0c7da85ffc989571bb070",
+      "status": "passed",
+      "target": "native",
+      "inference_executed": false,
+      "constants_exported": false,
+      "dispatch_count": 1360,
+      "linalg_dispatches": 758,
+      "linalg_fused_producers": 402,
+      "arena_bytes": 359979584,
+      "planned_resident_bytes": 548080760,
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-onnx-inspect/bevformer-tiny-cold.onnx",
+            "--target=native",
+            "--emit=llvm",
+            "--regular-lowering=linalg",
+            "--manifest=/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/plan.json",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/kernel.mlir"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 12.194,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/compile.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/compile.stderr.log"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/kernel.ll"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 2.889,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/translate.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/translate.stderr.log"
+        },
+        {
+          "name": "llvm-verify",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/kernel.ll"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 0.328,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/llvm-verify.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-tiny/llvm-verify.stderr.log"
+        }
+      ],
+      "artifacts": {
+        "kernel.mlir": {
+          "bytes": 12859548,
+          "sha256": "45f7cd8c7df8149e4ce6517ea4b51b15738f66c4913a53f77bc24c5a522166b5"
+        },
+        "kernel.ll": {
+          "bytes": 10509504,
+          "sha256": "25238f8c418e9074415351e040cbfc1fd92235c77e8ad571d29121c50069a701"
+        },
+        "plan.json": {
+          "bytes": 1072049,
+          "sha256": "175631d1e6eccb24ff9c9e209de949306864ddbb6af88b7fb9e6589f0aa0dbaf"
+        }
+      },
+      "io_tensors": [
+        {
+          "bytes": 27648000,
+          "dtype": "float32",
+          "name": "images",
+          "offset": 0,
+          "shape": [
+            1,
+            6,
+            3,
+            480,
+            800
+          ],
+          "storage": "input"
+        },
+        {
+          "bytes": 2560000,
+          "dtype": "float32",
+          "name": "bev_embed",
+          "offset": 2580096,
+          "shape": [
+            2500,
+            1,
+            256
+          ],
+          "storage": "arena"
+        },
+        {
+          "bytes": 216000,
+          "dtype": "float32",
+          "name": "all_cls_scores",
+          "offset": 2279168,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "storage": "arena"
+        },
+        {
+          "bytes": 216000,
+          "dtype": "float32",
+          "name": "all_bbox_preds",
+          "offset": 147712,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "storage": "arena"
+        }
+      ],
+      "runtime_plan_lifetime_validation": "passed",
+      "resident_budget_scope": "Inputs + constants + arena + embedded constants; excludes code, thread stack, runtime metadata and driver allocations."
+    },
+    {
+      "model": "bevformer-base",
+      "model_sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed",
+      "status": "passed",
+      "target": "native",
+      "inference_executed": false,
+      "constants_exported": false,
+      "dispatch_count": 3752,
+      "linalg_dispatches": 1796,
+      "linalg_fused_producers": 1655,
+      "arena_bytes": 1639347200,
+      "planned_resident_bytes": 2116844972,
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+            "--target=native",
+            "--emit=llvm",
+            "--regular-lowering=linalg",
+            "--constant-fold-profile=bevformer-base",
+            "--manifest=/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/plan.json",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/kernel.mlir"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 88.81,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/compile.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/compile.stderr.log"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/kernel.ll"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 5.505,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/translate.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/translate.stderr.log"
+        },
+        {
+          "name": "llvm-verify",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/kernel.ll"
+          ],
+          "exit_code": 0,
+          "wall_seconds": 0.644,
+          "stdout_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/llvm-verify.stdout.log",
+          "stderr_log": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/bevformer-base/llvm-verify.stderr.log"
+        }
+      ],
+      "artifacts": {
+        "kernel.mlir": {
+          "bytes": 27169990,
+          "sha256": "36f48897ab462ebe0505311661e9d918733131dff5e29b66ea55ee4ed190762e"
+        },
+        "kernel.ll": {
+          "bytes": 18424250,
+          "sha256": "07ec1cb67aa8ae980e8bee9d7713698f8efa008813acb95b9c3f4a74e2fd42af"
+        },
+        "plan.json": {
+          "bytes": 2813344,
+          "sha256": "6fc7f7c1953b1321fdac623339ba124be2940b97eb5a4a01dd26da0dbea45871"
+        }
+      },
+      "io_tensors": [
+        {
+          "bytes": 106905600,
+          "dtype": "float32",
+          "name": "images",
+          "offset": 0,
+          "shape": [
+            1,
+            6,
+            3,
+            928,
+            1600
+          ],
+          "storage": "input"
+        },
+        {
+          "bytes": 40960000,
+          "dtype": "float32",
+          "name": "bev_embed",
+          "offset": 41280000,
+          "shape": [
+            40000,
+            1,
+            256
+          ],
+          "storage": "arena"
+        },
+        {
+          "bytes": 216000,
+          "dtype": "float32",
+          "name": "all_cls_scores",
+          "offset": 443264,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "storage": "arena"
+        },
+        {
+          "bytes": 216000,
+          "dtype": "float32",
+          "name": "all_bbox_preds",
+          "offset": 659264,
+          "shape": [
+            6,
+            1,
+            900,
+            10
+          ],
+          "storage": "arena"
+        }
+      ],
+      "runtime_plan_lifetime_validation": "passed",
+      "resident_budget_scope": "Inputs + constants + arena + embedded constants; excludes code, thread stack, runtime metadata and driver allocations."
+    }
+  ],
+  "compiled_source_hashes": [
+    {
+      "path": "native/include/gac/ConstantFolding.h",
+      "sha256": "01a44850f4836fcab004d5f3cbe90124c0d6c3b03fcdd282887e366d72c825d5"
+    },
+    {
+      "path": "native/include/gac/CudaLowering.h",
+      "sha256": "f981aa9eb5d20f8c7e3f9b937e89c5124a356c3ab88c67d5c970e16d28d5d1eb"
+    },
+    {
+      "path": "native/include/gac/CudaMatmul.h",
+      "sha256": "1d3f4443decf1174199315b2a784ab537098fc6060f7c7762376a5ea425f38c1"
+    },
+    {
+      "path": "native/include/gac/CudaReduction.h",
+      "sha256": "687d084aaa55d96470bc088aadd2bcbaa12b90c88e2c6c4cd83b931bab9dddf6"
+    },
+    {
+      "path": "native/include/gac/DeviceLowering.h",
+      "sha256": "c5f5b39257f95875afe1aa21cdac93552b6fa40bbe5f5696efbd4a2512545cdd"
+    },
+    {
+      "path": "native/include/gac/Dialect.h",
+      "sha256": "f7a6ac40de64ec95927c97b67fc3974e0b02b61e34aa256634b80ba0e9173bbd"
+    },
+    {
+      "path": "native/include/gac/LinalgConvolution.h",
+      "sha256": "371160d3d04b9d520c6c6161a3b9d14f4522b19a84b7987be0c9c24ca464b9fe"
+    },
+    {
+      "path": "native/include/gac/LinalgDevice.h",
+      "sha256": "49c5f32e006c7dabc490dda4b4f7be8f269b0219157801a80bfecb51680390f2"
+    },
+    {
+      "path": "native/include/gac/LinalgLowering.h",
+      "sha256": "f549ca16c98ee386988d04d61ba2d4c5500cbeb8cc7a05b816e14ed6a10a42e5"
+    },
+    {
+      "path": "native/include/gac/OnnxImporter.h",
+      "sha256": "2d63fe8c7d7c6be84f3365af14109b32fd68ba23defa0e4438baf07b32cea43d"
+    },
+    {
+      "path": "native/include/gac/Passes.h",
+      "sha256": "f08ce80af50c5cd5c73b2baf02a6e70966798c75b3329a9d5320e203a3ab983b"
+    },
+    {
+      "path": "native/include/gac/VortexLowering.h",
+      "sha256": "705df78fa01d6a320e7a6362d40dde749bd1b0e30e08366a54d6782840e54ae9"
+    },
+    {
+      "path": "native/include/gac/VortexMatmul.h",
+      "sha256": "84305b24afc3b73ca469642a0039f2dd37a585afaf1d8c8a87eed1b114fda74d"
+    },
+    {
+      "path": "native/include/gac/VortexTcu.h",
+      "sha256": "c47f46a2dd325990bddc8257bfa0edec21db1a6b5b3cdcefa38bbc3e8453cef9"
+    },
+    {
+      "path": "native/lib/ConstantFolding.cpp",
+      "sha256": "8b6a8db0fa64d14c0cc24774eeb863cbaa86efb3cb4022a9c3db53e5ca2e7c94"
+    },
+    {
+      "path": "native/lib/CudaLowering.cpp",
+      "sha256": "474c798ea553c52d579aaf0ce83abdcc3e5e218eaf4ee907ae5f4c596dd9dcb4"
+    },
+    {
+      "path": "native/lib/CudaMatmul.cpp",
+      "sha256": "4aeffbf24b42d9087584c0a3289e55ffc4620d32f59d8ef45205086975eac7dd"
+    },
+    {
+      "path": "native/lib/CudaReduction.cpp",
+      "sha256": "377f0ee47e4ed7ec5284640b6dcdbf0106b7410ff3ab0e281e44aa73a383a8bd"
+    },
+    {
+      "path": "native/lib/DeviceLowering.cpp",
+      "sha256": "add043fbd616921846e4c628604743b587b25b3084b5e6646b0488a162cc49db"
+    },
+    {
+      "path": "native/lib/Dialect.cpp",
+      "sha256": "1aa2a57603845279f144018425eabbdb775197bd84f8f01d837552a2a4f0c656"
+    },
+    {
+      "path": "native/lib/GraphPasses.cpp",
+      "sha256": "0f2a795d026c476d59ac2ef915c6074a380b42879d314652c0b5e9aa3c41ede8"
+    },
+    {
+      "path": "native/lib/LinalgConvolution.cpp",
+      "sha256": "30826a2650fe25478e316da3e41e60f74e51270402ac47fae28ce0ddde810aa9"
+    },
+    {
+      "path": "native/lib/LinalgDevice.cpp",
+      "sha256": "51afb8867710c80a685a4aa5c0fa56ecfdff4262e7075c78e9419cc7bcf22372"
+    },
+    {
+      "path": "native/lib/LinalgLowering.cpp",
+      "sha256": "ae69d48dbbc92dc307bf04f3e2b2499bd0028af340bbe79a95fac282a6b0bbf3"
+    },
+    {
+      "path": "native/lib/OnnxImporter.cpp",
+      "sha256": "bb1b0f2b5eea67822995175d1e24950aae351c6609c9759375c8c256cdfe23d5"
+    },
+    {
+      "path": "native/lib/TensorLegalization.cpp",
+      "sha256": "785408563b9ba62a7639222b6b28a11824820410e0c03c738ce3ffddd66f2e73"
+    },
+    {
+      "path": "native/lib/VortexLowering.cpp",
+      "sha256": "001fcf9ae3e03e0a4cbc6cc75f8199d0f0321da14b62b8c29cb658e75d4b3091"
+    },
+    {
+      "path": "native/lib/VortexMatmul.cpp",
+      "sha256": "4034f84cfbcaa9b7c0c728d30c8da4e8b5263baff3a820dafe96bcee23f84063"
+    },
+    {
+      "path": "native/lib/VortexTcu.cpp",
+      "sha256": "b7d0cbb1a82c958919f11412317156fce92467e247eeae2f2a1d9f3e31fc3d4e"
+    },
+    {
+      "path": "native/tools/compile-cuda.sh",
+      "sha256": "7cb5dd0352aed314d4aa521223cddfc4655ae441dc7dec992eff12ad282eadd8"
+    },
+    {
+      "path": "native/tools/compile-vortex.sh",
+      "sha256": "6adbffdc70e078f897019aceb72795b4298a3a2f11834bfdebb226f13eacedc1"
+    },
+    {
+      "path": "native/tools/gac-compile.cpp",
+      "sha256": "50357292958ce0bb71378085e30bf1e7bb07dab7239fb08fea3576d9424d305a"
+    },
+    {
+      "path": "native/tools/gac-opt.cpp",
+      "sha256": "956f3a1987673d80630d317316068b284ce1ebb7b471e1d8220cfc87ee9463a0"
+    }
+  ],
+  "limitations": [
+    "Static-shape tensor ABI and existing operator support constraints remain.",
+    "One output element per thread with serial reduction; no tuned shared-memory or vectorized Linalg schedule yet.",
+    "Custom destination bufferization, not upstream whole-graph One-Shot Bufferize.",
+    "Full cold-model tests compile and verify IR only; model constants were not exported for hardware execution.",
+    "Legacy LMEM/DXA/TCU/CUDA optimized templates require explicit legacy lowering."
+  ]
+}

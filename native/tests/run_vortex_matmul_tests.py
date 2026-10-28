@@ -166,6 +166,7 @@ def main():
                 artifact = output / case["name"] / schedule
                 artifact.parent.mkdir(parents=True, exist_ok=True)
                 env["GAC_VORTEX_MATMUL_SCHEDULE"] = schedule
+                env["GAC_REGULAR_LOWERING"] = "legacy"  # Compare the existing LMEM/DXA/TCU templates.
                 env["GAC_VORTEX_TCU_COMBINED"] = "1" if args.tcu_combined and schedule == "tcu" else "0"
                 entry = {"name": case["name"], "schedule": schedule, "passed": False,
                          "model_sha256": sha256(case["directory"] / "model.onnx")}

@@ -1,0 +1,114 @@
+{
+  "status": "success",
+  "model": "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/model.onnx",
+  "compiler": "/home/thomas/gac-templates-20261021-make/gac-compile",
+  "model_sha256": "07f6738297fe9624d6d26b17390fb7114787829d90e7c1d05569746a15d4592b",
+  "compiler_sha256": "36c50b65d91ddb7f6ec89a303328d28d35255588b55fe644da9acc27fa8f27b3",
+  "backend_makefile": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+  "backend_makefile_sha256": "40c51b21f3d52f6333f4db2f33a29ed4b67fad144a2d3c08dfefe01d85e15b44",
+  "constant_fold_profile": "default",
+  "target": "vortex-rv32",
+  "steps": [
+    {
+      "name": "gac-compile",
+      "seconds": 0.007381418000001361,
+      "command": [
+        "/home/thomas/gac-templates-20261021-make/gac-compile",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/model.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--regular-lowering=linalg",
+        "--vortex-triton-dir=/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/triton",
+        "--constant-fold-profile=default",
+        "--triton-block=128",
+        "--triton-num-warps=1",
+        "--vortex-lanes=4",
+        "--save-stages",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact",
+        "--manifest",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/plan.json",
+        "--constants-dir",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact",
+        "-o",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/native.mlir"
+      ],
+      "returncode": 0,
+      "log": "gac-compile.log"
+    },
+    {
+      "name": "native-translate",
+      "seconds": 0.003670042000003093,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+        "--mlir-to-llvmir",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/native.mlir",
+        "-o",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/native.ll"
+      ],
+      "returncode": 0,
+      "log": "native-translate.log"
+    },
+    {
+      "name": "llvm-link",
+      "seconds": 0.002544561999997086,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+        "-S",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/native.ll",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/triton/gac_op_0.ll",
+        "-o",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/kernel.ll"
+      ],
+      "returncode": 0,
+      "log": "llvm-link.log"
+    },
+    {
+      "name": "vortex-package",
+      "seconds": 0.49795546,
+      "command": [
+        "/usr/bin/make",
+        "-f",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+        "ROOT_DIR=/home/thomas/vortex-gac-buffered-build32",
+        "LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release",
+        "kernel.vxbin"
+      ],
+      "returncode": 0,
+      "log": "vortex-package.log"
+    },
+    {
+      "name": "disassemble",
+      "seconds": 0.003896568000001821,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-objdump",
+        "-d",
+        "/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/kernel.elf"
+      ],
+      "returncode": 0,
+      "log": "disassemble.log"
+    }
+  ],
+  "triton_dispatches": [
+    {
+      "kernel": "gac_op_0",
+      "seconds": 2.1070208439999973,
+      "config": {
+        "abi": "vortex-u64-pointers",
+        "block_size": 4,
+        "grid_size": 1,
+        "kind": "reduction",
+        "lanes": 4,
+        "num_warps": 1,
+        "tile": 64,
+        "ttir_file": "gac_op_0.ttir",
+        "width": 37
+      }
+    }
+  ],
+  "timing_scope": "host compile wall time, including per-kernel packaging; not inference latency",
+  "triton_version": "3.8.0",
+  "dispatch_count": 1,
+  "triton_dispatch_count": 1,
+  "native_dispatch_count": 0,
+  "total_seconds": 2.8980081569999996
+}

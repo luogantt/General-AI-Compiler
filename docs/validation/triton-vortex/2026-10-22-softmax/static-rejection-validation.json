@@ -1,0 +1,62 @@
+{
+  "status": "passed",
+  "checks": 16,
+  "cases": [
+    {
+      "case": "grid",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: manifest grid_size=2, expected 1",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: Triton Vortex Softmax tile or grid disagrees"
+    },
+    {
+      "case": "width",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: unsupported Softmax width/N/tile: width=17, n=19, tile=32",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: invalid Triton Vortex Softmax width/N contract"
+    },
+    {
+      "case": "n",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: unsupported Softmax width/N/tile: width=19, n=18, tile=32",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: invalid Triton Vortex Softmax width/N contract"
+    },
+    {
+      "case": "tile",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: unsupported Softmax width/N/tile: width=19, n=19, tile=64",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: Triton Vortex Softmax tile or grid disagrees"
+    },
+    {
+      "case": "abi",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: manifest abi='vortex-u64-pointers', expected 'vortex-u64-pointers-i32-n'",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: unsupported Triton Vortex kernel ABI"
+    },
+    {
+      "case": "input_shape",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: Softmax input must be FP32 vector[width]",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: Triton Vortex Softmax input must be a nonaliasing FP32 vector[width]"
+    },
+    {
+      "case": "output_shape",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: Softmax output must be FP32 vector[width]",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: Triton Vortex Softmax output must be a distinct FP32 vector[width]"
+    },
+    {
+      "case": "output_bytes",
+      "build_driver": "rejected",
+      "build_driver_error": "gac_op_0: Softmax output must be FP32 vector[width]",
+      "runtime": "rejected-before-device-open",
+      "runtime_error": "gac-vortex-run: tensor shape/dtype/byte count disagree: Y"
+    }
+  ]
+}

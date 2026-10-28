@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bevformer-tensorrt"
+version = "0.1.0"
+description = "Standalone static BEVFormer TensorRT engine build, inference and calibration tools"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+dependencies = [
+    "numpy>=1.24,<3",
+    "onnx>=1.16,<2",
+    "opencv-python-headless>=4.8,<5",
+    "torch>=2.5,<3",
+    "tensorrt-cu12==10.13.3.9",
+]
+
+[project.scripts]
+bevformer-trt = "bevformer_trt.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

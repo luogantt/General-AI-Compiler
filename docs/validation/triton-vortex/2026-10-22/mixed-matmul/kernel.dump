@@ -1,0 +1,198 @@
+
+/home/thomas/gac-triton-integration-final-20261022/mixed_matmul/artifact/kernel.elf:	file format elf32-littleriscv
+
+Disassembly of section .init:
+
+80000000 <_start>:
+80000000: ffff0137     	lui	sp, 0xffff0
+80000004: f14022f3     	csrr	t0, mhartid
+80000008: 00d29313     	slli	t1, t0, 0xd
+8000000c: 40610133     	sub	sp, sp, t1
+80000010: ce102df3     	csrr	s11, 0xce1
+80000014: 34002573     	csrr	a0, mscratch
+80000018: 000d80e7     	jalr	s11
+8000001c: 0000700b     	<unknown>
+80000020: 0000000b     	vx_tmc	zero
+
+Disassembly of section .text:
+
+80000024 <gac_op_1>:
+80000024: 00052603     	lw	a2, 0x0(a0)
+80000028: 00852583     	lw	a1, 0x8(a0)
+8000002c: 01052703     	lw	a4, 0x10(a0)
+80000030: cd3026f3     	csrr	a3, 0xcd3
+80000034: cd602573     	csrr	a0, 0xcd6
+80000038: cd9027f3     	csrr	a5, 0xcd9
+8000003c: 02a78533     	mul	a0, a5, a0
+80000040: 00d506b3     	add	a3, a0, a3
+80000044: 02d6b793     	sltiu	a5, a3, 0x2d
+80000048: 0017a50b     	vx_split_n	a0, a5
+8000004c: 0c078e63     	beqz	a5, 0x80000128 <gac_op_1+0x104>
+80000050: 0ff6f793     	andi	a5, a3, 0xff
+80000054: 03900813     	li	a6, 0x39
+80000058: 00269893     	slli	a7, a3, 0x2
+8000005c: 030787b3     	mul	a5, a5, a6
+80000060: 01170733     	add	a4, a4, a7
+80000064: 0097d793     	srli	a5, a5, 0x9
+80000068: 00379813     	slli	a6, a5, 0x3
+8000006c: 00279893     	slli	a7, a5, 0x2
+80000070: 00f80833     	add	a6, a6, a5
+80000074: 00579793     	slli	a5, a5, 0x5
+80000078: 411787b3     	sub	a5, a5, a7
+8000007c: 00072023     	sw	zero, 0x0(a4)
+80000080: 410686b3     	sub	a3, a3, a6
+80000084: 0fc7f793     	andi	a5, a5, 0xfc
+80000088: 0ff6f693     	andi	a3, a3, 0xff
+8000008c: 00f60633     	add	a2, a2, a5
+80000090: 00269693     	slli	a3, a3, 0x2
+80000094: 00062787     	flw	fa5, 0x0(a2)
+80000098: 00d585b3     	add	a1, a1, a3
+8000009c: 0005a707     	flw	fa4, 0x0(a1)
+800000a0: f00006d3     	fmv.w.x	fa3, zero
+800000a4: 10e7f7d3     	fmul.s	fa5, fa5, fa4
+800000a8: 00d7f7d3     	fadd.s	fa5, fa5, fa3
+800000ac: 00f72027     	fsw	fa5, 0x0(a4)
+800000b0: 00462707     	flw	fa4, 0x4(a2)
+800000b4: 0245a687     	flw	fa3, 0x24(a1)
+800000b8: 10d77753     	fmul.s	fa4, fa4, fa3
+800000bc: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+800000c0: 00f72027     	fsw	fa5, 0x0(a4)
+800000c4: 00862707     	flw	fa4, 0x8(a2)
+800000c8: 0485a687     	flw	fa3, 0x48(a1)
+800000cc: 10d77753     	fmul.s	fa4, fa4, fa3
+800000d0: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+800000d4: 00f72027     	fsw	fa5, 0x0(a4)
+800000d8: 00c62707     	flw	fa4, 0xc(a2)
+800000dc: 06c5a687     	flw	fa3, 0x6c(a1)
+800000e0: 10d77753     	fmul.s	fa4, fa4, fa3
+800000e4: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+800000e8: 00f72027     	fsw	fa5, 0x0(a4)
+800000ec: 01062707     	flw	fa4, 0x10(a2)
+800000f0: 0905a687     	flw	fa3, 0x90(a1)
+800000f4: 10d77753     	fmul.s	fa4, fa4, fa3
+800000f8: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+800000fc: 00f72027     	fsw	fa5, 0x0(a4)
+80000100: 01462707     	flw	fa4, 0x14(a2)
+80000104: 0b45a687     	flw	fa3, 0xb4(a1)
+80000108: 10d77753     	fmul.s	fa4, fa4, fa3
+8000010c: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+80000110: 00f72027     	fsw	fa5, 0x0(a4)
+80000114: 01862707     	flw	fa4, 0x18(a2)
+80000118: 0d85a687     	flw	fa3, 0xd8(a1)
+8000011c: 10d77753     	fmul.s	fa4, fa4, fa3
+80000120: 00e7f7d3     	fadd.s	fa5, fa5, fa4
+80000124: 00f72027     	fsw	fa5, 0x0(a4)
+80000128: 0005300b     	vx_join	a0
+8000012c: 00008067     	ret
+
+80000130 <gac_op_0>:
+80000130: 00052803     	lw	a6, 0x0(a0)
+80000134: 00852783     	lw	a5, 0x8(a0)
+80000138: 01052703     	lw	a4, 0x10(a0)
+8000013c: cd302573     	csrr	a0, 0xcd3
+80000140: cd902673     	csrr	a2, 0xcd9
+80000144: 08052693     	slti	a3, a0, 0x80
+80000148: 0016a58b     	vx_split_n	a1, a3
+8000014c: 0a068263     	beqz	a3, 0x800001f0 <gac_op_0+0xc0>
+80000150: 00251893     	slli	a7, a0, 0x2
+80000154: 00261693     	slli	a3, a2, 0x2
+80000158: 01170733     	add	a4, a4, a7
+8000015c: 011787b3     	add	a5, a5, a7
+80000160: 01180833     	add	a6, a6, a7
+80000164: cc4028f3     	csrr	a7, tmask
+80000168: f00007d3     	fmv.w.x	fa5, zero
+8000016c: 0280006f     	j	0x80000194 <gac_op_0+0x64>
+80000170: 0003b00b     	vx_join	t2
+80000174: 00c50533     	add	a0, a0, a2
+80000178: 00d70733     	add	a4, a4, a3
+8000017c: 00d787b3     	add	a5, a5, a3
+80000180: 00d80833     	add	a6, a6, a3
+80000184: 08052293     	slti	t0, a0, 0x80
+80000188: 0012c293     	xori	t0, t0, 0x1
+8000018c: 0112d08b     	vx_pred_n	t0, a7
+80000190: 06029063     	bnez	t0, 0x800001f0 <gac_op_0+0xc0>
+80000194: cd6022f3     	csrr	t0, 0xcd6
+80000198: 00729313     	slli	t1, t0, 0x7
+8000019c: 00650333     	add	t1, a0, t1
+800001a0: 02332313     	slti	t1, t1, 0x23
+800001a4: 0013238b     	vx_split_n	t2, t1
+800001a8: 00929293     	slli	t0, t0, 0x9
+800001ac: 20f78753     	fmv.s	fa4, fa5
+800001b0: 00030663     	beqz	t1, 0x800001bc <gac_op_0+0x8c>
+800001b4: 00580e33     	add	t3, a6, t0
+800001b8: 000e2707     	flw	fa4, 0x0(t3)
+800001bc: 0003b00b     	vx_join	t2
+800001c0: 0013238b     	vx_split_n	t2, t1
+800001c4: 20f786d3     	fmv.s	fa3, fa5
+800001c8: 00030663     	beqz	t1, 0x800001d4 <gac_op_0+0xa4>
+800001cc: 00578e33     	add	t3, a5, t0
+800001d0: 000e2687     	flw	fa3, 0x0(t3)
+800001d4: 0003b00b     	vx_join	t2
+800001d8: 0013238b     	vx_split_n	t2, t1
+800001dc: f8030ae3     	beqz	t1, 0x80000170 <gac_op_0+0x40>
+800001e0: 00d77753     	fadd.s	fa4, fa4, fa3
+800001e4: 005702b3     	add	t0, a4, t0
+800001e8: 00e2a027     	fsw	fa4, 0x0(t0)
+800001ec: f85ff06f     	j	0x80000170 <gac_op_0+0x40>
+800001f0: 0005b00b     	vx_join	a1
+800001f4: 00008067     	ret
+
+800001f8 <gac_op_2>:
+800001f8: 00052803     	lw	a6, 0x0(a0)
+800001fc: 00852783     	lw	a5, 0x8(a0)
+80000200: 01052703     	lw	a4, 0x10(a0)
+80000204: cd302573     	csrr	a0, 0xcd3
+80000208: cd902673     	csrr	a2, 0xcd9
+8000020c: 08052693     	slti	a3, a0, 0x80
+80000210: 0016a58b     	vx_split_n	a1, a3
+80000214: 0c068263     	beqz	a3, 0x800002d8 <gac_op_2+0xe0>
+80000218: 00251893     	slli	a7, a0, 0x2
+8000021c: 00261693     	slli	a3, a2, 0x2
+80000220: 01170733     	add	a4, a4, a7
+80000224: 011787b3     	add	a5, a5, a7
+80000228: 01180833     	add	a6, a6, a7
+8000022c: cc4028f3     	csrr	a7, tmask
+80000230: f00007d3     	fmv.w.x	fa5, zero
+80000234: 0340006f     	j	0x80000268 <gac_op_2+0x70>
+80000238: 0003300b     	vx_join	t1
+8000023c: 005702b3     	add	t0, a4, t0
+80000240: 00d2a027     	fsw	fa3, 0x0(t0)
+80000244: 0003b00b     	vx_join	t2
+80000248: 00c50533     	add	a0, a0, a2
+8000024c: 00d70733     	add	a4, a4, a3
+80000250: 00d787b3     	add	a5, a5, a3
+80000254: 00d80833     	add	a6, a6, a3
+80000258: 08052293     	slti	t0, a0, 0x80
+8000025c: 0012c293     	xori	t0, t0, 0x1
+80000260: 0112d08b     	vx_pred_n	t0, a7
+80000264: 06029a63     	bnez	t0, 0x800002d8 <gac_op_2+0xe0>
+80000268: cd6022f3     	csrr	t0, 0xcd6
+8000026c: 00729313     	slli	t1, t0, 0x7
+80000270: 00650333     	add	t1, a0, t1
+80000274: 02d32313     	slti	t1, t1, 0x2d
+80000278: 0013238b     	vx_split_n	t2, t1
+8000027c: 00929293     	slli	t0, t0, 0x9
+80000280: 20f78753     	fmv.s	fa4, fa5
+80000284: 00030663     	beqz	t1, 0x80000290 <gac_op_2+0x98>
+80000288: 00580e33     	add	t3, a6, t0
+8000028c: 000e2707     	flw	fa4, 0x0(t3)
+80000290: 0003b00b     	vx_join	t2
+80000294: 0013238b     	vx_split_n	t2, t1
+80000298: 20f786d3     	fmv.s	fa3, fa5
+8000029c: 00030663     	beqz	t1, 0x800002a8 <gac_op_2+0xb0>
+800002a0: 00578e33     	add	t3, a5, t0
+800002a4: 000e2687     	flw	fa3, 0x0(t3)
+800002a8: 0003b00b     	vx_join	t2
+800002ac: 0013238b     	vx_split_n	t2, t1
+800002b0: f8030ae3     	beqz	t1, 0x80000244 <gac_op_2+0x4c>
+800002b4: 10d77753     	fmul.s	fa4, fa4, fa3
+800002b8: a0f71353     	flt.s	t1, fa4, fa5
+800002bc: 00034333     	xor	t1, t1, zero
+800002c0: 00603e33     	snez	t3, t1
+800002c4: 000e230b     	vx_split	t1, t3
+800002c8: 20f786d3     	fmv.s	fa3, fa5
+800002cc: f60e16e3     	bnez	t3, 0x80000238 <gac_op_2+0x40>
+800002d0: 20e706d3     	fmv.s	fa3, fa4
+800002d4: f65ff06f     	j	0x80000238 <gac_op_2+0x40>
+800002d8: 0005b00b     	vx_join	a1
+800002dc: 00008067     	ret

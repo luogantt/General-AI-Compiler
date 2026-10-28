@@ -1,0 +1,197 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-21T12:56:13.678092+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 55, 210 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so",
+        "sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-21T12:56:25.892553+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 75, 1350 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so",
+        "sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "/home/robot/project/gac-msda-20261021/controlled-01/stock.engine",
+  "engine_sha256": "c4ae0052219475bbd96e2ec5923aead49c643126dd9ce83bb79a1b6a76666259",
+  "inputs": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 2053694976,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 5624365056,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 2596536320
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 20,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      409.5682678222656,
+      407.534423828125,
+      412.9968566894531,
+      408.5860900878906,
+      411.56097412109375,
+      411.3655700683594,
+      410.77044677734375,
+      414.1629333496094,
+      411.2986145019531,
+      414.1076354980469,
+      412.4671936035156,
+      413.33349609375,
+      414.7744445800781,
+      414.6657409667969,
+      416.1165771484375,
+      414.32342529296875,
+      416.2762756347656,
+      415.283203125,
+      415.81158447265625,
+      417.870849609375
+    ],
+    "mean": 413.1437301635742,
+    "median": 413.72056579589844,
+    "min": 407.534423828125,
+    "max": 417.870849609375,
+    "p95": 416.3560043334961
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      409.65847799088806,
+      407.55007398547605,
+      413.0149230186362,
+      408.6030529870186,
+      411.58955899300054,
+      411.38584501459263,
+      410.7893930049613,
+      414.18431300553493,
+      411.31493798457086,
+      414.12124200724065,
+      412.48617199016735,
+      413.3567349927034,
+      414.79177499422804,
+      414.6888499963097,
+      416.13508100272156,
+      414.3454580043908,
+      416.2945360003505,
+      415.3018979995977,
+      415.82730499794707,
+      417.8881029947661
+    ],
+    "mean": 413.1663865482551,
+    "median": 413.73898849997204,
+    "min": 407.55007398547605,
+    "max": 417.8881029947661,
+    "p95": 416.37421435007127
+  },
+  "validation": {
+    "status": "not_checked",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only"
+  }
+}

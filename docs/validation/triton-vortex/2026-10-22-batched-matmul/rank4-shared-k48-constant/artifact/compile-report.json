@@ -1,0 +1,136 @@
+{
+  "status": "success",
+  "model": "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/model.onnx",
+  "compiler": "/home/thomas/gac-templates-20261021-make/gac-compile",
+  "model_sha256": "3c257c4d90c726daab9c253a872c2a46581e44f03a275075a88f4c5efb79a13d",
+  "compiler_sha256": "15fe1335d59691419ca7b16a30f3b3d695170141472d987195a2ea6f9510a1dd",
+  "backend_makefile": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+  "backend_makefile_sha256": "40c51b21f3d52f6333f4db2f33a29ed4b67fad144a2d3c08dfefe01d85e15b44",
+  "constant_fold_profile": "default",
+  "target": "vortex-rv32",
+  "steps": [
+    {
+      "name": "gac-compile",
+      "seconds": 0.006951546000010467,
+      "command": [
+        "/home/thomas/gac-templates-20261021-make/gac-compile",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/model.onnx",
+        "--emit=llvm",
+        "--target=vortex",
+        "--regular-lowering=linalg",
+        "--vortex-triton-dir=/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/triton",
+        "--constant-fold-profile=default",
+        "--triton-block=128",
+        "--triton-num-warps=1",
+        "--vortex-lanes=4",
+        "--save-stages",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact",
+        "--manifest",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/plan.json",
+        "--constants-dir",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/native.mlir"
+      ],
+      "returncode": 0,
+      "log": "gac-compile.log"
+    },
+    {
+      "name": "native-translate",
+      "seconds": 0.00304085199999804,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+        "--mlir-to-llvmir",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/native.mlir",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/native.ll"
+      ],
+      "returncode": 0,
+      "log": "native-translate.log"
+    },
+    {
+      "name": "llvm-link",
+      "seconds": 0.0023057049999977153,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+        "-S",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/native.ll",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/triton/gac_op_0.ll",
+        "-o",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/kernel.ll"
+      ],
+      "returncode": 0,
+      "log": "llvm-link.log"
+    },
+    {
+      "name": "vortex-package",
+      "seconds": 0.47519459299999767,
+      "command": [
+        "/usr/bin/make",
+        "-f",
+        "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/triton-vortex-source/tools/Vortex.mk",
+        "ROOT_DIR=/home/thomas/vortex-gac-buffered-build32",
+        "LLVM_PATH=/home/thomas/gac-volt-llvm20/build-release",
+        "kernel.vxbin"
+      ],
+      "returncode": 0,
+      "log": "vortex-package.log"
+    },
+    {
+      "name": "disassemble",
+      "seconds": 0.004056332999994083,
+      "command": [
+        "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-objdump",
+        "-d",
+        "/home/thomas/gac-triton-batched-matmul-final5-20261022-2230/triton_matmul_rank4_shared_rhs_k48_constant/artifact/kernel.elf"
+      ],
+      "returncode": 0,
+      "log": "disassemble.log"
+    }
+  ],
+  "triton_dispatches": [
+    {
+      "kernel": "gac_op_0",
+      "seconds": 2.209864395000011,
+      "config": {
+        "a_shape": [
+          2,
+          2,
+          5,
+          48
+        ],
+        "abi": "vortex-u64-pointers",
+        "b_shape": [
+          48,
+          7
+        ],
+        "batch_mode": "shared-rhs",
+        "batches": 4,
+        "block_k": 64,
+        "block_m": 16,
+        "block_n": 16,
+        "block_size": 4,
+        "c_shape": [
+          2,
+          2,
+          5,
+          7
+        ],
+        "grid_size": 4,
+        "k": 48,
+        "kind": "matmul",
+        "lanes": 4,
+        "m": 5,
+        "n": 7,
+        "num_warps": 1,
+        "ttir_file": "gac_op_0.ttir"
+      }
+    }
+  ],
+  "timing_scope": "host compile wall time, including per-kernel packaging; not inference latency",
+  "triton_version": "3.8.0",
+  "dispatch_count": 1,
+  "triton_dispatch_count": 1,
+  "native_dispatch_count": 0,
+  "total_seconds": 2.973749407000014
+}

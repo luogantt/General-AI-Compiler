@@ -1,0 +1,28 @@
+"builtin.module"() ({
+  "tt.func"() ({
+  ^bb0(%arg0: !tt.ptr<f32>, %arg1: !tt.ptr<f32>, %arg2: !tt.ptr<f32>):
+    %0 = "tt.get_program_id"() {axis = 0 : i32} : () -> i32
+    %1 = "arith.constant"() <{value = 128 : i32}> : () -> i32
+    %2 = "arith.muli"(%0, %1) <{overflowFlags = #arith.overflow<none>}> : (i32, i32) -> i32
+    %3 = "tt.make_range"() {end = 128 : i32, start = 0 : i32} : () -> tensor<128xi32>
+    %4 = "tt.splat"(%2) : (i32) -> tensor<128xi32>
+    %5 = "arith.addi"(%4, %3) <{overflowFlags = #arith.overflow<none>}> : (tensor<128xi32>, tensor<128xi32>) -> tensor<128xi32>
+    %6 = "arith.constant"() <{value = 35 : i32}> : () -> i32
+    %7 = "tt.splat"(%6) : (i32) -> tensor<128xi32>
+    %8 = "arith.cmpi"(%5, %7) <{predicate = 2 : i64}> : (tensor<128xi32>, tensor<128xi32>) -> tensor<128xi1>
+    %9 = "arith.constant"() <{value = dense<0.000000e+00> : tensor<128xf32>}> : () -> tensor<128xf32>
+    %10 = "tt.splat"(%arg0) : (!tt.ptr<f32>) -> tensor<128x!tt.ptr<f32>>
+    %11 = "tt.addptr"(%10, %5) : (tensor<128x!tt.ptr<f32>>, tensor<128xi32>) -> tensor<128x!tt.ptr<f32>>
+    %12 = "tt.load"(%11, %8, %9) {cache = 1 : i32, evict = 1 : i32, isVolatile = false, operandSegmentSizes = array<i32: 1, 1, 1>} : (tensor<128x!tt.ptr<f32>>, tensor<128xi1>, tensor<128xf32>) -> tensor<128xf32>
+    %13 = "arith.constant"() <{value = dense<0.000000e+00> : tensor<128xf32>}> : () -> tensor<128xf32>
+    %14 = "tt.splat"(%arg1) : (!tt.ptr<f32>) -> tensor<128x!tt.ptr<f32>>
+    %15 = "tt.addptr"(%14, %5) : (tensor<128x!tt.ptr<f32>>, tensor<128xi32>) -> tensor<128x!tt.ptr<f32>>
+    %16 = "tt.load"(%15, %8, %13) {cache = 1 : i32, evict = 1 : i32, isVolatile = false, operandSegmentSizes = array<i32: 1, 1, 1>} : (tensor<128x!tt.ptr<f32>>, tensor<128xi1>, tensor<128xf32>) -> tensor<128xf32>
+    %17 = "arith.addf"(%12, %16) <{fastmath = #arith.fastmath<none>}> : (tensor<128xf32>, tensor<128xf32>) -> tensor<128xf32>
+    %18 = "tt.splat"(%arg2) : (!tt.ptr<f32>) -> tensor<128x!tt.ptr<f32>>
+    %19 = "tt.addptr"(%18, %5) : (tensor<128x!tt.ptr<f32>>, tensor<128xi32>) -> tensor<128x!tt.ptr<f32>>
+    "tt.store"(%19, %17, %8) {cache = 1 : i32, evict = 1 : i32} : (tensor<128x!tt.ptr<f32>>, tensor<128xf32>, tensor<128xi1>) -> ()
+    "tt.return"() : () -> ()
+  }) {function_type = (!tt.ptr<f32>, !tt.ptr<f32>, !tt.ptr<f32>) -> (), noinline = false, sym_name = "gac_op_0", sym_visibility = "public"} : () -> ()
+}) : () -> ()
+

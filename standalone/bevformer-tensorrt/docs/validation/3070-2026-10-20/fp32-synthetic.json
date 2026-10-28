@@ -1,0 +1,238 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-20T03:26:17.211927+00:00",
+    "host": "<test-host>",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-REDACTED, 580.178.04, 8192 MiB, 63, 1410 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-20T03:26:38.980899+00:00",
+    "host": "<test-host>",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-REDACTED, 580.178.04, 8192 MiB, 81, 1770 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "results/base-fp32.engine",
+  "engine_sha256": "8382f0ec6c231a5fb5ef5dcd4b4008a2bdd62e2667a78694c90e6c4ff34c536f",
+  "inputs": "models/bevformer-base/images.npy",
+  "inputs_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 3686472704,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 3770482688,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 4450418688
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 20,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      798.108642578125,
+      797.4104614257812,
+      797.918212890625,
+      798.6945190429688,
+      801.50732421875,
+      804.473876953125,
+      804.3140869140625,
+      804.8814086914062,
+      806.63037109375,
+      809.9490966796875,
+      809.3734130859375,
+      810.5625610351562,
+      813.151123046875,
+      814.3923950195312,
+      816.7598266601562,
+      818.145263671875,
+      819.0822143554688,
+      818.66650390625,
+      820.4451904296875,
+      824.0003662109375
+    ],
+    "mean": 809.4233428955079,
+    "median": 809.6612548828125,
+    "min": 797.4104614257812,
+    "max": 824.0003662109375,
+    "p95": 820.62294921875
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      798.1332429917529,
+      797.4239109898917,
+      797.9303499741945,
+      798.7087169894949,
+      801.5220749948639,
+      804.4892119942233,
+      804.3287200271152,
+      804.8975089914165,
+      806.6432600026019,
+      809.9612349760719,
+      809.3882079992909,
+      810.575769020943,
+      813.163696002448,
+      814.4062680075876,
+      816.7720960045699,
+      818.1579349911772,
+      819.0940280037466,
+      818.6806339945178,
+      820.4585389757995,
+      824.01251400006
+    ],
+    "mean": 809.4373959465884,
+    "median": 809.6747214876814,
+    "min": 797.4239109898917,
+    "max": 824.01251400006,
+    "p95": 820.6362377270125
+  },
+  "validation": {
+    "status": "passed",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only",
+    "reference": "models/bevformer-base/reference.npz",
+    "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+    "rtol": 0.001,
+    "atol": 0.0001,
+    "outputs": {
+      "bev_embed": {
+        "passed": true,
+        "shape": [
+          40000,
+          1,
+          256
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 10240000,
+        "max_absolute_error": 2.2292137145996094e-05,
+        "max_relative_error_floor_1e_12": 5.244867308387741
+      },
+      "all_cls_scores": {
+        "passed": true,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 54000,
+        "max_absolute_error": 1.33514404296875e-05,
+        "max_relative_error_floor_1e_12": 5.383888878190135e-06
+      },
+      "all_bbox_preds": {
+        "passed": true,
+        "shape": [
+          6,
+          1,
+          900,
+          10
+        ],
+        "actual_dtype": "float32",
+        "reference_dtype": "float32",
+        "reference_finite": true,
+        "mismatched_elements": 0,
+        "elements": 54000,
+        "max_absolute_error": 4.57763671875e-05,
+        "max_relative_error_floor_1e_12": 0.07481954021751992
+      }
+    }
+  }
+}

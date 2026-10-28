@@ -4,6 +4,11 @@
 
 ## 先看什么
 
+先理解导入过程，可打开 [ONNX 前端分步说明](onnx-frontend-walkthrough.html)：
+用实际导入的小模型展示 `ModelProto → constants / TensorSpec / Node → Graph`，
+每一步都带当前源码摘录，并区分保存文件、通用 MLIR 与 Vortex 后端接口。
+页面由 `python tools/build_onnx_frontend_docs.py` 生成；加 `--check` 检查是否需要刷新。
+
 本地生成目录为 `build/bevformer-onnx-inspect/`：
 
 | 文件 | 作用 |

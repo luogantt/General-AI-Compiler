@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeviceLowering.cpp · 第一性原理</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f7f4;
+    --surface: #ffffff;
+    --ink: #111111;
+    --ink-2: #4b4b47;
+    --muted: #77766f;
+    --line: #deddd5;
+    --soft: #f1f0eb;
+    --accent: #1c5cab;
+    --accent-soft: #e8f0fa;
+    --code: #f4f3ee;
+    --warn: #9a4a00;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .page {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 44px 28px 80px;
+  }
+
+  header {
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 8px 0 10px;
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    max-width: 860px;
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+
+  .formula {
+    margin: 22px 0 0;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--surface);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: var(--ink);
+    white-space: pre-wrap;
+  }
+
+  .diagram {
+    margin-top: 34px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .diagram-input,
+  .diagram-output {
+    text-align: center;
+    padding: 12px 16px;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    background: var(--soft);
+    color: var(--ink-2);
+    font-size: 13px;
+  }
+
+  .diagram-input strong,
+  .diagram-output strong {
+    color: var(--ink);
+  }
+
+  .diagram-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 0;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .diagram-arrow .glyph {
+    font-size: 18px;
+    line-height: 1;
+    color: var(--ink-2);
+  }
+
+  .unit {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+
+  .unit-no {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid #c9d9ee;
+    font-weight: 700;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+  }
+
+  .unit h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .unit .question {
+    display: inline-block;
+    margin: 3px 0 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 11.5px;
+    font-weight: 650;
+  }
+
+  .unit p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .unit .code-refs {
+    margin-top: 7px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+  }
+
+  .unit .code-refs a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid #a9c2e4;
+  }
+
+  .section {
+    margin-top: 46px;
+  }
+
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .section > .intro {
+    margin: 0 0 18px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .explain {
+    display: grid;
+    gap: 20px;
+  }
+
+  .explain-item {
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+
+  .explain-item h3 {
+    margin: 0 0 7px;
+    font-size: 16.5px;
+  }
+
+  .explain-item p {
+    margin: 0 0 9px;
+    color: var(--ink-2);
+    font-size: 14px;
+  }
+
+  .explain-item p:last-child { margin-bottom: 0; }
+
+  .code {
+    margin: 12px 0 0;
+    padding: 14px 16px;
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    white-space: pre;
+  }
+
+  .code-refs {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+  }
+
+  .code-refs a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid #a9c2e4;
+  }
+
+  .example {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .example .code {
+    margin: 0;
+  }
+
+  .steps {
+    margin: 0;
+    padding-left: 22px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .steps li {
+    margin: 0 0 9px;
+    padding-left: 2px;
+  }
+
+  .steps li:last-child { margin-bottom: 0; }
+
+  .steps strong { color: var(--ink); }
+
+  .misconceptions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+
+  .misconceptions li {
+    padding: 12px 15px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .misconceptions strong {
+    color: var(--ink);
+    margin-right: 6px;
+  }
+
+  .footer {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.92em;
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 4px;
+  }
+
+  @media (max-width: 820px) {
+    .page { padding: 28px 16px 60px; }
+    .example { grid-template-columns: 1fr; }
+    .unit { grid-template-columns: 38px minmax(0, 1fr); padding: 14px; }
+    .unit-no { width: 30px; height: 30px; font-size: 11px; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .unit, .explain-item, .misconceptions li { break-inside: avoid; }
+    .code { white-space: pre-wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">native/lib/DeviceLowering.cpp</div>
+    <h1>从第一性原理理解 DeviceLowering</h1>
+    <p class="lede">
+      它不是“在图上连线”。它只回答五个问题：这张图能不能跑？按什么顺序跑？
+      数据住在哪？每个算子由谁算？Runtime 怎么启动？
+      把这些问题拆开，就是下面六个不可再少的步骤。
+    </p>
+
+    <div class="formula">DeviceLowering =
+  合法性谓词
+  + DAG 线性化
+  + 生命周期内存分配
+  + 实现选择
+  + Kernel 构造
+  + 合同序列化</div>
+  </header>
+
+  <section class="diagram" aria-label="DeviceLowering 概念架构图">
+
+    <div class="diagram-input">
+      <strong>输入：ModuleOp</strong><br>
+      一张 tensor DAG：算子节点 + SSA 值 + 权重常量
+    </div>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>先判断能不能做</span></div>
+
+    <article class="unit">
+      <span class="unit-no">01</span>
+      <div>
+        <h2>合法性：这张图能在目标上执行吗？</h2>
+        <span class="question">合法性谓词</span>
+        <p>
+          设备后端不是万能的：它只支持固定算子、静态 shape、特定 dtype 和属性模式。
+          这一步在分配任何内存、生成任何 Kernel 之前，把不支持的形态全部拒绝。
+          拒绝是编译错误，不是运行时回退。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1060">validateDeviceGraph()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L725">preflight()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L116">validatePad()</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>把图变成可执行顺序</span></div>
+
+    <article class="unit">
+      <span class="unit-no">02</span>
+      <div>
+        <h2>线性化：把 DAG 变成 dispatch 序列</h2>
+        <span class="question">顺序从哪来？</span>
+        <p>
+          GPU/NPU Runtime 执行的是队列，不是图。所以每个产生 SSA 值的算子变成一个
+          dispatch；每个 dispatch 恰好产生一个输出张量。按拓扑顺序排列，
+          并记录每个 dispatch 依赖哪个前序 dispatch。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1480">dispatch loop</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1479">producer</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1662">depends_on</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>每个值需要一个地址</span></div>
+
+    <article class="unit">
+      <span class="unit-no">03</span>
+      <div>
+        <h2>内存映射：每个 SSA 值住在哪？</h2>
+        <span class="question">地址与生命周期</span>
+        <p>
+          设备全局内存有限，不能运行时 malloc。这里把每个 SSA 值映射成
+          物理 Buffer：输入/常量独立分配，中间值进入 64 字节对齐的 arena。
+          按最后一次使用决定复用：只有 <code>last_use &lt; new_producer</code> 才能覆盖。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L925">TensorAllocation</a>
+          <a href="../native/lib/DeviceLowering.cpp#L946">tensorSize()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1300">view elision</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1371">arena allocator</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>同一个数学，有多种实现</span></div>
+
+    <article class="unit">
+      <span class="unit-no">04</span>
+      <div>
+        <h2>实现选择：每个算子由谁算？</h2>
+        <span class="question">选择哪条后端路径</span>
+        <p>
+          规则算子可以变成 Linalg 结构化循环；不规则算子需要专用标量发射；
+          形状合适的 MatMul/Conv 可以走设备模板；满足严格合同的 Linalg 子图可以交给 Triton。
+          选择失败就保留 native，并记录原因。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1483">templates::select()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1493">Triton selection</a>
+          <a href="../native/lib/DeviceLowering.cpp#L104">isLinalgDeviceOperation()</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>把选择变成设备函数</span></div>
+
+    <article class="unit">
+      <span class="unit-no">05</span>
+      <div>
+        <h2>Kernel 构造：设备函数长什么样？</h2>
+        <span class="question">指针 + 线程号 → 输出</span>
+        <p>
+          一个 Kernel 就是一个函数：参数是若干全局指针，线程号 <code>tid</code> 决定
+          当前线程算哪个输出元素。规则 Linalg 走 destination bufferization + Linalg-to-SCF；
+          不规则算子走 <code>emitElement</code>/<code>emitSpatial</code>；模板和 Triton 只替换函数体。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L220">emitElement()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L504">emitSpatial()</a>
+          <a href="../native/lib/LinalgDevice.cpp#L27">emitLinalgDeviceElement()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1620">templates::emit()</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>Runtime 不读 MLIR，只读合同</span></div>
+
+    <article class="unit">
+      <span class="unit-no">06</span>
+      <div>
+        <h2>合同序列化：Runtime 怎么启动？</h2>
+        <span class="question">plan.json</span>
+        <p>
+          把 tensor 表、offset、dispatch 顺序、依赖、launch 几何和 target 字段写成
+          <code>plan.json</code>。Runtime 只认这份合同，并且会在打开设备前重新校验一遍。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1852">manifest</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1833">tensors / inputs / outputs</a>
+          <a href="../native/runtime/dispatch-plan.h#L583">parsePlan()</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="diagram-arrow"><span class="glyph">↓</span><span>设备执行</span></div>
+
+    <div class="diagram-output">
+      <strong>输出：Kernel 机器码 + plan.json</strong><br>
+      Runtime 分配/上传 → 按 dispatch 顺序启动 → 下载输出
+    </div>
+
+  </section>
+
+  <section class="section">
+    <h2>为什么必须是这六步</h2>
+    <p class="intro">
+      每一步都在消除一个不可避免的不确定性。少一步，后面的信息就不够。
+    </p>
+
+    <div class="explain">
+
+      <article class="explain-item">
+        <h3>01 合法性：因为设备不是图灵完备的</h3>
+        <p>
+          设备 Kernel 只能处理它理解的语义。动态 shape 无法计算静态地址；
+          未支持的属性模式无法安全猜测；不是所有 ONNX 算子都能在设备上执行。
+          所以必须先有一个“可执行性谓词”，把不可执行的图挡在 codegen 之前。
+        </p>
+        <p>
+          这也是为什么 <code>preflight()</code> 既检查算子白名单，也检查静态 shape、
+          dtype、ScatterND 索引、Gather 越界、LayerNorm 精度模式等。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1060">validateDeviceGraph()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L725">preflight()</a>
+        </div>
+      </article>
+
+      <article class="explain-item">
+        <h3>02 线性化：因为 Runtime 执行的是队列</h3>
+        <p>
+          DAG 只是编译期的依赖关系；设备端没有“图调度器”。把每个输出值的生产者
+          变成一个 dispatch，就把“图”变成了“按顺序提交的 Kernel 列表”。
+          每个 dispatch 只有一个输出，所以输入/输出绑定是唯一的，Buffer 生命周期也容易证明。
+        </p>
+        <p>
+          依赖仍然保留：<code>depends_on</code> 记录前序 dispatch，Runtime 可以检查顺序，
+          内存复用也依赖这个顺序。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1480">dispatch loop</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1662">depends_on</a>
+        </div>
+      </article>
+
+      <article class="explain-item">
+        <h3>03 内存映射：因为设备端不能 malloc</h3>
+        <p>
+          所有 Kernel 都通过 64 位（CUDA）或 RV32（Vortex）指针访问全局内存。
+          指针必须在编译期确定，所以每个 SSA 值都要有一个固定 offset。
+          中间值共享一个 arena，用生命周期决定能否复用；图输出必须活到最后。
+        </p>
+        <p>
+          这就是 <code>last_use &lt; new_producer</code> 规则的来源：如果前一个值在
+          dispatch i 还在被读，就不能把它的地址在同一个 dispatch 里分给新输出。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1371">last-use / arena allocator</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1833">manifest tensor offsets</a>
+        </div>
+      </article>
+
+      <article class="explain-item">
+        <h3>04 实现选择：因为同一个数学有多种最优实现</h3>
+        <p>
+          MatMul 可以是标量三重循环，也可以是 shared-memory tile；Softmax 可以是
+          单线程串行归约，也可以是 CTA 协作归约；一些规则 Linalg 子图还可以整体交给 Triton。
+          选择依据是形状、dtype、目标资源和严格合同，而不是“哪个名字好听”。
+        </p>
+        <p>
+          选择失败不会换后端，而是保留 native 标量路径，并把原因写进 manifest。
+          这让每个 dispatch 的实现来源可审计。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1483">templates::select()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1493">Triton selection</a>
+          <a href="../native/lib/DeviceLowering.cpp#L1673">dispatch["lowering"]</a>
+        </div>
+      </article>
+
+      <article class="explain-item">
+        <h3>05 Kernel 构造：因为设备函数只认指针和线程号</h3>
+        <p>
+          一个 Kernel 的 ABI 不是“算子”，而是“指针数组 + 线程号”。
+          线程号决定当前线程负责哪个输出元素；Kernel 内部用广播、归约或采样
+          把这个元素算出来。Linalg 路径复用上游 Linalg-to-SCF；
+          非规则路径用 ScalarBuilder 逐条创建 typed MLIR Operation。
+        </p>
+        <p>
+          模板和 Triton 只替换 Kernel body，不改变 Buffer 规划、dispatch 顺序和 ABI。
+          这就是为什么它们可以“插进来”而不影响正确性。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L220">emitElement()</a>
+          <a href="../native/lib/DeviceLowering.cpp#L504">emitSpatial()</a>
+          <a href="../native/lib/LinalgDevice.cpp#L27">emitLinalgDeviceElement()</a>
+        </div>
+      </article>
+
+      <article class="explain-item">
+        <h3>06 合同序列化：因为 Runtime 不理解编译器 IR</h3>
+        <p>
+          Runtime 不解析 MLIR，也不重新推导 shape。它需要一份稳定的 JSON：
+          每个 tensor 的名字、dtype、字节数、storage、offset；每个 dispatch 的 kernel、
+          inputs、output、依赖、launch 几何。这份 JSON 就是 <code>plan.json</code>。
+        </p>
+        <p>
+          Runtime 还会重新校验：活跃区间不能重叠、Triton 几何必须和 shape 一致、
+          CUDA/Vortex 的 ABI 字段必须匹配。manifest 是合同，不是日志。
+        </p>
+        <div class="code-refs">
+          <a href="../native/lib/DeviceLowering.cpp#L1852">manifest</a>
+          <a href="../native/runtime/dispatch-plan.h#L583">parsePlan()</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>用一张小图走完全流程</h2>
+    <p class="intro">
+      这是把上面的六步落到具体数据上的方式。看懂这个例子，就看懂了 DeviceLowering 在做什么。
+    </p>
+
+    <div class="example">
+      <pre class="code">%A = input  tensor&lt;4xf32&gt;
+%B = input  tensor&lt;4xf32&gt;
+
+%T = gac.add   %A, %B   // dispatch 0
+%Y = gac.relu  %T       // dispatch 1
+
+return %Y</pre>
+
+      <ol class="steps">
+        <li><strong>合法性</strong>：add/relu 都在白名单里；shape 是静态 4；dtype 是 FP32。通过。</li>
+        <li><strong>线性化</strong>：产生两个 dispatch。dispatch 0 输出 <code>%T</code>，dispatch 1 输出 <code>%Y</code>；dispatch 1 依赖 0。</li>
+        <li><strong>内存映射</strong>：<code>%A/%B</code> 是输入 Buffer；<code>%T</code> 进 arena，offset 0；<code>%Y</code> 是图输出，offset 64（64B 对齐），活到所有 dispatch 结束。</li>
+        <li><strong>实现选择</strong>：add/relu 是规则逐元素算子，默认走 Linalg pointwise；也可以显式选择 legacy 标量路径。</li>
+        <li><strong>Kernel 构造</strong>：<code>add_kernel(ptrA, ptrB, ptrT)</code> 和 <code>relu_kernel(ptrT, ptrY)</code>；每个线程处理一个元素。</li>
+        <li><strong>合同</strong>：manifest 记录 <code>%T offset=0</code>、<code>%Y offset=64</code>、dispatch 0/1 的顺序和依赖；Runtime 按顺序启动两个 Kernel。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>几个容易搞反的点</h2>
+    <p class="intro">这些是理解 DeviceLowering 时最常见的误解。</p>
+    <ul class="misconceptions">
+      <li><strong>不是把整张图做成一个大 Kernel。</strong>每个输出张量一个 dispatch；Kernel 之间用全局 Buffer 交接。</li>
+      <li><strong>不是运行时分配内存。</strong>所有 offset 在编译期确定；Runtime 只按 manifest 映射地址。</li>
+      <li><strong>不是所有算子走同一条路径。</strong>规则 Linalg、专用标量、设备模板、Triton 是四种不同的 Kernel 来源。</li>
+      <li><strong>不是 manifest 只是调试日志。</strong>它是 Runtime 的唯一执行合同，并且会被重新校验。</li>
+      <li><strong>不是先选模板再分内存。</strong>Buffer 生命周期和实现选择是解耦的；模板/Triton 不改变 Buffer 规划。</li>
+      <li><strong>不是“编译失败就换后端”。</strong>选择失败会保留 native 标量路径，并记录原因，不会静默切换。</li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    一句话总结：DeviceLowering 把“张量图”变成“一串带指针和线程号的 Kernel + 一张全局内存地图 + 一份 Runtime 能执行的合同”。
+    代码位置以当前工作树为准。
+  </footer>
+
+</div>
+</body>
+</html>

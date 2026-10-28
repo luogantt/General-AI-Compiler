@@ -1,0 +1,217 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-21T15:17:45.408161+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 55, 210 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+        "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-21T15:17:59.117684+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 70, 1380 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+        "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "/home/robot/project/gac-msda-20261021/controlled-01/custom.engine",
+  "engine_sha256": "9fb58a02198c63e017ecc09bbee40b23fd99cfa214df4f0391dc9b5fe9955c98",
+  "inputs": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 2053694976,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 5624365056,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 2596536320
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 30,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      333.0652160644531,
+      335.08966064453125,
+      334.25811767578125,
+      333.55706787109375,
+      335.7397766113281,
+      336.258056640625,
+      334.18548583984375,
+      335.3958435058594,
+      336.078857421875,
+      336.2785339355469,
+      336.4208679199219,
+      335.5871887207031,
+      336.6863098144531,
+      335.6846008300781,
+      335.6385192871094,
+      338.5682067871094,
+      337.1890869140625,
+      336.7782287597656,
+      337.85345458984375,
+      336.8796081542969,
+      338.625244140625,
+      337.934326171875,
+      337.32940673828125,
+      338.3562316894531,
+      338.8331604003906,
+      338.5405578613281,
+      338.31500244140625,
+      339.6003723144531,
+      338.7399597167969,
+      338.0613098144531
+    ],
+    "mean": 336.7176086425781,
+    "median": 336.7322692871094,
+    "min": 333.0652160644531,
+    "max": 339.6003723144531,
+    "p95": 338.7912200927734
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      333.15307000884786,
+      335.0992240011692,
+      334.26826298818924,
+      333.56773300329223,
+      335.7616929861251,
+      336.27067200723104,
+      334.19663898530416,
+      335.405117017217,
+      336.0874990175944,
+      336.28726500319317,
+      336.42858199891634,
+      335.59690800029784,
+      336.6960129933432,
+      335.69228899432346,
+      335.64627199666575,
+      338.57756800716743,
+      337.1972079912666,
+      336.7887970234733,
+      337.86379400407895,
+      336.8864190124441,
+      338.6353490059264,
+      337.9443320154678,
+      337.33898599166423,
+      338.3660299878102,
+      338.84203899651766,
+      338.5482569865417,
+      338.32567499484867,
+      339.60761700291187,
+      338.74584498698823,
+      338.0698929831851
+    ],
+    "mean": 336.72983493306674,
+    "median": 336.74240500840824,
+    "min": 333.15307000884786,
+    "max": 339.60761700291187,
+    "p95": 338.7987516922294
+  },
+  "validation": {
+    "status": "not_checked",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only"
+  }
+}

@@ -1,7 +1,7 @@
 #ifndef GAC_CUDA_LOWERING_H
 #define GAC_CUDA_LOWERING_H
 
-#include "gac/DeviceLowering.h"
+#include "mlir/Pass/Pass.h"
 #include "mlir/Dialect/LLVMIR/LLVMDialect.h"
 #include "mlir/IR/Builders.h"
 

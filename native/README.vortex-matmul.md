@@ -3,7 +3,10 @@
 统一编译器提供三个可显式选择的 Vortex 模板。
 它们使用 C++ `OpBuilder` 创建真实 MLIR Operation，经 LLVM/VOLT 生成机器码；
 没有生成 C++ 设备 Kernel，也没有调用 Python 数学实现代替设备执行。
-默认仍为 `scalar`，CUDA 后端保持独立。
+本节属于显式 `--regular-lowering=legacy` 路径；使用脚本前设置
+`export GAC_REGULAR_LOWERING=legacy`。该路径的默认模板为 `scalar`。
+编译器现在默认采用 [Linalg 混合路径](README.md#linalg-混合路径与现有模板的边界)，
+这些 LMEM/DXA/TCU 模板尚未迁移成 Linalg Schedule。
 
 ## 编译链与代码
 
@@ -22,8 +25,8 @@ ONNX → OnnxImporter → gac.matmul / gac.matmul_bias / gac.matmul_bias_relu
 |---|---|
 | 编译选项 | [DeviceLowering.h](include/gac/DeviceLowering.h)、[gac-compile.cpp](tools/gac-compile.cpp) |
 | 模板选择和 dispatch 元数据 | [DeviceLowering.cpp](lib/DeviceLowering.cpp) |
-| LMEM/DXA 算法与资源检查 | [VortexMatmul.cpp](lib/VortexMatmul.cpp)：`planVortexMatmul`、`emitVortexMatmul` |
-| TCU 算术与寄存器布局 | [VortexTcu.cpp](lib/VortexTcu.cpp)：`configureVortexTcuMatmul`、`emitVortexTcuMatmul` |
+| LMEM/DXA 算法与资源检查 | [VortexMatmul.cpp](templates/vortex/Matmul.cpp)：`planVortexMatmul`、`emitVortexMatmul` |
+| TCU 算术与寄存器布局 | [VortexTcu.cpp](templates/vortex/Tcu.cpp)：`configureVortexTcuMatmul`、`emitVortexTcuMatmul` |
 | CSR、barrier、DXA 指令和 ABI | [VortexLowering.cpp](lib/VortexLowering.cpp) |
 | manifest 校验 | [dispatch-plan.h](runtime/dispatch-plan.h) |
 | 设备能力、搬运、提交、计数器 | [vortex-run.cpp](runtime/vortex-run.cpp) |

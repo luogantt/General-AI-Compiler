@@ -1,0 +1,225 @@
+{
+  "status": "executed",
+  "environment_before": {
+    "utc": "2026-10-21T16:00:30.844562+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 55, 210 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+        "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+      },
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-dcn-plugin/libgac_dcn_plugin.so",
+        "sha256": "d22e5fa2ae9641ac2e8f0b847ce5aaea76f5fe445053ce99b2d448e21cd30982"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "environment_after": {
+    "utc": "2026-10-21T16:00:43.584409+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 69, 1275 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+        "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+      },
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-dcn-plugin/libgac_dcn_plugin.so",
+        "sha256": "d22e5fa2ae9641ac2e8f0b847ce5aaea76f5fe445053ce99b2d448e21cd30982"
+      }
+    ],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "engine": "/home/robot/project/gac-msda-20261021/controlled-dcn-round3/candidate.engine",
+  "engine_sha256": "dc4200cd2bd4c21a443e05211d79599d3bf0fa5e2d55f4ae1ddef79c7a8ad08d",
+  "inputs": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "INPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "bev_embed",
+      "shape": [
+        40000,
+        1,
+        256
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_cls_scores",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    },
+    {
+      "name": "all_bbox_preds",
+      "shape": [
+        6,
+        1,
+        900,
+        10
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "OUTPUT",
+      "location": "TensorLocation.DEVICE"
+    }
+  ],
+  "memory": {
+    "context_device_memory_requirement_bytes": 2053694976,
+    "context_requirement_source": "ICudaEngine.device_memory_size_v2",
+    "snapshot_after_context_and_io_binding": {
+      "free_bytes": 5624365056,
+      "total_bytes": 8220901376,
+      "device_used_bytes": 2596536320
+    },
+    "scope": "One device-wide cudaMemGetInfo snapshot before warmup; includes other processes; not peak memory",
+    "context_note": "Context requirement excludes weights, I/O buffers and other runtime allocations"
+  },
+  "engine_aux_streams": 0,
+  "warmup": 5,
+  "repeat": 30,
+  "timing_scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "cuda_event_note": "Stream elapsed time can include GPU idle gaps caused by host submission",
+  "cuda_event_ms": {
+    "samples": [
+      304.2396240234375,
+      310.71435546875,
+      306.6634216308594,
+      305.3445129394531,
+      308.1236572265625,
+      307.3863830566406,
+      307.9024658203125,
+      307.9444580078125,
+      307.3974609375,
+      309.8419189453125,
+      307.6147155761719,
+      308.5168762207031,
+      309.7180480957031,
+      308.63665771484375,
+      309.0687561035156,
+      309.06573486328125,
+      309.85931396484375,
+      309.53466796875,
+      308.11749267578125,
+      309.14556884765625,
+      310.4962463378906,
+      309.7896728515625,
+      310.6263122558594,
+      310.0999755859375,
+      311.6563720703125,
+      311.3963623046875,
+      310.9939880371094,
+      311.5653076171875,
+      310.086669921875,
+      311.8766174316406
+    ],
+    "mean": 309.11412048339844,
+    "median": 309.3401184082031,
+    "min": 304.2396240234375,
+    "max": 311.8766174316406,
+    "p95": 311.6153930664062
+  },
+  "host_submit_and_sync_ms": {
+    "samples": [
+      304.3297060066834,
+      310.73154500336386,
+      306.6834270139225,
+      305.37082598311827,
+      308.1393899919931,
+      307.4059580103494,
+      307.91968101402745,
+      307.9621750221122,
+      307.4145930004306,
+      309.86065600882284,
+      307.62956698890775,
+      308.5339449753519,
+      309.73462300607935,
+      308.6528159910813,
+      309.0868099825457,
+      309.0839899959974,
+      309.8755870014429,
+      309.5495709858369,
+      308.13577299704775,
+      309.1614919831045,
+      310.51139600458555,
+      309.80592500418425,
+      310.6438689865172,
+      310.1157930213958,
+      311.67307001305744,
+      311.413718998665,
+      311.0103439830709,
+      311.5821789833717,
+      310.1029329991434,
+      311.89345801249146
+    ],
+    "mean": 309.13382723229006,
+    "median": 309.3555314844707,
+    "min": 304.3297060066834,
+    "max": 311.89345801249146,
+    "p95": 311.63216904969886
+  },
+  "validation": {
+    "status": "not_checked",
+    "all_outputs_finite": true,
+    "output_finite": {
+      "bev_embed": true,
+      "all_cls_scores": true,
+      "all_bbox_preds": true
+    },
+    "scope": "Final output of the last measured execution only"
+  }
+}

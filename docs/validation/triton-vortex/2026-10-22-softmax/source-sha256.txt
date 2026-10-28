@@ -1,0 +1,19 @@
+# SHA-256 source snapshot
+date: 2026-10-22
+branch: lg/vortex-backend
+
+# The 48-case Softmax integration run used the following harness snapshot.
+# The working-tree file was subsequently extended by the separate LayerNorm phase.
+3ba0292c87ddd102c9f7e7fce6f89f22323757f2864957b22433d96a56241501  native/tests/run_triton_vortex_tests.py (validated Softmax snapshot)
+e8706e9c6fbc333450df4f6102b7d0ef14b7be4eeef767218615ea4bd55ed85f  native/README.triton-vortex.md
+02bdac9861dacd0a0f682762564683f6edadfa2a0108cd8489b13fa1f7c90170  native/lib/TritonBridge.cpp
+6cff0a42d6a7deb96996a2548232028c4780507e82f8787055c88207e59ef29b  native/lib/DeviceLowering.cpp
+1511180112a67b64aceab2578d2eb77ad880f0f8740071d56acec46a700925c2  native/tools/compile-triton-vortex.py
+2ab75ae50a096ceae9408cd9d68238078274af6f4752d453f4582ea68bc91b8c  native/runtime/dispatch-plan.h
+6bff959abc0da6aa1171619414272a7a57e8d63b592f42816154520294d78a3f  native/runtime/vortex-run.cpp
+e2f55ac0fd34fa8970b0bffe15ca1de5c886e7bc2f3cf0a9ed7731c8bc71c119  build/triton-vortex-source/native/Lowering.cpp
+0f036648621d799c7b7628923890f6bf3f3671ad8ea978483a02a3143bb22965  build/triton-vortex-source/examples/validate_backend.py
+30df309638ef40d86506b8d921e273938c1c7a2f01057c85bea184cb90dabcdf  build/triton-vortex-source/native/main.cpp
+f5a351c02b6c2b4e2a8abd326e863cd1c5003128067e827cea36a73d2c1af8ae  build/triton-vortex-source/native/CMakeLists.txt
+14133aab0854c8b3868fd09c6336c10067fceb3b03e7dc46dae8172119a621d5  build/triton-vortex-source/README.md
+116423a480a37f298e4c7e2fddcead68516ebcc10c3223c0907b9d292ae04e29  build/triton-vortex-source/docs/architecture.md

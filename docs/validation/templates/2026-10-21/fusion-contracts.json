@@ -1,0 +1,1182 @@
+{
+  "scope": "Graph fusion contracts and generated CPU kernels; no GPU latency claims",
+  "compiler_sha256_before": "4fbfe9ad1acd72974483a34be059db44d489b4699ef7379da9d7a9168460e71a",
+  "cases": [
+    {
+      "name": "channel_3d_runtime",
+      "fuse_channel_bias": true,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "d5b1d9f0ec55f2509bf8636fc2258918d2c73506d6636b700cadf6ef0cfa0ad0",
+            "library_sha256": "541a9ccf9c2dba00f2f69348742ddde839d2b6857bd05433f8e3577c846f0a2b",
+            "inputs_sha256": "54fd3215843ca43cf2570a27b61e5621add2049f728397a46dab215c86f9b7b1",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "91576d8702fc438fa3d8c581b7196f10897c7a18a0b5dc48e5c9a722673939d4",
+            "library_sha256": "17e0d22b0b66da1427acffb6994495ad107986f61e5e09884d6a07ab57899d77",
+            "inputs_sha256": "54fd3215843ca43cf2570a27b61e5621add2049f728397a46dab215c86f9b7b1",
+            "constants_sha256": "d679902804ba0d1249b8613ae2fb0ed0c4a0c08cf51de8375282b52b3f3b16cc"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "18987ec80ae4c0b4f82057e29ecf74c1ead64b7865fa39fa6d9c318d0f57d675",
+            "library_sha256": "46c293a141e4fec4d2d04368a1c657ccb514f1ef81ceeaa2ebf494b1080d4461",
+            "inputs_sha256": "54fd3215843ca43cf2570a27b61e5621add2049f728397a46dab215c86f9b7b1",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "8c11ee6ef45b0aba12396cff6a3d02b1a657b1fbfe460c630abdccbf6f7035b0",
+            "library_sha256": "346f361c3e803e39b8c8d19df0c3c894d3ec9665fae83413ece24bbe3e92a778",
+            "inputs_sha256": "54fd3215843ca43cf2570a27b61e5621add2049f728397a46dab215c86f9b7b1",
+            "constants_sha256": "d679902804ba0d1249b8613ae2fb0ed0c4a0c08cf51de8375282b52b3f3b16cc"
+          }
+        }
+      }
+    },
+    {
+      "name": "channel_4d_constant",
+      "fuse_channel_bias": true,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "bf45a5dfa10d1f09282f33be3ed6b81cbe20cdd780ce4adfb54dfed4ae2a809b",
+            "library_sha256": "541a9ccf9c2dba00f2f69348742ddde839d2b6857bd05433f8e3577c846f0a2b",
+            "inputs_sha256": "4f99c14fc7f6be164b810dbf9d96343cba5ff2cc024fa6fceb7a65a890c2687f",
+            "constants_sha256": "e3722313e23ddca0d925b558323a860b2f3d1c2a08f096f9b278a60c7f4242b5"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "32688afaf8b0c220e17315e261c8266f3329bbb0067bf96e9f39e0e61c0f9cc9",
+            "library_sha256": "17e0d22b0b66da1427acffb6994495ad107986f61e5e09884d6a07ab57899d77",
+            "inputs_sha256": "4f99c14fc7f6be164b810dbf9d96343cba5ff2cc024fa6fceb7a65a890c2687f",
+            "constants_sha256": "f4b08d01f9e17c6a6069c654f86ab60f526099e18d29474e6f8e0fc4b77e8e97"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "18bde7384aba5c3426d0a0be06511e7aeffa139d577ef0e4ad5f4c546a0836a8",
+            "library_sha256": "46c293a141e4fec4d2d04368a1c657ccb514f1ef81ceeaa2ebf494b1080d4461",
+            "inputs_sha256": "4f99c14fc7f6be164b810dbf9d96343cba5ff2cc024fa6fceb7a65a890c2687f",
+            "constants_sha256": "e3722313e23ddca0d925b558323a860b2f3d1c2a08f096f9b278a60c7f4242b5"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "20d3db3aa825685d8f1743380e56f5bacb924bbb6024596a1d2e009fb19bd3a2",
+            "library_sha256": "346f361c3e803e39b8c8d19df0c3c894d3ec9665fae83413ece24bbe3e92a778",
+            "inputs_sha256": "4f99c14fc7f6be164b810dbf9d96343cba5ff2cc024fa6fceb7a65a890c2687f",
+            "constants_sha256": "f4b08d01f9e17c6a6069c654f86ab60f526099e18d29474e6f8e0fc4b77e8e97"
+          }
+        }
+      }
+    },
+    {
+      "name": "channel_bias_without_activation",
+      "fuse_channel_bias": true,
+      "relu": false,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "708125d26b5e216b7517cd43059c87da9f6c27cc683c16672fce5ec1be01c97c",
+            "library_sha256": "31eb8a26ede5c1a22bcca2c3162492f363fb8ac315eadc1bc95de78a843dee8c",
+            "inputs_sha256": "27fc3227949ec4fec50f1731ad911238d6c8ff93d1df5ce6662539cb31549dd9",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "66ca4381477835743baa791c7c4920a90fd74e19da3295f8fcc2ee36be6f6670",
+            "library_sha256": "625ca290abcfb707c579147b9c9c22f4f976d5d0eae240ed00cba20053354d2d",
+            "inputs_sha256": "27fc3227949ec4fec50f1731ad911238d6c8ff93d1df5ce6662539cb31549dd9",
+            "constants_sha256": "d679902804ba0d1249b8613ae2fb0ed0c4a0c08cf51de8375282b52b3f3b16cc"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "5608a9fbcb06c5010ef6c2e984f280fa8c0e8074e359f5ae51599503de452d70",
+            "library_sha256": "044efa7f87d950e7d109fcdeecbe8a2431969e0d3e232309f9df097aa0030ca3",
+            "inputs_sha256": "27fc3227949ec4fec50f1731ad911238d6c8ff93d1df5ce6662539cb31549dd9",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 1,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.4901161193847656e-08,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "4542c190b866e21b5244d175609d6705e7796c553d492d025e90a01a3998464c",
+            "library_sha256": "128382ad2c92280724d2c4e5bd8ae793805622f47cfebd4b729b672c8bb3ef03",
+            "inputs_sha256": "27fc3227949ec4fec50f1731ad911238d6c8ff93d1df5ce6662539cb31549dd9",
+            "constants_sha256": "d679902804ba0d1249b8613ae2fb0ed0c4a0c08cf51de8375282b52b3f3b16cc"
+          }
+        }
+      }
+    },
+    {
+      "name": "public_conv_retained",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "C": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "156972b2ada96c582ffabee44b1d998454ca4cd06a00d41c449bd6c94e11427c",
+            "library_sha256": "541a9ccf9c2dba00f2f69348742ddde839d2b6857bd05433f8e3577c846f0a2b",
+            "inputs_sha256": "199cc52bec2b767a3bd3a65f7d2c1623daeb9bac738166ec5f02565565248732",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "C": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "941bd55d40562cfba41cfac820cabc361d92c90497cabbb0002b98cff8601789",
+            "library_sha256": "6f150e4ce7c9a88845e0af6eb2e0a5d17535b93380f7881335b31c9996f2889b",
+            "inputs_sha256": "199cc52bec2b767a3bd3a65f7d2c1623daeb9bac738166ec5f02565565248732",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "C": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "8b22bf14535e2c4c89d3983a4320fdfbc96cb7b324d6d4cfbeb60abf8f362e54",
+            "library_sha256": "46c293a141e4fec4d2d04368a1c657ccb514f1ef81ceeaa2ebf494b1080d4461",
+            "inputs_sha256": "199cc52bec2b767a3bd3a65f7d2c1623daeb9bac738166ec5f02565565248732",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "C": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "b177155115a4996214a58fd4d8b0427b5f3d156ec56fb3439cfea42ae735a325",
+            "library_sha256": "0f754b0c82a59f25de22918deac4a7f636bbafb53ef5bf4b1c2872f049b5f26a",
+            "inputs_sha256": "199cc52bec2b767a3bd3a65f7d2c1623daeb9bac738166ec5f02565565248732",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "multiple_consumers_retained",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 4,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "other": {
+              "passed": true,
+              "max_finite_absolute_error": 9.313225746154785e-10,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "afca29adce60cea5906f827639ee5043b8861d9b8496470bc11bf20c0522f493",
+            "library_sha256": "4e04890393c837c2507c72f3753ba139eae025d6c9d8ddd3c70ee253e897ca6b",
+            "inputs_sha256": "db1954f9e6ffc8f9b22600c866c4e7ec20e0810c118b27c40a97f4eef4f3f80d",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 3,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "other": {
+              "passed": true,
+              "max_finite_absolute_error": 9.313225746154785e-10,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "f61c71347efc6cfd0d9f2de384199b03e54bc5997b81666e119fd4737d5a0fda",
+            "library_sha256": "e6c8d6a154f8db17dc6a9e75dd861545b62f26f7dd71e12fc64282fbe02217bb",
+            "inputs_sha256": "db1954f9e6ffc8f9b22600c866c4e7ec20e0810c118b27c40a97f4eef4f3f80d",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 4,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "other": {
+              "passed": true,
+              "max_finite_absolute_error": 9.313225746154785e-10,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "19d53ebabf8351bbce03b0e9e65eb6e210b0bba61bf3a1e538b39a2402f4c942",
+            "library_sha256": "7bfb5761c87ee55b938a784d830131a8a09182301eb3c622dab48fae08685095",
+            "inputs_sha256": "db1954f9e6ffc8f9b22600c866c4e7ec20e0810c118b27c40a97f4eef4f3f80d",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 3,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            },
+            "other": {
+              "passed": true,
+              "max_finite_absolute_error": 9.313225746154785e-10,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "d388b0ad302322838b1f566a3c5995c03920b49938cbdd8f3d85bd730fcfc33f",
+            "library_sha256": "dac4f3d04aca55168a17c435ea10fa273ffa832fe6a8a6c3d2a83af4ef5779c2",
+            "inputs_sha256": "db1954f9e6ffc8f9b22600c866c4e7ec20e0810c118b27c40a97f4eef4f3f80d",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "left_bias_order_retained",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "2590d8ece71399bf2217f4a3e7f7ed246e951375c52bdf5a1def8deb7cbd00f0",
+            "library_sha256": "eceefe98ee65f4111b07a4962564514e29004d8117c17c404e550e09d92fcb43",
+            "inputs_sha256": "58857497191d845f67949d5436803166c5da49e482d36e8ca154e8b90495d4bd",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "294865ad5944cddbc37a8863bf673794bab1b251b4b1398a4be5a50451faa8cb",
+            "library_sha256": "543b5e6c0815e4184b0361e74e5e5ec758db67c35fbf712e808995f14715f73a",
+            "inputs_sha256": "58857497191d845f67949d5436803166c5da49e482d36e8ca154e8b90495d4bd",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "76fa9cee7631347ba14cc7128d8db63dfac2f1e6867002c17666abcd6b026ec7",
+            "library_sha256": "974f8e6ddc5fee898db458323f3f0c92c9dbd9c67e708f7db2960f11bb0da01f",
+            "inputs_sha256": "58857497191d845f67949d5436803166c5da49e482d36e8ca154e8b90495d4bd",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "2e279590b65d95d8ffc0f55e0527060014f52338118946f0081dd6c58d6f7f3e",
+            "library_sha256": "59be0de00b7f4fcf89ac6b0655399e1eec9bdd3c8499fefa246f4e518fdbd948",
+            "inputs_sha256": "58857497191d845f67949d5436803166c5da49e482d36e8ca154e8b90495d4bd",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "width_bias_is_not_channel_bias",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "92e7f0fa9bd344d691b36b02d905521b854a98fc90d07a428ff5a3eac8af9587",
+            "library_sha256": "5f7d74aa5834db03b5b59e66d8237edce8667b63a34834152ecbf9411dd714c7",
+            "inputs_sha256": "5dbd633a8f75de11a12762fa36ee4929982ce415d2ba47c19f398eb5a4d1c077",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "6dab27ed8bc1b5e579b1ae3c011d361421d200d471a433e38052b7deb1699fc1",
+            "library_sha256": "1502c2b52f12881c92922254f9011984afd3de97cbe40b4a68a379cb721a7dc2",
+            "inputs_sha256": "5dbd633a8f75de11a12762fa36ee4929982ce415d2ba47c19f398eb5a4d1c077",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "c38cde6f04a3f0936b69ff90acff11db407ad98972900ad08431688dd55f1933",
+            "library_sha256": "9c3c6710568221ed19749843b49bfb7a42ce9f67cf97119f293046fd115a9230",
+            "inputs_sha256": "5dbd633a8f75de11a12762fa36ee4929982ce415d2ba47c19f398eb5a4d1c077",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 7.450580596923828e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "bcfdabdf064663e7d4dd65bc1ccaa8a214f8b5fd8bd27d298c894d60a4b3729d",
+            "library_sha256": "8d00aceb6437aa9835f84f045e34276f9d75c6538700b19bd5fb3218112f7f72",
+            "inputs_sha256": "5dbd633a8f75de11a12762fa36ee4929982ce415d2ba47c19f398eb5a4d1c077",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "batch_specific_bias_retained",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 512,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "e5cb41853c32f4e389455f553039a17a2890ceb7dab52c2a8c62255a9c89ced5",
+            "library_sha256": "02649d17d9499305948973decc161cb250bb208d7032160dbb1d6dcff548290b",
+            "inputs_sha256": "ba5cc32ccc5ecbe3dfe7188e4fcb3f5eccf111d22205617612ac4e62fd023a93",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 512,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "bdc5b993c2623698cdffde2c956c12d0decf769eb932ed91c0175cad819fffd7",
+            "library_sha256": "8ae4e90bd247769ce7df8d5b3552b21d6ebf7ac228e7a0e0aa9e4bb71e597a92",
+            "inputs_sha256": "ba5cc32ccc5ecbe3dfe7188e4fcb3f5eccf111d22205617612ac4e62fd023a93",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 1,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "26e97b065c8d88d86b6b216fc77cf6afb7097b058a9f5d520943189636d1d16f",
+            "library_sha256": "fba034cac032825b0ac1a5bfa277291823eea976aa53339588925df5806d6369",
+            "inputs_sha256": "ba5cc32ccc5ecbe3dfe7188e4fcb3f5eccf111d22205617612ac4e62fd023a93",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 1,
+          "arena_bytes": 256,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "188003377d5913c5bf130c47037f5197a81e43dea87325a9be1fd806731240d7",
+            "library_sha256": "fba034cac032825b0ac1a5bfa277291823eea976aa53339588925df5806d6369",
+            "inputs_sha256": "ba5cc32ccc5ecbe3dfe7188e4fcb3f5eccf111d22205617612ac4e62fd023a93",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "expanded_batch_domain_retained",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 640,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 3.725290298461914e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "ac2bdf266a9da79a59bb2cb50a7b71d26f14da3303ea576eb627b1e6b61a338b",
+            "library_sha256": "62e4b082a2a776ed39488d92d6368e9e2f51adafbdbdfdddbc8dfc1d1c5a58c5",
+            "inputs_sha256": "35e7951732a89c7ed916e45768a6ff4c341c3f241598b9c25f6be290037ce1d9",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 3.725290298461914e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "46f5cb2257f0e764de206c8b74e385959a22c3605419cc42f75deee08c56b8b3",
+            "library_sha256": "68da685402540edb42dc0e109ef786496a67ff65d59ed6eef6a39f8cff12c245",
+            "inputs_sha256": "35e7951732a89c7ed916e45768a6ff4c341c3f241598b9c25f6be290037ce1d9",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 2,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 3.725290298461914e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "8ef6b2d6f33a0898efb2b408990d8fc2404d93cf228549e2597327aa6de8b6e4",
+            "library_sha256": "d96e5d508d71cd3ee14c87b3ea6499c66c937b16082cf781291529eef13aec7e",
+            "inputs_sha256": "35e7951732a89c7ed916e45768a6ff4c341c3f241598b9c25f6be290037ce1d9",
+            "constants_sha256": "d2baeaf0b2642f2275d817e60a721067ba5d893a4ccf540167376044876391ec"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 384,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 3.725290298461914e-09,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "6bf6b463e10f9914ba904a2c27e1ec67ba6574d9de0f281e1a465423bffebe61",
+            "library_sha256": "d96e5d508d71cd3ee14c87b3ea6499c66c937b16082cf781291529eef13aec7e",
+            "inputs_sha256": "35e7951732a89c7ed916e45768a6ff4c341c3f241598b9c25f6be290037ce1d9",
+            "constants_sha256": "d2437d19069410629fa12560fbfec73111a6da663c7cbb85452c34563d6ffb48"
+          }
+        }
+      }
+    },
+    {
+      "name": "group_padding_stride_dilation",
+      "fuse_channel_bias": true,
+      "relu": true,
+      "exact": false,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 1152,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.1920928955078125e-07,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "57f290b3519fb70a6ea4d7d102b251f7d1c78cc83920af0b1f4aea46ec1aacac",
+            "library_sha256": "b7328b736caacefcd171c6d450f65be8eddeacf14949393548dd8ef1d4047c45",
+            "inputs_sha256": "a5b37f39fcaf21ac28b2749ac402b97a7b8e4987941c95fd1663e76b252eea19",
+            "constants_sha256": "402c034967ed67ac3271f048b77737ba8402105f85f8cc06c4f3ed0c4f947e49"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 1,
+          "arena_bytes": 576,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.1920928955078125e-07,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "42f9bf06bb028143315b2bdb839a2f336097f396e99bb54fdac3f41342d34529",
+            "library_sha256": "7022e854ebbc6ccf222c55502a9cb12fec5988b9b2ec5dfe2c27e0eab09fe271",
+            "inputs_sha256": "a5b37f39fcaf21ac28b2749ac402b97a7b8e4987941c95fd1663e76b252eea19",
+            "constants_sha256": "39a5aedaab713ebcbbc9cf298fa195512331b8c22b62ef18c89cd802fa9b9953"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 2,
+          "arena_bytes": 2624,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.1920928955078125e-07,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "06253f9876407cd03790186c3c2025ffd1fb5ce72407d5a423b1794afc9eda38",
+            "library_sha256": "e9660320767c48b045d151dfe7e4489188e9e81b71815652249394f1edea9273",
+            "inputs_sha256": "a5b37f39fcaf21ac28b2749ac402b97a7b8e4987941c95fd1663e76b252eea19",
+            "constants_sha256": "402c034967ed67ac3271f048b77737ba8402105f85f8cc06c4f3ed0c4f947e49"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 2624,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 1.1920928955078125e-07,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "07b50cefa528ff07ad75c82fe247eeb2cc2c242cb7ab2a56657a9eacf31448fc",
+            "library_sha256": "e9660320767c48b045d151dfe7e4489188e9e81b71815652249394f1edea9273",
+            "inputs_sha256": "a5b37f39fcaf21ac28b2749ac402b97a7b8e4987941c95fd1663e76b252eea19",
+            "constants_sha256": "39a5aedaab713ebcbbc9cf298fa195512331b8c22b62ef18c89cd802fa9b9953"
+          }
+        }
+      }
+    },
+    {
+      "name": "fp16_rounding_boundary",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": true,
+      "reference": "ONNX ReferenceEvaluator, explicit FP16 boundaries",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "25a5856bb88cfda741f9da72d7e053f904d7e11f729c716ad00659b7f77dbd00",
+            "library_sha256": "36c79256a56283aba9214d4997a8db4d82159a60218fa1d0e31a94545fc7a3d8",
+            "inputs_sha256": "85477fbb2043141a1a42beb9fc2fef1cb4ed779ac3b4f2884cce4b0c5457eb48",
+            "constants_sha256": "e1de7df512a2e6935a5199a6ec52c26ec092206f94602653fec2874003f1a905"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "02d9fe9fc005858efd9db58dc33ee5bc38fd437d2954e8795e3e38bcc647e67e",
+            "library_sha256": "36c79256a56283aba9214d4997a8db4d82159a60218fa1d0e31a94545fc7a3d8",
+            "inputs_sha256": "85477fbb2043141a1a42beb9fc2fef1cb4ed779ac3b4f2884cce4b0c5457eb48",
+            "constants_sha256": "b0b2d812933b3f4e26d1341cc99853b2eee8f5dd4a2805bb6ec344708151449c"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "498e9779886a8f410853b805ea3b7737e3036973f5ddc2065310ca5f2d8323ef",
+            "library_sha256": "3bea47b9c7e93224b5d1b6e6bb7a64852f43bfb69d57fc474573001f988939bb",
+            "inputs_sha256": "85477fbb2043141a1a42beb9fc2fef1cb4ed779ac3b4f2884cce4b0c5457eb48",
+            "constants_sha256": "e1de7df512a2e6935a5199a6ec52c26ec092206f94602653fec2874003f1a905"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "c5346ec8e2c8f636bbe0cefe57ba78ac79c1df1169c2f54842cf7dbc5b595564",
+            "library_sha256": "3bea47b9c7e93224b5d1b6e6bb7a64852f43bfb69d57fc474573001f988939bb",
+            "inputs_sha256": "85477fbb2043141a1a42beb9fc2fef1cb4ed779ac3b4f2884cce4b0c5457eb48",
+            "constants_sha256": "b0b2d812933b3f4e26d1341cc99853b2eee8f5dd4a2805bb6ec344708151449c"
+          }
+        }
+      }
+    },
+    {
+      "name": "existing_bias_not_reassociated",
+      "fuse_channel_bias": false,
+      "relu": true,
+      "exact": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "a97a7427c2f9545379be1e9b3452e49cde78bfe5a2b5d0f422c18bdf7ea54862",
+            "library_sha256": "a6faf3cf787f7baf68fe00f7245389f94b5c286ea95cd902f55e36f031af15b1",
+            "inputs_sha256": "49a5bd8e9447730bdab7914983a3ca4598d96d2e2391c1435643652743a30ef0",
+            "constants_sha256": "59e1d8cf8ea15b1a439b4e778b6f38de1ba770956171e1db94723d55060f737c"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 2,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "fa1163f4e20fb235787f296e38e81f172cd407d29e6a4f314456c0d1d9c6e901",
+            "library_sha256": "e3ec5b3a0c877db300b9483cbda4896f5923c81fa26d5d5885a63f6d729db013",
+            "inputs_sha256": "49a5bd8e9447730bdab7914983a3ca4598d96d2e2391c1435643652743a30ef0",
+            "constants_sha256": "ccf162fe13f70fd7a008f16d0c87b876f34cb3ad526f8d30a37e838d089dcb1e"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "f99fc43184ee8519be8b5d604634ea27718edabd546ab67005b85ef79777ee49",
+            "library_sha256": "601ccdf67b19aee1d6611c402e24d1436df8bffe4a463bb4fce7c44d6bcbd5e1",
+            "inputs_sha256": "49a5bd8e9447730bdab7914983a3ca4598d96d2e2391c1435643652743a30ef0",
+            "constants_sha256": "59e1d8cf8ea15b1a439b4e778b6f38de1ba770956171e1db94723d55060f737c"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 2,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 0,
+              "positive_infinities": 0,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "542479b2c3e9b93225717b3a31eb026df69eb095dd2ca3992881262ce78e5f54",
+            "library_sha256": "5afdd664eca244b533a587b137f329171b7c1a914c2f515f6a60ca13465bb8ba",
+            "inputs_sha256": "49a5bd8e9447730bdab7914983a3ca4598d96d2e2391c1435643652743a30ef0",
+            "constants_sha256": "ccf162fe13f70fd7a008f16d0c87b876f34cb3ad526f8d30a37e838d089dcb1e"
+          }
+        }
+      }
+    },
+    {
+      "name": "nonfinite_activation_semantics",
+      "fuse_channel_bias": true,
+      "relu": true,
+      "exact": true,
+      "reference": "ONNX Runtime CPU, graph optimizations disabled",
+      "passed": true,
+      "runs": {
+        "legacy_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 1,
+              "positive_infinities": 1,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "9b670392de9858349fa99d409f3db446c0b6ca101e73f66331c85bc85946e423",
+            "library_sha256": "cbb1d8cd9434e99247e8039c5d30c98bc0e353eabd7d6f680a23b8aeb0730c6c",
+            "inputs_sha256": "e1dc8aa811436bfd0fec3d40e7e4df9224640c72b9d1530e8f5689116f312743",
+            "constants_sha256": "c40259136877e427d33bb1fcb1b394a7ce571c4b7efd931588290b1692df6326"
+          }
+        },
+        "legacy_fused": {
+          "dispatches": 1,
+          "arena_bytes": 64,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 1,
+              "positive_infinities": 1,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "854e3f82cbd73d415200673a23592d6500759b05c5402ceb937c2663f9488f0c",
+            "library_sha256": "f4d08b9743fdb334727fba76c4c7caef2e2dc8f52e268a6dfa8c4ba0bd6d19b2",
+            "inputs_sha256": "e1dc8aa811436bfd0fec3d40e7e4df9224640c72b9d1530e8f5689116f312743",
+            "constants_sha256": "9d081b9c81204976a76c5028ca50837e3a66a165d7a4d540dcd045d1921546b2"
+          }
+        },
+        "linalg_unfused": {
+          "dispatches": 3,
+          "arena_bytes": 128,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 1,
+              "positive_infinities": 1,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "fe80950fc096e3f8afb9cc33fad87f1c796e354648b479a1cb66ee4f59b21c48",
+            "library_sha256": "a1338a6d2f35b1a2151ad06bb58076b4a4721f09944d73855ad764777297b18a",
+            "inputs_sha256": "e1dc8aa811436bfd0fec3d40e7e4df9224640c72b9d1530e8f5689116f312743",
+            "constants_sha256": "c40259136877e427d33bb1fcb1b394a7ce571c4b7efd931588290b1692df6326"
+          }
+        },
+        "linalg_fused": {
+          "dispatches": 1,
+          "arena_bytes": 64,
+          "outputs": {
+            "Y": {
+              "passed": true,
+              "max_finite_absolute_error": 0.0,
+              "nan_elements": 1,
+              "positive_infinities": 1,
+              "negative_infinities": 0
+            }
+          },
+          "artifact_identity": {
+            "manifest_sha256": "da6cae39fc195a7f8fe0f3adb0be9489c10687992a39d675f212fe3764ae9747",
+            "library_sha256": "f4d08b9743fdb334727fba76c4c7caef2e2dc8f52e268a6dfa8c4ba0bd6d19b2",
+            "inputs_sha256": "e1dc8aa811436bfd0fec3d40e7e4df9224640c72b9d1530e8f5689116f312743",
+            "constants_sha256": "9d081b9c81204976a76c5028ca50837e3a66a165d7a4d540dcd045d1921546b2"
+          }
+        }
+      }
+    }
+  ],
+  "compiler_sha256_after": "4fbfe9ad1acd72974483a34be059db44d489b4699ef7379da9d7a9168460e71a",
+  "passed": true
+}

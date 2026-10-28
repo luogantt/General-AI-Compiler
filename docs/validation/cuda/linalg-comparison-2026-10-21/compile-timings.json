@@ -1,0 +1,1090 @@
+{
+  "kind": "sequential ONNX to PTX wall-clock comparison; no GPU execution",
+  "started_utc": "2026-10-21T09:34:43.879133+00:00",
+  "status": "passed",
+  "compiler": {
+    "path": "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+    "bytes": 52994032,
+    "sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3"
+  },
+  "model": {
+    "path": "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+    "bytes": 282985849,
+    "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed"
+  },
+  "libdevice": {
+    "path": "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+    "bytes": 484900,
+    "sha256": "25498d6e3c64782833ff15a5f56665ff09e5d21177163148a1cf008c61733449"
+  },
+  "source_paths": {
+    "compiler": "/home/thomas/gac-linalg-20261021/gac-compile",
+    "model": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/bevformer-base-onnx/bevformer-base-cold.onnx",
+    "libdevice": "/home/thomas/gac-cuda-sdk/nvidia/cuda_nvcc/nvvm/libdevice/libdevice.10.bc"
+  },
+  "tools": {
+    "mlir-translate": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+      "bytes": 51580488,
+      "sha256": "b6cde0c2eb716eb4c1e1e1d295a5aebaa129b915ea9a23ee43c50de38a0c450a"
+    },
+    "llvm-link": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+      "bytes": 7602216,
+      "sha256": "50c13a0248596f1cd215eba694ffff61a993aedaf2d51e90f14de2f4c1422db2"
+    },
+    "opt": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+      "bytes": 104745800,
+      "sha256": "45f50b5db8e2e2dd4e8eff4e59c0ba91bbde6136460ad62422edaedca6ac26c8"
+    },
+    "llc": {
+      "path": "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+      "bytes": 104994480,
+      "sha256": "2663cc571f4b13937e68c1183db5e29c60315ff01a466afe058e534fd8c2f7e9"
+    }
+  },
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python": "3.12.3",
+    "cpu_count": 18,
+    "cwd": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler",
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  18\nOn-line CPU(s) list:                     0-17\nVendor ID:                               GenuineIntel\nModel name:                              Intel(R) Core(TM) Ultra 5 125H\nCPU family:                              6\nModel:                                   170\nThread(s) per core:                      2\nCore(s) per socket:                      9\nSocket(s):                               1\nStepping:                                4\nBogoMIPS:                                5990.40\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               432 KiB (9 instances)\nL1i cache:                               576 KiB (9 instances)\nL2 cache:                                18 MiB (9 instances)\nL3 cache:                                18 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-17\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n"
+  },
+  "measurement": {
+    "clock": "time.perf_counter subprocess wall time",
+    "included": [
+      "ONNX import and C++ MLIR passes",
+      "constant .bin export",
+      "LLVM IR translation",
+      "libdevice linking",
+      "LLVM O2 optimization",
+      "LLVM NVPTX PTX generation"
+    ],
+    "excluded": [
+      "ONNX export",
+      "setup and file copies",
+      "SHA-256",
+      "reporting",
+      "network transfer",
+      "offline ptxas",
+      "CUDA Driver JIT",
+      "GPU execution"
+    ],
+    "cache_policy": "OS file caches are not flushed; two balanced-order rounds, not cold-cache compilation",
+    "target": "sm_86 +ptx80; FP32 model; fp-contract off; nvptx-fma-level 0",
+    "variants": {
+      "legacy-scalar": [
+        "--regular-lowering=legacy"
+      ],
+      "linalg": [
+        "--regular-lowering=linalg"
+      ],
+      "legacy-optimized": [
+        "--regular-lowering=legacy",
+        "--cuda-matmul-schedule=auto",
+        "--cuda-reduction-schedule=cooperative",
+        "--cuda-conv-channel-tile=8"
+      ]
+    },
+    "order": [
+      [
+        "legacy-scalar",
+        "linalg",
+        "legacy-optimized"
+      ],
+      [
+        "legacy-optimized",
+        "linalg",
+        "legacy-scalar"
+      ],
+      [
+        "legacy-scalar"
+      ]
+    ]
+  },
+  "runs": [
+    {
+      "round": 1,
+      "variant": "legacy-scalar",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=legacy",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:34:44.408108+00:00",
+          "exit_code": 0,
+          "wall_seconds": 79.099088381,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:36:03.507438+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:36:03.520154+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.7169459149999966,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:36:04.237304+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:36:04.247574+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.36538281900004677,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/link.stderr.log",
+          "finished_utc": "2026-10-21T09:36:04.613238+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:36:04.625090+00:00",
+          "exit_code": 0,
+          "wall_seconds": 6.272467790000007,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:36:10.897774+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:36:10.912075+00:00",
+          "exit_code": 0,
+          "wall_seconds": 5.911923605999959,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:36:16.824271+00:00"
+        }
+      ],
+      "total_wall_seconds": 92.36580851100001,
+      "plan_summary": {
+        "dispatch_count": 3224,
+        "lowering_counts": {
+          "gac-specialized": 3224
+        },
+        "arena_bytes": 1554944000,
+        "linalg_fused_producers": 0,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/kernel.ptx",
+          "bytes": 7629487,
+          "sha256": "7feb039341461181f2ff301c4f657ab7c1253cbe9a487ad6c5fa4dd2853fe726"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-scalar/plan.json",
+          "bytes": 2424219,
+          "sha256": "38c5a7e085c3dc4830870341c7a9d1461d1203f4ef1738990c2666d820fb9a5e"
+        }
+      },
+      "excluded_from_aggregate": true,
+      "exclusion_reason": "Excluded because another 6.5-second CUDA runtime C++ build overlapped this compile; raw sample and artifact retained.",
+      "constant_files": 859,
+      "constant_identity_map_sha256": "c687f517a3e8a83b1e4b3db844288b5130c559cfaf8d7130bf9d29117d2807da"
+    },
+    {
+      "round": 1,
+      "variant": "linalg",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=linalg",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-1-linalg",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:36:17.462573+00:00",
+          "exit_code": 0,
+          "wall_seconds": 76.74254006000001,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:37:34.205288+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:37:34.222484+00:00",
+          "exit_code": 0,
+          "wall_seconds": 1.6693749899999943,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:37:35.892123+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:37:35.909690+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.666170281999996,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/link.stderr.log",
+          "finished_utc": "2026-10-21T09:37:36.576074+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:37:36.597480+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.06061317199999,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:37:44.658287+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:37:44.679833+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.018013973999985,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:37:52.698028+00:00"
+        }
+      ],
+      "total_wall_seconds": 95.15671247799997,
+      "plan_summary": {
+        "dispatch_count": 3752,
+        "lowering_counts": {
+          "gac-specialized": 1728,
+          "tensor-pad-to-scf": 228,
+          "linalg-to-scf": 1796
+        },
+        "arena_bytes": 1639347200,
+        "linalg_fused_producers": 1655,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/kernel.ptx",
+          "bytes": 8652607,
+          "sha256": "21206c4c81edef6fc3d79566dbaaa5b2acf37daed9478defad0dbafd6353ee93"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-linalg/plan.json",
+          "bytes": 3119477,
+          "sha256": "6ee60f89cb537e61a371707d99ce8709dc76f783b25414bf0abfb5e1236d2c3f"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "30549f716f92f216970993cefafc226e7030e1fa718206162deadcc85fff4793"
+    },
+    {
+      "round": 1,
+      "variant": "legacy-optimized",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=legacy",
+            "--cuda-matmul-schedule=auto",
+            "--cuda-reduction-schedule=cooperative",
+            "--cuda-conv-channel-tile=8",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:37:53.329429+00:00",
+          "exit_code": 0,
+          "wall_seconds": 79.974405736,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:39:13.303994+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:39:13.327126+00:00",
+          "exit_code": 0,
+          "wall_seconds": 1.3187184920000163,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:39:14.646024+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:39:14.669809+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.6663636090000296,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/link.stderr.log",
+          "finished_utc": "2026-10-21T09:39:15.336377+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:39:15.387751+00:00",
+          "exit_code": 0,
+          "wall_seconds": 10.56568810899995,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:39:25.953603+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:39:25.975855+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.430903442999977,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:39:34.406931+00:00"
+        }
+      ],
+      "total_wall_seconds": 100.95607938899997,
+      "plan_summary": {
+        "dispatch_count": 3224,
+        "lowering_counts": {
+          "gac-specialized": 3224
+        },
+        "arena_bytes": 1554944000,
+        "linalg_fused_producers": 0,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/kernel.ptx",
+          "bytes": 10801994,
+          "sha256": "a54cdd4e81b98d11ea4e6f55f1f7ea4b4b8027226950a00503f8cbbcb8fdfe6b"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-1-legacy-optimized/plan.json",
+          "bytes": 3432205,
+          "sha256": "8141ed4fcfffa1c47dc08f79526c35eaad2276383c58f28931e5e0667bd98501"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "f0498e5b2005201b895ea1820d4d636f266632cc0320b638d3fbc7adf92f8fd1"
+    },
+    {
+      "round": 2,
+      "variant": "legacy-optimized",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=legacy",
+            "--cuda-matmul-schedule=auto",
+            "--cuda-reduction-schedule=cooperative",
+            "--cuda-conv-channel-tile=8",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:39:34.978935+00:00",
+          "exit_code": 0,
+          "wall_seconds": 79.00833110600007,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:40:53.987429+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:40:54.015958+00:00",
+          "exit_code": 0,
+          "wall_seconds": 1.3182009939999944,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:40:55.768390+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:40:55.797625+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.666190217999997,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/link.stderr.log",
+          "finished_utc": "2026-10-21T09:40:56.464065+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:40:56.496444+00:00",
+          "exit_code": 0,
+          "wall_seconds": 10.593086030999984,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:41:07.089710+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:41:07.120576+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.491382804000068,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:41:15.612168+00:00"
+        }
+      ],
+      "total_wall_seconds": 100.07719115300011,
+      "plan_summary": {
+        "dispatch_count": 3224,
+        "lowering_counts": {
+          "gac-specialized": 3224
+        },
+        "arena_bytes": 1554944000,
+        "linalg_fused_producers": 0,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/kernel.ptx",
+          "bytes": 10801994,
+          "sha256": "a54cdd4e81b98d11ea4e6f55f1f7ea4b4b8027226950a00503f8cbbcb8fdfe6b"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-optimized/plan.json",
+          "bytes": 3432205,
+          "sha256": "8141ed4fcfffa1c47dc08f79526c35eaad2276383c58f28931e5e0667bd98501"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "707cd745f66046e4687e7d621f322074871009969a1b41c306e104d573237745"
+    },
+    {
+      "round": 2,
+      "variant": "linalg",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=linalg",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-2-linalg",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:41:16.193000+00:00",
+          "exit_code": 0,
+          "wall_seconds": 78.62858046899998,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:42:34.821768+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:42:34.861185+00:00",
+          "exit_code": 0,
+          "wall_seconds": 1.66925379099996,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:42:36.530640+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:42:36.562676+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.6660545299999967,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/link.stderr.log",
+          "finished_utc": "2026-10-21T09:42:37.228968+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:42:37.266263+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.190747170999998,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:42:45.457213+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:42:45.497643+00:00",
+          "exit_code": 0,
+          "wall_seconds": 8.37341113399998,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:42:53.871278+00:00"
+        }
+      ],
+      "total_wall_seconds": 97.52804709499992,
+      "plan_summary": {
+        "dispatch_count": 3752,
+        "lowering_counts": {
+          "gac-specialized": 1728,
+          "tensor-pad-to-scf": 228,
+          "linalg-to-scf": 1796
+        },
+        "arena_bytes": 1639347200,
+        "linalg_fused_producers": 1655,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/kernel.ptx",
+          "bytes": 8652607,
+          "sha256": "21206c4c81edef6fc3d79566dbaaa5b2acf37daed9478defad0dbafd6353ee93"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-linalg/plan.json",
+          "bytes": 3119477,
+          "sha256": "6ee60f89cb537e61a371707d99ce8709dc76f783b25414bf0abfb5e1236d2c3f"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "26eec92519c3779fa5b25a2de3f6ce1f86e8be11a2ca52fecdb0b0b70cc4de77"
+    },
+    {
+      "round": 2,
+      "variant": "legacy-scalar",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=legacy",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:42:54.519730+00:00",
+          "exit_code": 0,
+          "wall_seconds": 75.75297864599997,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:44:10.272939+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:44:10.319943+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.716391657000031,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:44:11.036559+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:44:11.078088+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.3649357299999565,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/link.stderr.log",
+          "finished_utc": "2026-10-21T09:44:11.443178+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:44:11.481252+00:00",
+          "exit_code": 0,
+          "wall_seconds": 5.9330769260000125,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:44:17.414491+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:44:17.462764+00:00",
+          "exit_code": 0,
+          "wall_seconds": 5.53227210700004,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:44:22.995253+00:00"
+        }
+      ],
+      "total_wall_seconds": 88.29965506600001,
+      "plan_summary": {
+        "dispatch_count": 3224,
+        "lowering_counts": {
+          "gac-specialized": 3224
+        },
+        "arena_bytes": 1554944000,
+        "linalg_fused_producers": 0,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/kernel.ptx",
+          "bytes": 7629487,
+          "sha256": "7feb039341461181f2ff301c4f657ab7c1253cbe9a487ad6c5fa4dd2853fe726"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-2-legacy-scalar/plan.json",
+          "bytes": 2424219,
+          "sha256": "38c5a7e085c3dc4830870341c7a9d1461d1203f4ef1738990c2666d820fb9a5e"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "0b6a406b792fb9607ecae5c0d63f089e383e6ac7c7e5b3318ac3d3e0cf630c94"
+    },
+    {
+      "round": 3,
+      "variant": "legacy-scalar",
+      "directory": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar",
+      "status": "passed",
+      "steps": [
+        {
+          "name": "compile",
+          "command": [
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--constant-fold-profile=bevformer-base",
+            "--regular-lowering=legacy",
+            "--manifest=/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/plan.json",
+            "--constants-dir=/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.mlir"
+          ],
+          "started_utc": "2026-10-21T09:44:55.562835+00:00",
+          "exit_code": 0,
+          "wall_seconds": 73.80550779399994,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/compile.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/compile.stderr.log",
+          "finished_utc": "2026-10-21T09:46:09.770331+00:00"
+        },
+        {
+          "name": "translate",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.mlir",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.ll"
+          ],
+          "started_utc": "2026-10-21T09:46:09.824200+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.7168557449999753,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/translate.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/translate.stderr.log",
+          "finished_utc": "2026-10-21T09:46:10.541227+00:00"
+        },
+        {
+          "name": "link",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-link",
+            "--only-needed",
+            "--internalize",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.ll",
+            "/home/thomas/gac-linalg-cuda-20261021/inputs/libdevice.10.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel-linked.bc"
+          ],
+          "started_utc": "2026-10-21T09:46:10.590860+00:00",
+          "exit_code": 0,
+          "wall_seconds": 0.36536285699992277,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/link.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/link.stderr.log",
+          "finished_utc": "2026-10-21T09:46:10.956427+00:00"
+        },
+        {
+          "name": "optimize",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=default<O2>",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel-linked.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel-optimized.bc"
+          ],
+          "started_utc": "2026-10-21T09:46:11.002225+00:00",
+          "exit_code": 0,
+          "wall_seconds": 5.982909219000021,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/optimize.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/optimize.stderr.log",
+          "finished_utc": "2026-10-21T09:46:16.985323+00:00"
+        },
+        {
+          "name": "ptx",
+          "command": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel-optimized.bc",
+            "-o",
+            "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.ptx"
+          ],
+          "started_utc": "2026-10-21T09:46:17.037528+00:00",
+          "exit_code": 0,
+          "wall_seconds": 5.531829817000016,
+          "stdout_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/ptx.stdout.log",
+          "stderr_log": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/ptx.stderr.log",
+          "finished_utc": "2026-10-21T09:46:22.569531+00:00"
+        }
+      ],
+      "total_wall_seconds": 86.40246543199987,
+      "plan_summary": {
+        "dispatch_count": 3224,
+        "lowering_counts": {
+          "gac-specialized": 3224
+        },
+        "arena_bytes": 1554944000,
+        "linalg_fused_producers": 0,
+        "inputs": [
+          "images"
+        ],
+        "outputs": [
+          "bev_embed",
+          "all_cls_scores",
+          "all_bbox_preds"
+        ]
+      },
+      "artifacts": {
+        "kernel.ptx": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/kernel.ptx",
+          "bytes": 7629487,
+          "sha256": "7feb039341461181f2ff301c4f657ab7c1253cbe9a487ad6c5fa4dd2853fe726"
+        },
+        "plan.json": {
+          "path": "/home/thomas/gac-linalg-cuda-20261021/round-3-legacy-scalar/plan.json",
+          "bytes": 2424219,
+          "sha256": "38c5a7e085c3dc4830870341c7a9d1461d1203f4ef1738990c2666d820fb9a5e"
+        }
+      },
+      "constant_files": 859,
+      "constant_identity_map_sha256": "dd467ea1c029413836fce44274dbd9394b591b8d8ed93dce761ed70b04de237c"
+    }
+  ],
+  "compiler_unchanged": true,
+  "tools_unchanged": true,
+  "summary": {
+    "legacy-scalar": {
+      "samples": 2,
+      "total_median_seconds": 87.35106024899994,
+      "total_min_seconds": 86.40246543199987,
+      "total_max_seconds": 88.29965506600001,
+      "stage_median_seconds": {
+        "compile": 74.77924321999996,
+        "translate": 0.7166237010000032,
+        "link": 0.36514929349993963,
+        "optimize": 5.957993072500017,
+        "ptx": 5.532050962000028
+      }
+    },
+    "linalg": {
+      "samples": 2,
+      "total_median_seconds": 96.34237978649995,
+      "total_min_seconds": 95.15671247799997,
+      "total_max_seconds": 97.52804709499992,
+      "stage_median_seconds": {
+        "compile": 77.6855602645,
+        "translate": 1.6693143904999772,
+        "link": 0.6661124059999963,
+        "optimize": 8.125680171499994,
+        "ptx": 8.195712553999982
+      }
+    },
+    "legacy-optimized": {
+      "samples": 2,
+      "total_median_seconds": 100.51663527100004,
+      "total_min_seconds": 100.07719115300011,
+      "total_max_seconds": 100.95607938899997,
+      "stage_median_seconds": {
+        "compile": 79.49136842100003,
+        "translate": 1.3184597430000053,
+        "link": 0.6662769135000133,
+        "optimize": 10.579387069999967,
+        "ptx": 8.461143123500023
+      }
+    }
+  },
+  "finished_utc": "2026-10-21T09:46:23.384458+00:00",
+  "append_sessions": [
+    {
+      "started_utc": "2026-10-21T09:44:55.455254+00:00",
+      "first_round": 3,
+      "variants": [
+        "legacy-scalar"
+      ]
+    }
+  ]
+}

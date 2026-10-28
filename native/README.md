@@ -3,11 +3,20 @@
 本目录是 **ONNX → MLIR Operation → MLIR Pass → 设备代码** 的原生编译路径，
 包含 Vortex 和 CUDA PTX 后端。CUDA 的构建、ABI 与执行说明见
 [CUDA 后端](README.cuda.md)。
+`lg/bevformer-triton-vortex` 分支增加可选的 [Triton/Vortex 接入](README.triton-vortex.md)：
+在 Linalg 层选择受支持的逐元素子图，经 TTIR 编译后与原生内核链接，仍使用本目录的 C++ Runtime。
+计算模板现统一为 [GACComputeTemplates 库](templates/README.md)，通过同一注册表完成
+计划、生成和启动参数描述；图融合规则见 [融合说明](../docs/compiler-fusion.md)。
 编译器、图优化、设备 Lowering、Buffer 规划与 Runtime 使用 C++；不调用原有
 Python `Graph`、Python 图 Pass 或 Python MLIR 文本发射器。
 
 当前主分支：**`main`**（已合入 `lg/bevformer-full-ops`），同时维护 CUDA PTX 和 Vortex 后端。
 `DeviceOptions::target` 选择设备；`native` 目标只用于显式的 CPU 数值验证。
+
+**现在默认启用下文的 Linalg 混合路径。** 以下已有整网数值和性能记录来自此前
+直接 GAC Lowering，不能作为新路径的整网执行或性能验收；新旧路径通过
+`--regular-lowering=linalg|legacy` 区分。
+
 Vortex 路径已经用小模型完成真实
 `ONNX → MLIR → VOLT → ELF → vxbin → SimX` 数值闭环。完整 BEVFormer-tiny cold
 ONNX 已通过严格导入、MLIR 优化和设备 Lowering，生成 **1,548 个 dispatch** 的
@@ -61,7 +70,14 @@ MLIR PassManager
 ├── gac-fuse                            条件满足时融合，保留数值语义
 └── gac-propagate-layout                 验证/传播可证明的轴布局
         ↓
-DeviceLowering.cpp                     共享算子循环、SSA 依赖与静态 Buffer 规划
+gac-regular-to-linalg                  规则算子 → tensor + linalg.generic
+        ├── MatMul / Gemm / Conv / Add / Reduce / LayerNorm
+        │      索引映射 + parallel/reduction 迭代轴 + 标量计算 region
+        │      → 静态 destination Buffer → 上游 Linalg-to-SCF
+        └── MSDeformAttn / GridSample / DeformConv / ScatterND
+               保留 gac.* → 专用 C++ Lowering
+        ↓
+DeviceLowering.cpp                     两条路径共用 SSA 依赖、Buffer 规划和 dispatch
         ↓
 按 --target 选择线程映射、ABI、设备数学和地址约束
         ├── vortex：VortexLowering.cpp / Vortex Dialect
@@ -81,12 +97,14 @@ DeviceLowering.cpp                     共享算子循环、SSA 依赖与静态 
 | 图优化 | [GraphPasses.cpp](lib/GraphPasses.cpp) | PassWrapper、IRRewriter、PatternRewriter，实际修改 MLIR 图 |
 | 纯常量求值 | [ConstantFolding.cpp](lib/ConstantFolding.cpp) | APInt/APFloat 保留原始精度，对常量几何和 shape 子图求值 |
 | 算子合法化 | [TensorLegalization.cpp](lib/TensorLegalization.cpp) | 将静态多输出 Split 重写为多个 Slice；保留来源与输出名 |
+| 规则算子结构化 | [LinalgLowering.cpp](lib/LinalgLowering.cpp)、[LinalgConvolution.cpp](lib/LinalgConvolution.cpp) | 创建真实 Linalg 运算、迭代轴和索引映射，保留计算结构 |
+| Linalg 设备连接 | [LinalgDevice.cpp](lib/LinalgDevice.cpp) | 既有指针 ABI → 静态 MemRef → 上游 `linalgOpToLoops`；并行输出轴映射到线程 |
 | 设备映射与 Buffer | [DeviceLowering.cpp](lib/DeviceLowering.cpp) | 共享静态资源检查、dispatch、按生命周期回收及合并/拆分空闲区间 |
 | Kernel Lowering | [DeviceLowering.cpp](lib/DeviceLowering.cpp) | 共享算子语义，真正创建 SCF/Arith/Math/LLVM 操作；不拼接 Kernel 文本 |
 | Vortex 方言与 ABI | [VortexLowering.cpp](lib/VortexLowering.cpp) | thread/block CSR、uniform、RV32 参数槽、入口 annotation |
-| Vortex MatMul 模板 | [VortexMatmul.cpp](lib/VortexMatmul.cpp)、[VortexTcu.cpp](lib/VortexTcu.cpp) | C++ MLIR LMEM 分块、DXA 双缓冲、TF32×3 WMMA；显式选择，独立验收 |
+| Vortex MatMul 模板 | [VortexMatmul.cpp](templates/vortex/Matmul.cpp)、[VortexTcu.cpp](templates/vortex/Tcu.cpp) | C++ MLIR LMEM 分块、DXA 双缓冲、TF32×3 WMMA；显式选择，独立验收 |
 | CUDA ABI 与数学库 | [CudaLowering.cpp](lib/CudaLowering.cpp) | NVVM 线程映射、64 位指针、设备 libdevice 数学函数 |
-| CUDA 计算模板 | [CudaMatmul.cpp](lib/CudaMatmul.cpp)、[CudaReduction.cpp](lib/CudaReduction.cpp) | shared memory、寄存器分块、CTA 协作归约；按形状生成 launch |
+| CUDA 计算模板 | [CudaMatmul.cpp](templates/cuda/Matmul.cpp)、[CudaReduction.cpp](templates/cuda/Reduction.cpp) | shared memory、寄存器分块、CTA 协作归约；按形状生成 launch |
 | 编译入口 | [gac-compile.cpp](tools/gac-compile.cpp) | 原生 ONNX 导入和 PassManager 流水线，可逐层输出 IR |
 | MLIR 优化入口 | [gac-opt.cpp](tools/gac-opt.cpp) | 带 `gac`/`vortex` 注册的 `MlirOptMain` |
 | 机器码构建 | [compile-vortex.sh](tools/compile-vortex.sh)、[Vortex.mk](tools/Vortex.mk) | 调用同版本 MLIR/VOLT，复用 Vortex startup/linker/封装工具 |
@@ -123,7 +141,7 @@ Vortex 环境设置见下方“构建与执行”，CUDA 见 [CUDA 使用说明]
 
 Vortex 已增加显式可选的 LMEM、DXA 双缓冲和 TCU MatMul 模板，设计、限制和
 使用方式见 [Vortex MatMul 优化](README.vortex-matmul.md)。TCU 使用 TF32×3 分解、
-FP32 累加，不能宣称原生 FP32 矩阵乘法。默认仍是标量路径，CUDA Tensor Core
+FP32 累加，不能宣称原生 FP32 矩阵乘法。默认使用 Linalg 的逐输出线程调度，CUDA Tensor Core
 尚未实现；Vortex 的资源参数和同步方式不直接套用于 CUDA。
 
 CUDA 已增加可选的 shared-memory MatMul、每线程寄存器分块、Softmax/LayerNorm
@@ -133,6 +151,67 @@ CUDA 已增加可选的 shared-memory MatMul、每线程寄存器分块、Softma
 `gac-opt` 必须用于包含 `gac.*` 或 `vortex.*` 的 IR，因为普通上游 `mlir-opt`
 没有注册本项目的方言。降成标准 LLVM Dialect 后，可以使用同版本的上游工具。
 Operation 类采用 MLIR 正式支持的手写 C++ 注册方式；并非带陌生名字的未注册操作。
+
+### Linalg 混合路径与现有模板的边界
+
+默认 `--regular-lowering=linalg`。规则算子会被 C++ Pass 替换成真实的
+`linalg.generic`，并由这些 Operation 的 **indexing_maps、iterator_types 和计算
+region** 生成设备循环；不会再按原 GAC 名称重新生成旧 Kernel。
+
+| 算子 | 结构化表达与约束 |
+|---|---|
+| MatMul / Gemm | 并行输出轴、K 归约轴；支持 batch 广播、向量乘、Gemm 转置与系数 |
+| Conv | NCHW、groups、stride、dilation、显式 padding；padding 用 `tensor.pad` 表达 |
+| Add / Sub / Mul / Div / ReLU | 广播索引映射和逐元素 region；包含已融合的 Add+ReLU |
+| ReduceSum / ReduceMean | 显式归约轴；负轴、keepdims 和空 axes 的语义保留 |
+| LayerNorm | 均值归约、中心化方差归约、归一化与仿射变换；保持现有 FP32 / stash_type=1 约束 |
+| MSDeformAttn / GridSample / DeformConv / ScatterND | 继续使用专用 Lowering；各自原有支持范围没有扩大 |
+
+FP16 MatMul、Conv、Reduce 使用 FP32 累加，再转换输出。静态 Buffer 规划负责
+中间张量的地址与生命周期；Linalg 的 destination 映射成这些已分配地址上的
+`memref`，没有设备端 `malloc`。未被 payload 读取的 `tensor.empty` 不占用
+Runtime Buffer；归约真正读取的初值计入依赖和生命周期。
+
+设备调度会融合单消费者的初始化和同坐标逐元素后处理。例如 MatMul 的零初值、
+归约结果、bias 和 ReLU 可以在一个 dispatch 内完成，中间值保存在线程私有的
+标量槽位，只有最终结果写入全局 Buffer。融合检查实际 Linalg 索引映射与
+use-def 关系；广播、跨坐标读取、多消费者及归约消费者不会套用逐元素融合。
+每个中间值仍按其声明类型保存，保留 FP16 的中间舍入。私有槽位在 Kernel
+入口分配，不随 native 目标的输出循环反复增长。
+
+这里的 Bufferization 是与现有 Runtime ABI 配合的 C++ destination 映射，
+**不是已经接入上游 One-Shot Bufferize 全图 Pass**。当前调度仍是每线程一个输出、
+线程内串行归约。已注册 Linalg 的上游 `TilingInterface`；它与索引映射一起提供
+后续块级 Tiling、Fusion、Vectorization 的结构化入口。
+已实现的同坐标融合不等于完成 shared-memory 分块或向量化；不能沿用旧版本的
+性能数据或直接宣称加速。未满足融合条件的中间张量仍需要独立 Buffer。
+
+查看实际编译阶段：
+
+```bash
+gac-compile model.onnx --emit=linalg -o model.linalg.mlir
+gac-compile model.onnx --target=cuda --emit=llvm --save-stages stages \
+  --manifest plan.json --constants-dir constants -o kernel.mlir
+# stages/02-linalg.mlir 是参与后端编译的 IR；03-device.mlir 是设备循环。
+gac-opt model.optimized.mlir --gac-regular-to-linalg -o model.linalg.mlir
+```
+
+既有 CUDA shared-memory / cooperative 与 Vortex LMEM / DXA / TCU 模板可用
+`--regular-lowering=legacy` 明确选择；脚本对应 `GAC_REGULAR_LOWERING=legacy`。
+这些模板尚未迁移成 Linalg Schedule，同时要求 Linalg 和旧模板会报错，避免
+静默绕过新路径。编译计划记录 `regular_lowering`、`linalg_dispatches`、
+`linalg_fused_producers` 以及每个
+dispatch 的 `lowering`，便于核对。
+
+数值与混合图回归见 [run_linalg_tests.py](tests/run_linalg_tests.py)。Python 只生成
+测试输入和独立参考值；模型导入、Linalg 改写和后端代码生成均由 C++ 完成。
+
+2026-10-21 验证：[记录与编译器校验值](../docs/validation/linalg/2026-10-21/summary.json)。
+28 项 Linalg 回归、31 项既有回归、8 项 CUDA PTX / Vortex ELF32 代码生成检查和
+8 项旧模板选择检查通过。完整 Tiny / Base cold ONNX 均完成混合路径编译、
+LLVM IR 翻译与校验；分别生成 1,360 / 3,752 个 dispatch，融合移除 402 / 1,655
+个中间生产者。整网验证仅为编译检查，没有执行新路径的完整模型推理，
+不能据此判断数值精度、FPS 或硬件峰值显存。
 
 ## 2. 数据交接与 Buffer
 
@@ -203,8 +282,9 @@ NCHW/NHWC 布局选择器。
 直接返回的公开输出保留名称，`source_op/domain/opset/input_positions` 等语义信息不变。
 
 图中的 `TOSA / Linalg / SCF / Vector` 是可选择的表示层，不能机械地要求所有
-算子经过全部层。**本轮实现选择 GAC → SCF 标量循环路线**；尚未实现自动
-Linalg tiling、Vector 向量化或 TOSA 全覆盖转换，也不宣称已经完成这些性能优化。
+算子经过全部层。默认规则算子走 **GAC → Linalg → SCF**，其余算子保留
+专用 GAC Lowering；尚未实现自动块级 Linalg tiling、Vector 向量化或 TOSA
+全覆盖转换，也不宣称已经完成这些性能优化。
 
 设备端当前要求正的静态 shape、受支持的原生类型及属性。动态 shape、整数 shape
 输入未静态求值、未支持的 GridSample 模式等会明确报错。LayerNorm 当前仅允许
@@ -278,7 +358,8 @@ Lowering 生成 1,548 个运行时 dispatch。没有使用 `--allow-unsupported`
 运行时数据，形状为 FP32 `[1,6,3,480,800]`。修改被固化的相机标定需要重新导出/
 编译，或另行实现相应的动态形状及索引契约；当前结果不包含 warm 时序路径验收。
 
-`--save-stages` 在一次编译中保存 `01-import.mlir`、`02-optimized.mlir`、
+`--save-stages` 在一次编译中保存 `01-import.mlir`、`01-shaped.mlir`、
+`02-optimized.mlir`、`02-linalg.mlir`（Linalg 路径）、
 `03-device.mlir`、`04-llvm.mlir`，最终 LLVM Dialect 也写入 `-o` 指定文件。这些是同一编译过程的
 分层快照，可用于核查每一步 Operation 的变化。最新整网执行状态与历史失败记录
 的区别见[整网验证记录](../docs/validation/vortex/native-mlir-bevformer-full-2026-10-16/README.md)。

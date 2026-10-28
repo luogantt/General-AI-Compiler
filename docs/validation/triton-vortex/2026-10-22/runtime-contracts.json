@@ -1,0 +1,170 @@
+{
+  "passed": 33,
+  "cases": [
+    {
+      "name": "valid-tail",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "physical-reshape-alias",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "valid-i32",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "valid-no-inputs",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "bad-block_elements-0",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: block_elements"
+    },
+    {
+      "name": "bad-block_elements-8",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: block_elements"
+    },
+    {
+      "name": "bad-block_elements-15",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: block_elements"
+    },
+    {
+      "name": "bad-block_elements-17",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: block_elements"
+    },
+    {
+      "name": "bad-block_elements-2048",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: block_elements"
+    },
+    {
+      "name": "bad-num_warps-0",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: num_warps"
+    },
+    {
+      "name": "bad-num_warps-3",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: num_warps"
+    },
+    {
+      "name": "bad-num_warps-8",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: num_warps"
+    },
+    {
+      "name": "bad-lanes-0",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: lanes"
+    },
+    {
+      "name": "bad-lanes-3",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: lanes"
+    },
+    {
+      "name": "bad-lanes-64",
+      "passed": true,
+      "error": "unsupported Triton Vortex dimension: lanes"
+    },
+    {
+      "name": "bad-grid_size-0",
+      "passed": true,
+      "error": "Triton Vortex logical tile and physical launch geometry disagree"
+    },
+    {
+      "name": "bad-grid_size-2",
+      "passed": true,
+      "error": "Triton Vortex logical tile and physical launch geometry disagree"
+    },
+    {
+      "name": "bad-grid_size-5",
+      "passed": true,
+      "error": "Triton Vortex logical tile and physical launch geometry disagree"
+    },
+    {
+      "name": "bad-block_size-0",
+      "passed": true,
+      "error": "Triton Vortex logical tile and physical launch geometry disagree"
+    },
+    {
+      "name": "bad-block_size-8",
+      "passed": true,
+      "error": "Triton Vortex logical tile and physical launch geometry disagree"
+    },
+    {
+      "name": "bad-abi",
+      "passed": true,
+      "error": "unsupported Triton Vortex kernel ABI"
+    },
+    {
+      "name": "bad-mixed-dtype",
+      "passed": true,
+      "error": "Triton Vortex inputs must match output dtype and element count"
+    },
+    {
+      "name": "bad-broadcast",
+      "passed": true,
+      "error": "Triton Vortex inputs must match output dtype and element count"
+    },
+    {
+      "name": "bad-f16",
+      "passed": true,
+      "error": "Triton Vortex requires FP32 or I32 elementwise output"
+    },
+    {
+      "name": "missing-contract",
+      "passed": true,
+      "error": "Triton dispatch is missing its launch contract"
+    },
+    {
+      "name": "missing-lowering",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "wrong-lowering",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "legacy",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "missing-root-lowering",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "mixed-vortex",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "mixed-cuda",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "target-cuda",
+      "passed": true,
+      "error": "Triton dispatch requires Vortex Linalg lowering without another schedule"
+    },
+    {
+      "name": "native-unchanged",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

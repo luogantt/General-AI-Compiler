@@ -1,0 +1,110 @@
+module attributes {llvm.data_layout = "e-m:e-p:32:32-i64:64-n32-S128", llvm.target_triple = "riscv32-unknown-unknown-elf"} {
+  llvm.mlir.global private constant @__tv_annotation("vortex.kernel\00") {addr_space = 0 : i32}
+  llvm.mlir.global private constant @__tv_source("triton\00") {addr_space = 0 : i32}
+  llvm.mlir.global appending @llvm.used() {addr_space = 0 : i32, section = "llvm.metadata"} : !llvm.array<1 x ptr> {
+    %0 = llvm.mlir.undef : !llvm.array<1 x ptr>
+    %1 = llvm.mlir.addressof @gac_op_2 : !llvm.ptr
+    %2 = llvm.insertvalue %1, %0[0] : !llvm.array<1 x ptr> 
+    llvm.return %2 : !llvm.array<1 x ptr>
+  }
+  llvm.mlir.global appending @llvm.compiler.used() {addr_space = 0 : i32, section = "llvm.metadata"} : !llvm.array<1 x ptr> {
+    %0 = llvm.mlir.undef : !llvm.array<1 x ptr>
+    %1 = llvm.mlir.addressof @gac_op_2 : !llvm.ptr
+    %2 = llvm.insertvalue %1, %0[0] : !llvm.array<1 x ptr> 
+    llvm.return %2 : !llvm.array<1 x ptr>
+  }
+  llvm.mlir.global appending @llvm.global.annotations() {addr_space = 0 : i32, section = "llvm.metadata"} : !llvm.array<1 x struct<(ptr, ptr, ptr, i32, ptr)>> {
+    %0 = llvm.mlir.undef : !llvm.struct<(ptr, ptr, ptr, i32, ptr)>
+    %1 = llvm.mlir.addressof @gac_op_2 : !llvm.ptr
+    %2 = llvm.mlir.addressof @__tv_annotation : !llvm.ptr
+    %3 = llvm.mlir.addressof @__tv_source : !llvm.ptr
+    %4 = llvm.mlir.constant(1 : i32) : i32
+    %5 = llvm.mlir.zero : !llvm.ptr
+    %6 = llvm.insertvalue %1, %0[0] : !llvm.struct<(ptr, ptr, ptr, i32, ptr)> 
+    %7 = llvm.insertvalue %2, %6[1] : !llvm.struct<(ptr, ptr, ptr, i32, ptr)> 
+    %8 = llvm.insertvalue %3, %7[2] : !llvm.struct<(ptr, ptr, ptr, i32, ptr)> 
+    %9 = llvm.insertvalue %4, %8[3] : !llvm.struct<(ptr, ptr, ptr, i32, ptr)> 
+    %10 = llvm.insertvalue %5, %9[4] : !llvm.struct<(ptr, ptr, ptr, i32, ptr)> 
+    %11 = llvm.mlir.undef : !llvm.array<1 x struct<(ptr, ptr, ptr, i32, ptr)>>
+    %12 = llvm.insertvalue %10, %11[0] : !llvm.array<1 x struct<(ptr, ptr, ptr, i32, ptr)>> 
+    llvm.return %12 : !llvm.array<1 x struct<(ptr, ptr, ptr, i32, ptr)>>
+  }
+  llvm.func @gac_op_2(%arg0: !llvm.ptr) attributes {passthrough = ["vortex-kernel"], section = ".vx_entry.gac_op_2"} {
+    %0 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%arg0) : (!llvm.ptr) -> !llvm.ptr
+    %1 = llvm.mlir.constant(0 : i32) : i32
+    %2 = llvm.getelementptr %0[%1] : (!llvm.ptr, i32) -> !llvm.ptr, i8
+    %3 = llvm.load %2 : !llvm.ptr -> i64
+    %4 = llvm.trunc %3 : i64 to i32
+    %5 = llvm.inttoptr %4 : i32 to !llvm.ptr
+    %6 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%5) : (!llvm.ptr) -> !llvm.ptr
+    %7 = llvm.mlir.constant(8 : i32) : i32
+    %8 = llvm.getelementptr %0[%7] : (!llvm.ptr, i32) -> !llvm.ptr, i8
+    %9 = llvm.load %8 : !llvm.ptr -> i64
+    %10 = llvm.trunc %9 : i64 to i32
+    %11 = llvm.inttoptr %10 : i32 to !llvm.ptr
+    %12 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%11) : (!llvm.ptr) -> !llvm.ptr
+    %13 = llvm.mlir.constant(16 : i32) : i32
+    %14 = llvm.getelementptr %0[%13] : (!llvm.ptr, i32) -> !llvm.ptr, i8
+    %15 = llvm.load %14 : !llvm.ptr -> i64
+    %16 = llvm.trunc %15 : i64 to i32
+    %17 = llvm.inttoptr %16 : i32 to !llvm.ptr
+    %18 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%17) : (!llvm.ptr) -> !llvm.ptr
+    %19 = llvm.mlir.constant(3283 : i32) : i32
+    %20 = llvm.inline_asm "csrr $0, $1", "=r,i" %19 : (i32) -> i32
+    %21 = llvm.mlir.constant(3289 : i32) : i32
+    %22 = llvm.inline_asm "csrr $0, $1", "=r,i" %21 : (i32) -> i32
+    %23 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%22) : (i32) -> i32
+    %24 = llvm.mlir.constant(128 : i32) : i32
+    llvm.br ^bb1(%20 : i32)
+  ^bb1(%25: i32):  // 2 preds: ^bb0, ^bb12
+    %26 = llvm.icmp "slt" %25, %24 : i32
+    llvm.cond_br %26, ^bb2, ^bb13
+  ^bb2:  // pred: ^bb1
+    %27 = llvm.mlir.constant(3286 : i32) : i32
+    %28 = llvm.inline_asm "csrr $0, $1", "=r,i" %27 : (i32) -> i32
+    %29 = llvm.call_intrinsic "llvm.riscv.vx.uniform"(%28) : (i32) -> i32
+    %30 = llvm.mlir.constant(128 : i32) : i32
+    %31 = llvm.mul %29, %30 : i32
+    %32 = llvm.mlir.constant(0 : i32) : i32
+    %33 = llvm.add %31, %25 : i32
+    %34 = llvm.mlir.constant(45 : i32) : i32
+    %35 = llvm.icmp "slt" %33, %34 : i32
+    %36 = llvm.mlir.constant(0.000000e+00 : f32) : f32
+    %37 = llvm.getelementptr %6[%33] : (!llvm.ptr, i32) -> !llvm.ptr, f32
+    llvm.cond_br %35, ^bb3, ^bb4
+  ^bb3:  // pred: ^bb2
+    %38 = llvm.load %37 : !llvm.ptr -> f32
+    llvm.br ^bb5(%38 : f32)
+  ^bb4:  // pred: ^bb2
+    llvm.br ^bb5(%36 : f32)
+  ^bb5(%39: f32):  // 2 preds: ^bb3, ^bb4
+    llvm.br ^bb6
+  ^bb6:  // pred: ^bb5
+    %40 = llvm.mlir.constant(0.000000e+00 : f32) : f32
+    %41 = llvm.getelementptr %12[%33] : (!llvm.ptr, i32) -> !llvm.ptr, f32
+    llvm.cond_br %35, ^bb7, ^bb8
+  ^bb7:  // pred: ^bb6
+    %42 = llvm.load %41 : !llvm.ptr -> f32
+    llvm.br ^bb9(%42 : f32)
+  ^bb8:  // pred: ^bb6
+    llvm.br ^bb9(%40 : f32)
+  ^bb9(%43: f32):  // 2 preds: ^bb7, ^bb8
+    llvm.br ^bb10
+  ^bb10:  // pred: ^bb9
+    %44 = llvm.fmul %39, %43 : f32
+    %45 = llvm.mlir.constant(0.000000e+00 : f32) : f32
+    %46 = llvm.fcmp "olt" %44, %45 : f32
+    %47 = llvm.select %46, %45, %44 : i1, f32
+    %48 = llvm.getelementptr %18[%33] : (!llvm.ptr, i32) -> !llvm.ptr, f32
+    llvm.cond_br %35, ^bb11, ^bb12
+  ^bb11:  // pred: ^bb10
+    llvm.store %47, %48 : f32, !llvm.ptr
+    llvm.br ^bb12
+  ^bb12:  // 2 preds: ^bb10, ^bb11
+    %49 = llvm.add %25, %23 : i32
+    llvm.br ^bb1(%49 : i32)
+  ^bb13:  // pred: ^bb1
+    llvm.return
+  }
+}
+

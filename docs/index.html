@@ -39,6 +39,18 @@
     <p>当前源码分支：<code>lg/bevformer-vortex-full-ops</code>。源码分层重构基线：<code>49ac6aa</code>。</p>
   </header>
 
+  <section class="card" aria-labelledby="mlir-source-title">
+    <h2 id="mlir-source-title">LLVM / MLIR 自身的源码架构</h2>
+    <p>从 (x + 0) + y 追踪真实调用：文本 → 内存 IR → 优化 → LLVM IR。三张有向关系图说明方言如何接入公共算法与存储；点节点或连线查看 C++ 源码，另有 PNG 下载。</p>
+    <a class="primary" href="mlir-source-architecture.html">打开 MLIR 源码架构图 →</a>
+  </section>
+
+  <section class="card" aria-labelledby="gac-compile-title">
+    <h2 id="gac-compile-title">gac-compile · 真实控制流与数据流拓扑</h2>
+    <p>从命令行、ONNX 导入和 MLIR Pass，到 Linalg/legacy 分路、Vortex/CUDA/native 后端，以及进程外的 mlir-translate、VOLT、ELF/vxbin 和 Runtime。点击节点查看输入、输出、条件及对应 C++ 源码。</p>
+    <a class="primary" href="gac-compile-topology.html">打开 gac-compile 拓扑架构图 →</a>
+  </section>
+
   <section class="card" aria-labelledby="model-title">
     <h2 id="model-title">BEVFormer-base · 模型架构与 PyTorch 源码</h2>
     <p>从六相机输入、ResNet-101/DCNv2、FPN，到 BEV Encoder、检测 Decoder 和最终 3D 框。点击模块查看输入输出、张量形状与带行号的真实源码。</p>
@@ -47,11 +59,13 @@
   </section>
 
   <section class="current" aria-labelledby="current-title">
+    <p><strong>新原生编译入口：</strong><a href="../native/README.md">C++ ONNX → 注册的 MLIR Operation → MLIR Pass → Vortex → Runtime：代码、构建与验证</a>。下方 V8 图记录此前 Python Graph 路径，新旧支持范围分别查看。</p>
     <h2 id="current-title">当前入口：V8 · 分层源码与十个编译阶段</h2>
     <p>按重构后的目录查看 ModelAdapter、通用 Graph、编译流水线、Vortex 代码生成与执行之间的关系；每个阶段对应实际源码位置。</p>
     <a class="primary" href="vortex-matmul-end-to-end-v8.html">打开 V8 架构图 →</a>
     <p><a href="code_layout.md">源码分层与扩展说明</a> · <a href="bevformer_vortex_full_graph.md">BEVFormer 全图 Vortex 路径与验证范围</a></p>
     <p><a href="bevformer_onnx_ir_inspection.md">真实 BEVFormer → ONNX → 前端 Graph IR：导出与查看说明</a></p>
+    <p><a href="onnx-frontend-walkthrough.html">ONNX 前端逐步解析：文件里有什么、提取到哪里、怎样交给 MLIR 后端</a></p>
     <p><a href="graph_ir_network_viewer.md">Graph IR 网络图：逐层展开、上下游连接与权重矩阵</a></p>
     <p class="muted">模型范围需分别看待：BEVFormer 全图路径已建立；UniAD 目前是 FFN 适配；VLA 是可扩展方向。</p>
   </section>

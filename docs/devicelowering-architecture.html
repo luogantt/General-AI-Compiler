@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeviceLowering · 逻辑架构与模块拓扑</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f7f4;
+    --surface: #ffffff;
+    --ink: #111111;
+    --ink-2: #4b4b47;
+    --muted: #77766f;
+    --line: #deddd5;
+    --soft: #f1f0eb;
+    --accent: #1c5cab;
+    --accent-soft: #e8f0fa;
+    --code: #f4f3ee;
+    --cat-entry: #2a78d6;
+    --cat-legal: #eb6834;
+    --cat-plan: #1baf7a;
+    --cat-emit: #4a3aa7;
+    --cat-abi: #e87ba4;
+    --cat-output: #008300;
+    --cat-entry-soft: rgba(42, 120, 214, 0.10);
+    --cat-legal-soft: rgba(235, 104, 52, 0.10);
+    --cat-plan-soft: rgba(27, 175, 122, 0.12);
+    --cat-emit-soft: rgba(74, 58, 167, 0.10);
+    --cat-abi-soft: rgba(232, 123, 164, 0.14);
+    --cat-output-soft: rgba(0, 131, 0, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .page {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 44px 28px 80px;
+  }
+
+  header {
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  h1 {
+    margin: 8px 0 10px;
+    font-size: clamp(28px, 3.6vw, 40px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .lede {
+    max-width: 900px;
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+
+  .formula {
+    margin: 22px 0 0;
+    padding: 15px 18px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--surface);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+  }
+
+  .section { margin-top: 44px; }
+
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 23px;
+    letter-spacing: -0.01em;
+  }
+
+  .section .intro {
+    margin: 0 0 18px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  /* ---------- conceptual flow ---------- */
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .step {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    padding: 14px 16px;
+  }
+
+  .step .no {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 999px;
+    padding: 1px 8px;
+    margin-bottom: 7px;
+  }
+
+  .step h3 {
+    margin: 0 0 4px;
+    font-size: 15.5px;
+  }
+
+  .step .q {
+    margin: 0 0 6px;
+    color: var(--accent);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  .step p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 13px;
+  }
+
+  .step .code-refs {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+  }
+
+  /* ---------- module topology ---------- */
+
+  .topology-wrap {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .topology { display: block; width: 100%; height: auto; }
+
+  .topology .node-bg {
+    fill: var(--surface);
+    stroke: #c9c8c0;
+    stroke-width: 1.2;
+  }
+
+  .topology .node-accent { fill: var(--cat); }
+
+  .topology .node-title {
+    fill: var(--ink);
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  .topology .node-sub {
+    fill: var(--ink-2);
+    font-size: 11px;
+  }
+
+  .topology .edge path {
+    fill: none;
+    stroke: #8b8a83;
+    stroke-width: 1.5;
+    marker-end: url(#arrow);
+  }
+
+  .topology .edge.dashed path { stroke-dasharray: 6 5; }
+  .topology .edge.both path { marker-start: url(#arrow-rev); }
+
+  .topology .edge-label {
+    fill: var(--ink-2);
+    font-size: 10.5px;
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin: 12px 0 0;
+    color: var(--ink-2);
+    font-size: 12px;
+  }
+
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend .line {
+    width: 22px;
+    border-top: 2px solid #8b8a83;
+  }
+
+  .legend .line.dashed { border-top-style: dashed; }
+
+  .legend .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--dot);
+  }
+
+  .edge-list {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 8px;
+  }
+
+  .edge-list li {
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 13px;
+  }
+
+  .edge-list strong { color: var(--ink); }
+
+  /* ---------- mapping ---------- */
+
+  .mapping {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .mapping article {
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  .mapping h3 {
+    margin: 0 0 4px;
+    font-size: 13.5px;
+  }
+
+  .mapping p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+
+  /* ---------- example ---------- */
+
+  .example {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .code {
+    margin: 0;
+    padding: 14px 16px;
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  .steps-list {
+    margin: 0;
+    padding-left: 22px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .steps-list li { margin-bottom: 8px; }
+  .steps-list strong { color: var(--ink); }
+
+  .misconceptions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 9px;
+  }
+
+  .misconceptions li {
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 13px;
+  }
+
+  .misconceptions strong { color: var(--ink); margin-right: 5px; }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.92em;
+    background: var(--code);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 4px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid #a9c2e4;
+  }
+
+  @media (max-width: 980px) {
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .step .code-refs { font-size: 10.5px; }
+  }
+
+  @media (max-width: 760px) {
+    .page { padding: 28px 16px 60px; }
+    .steps, .mapping, .example { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: #fff; }
+    .step, .topology-wrap, .edge-list li, .mapping article, .misconceptions li { break-inside: avoid; }
+    .code { white-space: pre-wrap; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">native/lib/DeviceLowering.cpp</div>
+    <h1>DeviceLowering：逻辑架构与模块拓扑</h1>
+    <p class="lede">
+      上半部分回答“为什么要有这些步骤”，下半部分回答“代码里谁指向谁”。
+      先看逻辑，再看拓扑；两者说的是同一件事。
+    </p>
+    <div class="formula">DeviceLowering =
+  合法性谓词
+  + DAG 线性化
+  + 生命周期内存分配
+  + 实现选择
+  + Kernel 构造
+  + 合同序列化</div>
+  </header>
+
+  <section class="section">
+    <h2>一、逻辑架构：六个不可再少的步骤</h2>
+    <p class="intro">
+      每一步都在消除一个不确定性。少一步，后面的信息就不够。
+    </p>
+
+    <div class="steps">
+      <article class="step">
+        <span class="no">01</span>
+        <h3>合法性</h3>
+        <p class="q">这张图能在目标上执行吗？</p>
+        <p>设备只支持固定算子、静态 shape、特定 dtype 和属性模式。不满足直接报错，不留给运行时。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L1060">validateDeviceGraph</a><a href="../native/lib/DeviceLowering.cpp#L725">preflight</a></div>
+      </article>
+
+      <article class="step">
+        <span class="no">02</span>
+        <h3>线性化</h3>
+        <p class="q">按什么顺序执行？</p>
+        <p>Runtime 执行队列，不执行图。每个产生 SSA 值的算子变成一个 dispatch，按拓扑顺序排列并记录依赖。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L1480">dispatch loop</a><a href="../native/lib/DeviceLowering.cpp#L1662">depends_on</a></div>
+      </article>
+
+      <article class="step">
+        <span class="no">03</span>
+        <h3>内存映射</h3>
+        <p class="q">每个张量住在哪？</p>
+        <p>设备端不能 malloc。SSA 值映射成物理 Buffer，中间值进 64B 对齐 arena，按 last-use 复用。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L925">TensorAllocation</a><a href="../native/lib/DeviceLowering.cpp#L1371">arena</a></div>
+      </article>
+
+      <article class="step">
+        <span class="no">04</span>
+        <h3>实现选择</h3>
+        <p class="q">每个算子由谁计算？</p>
+        <p>规则 Linalg、专用标量、设备模板、Triton 四选一。选择失败保留 native，并记录原因。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L1483">templates::select</a><a href="../native/lib/DeviceLowering.cpp#L1493">Triton selection</a></div>
+      </article>
+
+      <article class="step">
+        <span class="no">05</span>
+        <h3>Kernel 构造</h3>
+        <p class="q">设备函数长什么样？</p>
+        <p>Kernel = 指针 + 线程号。线程号决定算哪个输出元素；Linalg/专用/模板/Triton 只替换函数体。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L220">emitElement</a><a href="../native/lib/DeviceLowering.cpp#L504">emitSpatial</a><a href="../native/lib/LinalgDevice.cpp#L27">LinalgDevice</a></div>
+      </article>
+
+      <article class="step">
+        <span class="no">06</span>
+        <h3>合同序列化</h3>
+        <p class="q">Runtime 怎么启动？</p>
+        <p>把 tensor 表、offset、dispatch 顺序、依赖、launch 几何写成 plan.json；Runtime 只认这份合同。</p>
+        <div class="code-refs"><a href="../native/lib/DeviceLowering.cpp#L1852">manifest</a><a href="../native/runtime/dispatch-plan.h#L583">parsePlan</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>二、模块拓扑：代码里谁指向谁</h2>
+    <p class="intro">
+      这张图只画模块之间的实际依赖。实线是必经的数据/控制流，虚线是汇总或旁路，
+      双向箭头表示“选择 + 返回发射结果”。每个框里都写了这个模块在做什么。
+    </p>
+
+    <div class="topology-wrap">
+      <svg class="topology" viewBox="0 0 1240 530" role="img" aria-labelledby="topo-title topo-desc">
+        <title id="topo-title">DeviceLowering.cpp 模块拓扑</title>
+        <desc id="topo-desc">
+          入口模块经过合法性与 LayerNorm 预扫描，进入 Buffer 规划和 Dispatch 循环；
+          Dispatch 调用 Kernel 发射，发射结果经过目标 ABI 进入 Manifest 和 LLVM 转换。
+        </desc>
+
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b8a83"></path>
+          </marker>
+          <marker id="arrow-rev" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 10 0 L 0 5 L 10 10 z" fill="#8b8a83"></path>
+          </marker>
+        </defs>
+
+        <!-- edges -->
+        <g class="edge" data-from="M0" data-to="M1">
+          <path d="M230,112 L255,112 L255,72 L280,72"></path>
+          <text class="edge-label" x="236" y="100">ModuleOp</text>
+        </g>
+        <g class="edge" data-from="M0" data-to="M2">
+          <path d="M230,112 L255,112 L255,212 L280,212"></path>
+          <text class="edge-label" x="236" y="232">Triton config</text>
+        </g>
+        <g class="edge" data-from="M1" data-to="M3">
+          <path d="M480,72 L530,72"></path>
+          <text class="edge-label" x="488" y="64">合法图</text>
+        </g>
+        <g class="edge" data-from="M2" data-to="M4">
+          <path d="M480,212 L530,212"></path>
+          <text class="edge-label" x="486" y="204">LN ownership</text>
+        </g>
+        <g class="edge" data-from="M3" data-to="M4">
+          <path d="M630,114 L630,170"></path>
+          <text class="edge-label" x="640" y="146">allocations</text>
+        </g>
+        <g class="edge both" data-from="M4" data-to="M5">
+          <path d="M730,216 L755,216 L755,90 L780,90"></path>
+          <text class="edge-label" x="744" y="160">select / emit</text>
+        </g>
+        <g class="edge" data-from="M5" data-to="M6">
+          <path d="M890,150 L890,200"></path>
+          <text class="edge-label" x="900" y="178">kernel body</text>
+        </g>
+        <g class="edge" data-from="M4" data-to="M7">
+          <path d="M630,262 L630,375 L780,375"></path>
+          <text class="edge-label" x="636" y="367">dispatch metadata</text>
+        </g>
+        <g class="edge" data-from="M6" data-to="M7">
+          <path d="M890,284 L890,330"></path>
+          <text class="edge-label" x="900" y="310">ABI fields</text>
+        </g>
+        <g class="edge dashed" data-from="M3" data-to="M7">
+          <path d="M630,30 L630,10 L1160,10 L1160,315 L1000,315 L1000,330"></path>
+          <text class="edge-label" x="700" y="22">allocation table</text>
+        </g>
+        <g class="edge dashed" data-from="M6" data-to="M8">
+          <path d="M1000,242 L1020,242 L1020,350 L1040,350"></path>
+          <text class="edge-label" x="1030" y="320">target IR</text>
+        </g>
+        <g class="edge" data-from="M7" data-to="OUT-PLAN">
+          <path d="M890,420 L890,450"></path>
+          <text class="edge-label" x="900" y="438">plan.json</text>
+        </g>
+        <g class="edge" data-from="M8" data-to="OUT-PTX">
+          <path d="M1130,420 L1130,450"></path>
+          <text class="edge-label" x="1140" y="438">LLVM → PTX/vxbin</text>
+        </g>
+
+        <!-- nodes -->
+        <g style="--cat: var(--cat-entry)">
+          <rect class="node-bg" x="30" y="70" width="200" height="84" rx="10"></rect>
+          <rect class="node-accent" x="30" y="70" width="5" height="84" rx="2.5"></rect>
+          <text class="node-title" x="48" y="96">00 入口与配置</text>
+          <text class="node-sub" x="48" y="114">校验 DeviceOptions</text>
+          <text class="node-sub" x="48" y="130">target / lowering / Triton</text>
+        </g>
+
+        <g style="--cat: var(--cat-legal)">
+          <rect class="node-bg" x="280" y="30" width="200" height="84" rx="10"></rect>
+          <rect class="node-accent" x="280" y="30" width="5" height="84" rx="2.5"></rect>
+          <text class="node-title" x="298" y="56">01 合法性</text>
+          <text class="node-sub" x="298" y="74">白名单 + 静态 shape</text>
+          <text class="node-sub" x="298" y="90">不满足直接报错</text>
+        </g>
+
+        <g style="--cat: var(--cat-legal)">
+          <rect class="node-bg" x="280" y="170" width="200" height="84" rx="10"></rect>
+          <rect class="node-accent" x="280" y="170" width="5" height="84" rx="2.5"></rect>
+          <text class="node-title" x="298" y="196">02 LayerNorm 预扫描</text>
+          <text class="node-sub" x="298" y="214">找完整闭包</text>
+          <text class="node-sub" x="298" y="230">防止半融合</text>
+        </g>
+
+        <g style="--cat: var(--cat-plan)">
+          <rect class="node-bg" x="530" y="30" width="200" height="84" rx="10"></rect>
+          <rect class="node-accent" x="530" y="30" width="5" height="84" rx="2.5"></rect>
+          <text class="node-title" x="548" y="56">03 Buffer 规划</text>
+          <text class="node-sub" x="548" y="74">SSA → 物理 Buffer</text>
+          <text class="node-sub" x="548" y="90">offset / last-use / arena</text>
+        </g>
+
+        <g style="--cat: var(--cat-plan)">
+          <rect class="node-bg" x="530" y="170" width="200" height="92" rx="10"></rect>
+          <rect class="node-accent" x="530" y="170" width="5" height="92" rx="2.5"></rect>
+          <text class="node-title" x="548" y="196">04 Dispatch 循环</text>
+          <text class="node-sub" x="548" y="214">选择实现 + 建依赖</text>
+          <text class="node-sub" x="548" y="230">每个输出一个 dispatch</text>
+        </g>
+
+        <g style="--cat: var(--cat-emit)">
+          <rect class="node-bg" x="780" y="30" width="220" height="120" rx="10"></rect>
+          <rect class="node-accent" x="780" y="30" width="5" height="120" rx="2.5"></rect>
+          <text class="node-title" x="798" y="56">05 Kernel 发射</text>
+          <text class="node-sub" x="798" y="74">模板 / Triton</text>
+          <text class="node-sub" x="798" y="90">专用发射 / LinalgDevice</text>
+          <text class="node-sub" x="798" y="106">只替换 Kernel body</text>
+        </g>
+
+        <g style="--cat: var(--cat-abi)">
+          <rect class="node-bg" x="780" y="200" width="220" height="84" rx="10"></rect>
+          <rect class="node-accent" x="780" y="200" width="5" height="84" rx="2.5"></rect>
+          <text class="node-title" x="798" y="226">06 目标 ABI</text>
+          <text class="node-sub" x="798" y="244">CUDA 64-bit pointers</text>
+          <text class="node-sub" x="798" y="260">Vortex CSR / RV32</text>
+        </g>
+
+        <g style="--cat: var(--cat-output)">
+          <rect class="node-bg" x="780" y="330" width="220" height="90" rx="10"></rect>
+          <rect class="node-accent" x="780" y="330" width="5" height="90" rx="2.5"></rect>
+          <text class="node-title" x="798" y="356">07 Manifest</text>
+          <text class="node-sub" x="798" y="374">plan.json</text>
+          <text class="node-sub" x="798" y="390">tensor + dispatch + ABI</text>
+        </g>
+
+        <g style="--cat: var(--cat-output)">
+          <rect class="node-bg" x="1040" y="330" width="180" height="90" rx="10"></rect>
+          <rect class="node-accent" x="1040" y="330" width="5" height="90" rx="2.5"></rect>
+          <text class="node-title" x="1058" y="356">08 LLVM 转换</text>
+          <text class="node-sub" x="1058" y="374">device IR → LLVM</text>
+          <text class="node-sub" x="1058" y="390">gac-compile 调用</text>
+        </g>
+
+        <g style="--cat: var(--cat-output)">
+          <rect class="node-bg" x="780" y="450" width="220" height="55" rx="9"></rect>
+          <text class="node-title" x="798" y="482">plan.json → Runtime</text>
+        </g>
+
+        <g style="--cat: var(--cat-output)">
+          <rect class="node-bg" x="1040" y="450" width="180" height="55" rx="9"></rect>
+          <text class="node-title" x="1058" y="482">PTX / vxbin</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span><span class="dot" style="--dot: var(--cat-entry)"></span>入口</span>
+      <span><span class="dot" style="--dot: var(--cat-legal)"></span>合法性 / 预扫描</span>
+      <span><span class="dot" style="--dot: var(--cat-plan)"></span>规划</span>
+      <span><span class="dot" style="--dot: var(--cat-emit)"></span>Kernel 发射</span>
+      <span><span class="dot" style="--dot: var(--cat-abi)"></span>目标 ABI</span>
+      <span><span class="dot" style="--dot: var(--cat-output)"></span>产物 / 公共 API</span>
+      <span><span class="line"></span>必经数据/控制流</span>
+      <span><span class="line dashed"></span>汇总 / 旁路</span>
+    </div>
+
+    <ul class="edge-list">
+      <li><strong>00 → 01 / 02</strong>：模块和配置进入合法性与 LayerNorm 预扫描。</li>
+      <li><strong>01 → 03</strong>：只有合法的静态图才能进入 Buffer 规划。</li>
+      <li><strong>02 → 04</strong>：预扫描只把 LayerNorm 的 ownership 交给 Dispatch 循环。</li>
+      <li><strong>03 → 04</strong>：Buffer 规划把 allocations 交给 Dispatch 循环，后者才知道指针。</li>
+      <li><strong>04 ↔ 05</strong>：Dispatch 选择实现；发射器返回 Kernel body。</li>
+      <li><strong>05 → 06</strong>：Kernel body 加上目标 ABI，成为可调用的设备函数。</li>
+      <li><strong>04 → 07 / 06 → 07</strong>：Dispatch 元数据和 ABI 字段进入 Manifest。</li>
+      <li><strong>03 → 07</strong>（虚线）：allocation 表直接进入 Manifest 的 tensor 表。</li>
+      <li><strong>06 → 08</strong>（虚线）：target IR 进入 LLVM 转换，最终生成 PTX / vxbin。</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>三、两层怎么对应</h2>
+    <p class="intro">
+      上面六个逻辑步骤，落到代码里就是下面这些模块。看懂对应关系，就不会把“模块”和“步骤”混在一起。
+    </p>
+    <div class="mapping">
+      <article>
+        <h3>合法性谓词 → 01 + 02</h3>
+        <p>01 检查通用算子/形态；02 只处理 Triton LayerNorm 的完整闭包。</p>
+      </article>
+      <article>
+        <h3>DAG 线性化 → 04</h3>
+        <p>Dispatch 循环把每个输出值的生产者变成一条 dispatch，并记录 depends_on。</p>
+      </article>
+      <article>
+        <h3>生命周期内存分配 → 03</h3>
+        <p>Buffer 规划负责 TensorAllocation、view elision、last-use 和 64B arena。</p>
+      </article>
+      <article>
+        <h3>实现选择 → 04 + 05</h3>
+        <p>04 做选择，05 是四类实际发射实现；二者通过双向箭头连接。</p>
+      </article>
+      <article>
+        <h3>Kernel 构造 → 05 + 06</h3>
+        <p>05 生成函数体；06 套上 CUDA/Vortex 调用约定和指针 ABI。</p>
+      </article>
+      <article>
+        <h3>合同序列化 → 07 + 08</h3>
+        <p>07 写 plan.json；08 把 device IR 收敛到 LLVM，最终生成机器码。</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>四、用一张小图走完</h2>
+    <p class="intro">
+      `%A + %B → ReLU` 是能覆盖全部六个步骤的最小例子。
+    </p>
+
+    <div class="example">
+      <pre class="code">%A = input  tensor&lt;4xf32&gt;
+%B = input  tensor&lt;4xf32&gt;
+
+%T = gac.add   %A, %B   // dispatch 0
+%Y = gac.relu  %T       // dispatch 1
+
+return %Y</pre>
+
+      <ol class="steps-list">
+        <li><strong>合法性</strong>：add/relu 都在白名单；shape 静态 4；FP32。通过。</li>
+        <li><strong>线性化</strong>：dispatch 0 输出 <code>%T</code>；dispatch 1 输出 <code>%Y</code>，依赖 0。</li>
+        <li><strong>内存</strong>：<code>%A/%B</code> 是输入 Buffer；<code>%T</code> arena offset 0；<code>%Y</code> offset 64，活到结束。</li>
+        <li><strong>选择</strong>：add/relu 是规则逐元素算子，默认 Linalg pointwise，也可 legacy 标量。</li>
+        <li><strong>Kernel</strong>：<code>add_kernel(ptrA, ptrB, ptrT)</code>、<code>relu_kernel(ptrT, ptrY)</code>；每线程一个元素。</li>
+        <li><strong>合同</strong>：manifest 记录两个 offset、dispatch 顺序和依赖；Runtime 依次启动。</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>五、几个容易搞反的点</h2>
+    <ul class="misconceptions">
+      <li><strong>不是一个大 Kernel。</strong>每个输出张量一个 dispatch；Kernel 之间用全局 Buffer 交接。</li>
+      <li><strong>不是运行时 malloc。</strong>所有 offset 编译期确定；Runtime 只按 manifest 映射地址。</li>
+      <li><strong>不是所有算子同一条路径。</strong>规则 Linalg、专用标量、设备模板、Triton 是四种 Kernel 来源。</li>
+      <li><strong>不是 manifest 只是日志。</strong>它是 Runtime 唯一执行合同，并且会被重新校验。</li>
+      <li><strong>不是先选模板再分内存。</strong>Buffer 生命周期和实现选择解耦；模板/Triton 不改变 Buffer 规划。</li>
+      <li><strong>不是失败就换后端。</strong>选择失败保留 native 标量路径并记录原因，不静默切换。</li>
+    </ul>
+  </section>
+
+  <footer class="footer">
+    一句话总结：DeviceLowering 把“张量图”变成“一串带指针和线程号的 Kernel + 一张全局内存地图 + 一份 Runtime 能执行的合同”。
+    代码位置以当前工作树为准。
+  </footer>
+
+</div>
+</body>
+</html>

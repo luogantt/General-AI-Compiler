@@ -1,0 +1,156 @@
+{
+  "scope": "ONNX/C++ MLIR/Triton/VOLT/Vortex SimX integration; not full BEVFormer or silicon performance",
+  "status": "passed",
+  "checks": 15,
+  "results": [
+    {
+      "case": "add_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "f36f0f322e74001bc3484c3b881a7d0270d9d6992d6338c3a0a35c9119cf52d8"
+    },
+    {
+      "case": "add_17",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "0616acdf0766c6fcf78283dd786e2928cc2f8c0590f7d1e94df9e0662ba9a8a1"
+    },
+    {
+      "case": "add_1003",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2535c2567eed7db1ae06e9b4fc9be3b0c253973d373b88780ed9554d37a6b96d"
+    },
+    {
+      "case": "fused_float32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "81f0d2709344e842fdda3ff8b61a62e08dac54940fccfd2a8ed98f60d637c5d1"
+    },
+    {
+      "case": "fused_int32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "83dfc2c8d3d6d1b2acbcded23d821613cd55d13a8cbdae21c9e521d106ab5476"
+    },
+    {
+      "case": "duplicate_input",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "79219c0155b85030dee4f67e5b117bcd0c7d60d125525bae915be3329a2218f9"
+    },
+    {
+      "case": "nonfinite_relu",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2a7d75b8330bbfb3576a232f2ee8fddd93fccccc8d2be8c774b37e44bcac09a4"
+    },
+    {
+      "case": "view_alias",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "efaa7c5058da6c86f9000c41d0fdc6a427f522e40d5c85bab3e4d9af2f912a76"
+    },
+    {
+      "case": "broadcast_native",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "6d61a9aa74d4b655b537e4e3aec82c5eaf0e5b726af04d7d1295cd4dec1ab54c"
+    },
+    {
+      "case": "mixed_matmul",
+      "status": "passed",
+      "triton_dispatches": 2,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07,
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "e944ec4e23ee3c11c5f0503176c5cb01d06e0bc4ab7320644e2b524da6da932d"
+    },
+    {
+      "case": "native_fused_matmul",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "5cd755daa4b3c5ef9a85f5e6d324fb9484ab57c262d49840c23a2e81271cbee7"
+    },
+    {
+      "case": "reject_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_block",
+      "status": "passed"
+    },
+    {
+      "case": "reject_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_missing_metadata",
+      "status": "passed"
+    }
+  ]
+}

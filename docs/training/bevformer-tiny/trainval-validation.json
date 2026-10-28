@@ -1,0 +1,141 @@
+{
+  "can_bus": {
+    "official_exception_source": "https://github.com/nutonomy/nuscenes-devkit/blob/master/python-sdk/nuscenes/can_bus/can_bus_api.py",
+    "official_exceptions_in_dataset": [
+      "scene-0161",
+      "scene-0162",
+      "scene-0163",
+      "scene-0164",
+      "scene-0165",
+      "scene-0166",
+      "scene-0167",
+      "scene-0168",
+      "scene-0170",
+      "scene-0171",
+      "scene-0172",
+      "scene-0173",
+      "scene-0174",
+      "scene-0175",
+      "scene-0176"
+    ],
+    "pose_messages": 812359,
+    "required_scenes": 835,
+    "root": "/home/robot/datasets/nuscenes-trainval/can_bus",
+    "valid_pose_scenes": 835
+  },
+  "elapsed_seconds": 99.245,
+  "error_count": 0,
+  "errors": {},
+  "expected": {
+    "samples": 34149,
+    "scenes": 850,
+    "train_samples": 28130,
+    "val_samples": 6019
+  },
+  "finished_at": "2026-10-19T00:15:44.059911+00:00",
+  "maps": {
+    "valid_files": 4
+  },
+  "metadata": {
+    "attribute": {
+      "parsed": true,
+      "records": 8
+    },
+    "calibrated_sensor": {
+      "parsed": true,
+      "records": 10200
+    },
+    "category": {
+      "parsed": true,
+      "records": 23
+    },
+    "ego_pose": {
+      "parsed": true,
+      "records": 2631083
+    },
+    "instance": {
+      "parsed": true,
+      "records": 64386
+    },
+    "log": {
+      "parsed": true,
+      "records": 68
+    },
+    "map": {
+      "parsed": true,
+      "records": 4
+    },
+    "sample": {
+      "parsed": true,
+      "records": 34149
+    },
+    "sample_annotation": {
+      "parsed": true,
+      "records": 1166187
+    },
+    "sample_data": {
+      "parsed": true,
+      "records": 2631083
+    },
+    "scene": {
+      "parsed": true,
+      "records": 850
+    },
+    "sensor": {
+      "parsed": true,
+      "records": 12
+    },
+    "visibility": {
+      "parsed": true,
+      "records": 4
+    }
+  },
+  "root": "/home/robot/datasets/nuscenes-trainval",
+  "schema_version": 1,
+  "sensor_files": {
+    "counts_by_directory_and_channel": {
+      "samples": {
+        "CAM_BACK": 34149,
+        "CAM_BACK_LEFT": 34149,
+        "CAM_BACK_RIGHT": 34149,
+        "CAM_FRONT": 34149,
+        "CAM_FRONT_LEFT": 34149,
+        "CAM_FRONT_RIGHT": 34149,
+        "LIDAR_TOP": 34149,
+        "RADAR_BACK_LEFT": 34149,
+        "RADAR_BACK_RIGHT": 34149,
+        "RADAR_FRONT": 34149,
+        "RADAR_FRONT_LEFT": 34149,
+        "RADAR_FRONT_RIGHT": 34149
+      },
+      "sweeps": {
+        "CAM_BACK": 161453,
+        "CAM_BACK_LEFT": 160856,
+        "CAM_BACK_RIGHT": 164266,
+        "CAM_FRONT": 164166,
+        "CAM_FRONT_LEFT": 164274,
+        "CAM_FRONT_RIGHT": 163881,
+        "LIDAR_TOP": 297737,
+        "RADAR_BACK_LEFT": 185467,
+        "RADAR_BACK_RIGHT": 189065,
+        "RADAR_FRONT": 188562,
+        "RADAR_FRONT_LEFT": 191133,
+        "RADAR_FRONT_RIGHT": 190435
+      }
+    },
+    "references_checked": 2631083,
+    "samples_with_all_six_cameras": 34149,
+    "valid_files": 2631083
+  },
+  "splits": {
+    "checked": true,
+    "source": "installed nuscenes-devkit",
+    "train_samples": 28130,
+    "train_scenes": 700,
+    "val_samples": 6019,
+    "val_scenes": 150
+  },
+  "started_at": "2026-10-19T00:14:04.814665+00:00",
+  "status": "passed",
+  "version": "v1.0-trainval"
+}

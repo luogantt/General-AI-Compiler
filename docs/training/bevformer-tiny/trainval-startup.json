@@ -1,0 +1,21 @@
+{
+  "state": "running",
+  "phase": "prepare",
+  "pipeline_pid": 37080,
+  "started_at": "2026-10-19T00:26:15.684548+00:00",
+  "task_root": "/home/robot/project/bevformer-tiny-trainval-20261019",
+  "repo_root": "/home/robot/project/bevformer-tiny-train-20261018/BEVFormer",
+  "data_root": "/home/robot/datasets/nuscenes-trainval",
+  "scripts_sha256": {
+    "prepare_trainval.py": "23846ed1e4b261be7553da38f8ab95565e1b2bd54ac3c345f8c5722ec889a22d",
+    "make_configs.py": "0e030922cfbc22ca8c9eb22c97c1a16f241c8d0c1430aac7414161f8a8a2e5b3",
+    "training_support.py": "b4f2842658c6c201b83457755e41e55854ecf058fe91a62c1dfba849ecaa8142",
+    "launch.py": "ba2e3cee695dfa2ca97a01430b6f04a73a4b87b33302fef0bf625c83608c1184",
+    "pipeline.py": "fcdbeb3202b610ed9b4cd9c24a7fa77dfb2d4571e833120da2d1695a7cecc657"
+  },
+  "completed_stages": [],
+  "stage_started_at": "2026-10-19T00:26:15.685245+00:00",
+  "updated_at": "2026-10-19T00:26:15.685253+00:00",
+  "log": "/home/robot/project/bevformer-tiny-trainval-20261019/logs/prepare.log",
+  "child_pid": 37087
+}

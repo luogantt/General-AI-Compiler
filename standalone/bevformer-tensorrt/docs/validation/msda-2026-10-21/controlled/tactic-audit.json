@@ -1,0 +1,2227 @@
+{
+  "schema_version": 1,
+  "scope": "Controlled stock/custom TensorRT inspector comparison; no inference or numerical equivalence claim",
+  "method": [
+    "Unique layer names are candidate pairing keys, not semantic proof.",
+    "Compare every paired inspection field, including metadata, all ordered port descriptors, tactic names/values, weights/bias descriptors, formats, and stream IDs.",
+    "Six temporary tensor renames must be bijective and preserve every producer/consumer layer and port index globally.",
+    "After only these proven tensor renames, retain and report all remaining field differences."
+  ],
+  "sources": {
+    "stock": {
+      "build_report": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\controlled-build-reports\\stock-build.json",
+      "build_report_sha256": "e09013067d02d2f354e327adc86ed0f46c5dbaf64a7791c95794401b81be143d",
+      "layer_report": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\controlled-build-reports\\stock-build.layers.json",
+      "layer_report_sha256": "3ee53ad559ba7253b3ed52682dabd6b7f26c8bafa350f4e27d9a9ecbaf7d1b14",
+      "engine_sha256": "c4ae0052219475bbd96e2ec5923aead49c643126dd9ce83bb79a1b6a76666259",
+      "onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be"
+    },
+    "custom": {
+      "build_report": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\controlled-build-reports\\custom-build.json",
+      "build_report_sha256": "12b44e8fa547ca0f00afca170764e63189a4525466d7be16bc6351f450afa45a",
+      "layer_report": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\controlled-build-reports\\custom-build.layers.json",
+      "layer_report_sha256": "7b07cdc37c5847549a0ba135812f671e8044d6887e33b7e9b558c065844b6d2c",
+      "engine_sha256": "9fb58a02198c63e017ecc09bbee40b23fd99cfa214df4f0391dc9b5fe9955c98",
+      "onnx_sha256": "738524ea3416557b9024861cf637a36c786d16c6c38cb34b2b7833a78a5bbe7d"
+    }
+  },
+  "summary": {
+    "stock_layers": 3816,
+    "custom_layers": 3816,
+    "layer_membership_identical": true,
+    "full_record_identical_after_name_pairing": 3798,
+    "tactic_name_or_value_differences": 0,
+    "io_shape_dtype_format_location_differences": 0,
+    "stream_id_differences": 0,
+    "layer_type_differences": 0,
+    "non_msda_records_identical_after_verified_tensor_renames": true,
+    "remaining_changed_records": 6,
+    "msda_descriptors_identical": 18,
+    "temporary_tensor_renames": 6,
+    "layers_with_temporary_tensor_name_changes": 12,
+    "layers_moved_in_inspection_order": 64,
+    "moved_layer_types": {
+      "NonZero": 32,
+      "DeviceToShapeHost": 32
+    },
+    "reformat_count": {
+      "stock": 836,
+      "custom": 836
+    }
+  },
+  "layer_type_counts": {
+    "stock": {
+      "TrainStation": 8,
+      "kgen": 1017,
+      "gemm": 152,
+      "Constant": 200,
+      "NoOp": 184,
+      "Reformat": 836,
+      "NonZero": 36,
+      "PluginV3": 174,
+      "CaskConvolution": 649,
+      "DeviceToShapeHost": 36,
+      "CaskPooling": 6,
+      "PointWiseV2": 316,
+      "Scale": 156,
+      "CaskGemmConvolution": 18,
+      "Resize": 12,
+      "Shuffle": 4,
+      "shape_call": 12
+    },
+    "custom": {
+      "TrainStation": 8,
+      "kgen": 1017,
+      "gemm": 152,
+      "Constant": 200,
+      "NoOp": 184,
+      "Reformat": 836,
+      "NonZero": 36,
+      "PluginV3": 174,
+      "CaskConvolution": 649,
+      "DeviceToShapeHost": 36,
+      "CaskPooling": 6,
+      "PointWiseV2": 316,
+      "Scale": 156,
+      "CaskGemmConvolution": 18,
+      "Resize": 12,
+      "Shuffle": 4,
+      "shape_call": 12
+    }
+  },
+  "build_settings_equal": {
+    "workspace_limit_bytes": 1073741824,
+    "builder_optimization_level": 3,
+    "tactic_dram_limit_bytes": 4294967296,
+    "max_aux_streams": 0
+  },
+  "precision_policy_and_engine_io_equal": true,
+  "timing_cache": {
+    "stock_output_exactly_equals_custom_input": true,
+    "stock": {
+      "input": null,
+      "output": {
+        "path": "/home/robot/project/gac-msda-20261021/controlled-01/stock.timing.cache",
+        "sha256": "8f64e232559af8e1637bc9eee2e7573db169d2063739fa84d118952604424e6e",
+        "bytes": 2461765
+      },
+      "ignore_mismatch": false,
+      "initialization": "empty_cache",
+      "scope": "Reuse TensorRT tactic timing measurements; does not guarantee identical tactic selection or numerical outputs",
+      "status": "attached_and_built"
+    },
+    "custom": {
+      "input": {
+        "path": "/home/robot/project/gac-msda-20261021/controlled-01/stock.timing.cache",
+        "sha256": "8f64e232559af8e1637bc9eee2e7573db169d2063739fa84d118952604424e6e",
+        "bytes": 2461765
+      },
+      "output": {
+        "path": "/home/robot/project/gac-msda-20261021/controlled-01/custom.timing.cache",
+        "sha256": "bc4ce82f21fc3cb4a52733f3410cb2b1fdee69abfce053bc27b30a8131c5afc2",
+        "bytes": 2461765
+      },
+      "ignore_mismatch": false,
+      "initialization": "serialized_input",
+      "scope": "Reuse TensorRT tactic timing measurements; does not guarantee identical tactic selection or numerical outputs",
+      "status": "attached_and_built"
+    }
+  },
+  "spatial_projection": {
+    "all_related_records_exactly_equal": true,
+    "related_record_count": 21,
+    "six_value_projections_fused_into_one_convolution": true,
+    "fused_projection": {
+      "LayerType": "CaskConvolution",
+      "TacticName": "sm75_xmma_fprop_implicit_gemm_f16f16_f16f16_f16_nhwckrsc_nhwc_tilesize128x128x32_stage1_warpsize2x2x1_g1_tensor16x8x8_simple_t1r1s1",
+      "TacticValue": "0xdbe57b4edf7481d8",
+      "Weights": {
+        "Type": "Half",
+        "Count": 393216
+      },
+      "Bias": {
+        "Type": "Half",
+        "Count": 1536
+      },
+      "Kernel": [
+        1,
+        1
+      ],
+      "OutMaps": 1536
+    },
+    "input_descriptors": [
+      {
+        "Location": "Device",
+        "Dimensions": [
+          184950,
+          256,
+          1,
+          1
+        ],
+        "Format/Datatype": "Half"
+      }
+    ],
+    "output_descriptors": [
+      {
+        "Location": "Device",
+        "Dimensions": [
+          184950,
+          1536,
+          1,
+          1
+        ],
+        "Format/Datatype": "Half"
+      }
+    ]
+  },
+  "msda": [
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61559) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 20606) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 20607) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61560) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61561) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61562) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 23382) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 23383) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61563) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61564) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61565) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 24393) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 24394) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61566) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61567) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61568) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 27067) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 27068) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61569) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61570) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61571) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 28042) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 28043) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61572) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61573) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61574) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 30716) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 30717) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61575) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61576) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61577) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 31691) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 31692) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61578) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61579) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61580) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 34365) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 34366) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61581) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61582) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61583) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 35340) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 35341) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61584) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61585) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61586) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 38014) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 38015) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61587) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61588) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.0/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61589) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 38989) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 38990) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61590) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61591) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.0/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            2,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "GACMSDeformAttn",
+        "1"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61592) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            30825,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 41663) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 41664) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            4
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61593) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61594) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            4,
+            8
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            6,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.0/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61595) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 42760) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 42761) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61596) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61597) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.0/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.1/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61598) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 43601) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 43602) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61599) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61600) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.1/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.2/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61601) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 44442) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 44443) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61602) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61603) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.2/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.3/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61604) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 45283) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 45284) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61605) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61606) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.3/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.4/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61607) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 46124) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 46125) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61608) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61609) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.4/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    },
+    {
+      "name": "/pts_bbox_head/transformer/decoder/layers.5/attentions.1/MSDeformAttn",
+      "stock_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "custom_plugin": [
+        "MultiscaleDeformableAttnPlugin_TRT",
+        "2"
+      ],
+      "input_output_descriptors_identical_including_tensor_names": true,
+      "inputs": [
+        {
+          "Name": "(Unnamed Layer* 61610) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            40000,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 46965) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            2
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 46966) [Constant]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1
+          ],
+          "Format/Datatype": "Int32"
+        },
+        {
+          "Name": "(Unnamed Layer* 61611) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4,
+            2
+          ],
+          "Format/Datatype": "Half"
+        },
+        {
+          "Name": "(Unnamed Layer* 61612) [Identity]_output",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            1,
+            4
+          ],
+          "Format/Datatype": "Half"
+        }
+      ],
+      "outputs": [
+        {
+          "Name": "/pts_bbox_head/transformer/decoder/layers.5/attentions.1/MSDeformAttn__trt_rank4",
+          "Location": "Device",
+          "Dimensions": [
+            1,
+            900,
+            8,
+            32
+          ],
+          "Format/Datatype": "Half"
+        }
+      ]
+    }
+  ],
+  "remaining_differences_after_verified_tensor_renames": [
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+      "different_fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "stock": {
+        "PluginType": "MultiscaleDeformableAttnPlugin_TRT",
+        "PluginVersion": "2"
+      },
+      "custom": {
+        "PluginType": "GACMSDeformAttn",
+        "PluginVersion": "1"
+      }
+    }
+  ],
+  "tensor_renames": [
+    {
+      "stock": "__mye35803_myl3053",
+      "custom": "__mye35823_myl3053",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/MatMul_myl3053_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "stock": "__mye35883_myl3053",
+      "custom": "__mye35885_myl3053",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/Gemm_myl3053_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Outputs",
+          0
+        ]
+      ]
+    },
+    {
+      "stock": "__mye35780_myl3053",
+      "custom": "__mye35776_myl3053",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_1/attentions_1/sampling_offsets/MatMul_myl3053_14",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSigmSlicReshMulAddCast_myl3053_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3053_15",
+          "Inputs",
+          0
+        ]
+      ]
+    },
+    {
+      "stock": "__mye35786_myl3059",
+      "custom": "__mye35766_myl3059",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_4/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_4/attentions_0/attn/MatMul_myl3059_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3059_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3059_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "stock": "__mye35848_myl3059",
+      "custom": "__mye35846_myl3059",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_4/attentions_0/attn/Gemm_myl3059_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3059_9",
+          "Outputs",
+          0
+        ]
+      ]
+    },
+    {
+      "stock": "__mye35739_myl3059",
+      "custom": "__mye35743_myl3059",
+      "all_producer_consumer_slots_identical": true,
+      "occurrences": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_4/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_4/attentions_1/sampling_offsets/MatMul_myl3059_23",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3059_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_SigmSlicReshReshMulAddCast_myl3059_24",
+          "Inputs",
+          0
+        ]
+      ]
+    }
+  ],
+  "reordered_layers": [
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3",
+      "stock_position": 236,
+      "custom_position": 241,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5",
+      "stock_position": 237,
+      "custom_position": 236,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_1",
+      "stock_position": 238,
+      "custom_position": 239,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2",
+      "stock_position": 239,
+      "custom_position": 240,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero",
+      "stock_position": 240,
+      "custom_position": 238,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_4",
+      "stock_position": 241,
+      "custom_position": 237,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+      "stock_position": 408,
+      "custom_position": 413,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+      "stock_position": 409,
+      "custom_position": 408,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 410,
+      "custom_position": 411,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+      "stock_position": 411,
+      "custom_position": 412,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+      "stock_position": 412,
+      "custom_position": 410,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 413,
+      "custom_position": 409,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero",
+      "stock_position": 3064,
+      "custom_position": 3067,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2",
+      "stock_position": 3065,
+      "custom_position": 3069,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4",
+      "stock_position": 3066,
+      "custom_position": 3068,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_5",
+      "stock_position": 3067,
+      "custom_position": 3065,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3",
+      "stock_position": 3068,
+      "custom_position": 3064,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1",
+      "stock_position": 3069,
+      "custom_position": 3066,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+      "stock_position": 3071,
+      "custom_position": 3074,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+      "stock_position": 3072,
+      "custom_position": 3076,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 3073,
+      "custom_position": 3075,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+      "stock_position": 3074,
+      "custom_position": 3072,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+      "stock_position": 3075,
+      "custom_position": 3071,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 3076,
+      "custom_position": 3073,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2",
+      "stock_position": 3146,
+      "custom_position": 3151,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1",
+      "stock_position": 3147,
+      "custom_position": 3146,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3",
+      "stock_position": 3149,
+      "custom_position": 3150,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero",
+      "stock_position": 3150,
+      "custom_position": 3149,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4",
+      "stock_position": 3151,
+      "custom_position": 3147,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+      "stock_position": 3153,
+      "custom_position": 3158,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 3154,
+      "custom_position": 3153,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+      "stock_position": 3156,
+      "custom_position": 3157,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+      "stock_position": 3157,
+      "custom_position": 3156,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 3158,
+      "custom_position": 3154,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_2",
+      "stock_position": 3229,
+      "custom_position": 3231,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5",
+      "stock_position": 3230,
+      "custom_position": 3233,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero",
+      "stock_position": 3231,
+      "custom_position": 3232,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4",
+      "stock_position": 3232,
+      "custom_position": 3229,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1",
+      "stock_position": 3233,
+      "custom_position": 3230,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+      "stock_position": 3236,
+      "custom_position": 3238,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+      "stock_position": 3237,
+      "custom_position": 3240,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+      "stock_position": 3238,
+      "custom_position": 3239,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 3239,
+      "custom_position": 3236,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 3240,
+      "custom_position": 3237,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1",
+      "stock_position": 3310,
+      "custom_position": 3312,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4",
+      "stock_position": 3311,
+      "custom_position": 3313,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5",
+      "stock_position": 3312,
+      "custom_position": 3315,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero",
+      "stock_position": 3313,
+      "custom_position": 3310,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3",
+      "stock_position": 3314,
+      "custom_position": 3311,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_2",
+      "stock_position": 3315,
+      "custom_position": 3314,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 3317,
+      "custom_position": 3319,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 3318,
+      "custom_position": 3320,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+      "stock_position": 3319,
+      "custom_position": 3322,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+      "stock_position": 3320,
+      "custom_position": 3317,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+      "stock_position": 3321,
+      "custom_position": 3318,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+      "stock_position": 3322,
+      "custom_position": 3321,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4",
+      "stock_position": 3393,
+      "custom_position": 3394,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_5",
+      "stock_position": 3394,
+      "custom_position": 3395,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1",
+      "stock_position": 3395,
+      "custom_position": 3396,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3",
+      "stock_position": 3396,
+      "custom_position": 3393,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+      "stock_position": 3400,
+      "custom_position": 3401,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+      "stock_position": 3401,
+      "custom_position": 3402,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+      "stock_position": 3402,
+      "custom_position": 3403,
+      "full_record_identical": true
+    },
+    {
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+      "stock_position": 3403,
+      "custom_position": 3400,
+      "full_record_identical": true
+    }
+  ],
+  "limitations": [
+    "Inspector descriptors do not expose weight payload bytes, compiled kernel binaries, device addresses, or every internal execution decision.",
+    "Matching exposed tactics and descriptors is strong structural evidence, not proof of equal runtime tensor values or bitwise engine outputs.",
+    "NonZero and DeviceToShapeHost inspection ordering differs; all their full records and connections match after name pairing.",
+    "Runtime A/B/B/A validation remains separate and is not included in this audit."
+  ]
+}

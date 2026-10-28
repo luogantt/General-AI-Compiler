@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "flattened_projection",
+      "requested": "auto",
+      "optimized": true,
+      "selected": {
+        "a_shape": [
+          2,
+          64,
+          64
+        ],
+        "b_shape": [
+          64,
+          64
+        ],
+        "batches": 1,
+        "bias_shape": [],
+        "block_size": 256,
+        "grid_size": 2,
+        "k": 64,
+        "m": 128,
+        "n": 64,
+        "schedule": "shared-tiled",
+        "static_shared_memory_bytes": 8192,
+        "thread_tile_m": 4,
+        "thread_tile_n": 4,
+        "tile_k": 16,
+        "tile_m": 64,
+        "tile_n": 64
+      },
+      "passed": true
+    },
+    {
+      "case": "independent_batches",
+      "requested": "auto",
+      "optimized": false,
+      "selected": "scalar",
+      "passed": true
+    },
+    {
+      "case": "broadcast_batches",
+      "requested": "auto",
+      "optimized": true,
+      "selected": {
+        "a_shape": [
+          2,
+          1,
+          128,
+          64
+        ],
+        "b_shape": [
+          1,
+          2,
+          64,
+          64
+        ],
+        "batches": 4,
+        "bias_shape": [],
+        "block_size": 256,
+        "grid_size": 8,
+        "k": 64,
+        "m": 128,
+        "n": 64,
+        "schedule": "shared-tiled",
+        "static_shared_memory_bytes": 8192,
+        "thread_tile_m": 4,
+        "thread_tile_n": 4,
+        "tile_k": 16,
+        "tile_m": 64,
+        "tile_n": 64
+      },
+      "passed": true
+    },
+    {
+      "case": "attention_short_k",
+      "requested": "auto",
+      "optimized": false,
+      "selected": "scalar",
+      "passed": true
+    },
+    {
+      "case": "tail_dimensions",
+      "requested": "auto",
+      "optimized": true,
+      "selected": {
+        "a_shape": [
+          129,
+          65
+        ],
+        "b_shape": [
+          65,
+          67
+        ],
+        "batches": 1,
+        "bias_shape": [],
+        "block_size": 256,
+        "grid_size": 6,
+        "k": 65,
+        "m": 129,
+        "n": 67,
+        "schedule": "shared-tiled",
+        "static_shared_memory_bytes": 8192,
+        "thread_tile_m": 4,
+        "thread_tile_n": 4,
+        "tile_k": 16,
+        "tile_m": 64,
+        "tile_n": 64
+      },
+      "passed": true
+    },
+    {
+      "case": "small_rows",
+      "requested": "auto",
+      "optimized": false,
+      "selected": "scalar",
+      "passed": true
+    },
+    {
+      "case": "explicit_scalar",
+      "requested": "scalar",
+      "optimized": false,
+      "selected": "scalar",
+      "passed": true
+    },
+    {
+      "case": "explicit_small_tile",
+      "requested": "shared-tiled",
+      "optimized": true,
+      "selected": {
+        "a_shape": [
+          8,
+          64
+        ],
+        "b_shape": [
+          64,
+          64
+        ],
+        "batches": 1,
+        "bias_shape": [],
+        "block_size": 256,
+        "grid_size": 2,
+        "k": 64,
+        "m": 8,
+        "n": 64,
+        "schedule": "shared-tiled",
+        "static_shared_memory_bytes": 4096,
+        "thread_tile_m": 2,
+        "thread_tile_n": 2,
+        "tile_k": 16,
+        "tile_m": 32,
+        "tile_n": 32
+      },
+      "passed": true
+    }
+  ]
+}

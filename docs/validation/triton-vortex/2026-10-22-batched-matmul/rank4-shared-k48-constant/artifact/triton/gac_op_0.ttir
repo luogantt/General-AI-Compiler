@@ -1,0 +1,94 @@
+"builtin.module"() ({
+  "tt.func"() ({
+  ^bb0(%arg0: !tt.ptr<f32>, %arg1: !tt.ptr<f32>, %arg2: !tt.ptr<f32>):
+    %0 = "tt.get_program_id"() {axis = 0 : i32} : () -> i32
+    %1 = "arith.constant"() <{value = 1 : i32}> : () -> i32
+    %2 = "arith.constant"() <{value = 1 : i32}> : () -> i32
+    %3 = "arith.divui"(%0, %2) : (i32, i32) -> i32
+    %4 = "arith.remui"(%0, %2) : (i32, i32) -> i32
+    %5 = "arith.divui"(%4, %1) : (i32, i32) -> i32
+    %6 = "arith.remui"(%4, %1) : (i32, i32) -> i32
+    %7 = "arith.constant"() <{value = 16 : i32}> : () -> i32
+    %8 = "arith.muli"(%5, %7) <{overflowFlags = #arith.overflow<none>}> : (i32, i32) -> i32
+    %9 = "arith.constant"() <{value = 16 : i32}> : () -> i32
+    %10 = "arith.muli"(%6, %9) <{overflowFlags = #arith.overflow<none>}> : (i32, i32) -> i32
+    %11 = "tt.splat"(%8) : (i32) -> tensor<16xi32>
+    %12 = "tt.make_range"() {end = 16 : i32, start = 0 : i32} : () -> tensor<16xi32>
+    %13 = "arith.addi"(%12, %11) <{overflowFlags = #arith.overflow<none>}> : (tensor<16xi32>, tensor<16xi32>) -> tensor<16xi32>
+    %14 = "tt.splat"(%10) : (i32) -> tensor<16xi32>
+    %15 = "tt.make_range"() {end = 16 : i32, start = 0 : i32} : () -> tensor<16xi32>
+    %16 = "arith.addi"(%15, %14) <{overflowFlags = #arith.overflow<none>}> : (tensor<16xi32>, tensor<16xi32>) -> tensor<16xi32>
+    %17 = "tt.make_range"() {end = 64 : i32, start = 0 : i32} : () -> tensor<64xi32>
+    %18 = "arith.constant"() <{value = 48 : i32}> : () -> i32
+    %19 = "tt.splat"(%18) : (i32) -> tensor<64xi32>
+    %20 = "arith.cmpi"(%17, %19) <{predicate = 2 : i64}> : (tensor<64xi32>, tensor<64xi32>) -> tensor<64xi1>
+    %21 = "arith.constant"() <{value = 5 : i32}> : () -> i32
+    %22 = "tt.splat"(%21) : (i32) -> tensor<16xi32>
+    %23 = "arith.cmpi"(%13, %22) <{predicate = 2 : i64}> : (tensor<16xi32>, tensor<16xi32>) -> tensor<16xi1>
+    %24 = "arith.constant"() <{value = 7 : i32}> : () -> i32
+    %25 = "tt.splat"(%24) : (i32) -> tensor<16xi32>
+    %26 = "arith.cmpi"(%16, %25) <{predicate = 2 : i64}> : (tensor<16xi32>, tensor<16xi32>) -> tensor<16xi1>
+    %27 = "tt.expand_dims"(%13) {axis = 1 : i32} : (tensor<16xi32>) -> tensor<16x1xi32>
+    %28 = "tt.broadcast"(%27) : (tensor<16x1xi32>) -> tensor<16x64xi32>
+    %29 = "tt.expand_dims"(%17) {axis = 0 : i32} : (tensor<64xi32>) -> tensor<1x64xi32>
+    %30 = "tt.broadcast"(%29) : (tensor<1x64xi32>) -> tensor<16x64xi32>
+    %31 = "arith.constant"() <{value = 48 : i32}> : () -> i32
+    %32 = "tt.splat"(%31) : (i32) -> tensor<16x64xi32>
+    %33 = "arith.muli"(%28, %32) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x64xi32>, tensor<16x64xi32>) -> tensor<16x64xi32>
+    %34 = "arith.addi"(%33, %30) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x64xi32>, tensor<16x64xi32>) -> tensor<16x64xi32>
+    %35 = "arith.constant"() <{value = 240 : i32}> : () -> i32
+    %36 = "arith.muli"(%3, %35) <{overflowFlags = #arith.overflow<none>}> : (i32, i32) -> i32
+    %37 = "tt.splat"(%36) : (i32) -> tensor<16x64xi32>
+    %38 = "arith.addi"(%34, %37) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x64xi32>, tensor<16x64xi32>) -> tensor<16x64xi32>
+    %39 = "tt.expand_dims"(%23) {axis = 1 : i32} : (tensor<16xi1>) -> tensor<16x1xi1>
+    %40 = "tt.broadcast"(%39) : (tensor<16x1xi1>) -> tensor<16x64xi1>
+    %41 = "tt.expand_dims"(%20) {axis = 0 : i32} : (tensor<64xi1>) -> tensor<1x64xi1>
+    %42 = "tt.broadcast"(%41) : (tensor<1x64xi1>) -> tensor<16x64xi1>
+    %43 = "arith.andi"(%40, %42) : (tensor<16x64xi1>, tensor<16x64xi1>) -> tensor<16x64xi1>
+    %44 = "tt.splat"(%arg0) : (!tt.ptr<f32>) -> tensor<16x64x!tt.ptr<f32>>
+    %45 = "tt.addptr"(%44, %38) : (tensor<16x64x!tt.ptr<f32>>, tensor<16x64xi32>) -> tensor<16x64x!tt.ptr<f32>>
+    %46 = "arith.constant"() <{value = dense<0.000000e+00> : tensor<16x64xf32>}> : () -> tensor<16x64xf32>
+    %47 = "tt.load"(%45, %43, %46) {cache = 1 : i32, evict = 1 : i32, isVolatile = false, operandSegmentSizes = array<i32: 1, 1, 1>} : (tensor<16x64x!tt.ptr<f32>>, tensor<16x64xi1>, tensor<16x64xf32>) -> tensor<16x64xf32>
+    %48 = "tt.expand_dims"(%17) {axis = 1 : i32} : (tensor<64xi32>) -> tensor<64x1xi32>
+    %49 = "tt.broadcast"(%48) : (tensor<64x1xi32>) -> tensor<64x16xi32>
+    %50 = "tt.expand_dims"(%16) {axis = 0 : i32} : (tensor<16xi32>) -> tensor<1x16xi32>
+    %51 = "tt.broadcast"(%50) : (tensor<1x16xi32>) -> tensor<64x16xi32>
+    %52 = "arith.constant"() <{value = 7 : i32}> : () -> i32
+    %53 = "tt.splat"(%52) : (i32) -> tensor<64x16xi32>
+    %54 = "arith.muli"(%49, %53) <{overflowFlags = #arith.overflow<none>}> : (tensor<64x16xi32>, tensor<64x16xi32>) -> tensor<64x16xi32>
+    %55 = "arith.addi"(%54, %51) <{overflowFlags = #arith.overflow<none>}> : (tensor<64x16xi32>, tensor<64x16xi32>) -> tensor<64x16xi32>
+    %56 = "tt.expand_dims"(%26) {axis = 0 : i32} : (tensor<16xi1>) -> tensor<1x16xi1>
+    %57 = "tt.broadcast"(%56) : (tensor<1x16xi1>) -> tensor<64x16xi1>
+    %58 = "tt.expand_dims"(%20) {axis = 1 : i32} : (tensor<64xi1>) -> tensor<64x1xi1>
+    %59 = "tt.broadcast"(%58) : (tensor<64x1xi1>) -> tensor<64x16xi1>
+    %60 = "arith.andi"(%59, %57) : (tensor<64x16xi1>, tensor<64x16xi1>) -> tensor<64x16xi1>
+    %61 = "tt.splat"(%arg1) : (!tt.ptr<f32>) -> tensor<64x16x!tt.ptr<f32>>
+    %62 = "tt.addptr"(%61, %55) : (tensor<64x16x!tt.ptr<f32>>, tensor<64x16xi32>) -> tensor<64x16x!tt.ptr<f32>>
+    %63 = "arith.constant"() <{value = dense<0.000000e+00> : tensor<64x16xf32>}> : () -> tensor<64x16xf32>
+    %64 = "tt.load"(%62, %60, %63) {cache = 1 : i32, evict = 1 : i32, isVolatile = false, operandSegmentSizes = array<i32: 1, 1, 1>} : (tensor<64x16x!tt.ptr<f32>>, tensor<64x16xi1>, tensor<64x16xf32>) -> tensor<64x16xf32>
+    %65 = "arith.constant"() <{value = dense<0.000000e+00> : tensor<16x16xf32>}> : () -> tensor<16x16xf32>
+    %66 = "tt.dot"(%47, %64, %65) : (tensor<16x64xf32>, tensor<64x16xf32>, tensor<16x16xf32>) -> tensor<16x16xf32>
+    %67 = "tt.expand_dims"(%13) {axis = 1 : i32} : (tensor<16xi32>) -> tensor<16x1xi32>
+    %68 = "tt.broadcast"(%67) : (tensor<16x1xi32>) -> tensor<16x16xi32>
+    %69 = "tt.expand_dims"(%16) {axis = 0 : i32} : (tensor<16xi32>) -> tensor<1x16xi32>
+    %70 = "tt.broadcast"(%69) : (tensor<1x16xi32>) -> tensor<16x16xi32>
+    %71 = "arith.constant"() <{value = 7 : i32}> : () -> i32
+    %72 = "tt.splat"(%71) : (i32) -> tensor<16x16xi32>
+    %73 = "arith.muli"(%68, %72) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x16xi32>, tensor<16x16xi32>) -> tensor<16x16xi32>
+    %74 = "arith.addi"(%73, %70) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x16xi32>, tensor<16x16xi32>) -> tensor<16x16xi32>
+    %75 = "arith.constant"() <{value = 35 : i32}> : () -> i32
+    %76 = "arith.muli"(%3, %75) <{overflowFlags = #arith.overflow<none>}> : (i32, i32) -> i32
+    %77 = "tt.splat"(%76) : (i32) -> tensor<16x16xi32>
+    %78 = "arith.addi"(%74, %77) <{overflowFlags = #arith.overflow<none>}> : (tensor<16x16xi32>, tensor<16x16xi32>) -> tensor<16x16xi32>
+    %79 = "tt.expand_dims"(%26) {axis = 0 : i32} : (tensor<16xi1>) -> tensor<1x16xi1>
+    %80 = "tt.broadcast"(%79) : (tensor<1x16xi1>) -> tensor<16x16xi1>
+    %81 = "tt.expand_dims"(%23) {axis = 1 : i32} : (tensor<16xi1>) -> tensor<16x1xi1>
+    %82 = "tt.broadcast"(%81) : (tensor<16x1xi1>) -> tensor<16x16xi1>
+    %83 = "arith.andi"(%82, %80) : (tensor<16x16xi1>, tensor<16x16xi1>) -> tensor<16x16xi1>
+    %84 = "tt.splat"(%arg2) : (!tt.ptr<f32>) -> tensor<16x16x!tt.ptr<f32>>
+    %85 = "tt.addptr"(%84, %78) : (tensor<16x16x!tt.ptr<f32>>, tensor<16x16xi32>) -> tensor<16x16x!tt.ptr<f32>>
+    "tt.store"(%85, %66, %83) {cache = 1 : i32, evict = 1 : i32} : (tensor<16x16x!tt.ptr<f32>>, tensor<16x16xf32>, tensor<16x16xi1>) -> ()
+    "tt.return"() : () -> ()
+  }) {function_type = (!tt.ptr<f32>, !tt.ptr<f32>, !tt.ptr<f32>) -> (), noinline = false, sym_name = "gac_op_0", sym_visibility = "public"} : () -> ()
+}) : () -> ()
+

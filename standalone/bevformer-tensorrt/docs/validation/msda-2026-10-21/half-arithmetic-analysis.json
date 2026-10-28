@@ -1,0 +1,959 @@
+{
+  "mode_order": [
+    "coordinate_y_fma",
+    "coordinate_x_fma",
+    "pair01_fma_operand_0_none_1_first_2_second",
+    "pair23_fma_operand_0_none_1_first_2_second",
+    "accumulation_fma"
+  ],
+  "original_shape": [
+    2,
+    20,
+    2,
+    5
+  ],
+  "shape": [
+    2,
+    20,
+    2,
+    5
+  ],
+  "results": [
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "mismatches": 0,
+      "bit_mismatches": 0,
+      "max_abs": 0.0,
+      "relative_rmse": 0.0
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        1,
+        1
+      ],
+      "mismatches": 4,
+      "bit_mismatches": 4,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0001665457242757957
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        1,
+        1
+      ],
+      "mismatches": 8,
+      "bit_mismatches": 8,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00018783417218724691
+    },
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        2,
+        1
+      ],
+      "mismatches": 13,
+      "bit_mismatches": 13,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00017754302717185776
+    },
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        0,
+        1
+      ],
+      "mismatches": 13,
+      "bit_mismatches": 13,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0001843062950592721
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "mismatches": 13,
+      "bit_mismatches": 13,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0002605995553647668
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "mismatches": 15,
+      "bit_mismatches": 15,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010203506062158518
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        2,
+        1
+      ],
+      "mismatches": 16,
+      "bit_mismatches": 16,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00024174707735515614
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        0,
+        1
+      ],
+      "mismatches": 16,
+      "bit_mismatches": 16,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0002467568303226646
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        1,
+        1
+      ],
+      "mismatches": 16,
+      "bit_mismatches": 16,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00030795104356128977
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        1,
+        1
+      ],
+      "mismatches": 18,
+      "bit_mismatches": 18,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0009988373593133302
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        1,
+        1
+      ],
+      "mismatches": 19,
+      "bit_mismatches": 19,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0003148253452244621
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        1,
+        1
+      ],
+      "mismatches": 19,
+      "bit_mismatches": 19,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.0009766424599240858
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        2,
+        1
+      ],
+      "mismatches": 20,
+      "bit_mismatches": 20,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0002520717309360785
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        0,
+        1
+      ],
+      "mismatches": 20,
+      "bit_mismatches": 20,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0002568802083427978
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        0,
+        1
+      ],
+      "mismatches": 23,
+      "bit_mismatches": 23,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00030846540799040406
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "mismatches": 24,
+      "bit_mismatches": 24,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010427466564363436
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        2,
+        1
+      ],
+      "mismatches": 25,
+      "bit_mismatches": 25,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0003101138654626017
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      "mismatches": 25,
+      "bit_mismatches": 25,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00034821727346403007
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "mismatches": 26,
+      "bit_mismatches": 26,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.0009979756128618803
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        0,
+        1
+      ],
+      "mismatches": 26,
+      "bit_mismatches": 26,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010201069821654197
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "mismatches": 26,
+      "bit_mismatches": 26,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010414195354659362
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        2,
+        1
+      ],
+      "mismatches": 26,
+      "bit_mismatches": 26,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010470405741007899
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        2,
+        1
+      ],
+      "mismatches": 27,
+      "bit_mismatches": 27,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0003496783824662218
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        1,
+        1
+      ],
+      "mismatches": 28,
+      "bit_mismatches": 28,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.0009957707842013473
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        2,
+        1
+      ],
+      "mismatches": 28,
+      "bit_mismatches": 28,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.0010024613200374285
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        1,
+        1
+      ],
+      "mismatches": 28,
+      "bit_mismatches": 28,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010187503690323512
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        2,
+        1
+      ],
+      "mismatches": 28,
+      "bit_mismatches": 28,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010244957927521116
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        0,
+        1
+      ],
+      "mismatches": 29,
+      "bit_mismatches": 29,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.0003554627655128931
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        2,
+        1
+      ],
+      "mismatches": 31,
+      "bit_mismatches": 31,
+      "max_abs": 0.000244140625,
+      "relative_rmse": 0.00035689421302613494
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      "mismatches": 32,
+      "bit_mismatches": 32,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010602027391146001
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "mismatches": 33,
+      "bit_mismatches": 33,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.001014996206142094
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        0,
+        1
+      ],
+      "mismatches": 34,
+      "bit_mismatches": 34,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.001037943887490825
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        2,
+        1
+      ],
+      "mismatches": 36,
+      "bit_mismatches": 36,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.0010660535670672638
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        2,
+        1
+      ],
+      "mismatches": 37,
+      "bit_mismatches": 37,
+      "max_abs": 0.0009765625,
+      "relative_rmse": 0.0010211060955226837
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        2,
+        1
+      ],
+      "mismatches": 38,
+      "bit_mismatches": 38,
+      "max_abs": 0.001220703125,
+      "relative_rmse": 0.001043919476497255
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        1,
+        0
+      ],
+      "mismatches": 55,
+      "bit_mismatches": 55,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004162826216068121
+    },
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      "mismatches": 56,
+      "bit_mismatches": 56,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004310989414455131
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "mismatches": 57,
+      "bit_mismatches": 57,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004445490423897262
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        1,
+        0
+      ],
+      "mismatches": 58,
+      "bit_mismatches": 58,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004331636817186025
+    },
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "mismatches": 58,
+      "bit_mismatches": 58,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004584527536761276
+    },
+    {
+      "mode": [
+        1,
+        1,
+        0,
+        2,
+        0
+      ],
+      "mismatches": 59,
+      "bit_mismatches": 59,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00043738049912142563
+    },
+    {
+      "mode": [
+        1,
+        1,
+        1,
+        2,
+        0
+      ],
+      "mismatches": 60,
+      "bit_mismatches": 60,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00045150501356608326
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "mismatches": 60,
+      "bit_mismatches": 60,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004555800650463521
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        0,
+        0
+      ],
+      "mismatches": 60,
+      "bit_mismatches": 60,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00046039483619801495
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "mismatches": 61,
+      "bit_mismatches": 61,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00047175794199183176
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "mismatches": 61,
+      "bit_mismatches": 61,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010424437404803948
+    },
+    {
+      "mode": [
+        1,
+        1,
+        2,
+        2,
+        0
+      ],
+      "mismatches": 62,
+      "bit_mismatches": 62,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004534768518015907
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        1,
+        0
+      ],
+      "mismatches": 62,
+      "bit_mismatches": 62,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004701882479129362
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "mismatches": 62,
+      "bit_mismatches": 62,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00047472069188356594
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      "mismatches": 62,
+      "bit_mismatches": 62,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010417893746543444
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mismatches": 62,
+      "bit_mismatches": 62,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010793821233717272
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        0,
+        0
+      ],
+      "mismatches": 63,
+      "bit_mismatches": 63,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004902673714078284
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        1,
+        0
+      ],
+      "mismatches": 63,
+      "bit_mismatches": 63,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.001017225589787914
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "mismatches": 63,
+      "bit_mismatches": 63,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010787501644636687
+    },
+    {
+      "mode": [
+        0,
+        1,
+        0,
+        2,
+        0
+      ],
+      "mismatches": 64,
+      "bit_mismatches": 64,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004680145139036784
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        0,
+        0
+      ],
+      "mismatches": 64,
+      "bit_mismatches": 64,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004887571258920015
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        0,
+        0
+      ],
+      "mismatches": 64,
+      "bit_mismatches": 64,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010550472580444304
+    },
+    {
+      "mode": [
+        1,
+        0,
+        0,
+        2,
+        0
+      ],
+      "mismatches": 64,
+      "bit_mismatches": 64,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010631048737840393
+    },
+    {
+      "mode": [
+        0,
+        1,
+        1,
+        2,
+        0
+      ],
+      "mismatches": 65,
+      "bit_mismatches": 65,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.00048377675160059773
+    },
+    {
+      "mode": [
+        1,
+        0,
+        1,
+        2,
+        0
+      ],
+      "mismatches": 65,
+      "bit_mismatches": 65,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010624632331235335
+    },
+    {
+      "mode": [
+        0,
+        1,
+        2,
+        2,
+        0
+      ],
+      "mismatches": 66,
+      "bit_mismatches": 66,
+      "max_abs": 0.00048828125,
+      "relative_rmse": 0.0004822461799043043
+    },
+    {
+      "mode": [
+        1,
+        0,
+        2,
+        2,
+        0
+      ],
+      "mismatches": 66,
+      "bit_mismatches": 66,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010383886175782122
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "mismatches": 66,
+      "bit_mismatches": 66,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010522770190882504
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        1,
+        0
+      ],
+      "mismatches": 67,
+      "bit_mismatches": 67,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.001027697248538811
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "mismatches": 67,
+      "bit_mismatches": 67,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010535662677207678
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mismatches": 67,
+      "bit_mismatches": 67,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010858810481290972
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "mismatches": 68,
+      "bit_mismatches": 68,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010620792627854738
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "mismatches": 68,
+      "bit_mismatches": 68,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010871304458360833
+    },
+    {
+      "mode": [
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "mismatches": 69,
+      "bit_mismatches": 69,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010697026947217
+    },
+    {
+      "mode": [
+        0,
+        0,
+        2,
+        2,
+        0
+      ],
+      "mismatches": 70,
+      "bit_mismatches": 70,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.001045532670387614
+    },
+    {
+      "mode": [
+        0,
+        0,
+        1,
+        2,
+        0
+      ],
+      "mismatches": 70,
+      "bit_mismatches": 70,
+      "max_abs": 0.000988006591796875,
+      "relative_rmse": 0.0010709709663070616
+    }
+  ]
+}

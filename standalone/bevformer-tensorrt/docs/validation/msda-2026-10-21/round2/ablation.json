@@ -1,0 +1,119 @@
+{
+  "scope": "Profiler callback mean sums; not disjoint hardware time",
+  "cases": [
+    {
+      "case": "old-old",
+      "callback_mean_sum_ms": 335.6616542118136,
+      "categories_ms": {
+        "TrainStation": 1.2639039964531549,
+        "kgen": 61.96245752952527,
+        "gemm": 23.860220783948886,
+        "Constant": 0.0,
+        "NoOp": 0.0,
+        "Reformat": 27.24837143905461,
+        "NonZero": 0.5938559995032848,
+        "MultiscaleDeformableAttnPlugin_TRT": 10.947747226059436,
+        "CaskConvolution": 64.98993589207535,
+        "DeviceToShapeHost": 0.31400639959611004,
+        "CaskPooling": 0.9027520060539246,
+        "PointWiseV2": 3.8805376475211224,
+        "ModulatedDeformConv2d": 57.16921265125276,
+        "Scale": 2.8949343470856537,
+        "CaskGemmConvolution": 1.4296863883733746,
+        "Resize": 0.3031007944606245,
+        "Shuffle": 0.8010816178284585,
+        "shape_call": 0.020447999949101358,
+        "GACMSDeformAttn": 77.07940149307252
+      },
+      "spatial_ms": [
+        11.362118244171143,
+        13.323673629760743,
+        13.286918449401856,
+        13.154099082946777,
+        12.97974090576172,
+        12.972851181030274
+      ],
+      "sources": {
+        "report.json": "880ea50ee38db53aff5b28b07369ae3c6152a4237d65333f1d6c8143861c770c",
+        "layers.json": "5ec7864ad5f17ed80c324cde536721379db6099280f2be90ef7576e56fafeb50",
+        "engine.layers.json": "0f8735b340bf6bf00fb2736846e9515b029a9bbb0c05e2da762f76bdf269742f"
+      }
+    },
+    {
+      "case": "old-new",
+      "callback_mean_sum_ms": 352.4840129400254,
+      "categories_ms": {
+        "TrainStation": 1.2620288046542556,
+        "kgen": 61.54656309005803,
+        "gemm": 23.511907231109202,
+        "Constant": 0.0,
+        "NoOp": 0.0,
+        "Reformat": 27.3156578180613,
+        "NonZero": 0.5820575987920166,
+        "MultiscaleDeformableAttnPlugin_TRT": 10.679839993827043,
+        "CaskConvolution": 65.10366387069224,
+        "DeviceToShapeHost": 0.30743039920926085,
+        "CaskPooling": 0.9094592005014421,
+        "PointWiseV2": 3.9002112402580673,
+        "ModulatedDeformConv2d": 57.65753923654557,
+        "Scale": 2.904185542929916,
+        "CaskGemmConvolution": 1.4541152056306597,
+        "Resize": 0.3033887951634824,
+        "Shuffle": 0.8138687996193766,
+        "shape_call": 0.01890879989368841,
+        "GACMSDeformAttn": 94.21318731307984
+      },
+      "spatial_ms": [
+        14.62026243209839,
+        16.232345581054688,
+        15.944806480407715,
+        15.838719940185547,
+        15.90059518814087,
+        15.676457691192628
+      ],
+      "sources": {
+        "report.json": "1fa045943e902521f42e3f9913c224577fbbd091f2c53d639b03c8599155cc63",
+        "layers.json": "dbec7f1af2d7cd56218978c7b5baeb27aa85113708a93fcc6d685da1edc1cc43",
+        "engine.layers.json": "0f8735b340bf6bf00fb2736846e9515b029a9bbb0c05e2da762f76bdf269742f"
+      }
+    },
+    {
+      "case": "new-new",
+      "callback_mean_sum_ms": 345.44882578082616,
+      "categories_ms": {
+        "TrainStation": 1.2565056009450928,
+        "kgen": 61.85124794070139,
+        "gemm": 23.76762233786283,
+        "Constant": 0.0,
+        "NoOp": 0.0,
+        "Reformat": 27.294630604516698,
+        "NonZero": 0.5801087980158627,
+        "MultiscaleDeformableAttnPlugin_TRT": 10.663180842623115,
+        "CaskConvolution": 65.16812150031322,
+        "DeviceToShapeHost": 0.30460159978829315,
+        "CaskPooling": 0.9046272099018097,
+        "PointWiseV2": 3.8907584444619703,
+        "ModulatedDeformConv2d": 57.62686723768711,
+        "Scale": 2.9045247431844463,
+        "CaskGemmConvolution": 1.4375615928322076,
+        "Resize": 0.3026943960227072,
+        "Shuffle": 0.8111712085083127,
+        "shape_call": 0.018569599895272404,
+        "GACMSDeformAttn": 86.66603212356567
+      },
+      "spatial_ms": [
+        13.337702369689941,
+        14.986355304718018,
+        14.312268829345703,
+        15.003369617462159,
+        14.204345512390137,
+        14.821990489959717
+      ],
+      "sources": {
+        "report.json": "8ebb03927697c802bbc8435c72baa353d0e0599cb9644089fcb7f6fe4200290e",
+        "layers.json": "52d8d4af80f2a5e8036f54e6d0b84d39c7ea614627338ad419fcd0f5ceccd56c",
+        "engine.layers.json": "4ed09008aa1962bdc438e8e7bb11d0be547c44aa8058ca4b84450f393cf835a0"
+      }
+    }
+  ]
+}

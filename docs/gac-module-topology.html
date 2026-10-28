@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GAC 模块拓扑 · 从 ONNX 到 Runtime</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: #e1e0d9;
+    --border: rgba(11, 11, 11, 0.10);
+    --code-bg: #f1f0eb;
+    --link: #1c5cab;
+    --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 10px 28px rgba(11, 11, 11, 0.05);
+
+    --cat-shared: #2a78d6;
+    --cat-graph: #eb6834;
+    --cat-regular: #1baf7a;
+    --cat-irregular: #4a3aa7;
+    --cat-accel: #e87ba4;
+    --cat-backend: #008300;
+
+    --cat-shared-soft: rgba(42, 120, 214, 0.10);
+    --cat-graph-soft: rgba(235, 104, 52, 0.10);
+    --cat-regular-soft: rgba(27, 175, 122, 0.12);
+    --cat-irregular-soft: rgba(74, 58, 167, 0.10);
+    --cat-accel-soft: rgba(232, 123, 164, 0.14);
+    --cat-backend-soft: rgba(0, 131, 0, 0.10);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --hairline: #2c2c2a;
+      --border: rgba(255, 255, 255, 0.10);
+      --code-bg: #232322;
+      --link: #86b6ef;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 28px rgba(0, 0, 0, 0.28);
+      --cat-shared: #3987e5;
+      --cat-graph: #d95926;
+      --cat-regular: #199e70;
+      --cat-irregular: #9085e9;
+      --cat-accel: #d55181;
+      --cat-backend: #008300;
+      --cat-shared-soft: rgba(57, 135, 229, 0.16);
+      --cat-graph-soft: rgba(217, 89, 38, 0.16);
+      --cat-regular-soft: rgba(25, 158, 112, 0.16);
+      --cat-irregular-soft: rgba(144, 133, 233, 0.16);
+      --cat-accel-soft: rgba(213, 81, 129, 0.18);
+      --cat-backend-soft: rgba(0, 131, 0, 0.16);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --hairline: #2c2c2a;
+    --border: rgba(255, 255, 255, 0.10);
+    --code-bg: #232322;
+    --link: #86b6ef;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 28px rgba(0, 0, 0, 0.28);
+    --cat-shared: #3987e5;
+    --cat-graph: #d95926;
+    --cat-regular: #199e70;
+    --cat-irregular: #9085e9;
+    --cat-accel: #d55181;
+    --cat-backend: #008300;
+    --cat-shared-soft: rgba(57, 135, 229, 0.16);
+    --cat-graph-soft: rgba(217, 89, 38, 0.16);
+    --cat-regular-soft: rgba(25, 158, 112, 0.16);
+    --cat-irregular-soft: rgba(144, 133, 233, 0.16);
+    --cat-accel-soft: rgba(213, 81, 129, 0.18);
+    --cat-backend-soft: rgba(0, 131, 0, 0.16);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: min(1240px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 42px 0 72px;
+  }
+
+  .eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 650;
+  }
+
+  h1 {
+    margin: 9px 0 10px;
+    font-size: clamp(27px, 3.8vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 750;
+  }
+
+  .lede {
+    max-width: 830px;
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .summary-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .summary-card h2 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  .summary-card p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+
+  .summary-card .path {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .summary-card .path span {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink-2);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+  }
+
+  .legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-top: 20px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+  }
+
+  .legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    flex: none;
+  }
+
+  .legend-line {
+    width: 22px;
+    height: 0;
+    border-top: 2px solid var(--muted);
+    flex: none;
+  }
+
+  .legend-line.dashed {
+    border-top-style: dashed;
+  }
+
+  .controls {
+    margin-left: auto;
+  }
+
+  .control {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-2);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+
+  .control:hover {
+    color: var(--ink);
+    border-color: var(--muted);
+  }
+
+  .topology-wrap {
+    margin-top: 22px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  .topology {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .topology .node-bg {
+    fill: var(--surface);
+    stroke: var(--hairline);
+    stroke-width: 1.2;
+    transition: stroke 0.15s ease;
+  }
+
+  .topology .node-accent {
+    fill: var(--cat);
+  }
+
+  .topology .node-no-bg {
+    fill: var(--cat-soft);
+    stroke: var(--border);
+    stroke-width: 1;
+  }
+
+  .topology .node-no {
+    fill: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .topology .node-title {
+    fill: var(--ink);
+    font-size: 14.5px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .topology .node-sub {
+    fill: var(--ink-2);
+    font-size: 11.5px;
+  }
+
+  .topology a:hover .node-bg,
+  .topology a:focus-visible .node-bg {
+    stroke: var(--cat);
+    stroke-width: 2;
+  }
+
+  .topology a:focus-visible {
+    outline: none;
+  }
+
+  .topology .edge path {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.6;
+    marker-end: url(#arrow);
+  }
+
+  .topology .edge.dashed path {
+    stroke-dasharray: 6 5;
+  }
+
+  .topology .edge.both path {
+    marker-start: url(#arrow-rev);
+  }
+
+  .topology .edge-label {
+    fill: var(--ink-2);
+    font-size: 11px;
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+
+  .topology .band-label {
+    fill: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 650;
+  }
+
+  .topology .band-line {
+    stroke: var(--hairline);
+    stroke-width: 1;
+    stroke-dasharray: 3 5;
+  }
+
+  .topology.is-focused .edge {
+    opacity: 0.16;
+  }
+
+  .topology.is-focused .edge.is-active {
+    opacity: 1;
+    stroke-width: 2.4;
+  }
+
+  .topology.is-focused a {
+    opacity: 0.32;
+  }
+
+  .topology.is-focused a.is-active {
+    opacity: 1;
+  }
+
+  .section {
+    margin-top: 38px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .section h2 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .section .hint {
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  .section > p {
+    margin: 0 0 16px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .module {
+    --cat: var(--cat-shared);
+    --cat-soft: var(--cat-shared-soft);
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    padding: 16px 18px 15px 22px;
+    box-shadow: var(--shadow);
+    scroll-margin-top: 24px;
+  }
+
+  .module::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+    background: var(--cat);
+  }
+
+  .module[data-cat="shared"]   { --cat: var(--cat-shared);    --cat-soft: var(--cat-shared-soft); }
+  .module[data-cat="graph"]    { --cat: var(--cat-graph);     --cat-soft: var(--cat-graph-soft); }
+  .module[data-cat="regular"]  { --cat: var(--cat-regular);   --cat-soft: var(--cat-regular-soft); }
+  .module[data-cat="irregular"]{ --cat: var(--cat-irregular); --cat-soft: var(--cat-irregular-soft); }
+  .module[data-cat="accel"]    { --cat: var(--cat-accel);     --cat-soft: var(--cat-accel-soft); }
+  .module[data-cat="backend"]  { --cat: var(--cat-backend);   --cat-soft: var(--cat-backend-soft); }
+
+  .module.wide { grid-column: 1 / -1; }
+
+  .module-head {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 7px;
+  }
+
+  .module-no {
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--cat-soft);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    flex: none;
+  }
+
+  .module h3 {
+    margin: 0;
+    font-size: 15.5px;
+    letter-spacing: -0.01em;
+  }
+
+  .module .role {
+    margin: 0 0 6px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+
+  .module .io {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 8px 0;
+    font-size: 11.5px;
+  }
+
+  .module .io span {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    color: var(--ink-2);
+  }
+
+  .code-list {
+    display: grid;
+    gap: 5px;
+    margin-top: 9px;
+    padding-top: 9px;
+    border-top: 1px dashed var(--hairline);
+  }
+
+  .code-list .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: baseline;
+    font-size: 11.5px;
+  }
+
+  .code-list .fn {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 5px;
+    color: var(--ink);
+  }
+
+  .code-list a {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
+    overflow-wrap: anywhere;
+  }
+
+  .code-list a:hover {
+    border-bottom-color: var(--link);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 10px 13px;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 650;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: 0; }
+
+  td code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+
+  td a {
+    color: var(--link);
+    text-decoration: none;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 11.5px;
+    border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
+  }
+
+  .footer {
+    margin-top: 34px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media (max-width: 900px) {
+    .page { width: min(100% - 26px, 1240px); padding-top: 28px; }
+    .summary { grid-template-columns: 1fr; }
+    .modules { grid-template-columns: 1fr; }
+    .topology-wrap { padding: 4px; border-radius: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media print {
+    :root { --page: #ffffff; --surface: #ffffff; --shadow: none; }
+    body { background: #ffffff; }
+    .controls { display: none; }
+    .topology-wrap, .module, .table-wrap { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">GAC · General AI Compiler · Module Topology</div>
+    <h1>模块拓扑：从 ONNX 到 Runtime</h1>
+    <p class="lede">
+      这张图只回答“模块之间如何连接”，不再展开单个算子的 lowering 细节。
+      实线是必经的数据流，虚线是可选的加速/选择关系；每个模块下方都可以跳到对应源码。
+    </p>
+  </header>
+
+  <section class="summary" aria-label="三条主要拓扑">
+    <article class="summary-card">
+      <h2>① 编译主链</h2>
+      <p>ONNX 进入前端，经过图优化与两条 Lowering 路径，最后统一进入设备规划。</p>
+      <div class="path">
+        <span>01</span><span>02</span><span>03</span><span>04</span><span>05/06</span><span>09</span><span>10</span><span>11</span>
+      </div>
+    </article>
+    <article class="summary-card">
+      <h2>② 可选加速旁路</h2>
+      <p>计算模板和 Triton 不改变 Buffer/DAG，只替换满足合同的 Kernel 实现。</p>
+      <div class="path">
+        <span>09 ↔ 07</span><span>09 ↔ 08</span>
+      </div>
+    </article>
+    <article class="summary-card">
+      <h2>③ 运行时合同</h2>
+      <p>编译器输出机器码和 manifest；Runtime 不实现算子，只校验合同并提交。</p>
+      <div class="path">
+        <span>09 → plan.json</span><span>10 → PTX/vxbin</span><span>11</span>
+      </div>
+    </article>
+  </section>
+
+  <div class="legend-bar" aria-label="图例">
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-shared)"></span>共享前端 / 语义</span>
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-graph)"></span>图优化 / 合法化</span>
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-regular)"></span>规则路径</span>
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-irregular)"></span>不规则路径</span>
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-accel)"></span>可选加速</span>
+    <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-backend)"></span>后端 / Runtime</span>
+    <span class="legend-item"><span class="legend-line"></span>必经数据流</span>
+    <span class="legend-item"><span class="legend-line dashed"></span>可选 / 选择关系</span>
+    <span class="controls"><button class="control" id="theme-toggle" type="button" aria-label="切换亮色或深色主题">◐ 深色</button></span>
+  </div>
+
+  <div class="topology-wrap">
+    <svg class="topology" id="topology" viewBox="0 0 1200 1060" role="img" aria-labelledby="topo-title topo-desc">
+      <title id="topo-title">GAC 编译器模块拓扑图</title>
+      <desc id="topo-desc">
+        从 ONNX Importer 到 Runtime 的模块依赖图。主链经过语义层、图优化、两条 Lowering 路径、
+        DeviceLowering、目标后端和 Runtime；计算模板与 Triton 是可选的加速旁路。
+      </desc>
+
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#898781"></path>
+        </marker>
+        <marker id="arrow-rev" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 10 0 L 0 5 L 10 10 z" fill="#898781"></path>
+        </marker>
+      </defs>
+
+      <!-- band labels -->
+      <text class="band-label" x="20" y="14">前端</text>
+      <line class="band-line" x1="70" y1="10" x2="1180" y2="10"></line>
+      <text class="band-label" x="20" y="242">图优化</text>
+      <line class="band-line" x1="92" y1="238" x2="1180" y2="238"></line>
+      <text class="band-label" x="20" y="486">Lowering</text>
+      <line class="band-line" x1="92" y1="482" x2="1180" y2="482"></line>
+      <text class="band-label" x="20" y="606">设备规划 / 产物 / 运行时</text>
+      <line class="band-line" x1="188" y1="602" x2="1180" y2="602"></line>
+
+      <!-- edges: main chain -->
+      <g class="edge" data-from="mod-01" data-to="mod-02">
+        <path d="M600,88 L600,140"></path>
+        <text class="edge-label" x="610" y="118">ModuleOp</text>
+      </g>
+      <g class="edge" data-from="mod-02" data-to="mod-03">
+        <path d="M600,208 L600,260"></path>
+        <text class="edge-label" x="610" y="238">typed SSA</text>
+      </g>
+      <g class="edge" data-from="mod-03" data-to="mod-04">
+        <path d="M600,328 L600,380"></path>
+        <text class="edge-label" x="610" y="358">optimized IR</text>
+      </g>
+
+      <!-- 04 -> 05 / 06 -->
+      <g class="edge" data-from="mod-04" data-to="mod-05">
+        <path d="M600,448 C500,470 350,475 215,500"></path>
+        <text class="edge-label" x="350" y="478">regular ops</text>
+      </g>
+      <g class="edge" data-from="mod-04" data-to="mod-06">
+        <path d="M600,448 C700,470 850,475 985,500"></path>
+        <text class="edge-label" x="760" y="478">irregular ops</text>
+      </g>
+
+      <!-- 05 / 06 -> 09 -->
+      <g class="edge" data-from="mod-05" data-to="mod-09">
+        <path d="M340,534 C370,560 390,610 420,635"></path>
+        <text class="edge-label" x="348" y="590">Linalg IR</text>
+      </g>
+      <g class="edge" data-from="mod-06" data-to="mod-09">
+        <path d="M860,534 C830,560 810,610 780,635"></path>
+        <text class="edge-label" x="790" y="590">device IR</text>
+      </g>
+
+      <!-- 09 <-> 07 / 08 -->
+      <g class="edge dashed both" data-from="mod-09" data-to="mod-07">
+        <path d="M450,700 C410,715 380,720 340,740"></path>
+        <text class="edge-label" x="352" y="715">select / emit</text>
+      </g>
+      <g class="edge dashed both" data-from="mod-09" data-to="mod-08">
+        <path d="M750,700 C790,715 820,720 860,740"></path>
+        <text class="edge-label" x="792" y="715">select / emit</text>
+      </g>
+
+      <!-- 09 -> 10 -> 11 -->
+      <g class="edge" data-from="mod-09" data-to="mod-10">
+        <path d="M600,700 L600,850"></path>
+        <text class="edge-label" x="610" y="782">LLVM Dialect + ABI</text>
+      </g>
+      <g class="edge" data-from="mod-10" data-to="mod-11">
+        <path d="M600,918 L600,960"></path>
+        <text class="edge-label" x="610" y="944">PTX / vxbin</text>
+      </g>
+
+      <!-- manifest runtime contract -->
+      <g class="edge dashed" data-from="mod-09" data-to="mod-11">
+        <path d="M420,660 L40,660 L40,1000 L420,1000"></path>
+        <text class="edge-label" x="48" y="648">plan.json</text>
+      </g>
+
+      <!-- nodes -->
+      <a href="#mod-01" data-id="mod-01" aria-label="模块 01：ONNX Importer">
+        <g style="--cat: var(--cat-shared); --cat-soft: var(--cat-shared-soft)">
+          <rect class="node-bg" x="450" y="20" width="300" height="68" rx="12"></rect>
+          <rect class="node-accent" x="450" y="20" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="478" cy="44" r="12"></circle>
+          <text class="node-no" x="478" y="48" text-anchor="middle">01</text>
+          <text class="node-title" x="498" y="46">ONNX Importer</text>
+          <text class="node-sub" x="498" y="64">ModelProto → gac.* ModuleOp</text>
+        </g>
+      </a>
+
+      <a href="#mod-02" data-id="mod-02" aria-label="模块 02：GAC Dialect 与语义">
+        <g style="--cat: var(--cat-shared); --cat-soft: var(--cat-shared-soft)">
+          <rect class="node-bg" x="450" y="140" width="300" height="68" rx="12"></rect>
+          <rect class="node-accent" x="450" y="140" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="478" cy="164" r="12"></circle>
+          <text class="node-no" x="478" y="168" text-anchor="middle">02</text>
+          <text class="node-title" x="498" y="166">GAC Dialect / Semantics</text>
+          <text class="node-sub" x="498" y="184">类型 · shape · 属性校验</text>
+        </g>
+      </a>
+
+      <a href="#mod-03" data-id="mod-03" aria-label="模块 03：图优化 Pass">
+        <g style="--cat: var(--cat-graph); --cat-soft: var(--cat-graph-soft)">
+          <rect class="node-bg" x="450" y="260" width="300" height="68" rx="12"></rect>
+          <rect class="node-accent" x="450" y="260" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="478" cy="284" r="12"></circle>
+          <text class="node-no" x="478" y="288" text-anchor="middle">03</text>
+          <text class="node-title" x="498" y="286">Graph Passes</text>
+          <text class="node-sub" x="498" y="304">shape inference · const fold · CSE</text>
+        </g>
+      </a>
+
+      <a href="#mod-04" data-id="mod-04" aria-label="模块 04：合法化与融合">
+        <g style="--cat: var(--cat-graph); --cat-soft: var(--cat-graph-soft)">
+          <rect class="node-bg" x="450" y="380" width="300" height="68" rx="12"></rect>
+          <rect class="node-accent" x="450" y="380" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="478" cy="404" r="12"></circle>
+          <text class="node-no" x="478" y="408" text-anchor="middle">04</text>
+          <text class="node-title" x="498" y="406">Legalization &amp; Fusion</text>
+          <text class="node-sub" x="498" y="424">Split · ScatterND · Conv/MatMul fuse</text>
+        </g>
+      </a>
+
+      <a href="#mod-05" data-id="mod-05" aria-label="模块 05：规则算子 Linalg Lowering">
+        <g style="--cat: var(--cat-regular); --cat-soft: var(--cat-regular-soft)">
+          <rect class="node-bg" x="90" y="500" width="250" height="68" rx="12"></rect>
+          <rect class="node-accent" x="90" y="500" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="118" cy="524" r="12"></circle>
+          <text class="node-no" x="118" y="528" text-anchor="middle">05</text>
+          <text class="node-title" x="138" y="526">Linalg Lowering</text>
+          <text class="node-sub" x="138" y="544">规则算子 → linalg.generic</text>
+        </g>
+      </a>
+
+      <a href="#mod-06" data-id="mod-06" aria-label="模块 06：不规则算子专用 Lowering">
+        <g style="--cat: var(--cat-irregular); --cat-soft: var(--cat-irregular-soft)">
+          <rect class="node-bg" x="860" y="500" width="250" height="68" rx="12"></rect>
+          <rect class="node-accent" x="860" y="500" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="888" cy="524" r="12"></circle>
+          <text class="node-no" x="888" y="528" text-anchor="middle">06</text>
+          <text class="node-title" x="908" y="526">Dedicated Lowering</text>
+          <text class="node-sub" x="908" y="544">不规则算子 → 标量 Kernel</text>
+        </g>
+      </a>
+
+      <a href="#mod-07" data-id="mod-07" aria-label="模块 07：设备计算模板">
+        <g style="--cat: var(--cat-accel); --cat-soft: var(--cat-accel-soft)">
+          <rect class="node-bg" x="90" y="740" width="250" height="68" rx="12"></rect>
+          <rect class="node-accent" x="90" y="740" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="118" cy="764" r="12"></circle>
+          <text class="node-no" x="118" y="768" text-anchor="middle">07</text>
+          <text class="node-title" x="138" y="766">Compute Templates</text>
+          <text class="node-sub" x="138" y="784">CUDA / Vortex 分块模板</text>
+        </g>
+      </a>
+
+      <a href="#mod-08" data-id="mod-08" aria-label="模块 08：Triton 桥接">
+        <g style="--cat: var(--cat-accel); --cat-soft: var(--cat-accel-soft)">
+          <rect class="node-bg" x="860" y="740" width="250" height="68" rx="12"></rect>
+          <rect class="node-accent" x="860" y="740" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="888" cy="764" r="12"></circle>
+          <text class="node-no" x="888" y="768" text-anchor="middle">08</text>
+          <text class="node-title" x="908" y="766">Triton Bridge</text>
+          <text class="node-sub" x="908" y="784">Linalg → TTIR → Vortex</text>
+        </g>
+      </a>
+
+      <a href="#mod-09" data-id="mod-09" aria-label="模块 09：DeviceLowering 设备规划">
+        <g style="--cat: var(--cat-backend); --cat-soft: var(--cat-backend-soft)">
+          <rect class="node-bg" x="420" y="620" width="360" height="80" rx="14"></rect>
+          <rect class="node-accent" x="420" y="620" width="5" height="80" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="450" cy="646" r="12"></circle>
+          <text class="node-no" x="450" y="650" text-anchor="middle">09</text>
+          <text class="node-title" x="470" y="648">DeviceLowering</text>
+          <text class="node-sub" x="470" y="666">dispatch DAG · 静态 Buffer · manifest</text>
+          <text class="node-sub" x="470" y="684">模板 / Triton 选择 · 目标 ABI</text>
+        </g>
+      </a>
+
+      <a href="#mod-10" data-id="mod-10" aria-label="模块 10：目标后端">
+        <g style="--cat: var(--cat-backend); --cat-soft: var(--cat-backend-soft)">
+          <rect class="node-bg" x="420" y="850" width="360" height="68" rx="12"></rect>
+          <rect class="node-accent" x="420" y="850" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="448" cy="874" r="12"></circle>
+          <text class="node-no" x="448" y="878" text-anchor="middle">10</text>
+          <text class="node-title" x="468" y="876">Target Backends</text>
+          <text class="node-sub" x="468" y="894">CUDA NVVM · Vortex ABI · LLVM</text>
+        </g>
+      </a>
+
+      <a href="#mod-11" data-id="mod-11" aria-label="模块 11：Runtime">
+        <g style="--cat: var(--cat-backend); --cat-soft: var(--cat-backend-soft)">
+          <rect class="node-bg" x="420" y="960" width="360" height="68" rx="12"></rect>
+          <rect class="node-accent" x="420" y="960" width="5" height="68" rx="2.5"></rect>
+          <circle class="node-no-bg" cx="448" cy="984" r="12"></circle>
+          <text class="node-no" x="448" y="988" text-anchor="middle">11</text>
+          <text class="node-title" x="468" y="986">Runtime</text>
+          <text class="node-sub" x="468" y="1004">校验 manifest · 提交 · 下载</text>
+        </g>
+      </a>
+    </svg>
+  </div>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>模块清单与代码映射</h2>
+      <span class="hint">点击上图节点可跳到对应模块</span>
+    </div>
+    <p>每个模块只负责一个稳定边界；“下游”列是它直接影响的模块。</p>
+
+    <div class="modules">
+
+      <article class="module" id="mod-01" data-cat="shared">
+        <div class="module-head"><span class="module-no">01</span><h3>ONNX Importer</h3></div>
+        <p class="role">直接解析 ModelProto，建立 SSA；不经过 Python Graph，也不生成 MLIR 文本。</p>
+        <div class="io"><span>ModelProto</span><span>→</span><span>gac.* ModuleOp</span></div>
+        <div class="io"><span>下游 02</span><span>op_type / domain 映射</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">operationName()</span><a href="../native/lib/OnnxImporter.cpp#L523">OnnxImporter.cpp:523</a></div>
+          <div class="row"><span class="fn">customOperationName()</span><a href="../native/lib/OnnxImporter.cpp#L580">OnnxImporter.cpp:580</a></div>
+          <div class="row"><span class="fn">importNode()</span><a href="../native/lib/OnnxImporter.cpp#L632">OnnxImporter.cpp:632</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-02" data-cat="shared">
+        <div class="module-head"><span class="module-no">02</span><h3>GAC Dialect / Semantics</h3></div>
+        <p class="role">注册 gac.* 算子；verify 和 ShapeInference 共用同一套类型/shape/属性规则。</p>
+        <div class="io"><span>ModuleOp</span><span>→</span><span>typed SSA IR</span></div>
+        <div class="io"><span>下游 03</span><span>MSDeformAttn / DCNv2 固定契约</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">GAC_DECLARE_OP</span><a href="../native/include/gac/Dialect.h#L58">Dialect.h:58</a></div>
+          <div class="row"><span class="fn">inferOperation()</span><a href="../native/lib/Dialect.cpp#L558">Dialect.cpp:558</a></div>
+          <div class="row"><span class="fn">inferMSDeformAttn()</span><a href="../native/lib/Dialect.cpp#L413">Dialect.cpp:413</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-03" data-cat="graph">
+        <div class="module-head"><span class="module-no">03</span><h3>Graph Passes</h3></div>
+        <p class="role">固定点形状推导、有预算的常量折叠、CSE/canonicalize 与布局传播。</p>
+        <div class="io"><span>typed IR</span><span>→</span><span>optimized IR</span></div>
+        <div class="io"><span>上游 02</span><span>下游 04</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">ShapeInferencePass</span><a href="../native/lib/GraphPasses.cpp#L54">GraphPasses.cpp:54</a></div>
+          <div class="row"><span class="fn">foldConstantOperation()</span><a href="../native/lib/ConstantFolding.cpp#L329">ConstantFolding.cpp:329</a></div>
+          <div class="row"><span class="fn">LayoutPropagationPass</span><a href="../native/lib/GraphPasses.cpp#L216">GraphPasses.cpp:216</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-04" data-cat="graph">
+        <div class="module-head"><span class="module-no">04</span><h3>Legalization &amp; Fusion</h3></div>
+        <p class="role">把后端不能直接接受的形式改写成规范形式；只做能证明语义等价且单消费者的融合。</p>
+        <div class="io"><span>optimized IR</span><span>→</span><span>legalized / fused IR</span></div>
+        <div class="io"><span>上游 03</span><span>下游 05 / 06</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">LegalizeTensorOpsPass</span><a href="../native/lib/TensorLegalization.cpp#L347">TensorLegalization.cpp:347</a></div>
+          <div class="row"><span class="fn">静态 Split → Slice</span><a href="../native/lib/TensorLegalization.cpp#L272">TensorLegalization.cpp:272</a></div>
+          <div class="row"><span class="fn">MSDeformAttn 坐标融合</span><a href="../native/lib/fusion/GraphFusionPatterns.cpp#L53">GraphFusionPatterns.cpp:53</a></div>
+          <div class="row"><span class="fn">Conv / MatMul / ReLU 融合</span><a href="../native/lib/fusion/GraphFusionPatterns.cpp#L318">GraphFusionPatterns.cpp:318</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-05" data-cat="regular">
+        <div class="module-head"><span class="module-no">05</span><h3>Linalg Lowering</h3></div>
+        <p class="role">16 个规则算子改写成结构化 Linalg；输出维 parallel，K 轴唯一 reduction。</p>
+        <div class="io"><span>regular gac.*</span><span>→</span><span>Linalg IR</span><span>→</span><span>SCF</span></div>
+        <div class="io"><span>上游 04</span><span>下游 09</span><span>旁路 07 / 08</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">lowerPointwise()</span><a href="../native/lib/LinalgLowering.cpp#L144">LinalgLowering.cpp:144</a></div>
+          <div class="row"><span class="fn">lowerMatmul()</span><a href="../native/lib/LinalgLowering.cpp#L167">LinalgLowering.cpp:167</a></div>
+          <div class="row"><span class="fn">lowerReduce()</span><a href="../native/lib/LinalgLowering.cpp#L321">LinalgLowering.cpp:321</a></div>
+          <div class="row"><span class="fn">lowerSoftmax()</span><a href="../native/lib/LinalgLowering.cpp#L352">LinalgLowering.cpp:352</a></div>
+          <div class="row"><span class="fn">lowerLayerNorm()</span><a href="../native/lib/LinalgLowering.cpp#L364">LinalgLowering.cpp:364</a></div>
+          <div class="row"><span class="fn">lowerConvolutionToLinalg()</span><a href="../native/lib/LinalgConvolution.cpp#L67">LinalgConvolution.cpp:67</a></div>
+          <div class="row"><span class="fn">LinalgDevice</span><a href="../native/lib/LinalgDevice.cpp#L27">LinalgDevice.cpp:27</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-06" data-cat="irregular">
+        <div class="module-head"><span class="module-no">06</span><h3>Dedicated Lowering</h3></div>
+        <p class="role">保留 gac.* 的不规则算子；preflight 白名单 + emitElement/emitSpatial 生成标量设备代码。</p>
+        <div class="io"><span>irregular gac.*</span><span>→</span><span>device IR</span></div>
+        <div class="io"><span>上游 04</span><span>下游 09</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">preflight()</span><a href="../native/lib/DeviceLowering.cpp#L725">DeviceLowering.cpp:725</a></div>
+          <div class="row"><span class="fn">emitElement()</span><a href="../native/lib/DeviceLowering.cpp#L220">DeviceLowering.cpp:220</a></div>
+          <div class="row"><span class="fn">emitSpatial()</span><a href="../native/lib/DeviceLowering.cpp#L504">DeviceLowering.cpp:504</a></div>
+          <div class="row"><span class="fn">MSDeformAttn / DCNv2</span><a href="../native/lib/DeviceLowering.cpp#L516">DeviceLowering.cpp:516</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-07" data-cat="accel">
+        <div class="module-head"><span class="module-no">07</span><h3>Compute Templates</h3></div>
+        <p class="role">按形状/选项选择经过检查的 CUDA/Vortex 计算模板；不满足合同则保留 native。</p>
+        <div class="io"><span>候选算子</span><span>↔</span><span>template plan</span></div>
+        <div class="io"><span>与 09 双向选择</span><span>输出 LLVM</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">templates::select()</span><a href="../native/templates/Registry.cpp#L116">Registry.cpp:116</a></div>
+          <div class="row"><span class="fn">templates::emit()</span><a href="../native/templates/Registry.cpp#L134">Registry.cpp:134</a></div>
+          <div class="row"><span class="fn">CUDA / Vortex 模板</span><a href="../native/templates/cuda/Matmul.cpp">templates/cuda/</a> · <a href="../native/templates/vortex/Matmul.cpp">templates/vortex/</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-08" data-cat="accel">
+        <div class="module-head"><span class="module-no">08</span><h3>Triton Bridge</h3></div>
+        <p class="role">从 Linalg 中选择满足严格合同的子图，生成 TTIR；由外部 triton_vortex 后端继续 Lowering。</p>
+        <div class="io"><span>Linalg 子图</span><span>↔</span><span>TTIR + launch contract</span></div>
+        <div class="io"><span>与 09 双向选择</span><span>与 native 链接同一 vxbin</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">selectTritonPointwise()</span><a href="../native/lib/TritonBridge.cpp#L1697">TritonBridge.cpp:1697</a></div>
+          <div class="row"><span class="fn">selectTritonDot()</span><a href="../native/lib/TritonBridge.cpp#L1324">TritonBridge.cpp:1324</a></div>
+          <div class="row"><span class="fn">selectTritonLayerNorm()</span><a href="../native/lib/TritonBridge.cpp#L631">TritonBridge.cpp:631</a></div>
+          <div class="row"><span class="fn">Softmax / Reduction</span><a href="../native/lib/TritonBridge.cpp#L950">:950</a> · <a href="../native/lib/TritonBridge.cpp#L1153">:1153</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-09" data-cat="backend">
+        <div class="module-head"><span class="module-no">09</span><h3>DeviceLowering</h3></div>
+        <p class="role">两条路径的汇合点：dispatch DAG、SSA last-use Buffer 规划、模板/Triton 选择、manifest。</p>
+        <div class="io"><span>所有 dispatch body</span><span>→</span><span>target IR + plan.json</span></div>
+        <div class="io"><span>上游 05/06</span><span>旁路 07/08</span><span>下游 10/11</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">lowerToDevice()</span><a href="../native/lib/DeviceLowering.cpp#L1095">DeviceLowering.cpp:1095</a></div>
+          <div class="row"><span class="fn">Buffer 生命周期 / arena</span><a href="../native/lib/DeviceLowering.cpp#L1371">DeviceLowering.cpp:1371</a></div>
+          <div class="row"><span class="fn">dispatch["lowering"]</span><a href="../native/lib/DeviceLowering.cpp#L1673">DeviceLowering.cpp:1673</a></div>
+          <div class="row"><span class="fn">parsePlan()</span><a href="../native/runtime/dispatch-plan.h#L583">dispatch-plan.h:583</a></div>
+        </div>
+      </article>
+
+      <article class="module" id="mod-10" data-cat="backend">
+        <div class="module-head"><span class="module-no">10</span><h3>Target Backends</h3></div>
+        <p class="role">套上目标 ABI：CUDA NVVM/64 位指针，或 Vortex CSR/RV32 解包；再收敛到 LLVM Dialect。</p>
+        <div class="io"><span>target IR</span><span>→</span><span>LLVM Dialect</span><span>→</span><span>PTX / vxbin</span></div>
+        <div class="io"><span>上游 09</span><span>下游 11</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">LowerToCuda</span><a href="../native/lib/CudaPass.cpp#L11">CudaPass.cpp:11</a></div>
+          <div class="row"><span class="fn">CudaMathToLibdevice</span><a href="../native/lib/CudaPass.cpp#L27">CudaPass.cpp:27</a></div>
+          <div class="row"><span class="fn">VortexToLLVM</span><a href="../native/lib/VortexPass.cpp#L12">VortexPass.cpp:12</a></div>
+          <div class="row"><span class="fn">LowerToVortex</span><a href="../native/lib/VortexPass.cpp#L74">VortexPass.cpp:74</a></div>
+          <div class="row"><span class="fn">addLLVMConversionPasses()</span><a href="../native/lib/DeviceLowering.cpp#L1953">DeviceLowering.cpp:1953</a></div>
+          <div class="row"><span class="fn">compile-cuda.sh / Vortex.mk</span><a href="../native/tools/compile-cuda.sh#L61">compile-cuda.sh:61</a> · <a href="../native/tools/Vortex.mk#L29">Vortex.mk:29</a></div>
+        </div>
+      </article>
+
+      <article class="module wide" id="mod-11" data-cat="backend">
+        <div class="module-head"><span class="module-no">11</span><h3>Runtime</h3></div>
+        <p class="role">不实现算子；只校验 manifest、分配/上传、按 dispatch 顺序提交、下载输出。</p>
+        <div class="io"><span>plan.json</span><span>+</span><span>PTX / vxbin</span><span>→</span><span>outputs</span></div>
+        <div class="io"><span>上游 09 / 10</span></div>
+        <div class="code-list">
+          <div class="row"><span class="fn">parsePlan()</span><a href="../native/runtime/dispatch-plan.h#L583">dispatch-plan.h:583</a></div>
+          <div class="row"><span class="fn">validateTritonSchedule()</span><a href="../native/runtime/dispatch-plan.h#L104">dispatch-plan.h:104</a></div>
+          <div class="row"><span class="fn">gac-cuda-run</span><a href="../native/runtime/cuda-run.cpp#L535">cuda-run.cpp:535</a></div>
+          <div class="row"><span class="fn">gac-vortex-run</span><a href="../native/runtime/vortex-run.cpp#L305">vortex-run.cpp:305</a></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>拓扑边与交接内容</h2>
+      <span class="hint">箭头方向 = 数据/合同传递方向</span>
+    </div>
+    <p>这张表把 SVG 中的连线展开为可检查的交接契约。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>从 → 到</th>
+            <th>传递内容</th>
+            <th>代码锚点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>01 → 02</td>
+            <td>ModuleOp：gac.* SSA、Tensor 类型、DenseElementsAttr 权重</td>
+            <td><a href="../native/lib/OnnxImporter.cpp#L632">OnnxImporter.cpp:632</a></td>
+          </tr>
+          <tr>
+            <td>02 → 03</td>
+            <td>带类型/shape 语义的 gac.* IR；verifier 约束</td>
+            <td><a href="../native/lib/Dialect.cpp#L558">Dialect.cpp:558</a></td>
+          </tr>
+          <tr>
+            <td>03 → 04</td>
+            <td>形状已推导、常量已折叠、CSE 后的优化图</td>
+            <td><a href="../native/lib/GraphPasses.cpp#L54">GraphPasses.cpp:54</a></td>
+          </tr>
+          <tr>
+            <td>04 → 05</td>
+            <td>规则算子子图：add/matmul/reduce/softmax/layernorm/conv</td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L477">LinalgLowering.cpp:477</a></td>
+          </tr>
+          <tr>
+            <td>04 → 06</td>
+            <td>不规则算子：MSDeformAttn/DCNv2/GridSample/ScatterND 等</td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L725">DeviceLowering.cpp:725</a></td>
+          </tr>
+          <tr>
+            <td>05 → 09</td>
+            <td>Linalg IR + destination Buffer 映射 + Linalg-to-SCF</td>
+            <td><a href="../native/lib/LinalgDevice.cpp#L27">LinalgDevice.cpp:27</a></td>
+          </tr>
+          <tr>
+            <td>06 → 09</td>
+            <td>专用标量设备 IR（SCF/Arith/Math/LLVM）</td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L220">DeviceLowering.cpp:220</a></td>
+          </tr>
+          <tr>
+            <td>09 ↔ 07</td>
+            <td>候选算子 ↔ 已检查的模板 plan / 发射结果</td>
+            <td><a href="../native/templates/Registry.cpp#L116">Registry.cpp:116</a></td>
+          </tr>
+          <tr>
+            <td>09 ↔ 08</td>
+            <td>候选 Linalg 子图 ↔ TTIR + launch contract</td>
+            <td><a href="../native/lib/TritonBridge.cpp#L1324">TritonBridge.cpp:1324</a></td>
+          </tr>
+          <tr>
+            <td>09 → 10</td>
+            <td>dispatch 顺序、目标 ABI、LLVM Dialect</td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L1953">DeviceLowering.cpp:1953</a></td>
+          </tr>
+          <tr>
+            <td>10 → 11</td>
+            <td>PTX / ELF / vxbin 机器码</td>
+            <td><a href="../native/tools/compile-cuda.sh#L61">compile-cuda.sh:61</a></td>
+          </tr>
+          <tr>
+            <td>09 → 11</td>
+            <td>plan.json：tensor 表、dispatch DAG、buffer 偏移、ABI</td>
+            <td><a href="../native/runtime/dispatch-plan.h#L583">dispatch-plan.h:583</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="footer">
+    模块边界以当前原生 MLIR 路径为准；TensorRT 独立项目不在这张拓扑内。
+    代码链接相对于本文件，指向 <code>../native/...</code>。
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('theme-toggle');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function currentIsDark() {
+      if (root.dataset.theme === 'dark') return true;
+      if (root.dataset.theme === 'light') return false;
+      return media.matches;
+    }
+
+    function syncToggle() {
+      if (!toggle) return;
+      var dark = currentIsDark();
+      toggle.textContent = dark ? '☀ 浅色' : '◐ 深色';
+      toggle.setAttribute('aria-label', dark ? '切换到浅色主题' : '切换到深色主题');
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        root.dataset.theme = currentIsDark() ? 'light' : 'dark';
+        syncToggle();
+      });
+    }
+    if (media.addEventListener) media.addEventListener('change', syncToggle);
+    syncToggle();
+
+    var svg = document.getElementById('topology');
+    if (!svg) return;
+    var nodes = Array.prototype.slice.call(svg.querySelectorAll('a[data-id]'));
+    var edges = Array.prototype.slice.call(svg.querySelectorAll('.edge[data-from]'));
+
+    function clear() {
+      svg.classList.remove('is-focused');
+      nodes.forEach(function (node) { node.classList.remove('is-active'); });
+      edges.forEach(function (edge) { edge.classList.remove('is-active'); });
+    }
+
+    function focusNode(id) {
+      clear();
+      svg.classList.add('is-focused');
+      nodes.forEach(function (node) {
+        if (node.getAttribute('data-id') === id) node.classList.add('is-active');
+      });
+      edges.forEach(function (edge) {
+        if (edge.getAttribute('data-from') === id || edge.getAttribute('data-to') === id) {
+          edge.classList.add('is-active');
+          var other = edge.getAttribute('data-from') === id
+            ? edge.getAttribute('data-to')
+            : edge.getAttribute('data-from');
+          nodes.forEach(function (node) {
+            if (node.getAttribute('data-id') === other) node.classList.add('is-active');
+          });
+        }
+      });
+    }
+
+    nodes.forEach(function (node) {
+      node.addEventListener('mouseenter', function () { focusNode(node.getAttribute('data-id')); });
+      node.addEventListener('focus', function () { focusNode(node.getAttribute('data-id')); });
+      node.addEventListener('mouseleave', clear);
+      node.addEventListener('blur', clear);
+    });
+  })();
+</script>
+</body>
+</html>

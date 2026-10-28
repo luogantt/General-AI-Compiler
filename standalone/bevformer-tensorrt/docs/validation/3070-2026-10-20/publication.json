@@ -1,0 +1,105 @@
+{
+  "changes": "Removed host name, GPU UUID and absolute user paths. Measurements, hashes and validation decisions unchanged.",
+  "files": [
+    {
+      "file": "mixed-real.json",
+      "raw_sha256": "2544fdb2863731af62d47db63e3e2102e9e23c62eb7942c3fb128a4089210b8a",
+      "published_sha256": "11304a9a851d1a213c6ba986788b6967d1db3f1188b01f004b0faa9f6fe1ce0b"
+    },
+    {
+      "file": "fp32-real.json",
+      "raw_sha256": "8d40e7398d21f497572d115d015e7d64ef9ffae7122b3d23e1c0aaeab2fbc7b1",
+      "published_sha256": "de66c1f349beb2db0ca17b5c5d9f5b82465b1ccac4e5d62cb5149665888b2933"
+    },
+    {
+      "file": "fp32-synthetic.json",
+      "raw_sha256": "253b96919b1b831489a6a4c300ea2e36c0984c27ce772e794c784bd391947cf7",
+      "published_sha256": "aebca505cabf12a348e29126264a984b24ed1b9cdfe0de76b1c573844fa385c2"
+    },
+    {
+      "file": "mixed-build.json",
+      "raw_sha256": "531cdcd7a99c0fcbdc762d74729825546eb2564a9280d933c5780ed759fae104",
+      "published_sha256": "ecd0a5149b74cc9f299faa5e4cc69f93c2c35d2e33e3bfeebe1c62f2b68328db"
+    },
+    {
+      "file": "fp32-build.json",
+      "raw_sha256": "69a95b23e6899fcd1436ba4ccbd674f8cb90d11e153a3ef7ba21c9a044a87eda",
+      "published_sha256": "3cd605ef9609eaa5707be79abce67cc97d86a51adad7f2b50f81e95b51183d4b"
+    },
+    {
+      "file": "environment.json",
+      "raw_sha256": "4d93625f1028b688b9055d11559bfb9d845f425effac75697d6935ba219d6918",
+      "published_sha256": "fd5d0225f24f27c12a29dc482e61a3cfd1678396d546dafbbd1258191bd42f3d"
+    },
+    {
+      "file": "plugin-summary.json",
+      "raw_sha256": "9cdd40f656c0602dd40f2fb9ffdc86def859ba9d06d33c5888dbc1b9a561798a",
+      "published_sha256": "b4a873d712f902723354f3bb17e7c75dc798470eeb8d36c793395a6295c47a26"
+    },
+    {
+      "file": "source-identity.json",
+      "raw_sha256": "49d5dc6bc643434f4d707278ceafef43490c81ed6ab9e784a0cc07ad4795ee4d",
+      "published_sha256": "d2f78896c5dae9e244a0ec33d97cd21cb3275216bb8454b047b81fa0882ef3c1"
+    },
+    {
+      "file": "output-errors.json",
+      "raw_sha256": "f8ddbdfc59a8165c58be745a715af36829acc7b9bf7546e5c071bb7ccb458720",
+      "published_sha256": "7b88fa4ab65fe3632356b9020cbb520efd8cb677a21730dc8b0cb46b5e539f78"
+    },
+    {
+      "file": "mixed-engine-layers.json",
+      "raw_sha256": "4fea97d5e33a486bbfe6754c048d028b48c6e5366503ced5908419e89a31dc52",
+      "published_sha256": "8758f07fd8885245c65bea99c72785ed30aec4de7aa0348729ba0c990daa3d81"
+    },
+    {
+      "file": "installed-wheel-full.json",
+      "raw_sha256": "bd80574243d1ba8cefd85ac4d91e8c5a9568520b1e36a0651d7c96bc2b1eeb5f",
+      "published_sha256": "59624e594eef5d9b6b268a90667743f23619bbffe3df8bd338e8c494ffa67399"
+    },
+    {
+      "file": "cpu-tests.log",
+      "raw_sha256": "c88b58967b7b7be0e73799c362ca6320e6bab295e968abdfdacbd5dd44a45300",
+      "published_sha256": "dbc2e39180cd12eb03d152b1f80407e8f3be2471237888dfc3c45b70d5f78be1"
+    },
+    {
+      "file": "installed-import.log",
+      "raw_sha256": "1b97ea02763867f7d21bac8f6fccf1b6f98bf296192810ee5341cecbd6d88407",
+      "published_sha256": "ae5419f872de2ba6db5296471c838fb28a7a3aa2abc03031c87c267a8e7567dc"
+    },
+    {
+      "file": "wheel-install.log",
+      "raw_sha256": "13dbfb6730218f433dafc91986e1190d7aecc9986b0101c0808cb7878d6fee3c",
+      "published_sha256": "e338cc69c2f975b0535cdba4d3d53f282e277a95bc1dedc7ac602ac56c5df3a9"
+    },
+    {
+      "file": "mixed-build.log",
+      "raw_sha256": "f50c32f2ecbd85c4f7ea0590e0654d077df20295cf656f8b69c0266ea5055f3b",
+      "published_sha256": "f2f767d229859ce75ae9e27f29274e11bf188bfbe80ba4ee91df34d82ac15380"
+    },
+    {
+      "file": "mixed-level3-build.log",
+      "raw_sha256": "34a4fa24581fda8d68519635e99427171b24fc586fb6a12c476043fd7c0c2cf3",
+      "published_sha256": "a1c12e5b5976396c612da4bab0d5ee4249469c69605091bf8374c978568a7f6d"
+    },
+    {
+      "file": "fp32-build.log",
+      "raw_sha256": "53e99bc6435a7d20be0df7ccb7622a02246996dccdd677736f6edb3f00e0121a",
+      "published_sha256": "e359bd5d8ddddfe366378880cd485042fc2ac2437b053177711ab3aae935f8d9"
+    },
+    {
+      "file": "build-memory.csv",
+      "raw_sha256": "35c179c73f3f3997bcfa8284529402fc0153ab81be7302c143c929f5d5e22935",
+      "published_sha256": "df684efca312fe2147bf71cb72308cdcd2b055d907928de8ff1a5d05db824337"
+    },
+    {
+      "file": "mixed-level3-memory.csv",
+      "raw_sha256": "78fbd77ac67c2abb39cc5c5d0001b19da6f2cea67f0e9c1ba3ea8d27553e5237",
+      "published_sha256": "5e81a9f14326ce3d127f5a1f2a3200492c017d030971b3ced66863d9e35eb878"
+    },
+    {
+      "file": "fp32-memory.csv",
+      "raw_sha256": "32b8833112c7cba61fc093a7c4690e3a6b017b3e885ce5e5ac8a94d04838cad5",
+      "published_sha256": "cae2bc1f47d99bfb91c0a32002657ebc6672e6a3304e377ece361b66ba681aaf"
+    }
+  ]
+}

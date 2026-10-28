@@ -1,0 +1,5 @@
+# CPU tooling. NumPy/ONNX match the recorded TensorRT validation environment.
+numpy==1.26.4
+onnx==1.23.0
+# Needed only by image preprocessing; keep a NumPy 1.x-compatible OpenCV release.
+opencv-python-headless==4.11.0.86

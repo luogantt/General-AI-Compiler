@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-22",
+  "branch": "lg/bevformer-triton-vortex",
+  "base_commit": "3716adbe6eda45a24be810420f87952a8e7dc795",
+  "scope": "GAC ONNX/C++ MLIR/Triton/VOLT/Vortex SimX LayerNorm correctness and ABI validation; not a performance benchmark",
+  "result": {
+    "status": "passed",
+    "gac_integration_checks": 81,
+    "layer_norm_specific_checks": 33,
+    "validation_json_sha256": "593a2c8ae235edc860041a7850ced53a815dd72a8f0ed5e18cf5943ba86e58cd"
+  },
+  "commands": [
+    "cmake --build /home/thomas/gac-templates-20261021-make --target gac-compile gac-vortex-run gac-triton-layernorm-selector-contract -j2",
+    "TRITON_VORTEX_OPT=/mnt/c/Users/Thomas/Desktop/universal_ai_compile/triton/third_party/vortex/build/triton-vortex-opt VORTEX_DRIVER=simx bash build/gac-triton-validation.sh /home/thomas/gac-triton-layernorm-gac-final7-20261022",
+    "/home/thomas/gac-templates-20261021-make/gac-triton-layernorm-selector-contract <tail-19>/02-linalg.mlir <output-directory>"
+  ],
+  "binary_sha256": {
+    "gac-compile": "d03d8a717b744dc2ec592e76bd43c3373c17b0f614344de8d2ab278b3591f6b0",
+    "gac-vortex-run": "f12e80e6ad546a9371b21a211f550fd2d335b8d33c877aade08eb73f263e8021",
+    "gac-triton-layernorm-selector-contract": "cb4d5ebe43307718e8c4894069902d7e7f1ba3d62f2cc36788c6bc4c8fdd8f2d",
+    "triton-vortex-opt": "7bd9bb6bc65b12fbb541004f25751d9c0d7a0a2674b2416a1cfd324dcd825e"
+  },
+  "source_sha256": {
+    "native/include/gac/TritonBridge.h": "adcecc8e8fc123c0364b57539937d0bfd23d141c704a00924f601786e20c0a6f",
+    "native/lib/TritonBridge.cpp": "1891e2be8a003d5454e246a35ed227860f21aed802122103dbdf33a5d59b5799",
+    "native/lib/LinalgDevice.cpp": "dc0b4120a678e6759138ea994a3de7af64ca503a340eda62e24917cc70261fdc",
+    "native/lib/DeviceLowering.cpp": "ac79bb098d0a7b592325c565e89d7670373999556ade63cb0916df17cf766bc9",
+    "native/tools/compile-triton-vortex.py": "6bff43a9503148f53b285fe6435230cdba3abe47ce1633c477775b53dab85d5f",
+    "native/runtime/dispatch-plan.h": "2ab75ae50a096ceae9408cd9d68238078274af6f4752d453f4582ea68bc91b8c",
+    "native/runtime/vortex-run.cpp": "6bff959abc0da6aa1171619414272a7a57e8d63b592f42816154520294d78a3f",
+    "native/tests/run_triton_vortex_tests.py": "5f522aa041773a0fa867a1f1adb668ab28046088a2bb6435ac421249880901af",
+    "native/tests/triton_layernorm_selector_contract.cpp": "8427022d16b3c127845bc9279a7f86b620cf479ff22d8d14f4012e68b4130e61",
+    "native/CMakeLists.txt": "22df26bf24337232e5d3b645fd07f732a74245d40ac13e36f52ef30c2ca71261"
+  },
+  "ttir_sha256": {
+    "width-256/gac_op_0.ttir": "e1bfee72665874af5b2fef5a9d87bcadd95bb35abeb6803ac735519c43bd115b",
+    "tail-19/gac_op_0.ttir": "e0d10e5de9fa19aa3226d2c044af239ce5643319f02cc2bbee5f52bc9c1ae77f",
+    "width-1/gac_op_0.ttir": "c7f0ff3bd8c54fbde1e701bf93120031f06559e77162789d94a8848965d9c2f1",
+    "width-1024/gac_op_0.ttir": "58370f280eab2c4969277f2a9106733647af2bfc9cf8bd236d6204cd2689012a"
+  },
+  "epsilon_1e5": {
+    "manifest_decimal_bits": 925353388,
+    "manifest_hex_bits": "0x3727c5ac"
+  }
+}

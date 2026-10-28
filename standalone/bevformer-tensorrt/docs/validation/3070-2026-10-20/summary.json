@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-20",
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, 8 GB",
+  "source_scope": "Standalone wheel installed without dependencies into an existing CUDA Python environment; CPU tests executed from /tmp, GAC not imported.",
+  "cpu_tests": {
+    "passed": 97,
+    "failed": 0
+  },
+  "installed_wheel_full_model_regression": {
+    "status": "passed",
+    "cwd": "/tmp",
+    "PYTHONPATH": "unset",
+    "warmup": 1,
+    "repeat": 1,
+    "scope": "Full FP32 graph with packaged synthetic input/reference, installation regression only, not a new benchmark"
+  },
+  "plugin_tests": {
+    "passed": 6,
+    "failed": 0,
+    "precision": "FP32",
+    "rtol": 2e-05,
+    "atol": 2e-05
+  },
+  "initial_failed_build": {
+    "workspace_mib": 256,
+    "tactic_dram_mib": 2048,
+    "optimization_level": 0,
+    "error": "TensorRT OutOfMemory; requested 655520000 bytes",
+    "sampled_device_peak_mib": 2347.0,
+    "interpretation": "Budget rejected 3 GB tactics. Exact allocation source unknown; sampled GPU use does not establish physical 8 GB exhaustion."
+  },
+  "model_scope": "BEVFormer-base cold raw-head, fixed synthetic all-visible projection, zero CAN-bus, no history or box decoding",
+  "input_shape": [
+    1,
+    6,
+    3,
+    928,
+    1600
+  ],
+  "timing_scope": "warmup=5, repeat=20; CUDA-event median, excluding model loading, transfers, preprocessing and postprocessing; no CUDA Graph",
+  "modes": {
+    "mixed_real": {
+      "median_ms": 420.78155517578125,
+      "p95_ms": 423.4582229614258,
+      "reciprocal_fps": 2.3765300253768267,
+      "validation": "failed",
+      "all_outputs_finite": true,
+      "engine_sha256": "3fbb4c3af7237ef60b6a128754f45a1cc89a290ab3da0f7b6cb99c1e3667955f",
+      "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+      "reference_sha256": "2c293ca15c12e95796c843b13506bf8a7bd42175c3aea6f303a08bf455f84b98",
+      "build_seconds": 263.02165963398875,
+      "build_workspace_mib": 1024,
+      "build_tactic_dram_mib": 4096,
+      "builder_optimization_level": 3,
+      "context_and_io_device_snapshot_mib": 2476.25,
+      "sampled_peak_during_build_and_following_runs_mib": 4549.0
+    },
+    "fp32_real": {
+      "median_ms": 924.9341430664062,
+      "p95_ms": 986.4897369384765,
+      "reciprocal_fps": 1.0811580559505893,
+      "validation": "passed",
+      "all_outputs_finite": true,
+      "engine_sha256": "8382f0ec6c231a5fb5ef5dcd4b4008a2bdd62e2667a78694c90e6c4ff34c536f",
+      "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+      "reference_sha256": "2c293ca15c12e95796c843b13506bf8a7bd42175c3aea6f303a08bf455f84b98",
+      "build_seconds": 105.18820615200093,
+      "build_workspace_mib": 4096,
+      "build_tactic_dram_mib": 4096,
+      "builder_optimization_level": 3,
+      "context_and_io_device_snapshot_mib": 4244.25,
+      "sampled_peak_during_build_and_following_runs_mib": 4251.0
+    },
+    "fp32_synthetic": {
+      "median_ms": 809.6612548828125,
+      "p95_ms": 820.62294921875,
+      "reciprocal_fps": 1.2350844182913712,
+      "validation": "passed",
+      "all_outputs_finite": true,
+      "engine_sha256": "8382f0ec6c231a5fb5ef5dcd4b4008a2bdd62e2667a78694c90e6c4ff34c536f",
+      "input_sha256": "dae4f3b37e0d266b284d2268f23a6ae6f355aa0d96816fff85f8146a7e45ba28",
+      "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+      "build_seconds": 105.18820615200093,
+      "build_workspace_mib": 4096,
+      "build_tactic_dram_mib": 4096,
+      "builder_optimization_level": 3,
+      "context_and_io_device_snapshot_mib": 4244.25,
+      "sampled_peak_during_build_and_following_runs_mib": 4251.0
+    }
+  },
+  "memory_note": "Device-wide samples, not per-process or guaranteed peaks. Mixed sampled every 500 ms; FP32 every 100 ms."
+}

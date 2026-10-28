@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>gac-compile.cpp · 编译控制流与数据流拓扑</title>
+  <style>
+    :root {
+      --bg:#f5f7f9; --surface:#ffffff; --surface-2:#f0f4f7; --ink:#172b3d;
+      --muted:#5d6f7f; --line:#cbd5de; --primary:#1769aa; --primary-soft:#e7f2fb;
+      --graph:#1769aa; --graph-soft:#eaf4fc; --structured:#7152a3;
+      --structured-soft:#f3eefb; --device:#a35b16; --device-soft:#fff3e7;
+      --llvm:#16745a; --llvm-soft:#e8f7f1; --external:#374d63;
+      --external-soft:#edf2f6; --error:#b42318; --shadow:0 10px 28px #1c334814;
+    }
+    @media (prefers-color-scheme:dark) {
+      :root {
+        --bg:#101820; --surface:#17232d; --surface-2:#1e2c37; --ink:#e8f0f6;
+        --muted:#a7b7c4; --line:#3d4f5d; --primary:#7bc2fa; --primary-soft:#17354b;
+        --graph:#7bc2fa; --graph-soft:#17354b; --structured:#c3a6f2;
+        --structured-soft:#302742; --device:#f4b168; --device-soft:#3b2c1d;
+        --llvm:#72d5b4; --llvm-soft:#173b31; --external:#b7c7d5;
+        --external-soft:#243440; --error:#ff8e86; --shadow:none;
+      }
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    button,select,input { font:inherit; color:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,select:focus-visible,a:focus-visible { outline:3px solid var(--primary); outline-offset:3px; }
+    code,pre { font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace; }
+    h1,h2,h3,p { margin:0; }
+    a { color:var(--primary); text-underline-offset:3px; }
+    .shell { width:min(1500px,100%); margin:0 auto; padding:28px 22px 50px; }
+    .breadcrumb { display:flex; flex-wrap:wrap; gap:8px 18px; margin-bottom:18px; font-size:13px; }
+    .eyebrow { color:var(--primary); font-size:12px; letter-spacing:.12em; font-weight:700; }
+    h1 { margin-top:5px; font-size:clamp(25px,3vw,38px); line-height:1.3; letter-spacing:-.03em; }
+    .intro { margin-top:10px; max-width:1050px; color:var(--muted); }
+    .boundary-note { margin-top:18px; padding:13px 16px; border-left:4px solid var(--primary); background:var(--surface); box-shadow:var(--shadow); }
+    .boundary-note strong { color:var(--ink); }
+    .role-map { margin-top:20px; padding:20px; background:var(--surface); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .role-map h2 { font-size:21px; }
+    .role-map-intro { margin-top:5px; color:var(--muted); }
+    .role-flow { display:grid; gap:0; width:min(920px,100%); margin:18px auto 0; }
+    .role-step { display:grid; grid-template-columns:170px minmax(0,1fr); border:1px solid var(--line); border-left:5px solid var(--role-color); border-radius:7px; overflow:hidden; background:var(--role-soft); }
+    .role-owner { display:grid; align-content:center; gap:3px; padding:12px 14px; border-right:1px solid var(--line); color:var(--muted); font-size:12px; }
+    .role-owner strong { color:var(--ink); font-size:13px; }
+    .role-action { padding:12px 15px; }
+    .role-action strong { display:block; font-size:16px; }
+    .role-action p { margin-top:3px; color:var(--muted); font-size:13px; }
+    .role-step.driver { --role-color:var(--primary); --role-soft:var(--primary-soft); }
+    .role-step.library { --role-color:var(--structured); --role-soft:var(--structured-soft); }
+    .role-arrow { display:grid; grid-template-columns:170px minmax(0,1fr); min-height:41px; color:var(--muted); }
+    .role-arrow span { grid-column:2; display:flex; align-items:center; gap:10px; padding-left:15px; font:12px/1.3 ui-monospace,Consolas,monospace; }
+    .role-arrow span::before { content:"↓"; color:var(--primary); font-size:22px; }
+    .import-result { margin-top:16px; padding:12px 14px; border:1px solid var(--line); border-radius:6px; background:var(--surface-2); }
+    .import-result strong { color:var(--primary); }
+    .import-result code { overflow-wrap:anywhere; }
+    .full-topology { margin-top:20px; }
+    .full-topology>summary { cursor:pointer; padding:14px 16px; border:1px solid var(--line); border-radius:7px; background:var(--surface); color:var(--primary); font-weight:700; box-shadow:var(--shadow); }
+    .full-topology[open]>summary { margin-bottom:2px; border-radius:7px 7px 0 0; }
+    .controls { display:flex; flex-wrap:wrap; align-items:end; gap:11px 18px; margin:22px 0 13px; }
+    .field { display:grid; gap:4px; min-width:190px; }
+    .field label { font-size:12px; color:var(--muted); font-weight:650; }
+    select { min-height:40px; padding:7px 34px 7px 10px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
+    .check-field { display:flex; align-items:center; gap:8px; min-height:40px; padding:7px 10px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
+    .check-field input { width:17px; height:17px; accent-color:var(--primary); }
+    .check-field label { color:var(--ink); font-size:13px; cursor:pointer; }
+    .path-summary { margin:0 0 16px; padding:12px 14px; background:var(--surface); border:1px solid var(--line); border-radius:7px; }
+    .path-summary strong { display:block; margin-bottom:3px; }
+    .path-summary code { color:var(--primary); overflow-wrap:anywhere; }
+    .path-summary.invalid { border-color:var(--error); }
+    .path-summary.invalid strong,.path-summary.invalid code { color:var(--error); }
+    .legend { display:flex; flex-wrap:wrap; gap:8px 18px; margin-bottom:12px; color:var(--muted); font-size:12px; }
+    .legend span { display:inline-flex; align-items:center; gap:6px; }
+    .swatch { width:19px; height:10px; border-radius:2px; background:var(--swatch); }
+    .line-key { width:26px; border-top:2px solid var(--line); }
+    .line-key.active { border-color:var(--primary); }
+    .board-scroll { overflow:auto; background:var(--surface); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .board { position:relative; min-width:1180px; padding:24px 26px 34px; display:grid; grid-template-columns:repeat(5,minmax(180px,1fr)); grid-auto-rows:minmax(82px,auto); column-gap:34px; row-gap:32px; }
+    #edges { position:absolute; inset:0; pointer-events:none; z-index:0; }
+    #edge-labels { position:absolute; inset:0; pointer-events:none; z-index:1; }
+    .edge-label { position:absolute; transform:translate(-50%,-50%); padding:2px 6px; border-radius:3px; background:color-mix(in srgb,var(--surface) 94%,transparent); color:var(--muted); font:11px/1.35 ui-monospace,Consolas,monospace; white-space:nowrap; }
+    .edge-label.active { color:var(--primary); font-weight:650; }
+    .node { position:relative; z-index:2; width:100%; min-height:82px; padding:11px 12px; text-align:left; border:1px solid var(--line); border-left:4px solid var(--category); border-radius:7px; background:var(--category-soft); opacity:.32; transition:opacity .16s,box-shadow .16s,border-color .16s,transform .16s; }
+    .node:hover { opacity:.74; transform:translateY(-1px); }
+    .node.active { opacity:1; }
+    .node.selected { box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 25%,transparent); border-color:var(--primary); }
+    .node.stop { border-style:dashed; }
+    .node.decision { clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%); padding-left:20px; padding-right:20px; }
+    .node[data-kind="control"] { --category:var(--external); --category-soft:var(--external-soft); }
+    .node[data-kind="graph"] { --category:var(--graph); --category-soft:var(--graph-soft); }
+    .node[data-kind="structured"] { --category:var(--structured); --category-soft:var(--structured-soft); }
+    .node[data-kind="device"] { --category:var(--device); --category-soft:var(--device-soft); }
+    .node[data-kind="llvm"] { --category:var(--llvm); --category-soft:var(--llvm-soft); }
+    .node[data-kind="external"] { --category:var(--external); --category-soft:var(--external-soft); }
+    .node-stage { display:block; color:var(--muted); font:11px/1.2 ui-monospace,Consolas,monospace; }
+    .node-title { display:block; margin-top:5px; font-weight:700; line-height:1.35; }
+    .node-output { display:block; margin-top:5px; color:var(--muted); font:11px/1.4 ui-monospace,Consolas,monospace; overflow-wrap:anywhere; }
+    .external-boundary { grid-column:1 / 6; grid-row:17; align-self:center; height:0; border-top:2px dashed var(--line); position:relative; z-index:1; }
+    .external-boundary span { position:absolute; left:50%; top:0; transform:translate(-50%,-50%); padding:2px 9px; background:var(--surface); color:var(--muted); font-size:11px; }
+    .mobile-flow { display:none; }
+    .workspace { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1.6fr); gap:18px; margin-top:19px; align-items:start; }
+    .panel { background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .panel-head { padding:16px 18px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { font-size:19px; }
+    .panel-head p { margin-top:4px; color:var(--muted); font-size:13px; }
+    .contract { display:grid; grid-template-columns:1fr 30px 1fr; gap:0; align-items:stretch; padding:15px 18px 0; }
+    .contract-box { padding:13px; background:var(--surface-2); border-radius:6px; }
+    .contract-arrow { display:grid; place-items:center; color:var(--muted); font-size:20px; }
+    .label { display:block; color:var(--muted); font-size:11px; font-weight:700; margin-bottom:5px; }
+    .facts { display:grid; gap:8px; padding:14px 18px 18px; }
+    .fact { display:grid; grid-template-columns:86px 1fr; gap:10px; font-size:13px; }
+    .fact dt { color:var(--muted); }
+    .fact dd { margin:0; overflow-wrap:anywhere; }
+    .code-head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:12px 16px; background:var(--surface-2); border-bottom:1px solid var(--line); }
+    .code-head h2 { font-size:16px; }
+    .code-head a { font-size:12px; white-space:nowrap; }
+    pre { margin:0; padding:15px 17px; overflow:auto; max-height:440px; font-size:12px; line-height:1.75; tab-size:2; }
+    .relations { padding:0 18px 17px; }
+    .relations h3 { margin-bottom:7px; font-size:14px; }
+    .relation-list { display:flex; flex-wrap:wrap; gap:6px; }
+    .relation-button { border:1px solid var(--line); border-radius:5px; background:var(--surface); padding:5px 8px; font-size:12px; }
+    .mapping { margin-top:20px; background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .mapping h2 { padding:15px 18px 5px; font-size:19px; }
+    .mapping>p { padding:0 18px 11px; color:var(--muted); font-size:13px; }
+    .table-wrap { overflow:auto; }
+    table { width:100%; border-collapse:collapse; text-align:left; font-size:13px; }
+    th,td { padding:10px 13px; border-top:1px solid var(--line); vertical-align:top; }
+    th { color:var(--muted); background:var(--surface-2); font-weight:650; }
+    td code { overflow-wrap:anywhere; }
+    .table-node { border:0; padding:0; background:none; color:var(--primary); text-align:left; text-decoration:underline; text-underline-offset:3px; }
+    footer { margin-top:18px; color:var(--muted); font-size:12px; }
+    @media (max-width:900px) {
+      .workspace { grid-template-columns:1fr; }
+      .board-scroll { display:none; }
+      .mobile-flow { display:grid; gap:8px; }
+      .mobile-step { display:grid; grid-template-columns:28px 1fr; gap:9px; align-items:start; padding:10px 12px; border-left:3px solid var(--primary); background:var(--surface); }
+      .mobile-step span:first-child { color:var(--muted); }
+      .mobile-step button { border:0; padding:0; background:none; text-align:left; color:var(--ink); }
+    }
+    @media (max-width:600px) {
+      .shell { padding:20px 12px 34px; }
+      .controls { display:grid; grid-template-columns:1fr; }
+      .field { min-width:0; }
+      .role-map { padding:15px; }
+      .role-step { grid-template-columns:1fr; }
+      .role-owner { border-right:0; border-bottom:1px solid var(--line); }
+      .role-arrow { grid-template-columns:1fr; }
+      .role-arrow span { grid-column:1; }
+      .contract { grid-template-columns:1fr; gap:7px; }
+      .contract-arrow { transform:rotate(90deg); height:20px; }
+      .fact { grid-template-columns:1fr; gap:1px; }
+    }
+    @media print {
+      body { background:#fff; color:#111; }
+      .shell { width:100%; padding:0; }
+      .controls,.breadcrumb,.workspace,.mapping,footer { display:none; }
+      .board-scroll { overflow:visible; border:0; box-shadow:none; }
+      .board { transform:scale(.78); transform-origin:top left; margin-bottom:-420px; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <nav class="breadcrumb" aria-label="文档导航">
+    <a href="index.html">← 文档目录</a>
+    <a href="mlir-source-architecture.html">MLIR 源码架构</a>
+    <a href="vortex-matmul-end-to-end-v8.html">Vortex 编译与执行</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">GAC NATIVE COMPILER / DRIVER RESPONSIBILITY</div>
+    <h1><code>gac-compile.cpp</code> 到底负责什么？</h1>
+    <p class="intro">先区分“总控代码”和“实际算法”：这个 <code>main()</code> 负责调用谁、先后顺序和停止位置；ONNX 导入与各种 IR 改写由它调用的其他 C++ 文件实现。</p>
+    <div class="boundary-note"><strong>一句话：</strong><code>OnnxImporter.cpp</code> 把 ONNX 变成内存中的 MLIR <code>ModuleOp</code>；<code>gac-compile.cpp</code> 接住它、按参数运行后续 Pass，最后把结果写出去。</div>
+  </header>
+
+  <section class="role-map" aria-labelledby="role-map-title">
+    <h2 id="role-map-title">先只看职责：<code>gac-compile.cpp</code> 是流程组织者</h2>
+    <p class="role-map-intro"><code>OnnxImporter.cpp</code> 已经完成 ONNX → MLIR。随后 <code>gac-compile.cpp</code> 拿到这个 MLIR 对象，决定再调用哪些 Pass、按什么顺序调用，以及最后输出哪一层 IR。</p>
+    <div class="role-flow">
+      <article class="role-step driver">
+        <div class="role-owner"><strong>gac-compile.cpp</strong><code>L142–265</code></div>
+        <div class="role-action"><strong>① 解析参数，创建 MLIRContext</strong><p>选择 <code>--emit</code>、目标后端和 Lowering 路线；注册后面可能用到的 Dialect。</p></div>
+      </article>
+      <div class="role-arrow"><span>调用 gac::importOnnx(input, context, ...)</span></div>
+      <article class="role-step library">
+        <div class="role-owner"><strong>OnnxImporter.cpp</strong><code>L831–965；入口 L969–981</code></div>
+        <div class="role-action"><strong>② 真正执行 ONNX → GAC MLIR</strong><p>读取 ModelProto，把 ONNX Node、Tensor 和名称连接转换成 <code>gac.* Operation</code>、常量和 SSA Value。</p></div>
+      </article>
+      <div class="role-arrow"><span>返回 OwningOpRef&lt;mlir::ModuleOp&gt;</span></div>
+      <article class="role-step driver">
+        <div class="role-owner"><strong>gac-compile.cpp</strong><code>L270–443</code></div>
+        <div class="role-action"><strong>③ 接住 ModuleOp，按 --emit 排列并运行 Pass</strong><p>默认 <code>--emit=optimized</code> 只运行 Shape、合法化和图优化；Linalg、Device、LLVM 都是继续向下时才运行的可选阶段。</p></div>
+      </article>
+      <div class="role-arrow"><span>PassManager::run(*module)；具体改写算法在其他 .cpp</span></div>
+      <article class="role-step library">
+        <div class="role-owner"><strong>Pass 实现文件</strong><code>native/lib/</code></div>
+        <div class="role-action"><strong>④ 真正修改同一个 ModuleOp</strong><p><code>GraphPasses.cpp</code> 做 Shape/融合，<code>TensorLegalization.cpp</code> 做合法化，<code>LinalgLowering.cpp</code> 生成 Linalg，<code>DeviceLowering.cpp</code> 生成 Kernel、Buffer 和 plan。</p></div>
+      </article>
+      <div class="role-arrow"><span>同一个 ModuleOp 已被原地改写；Device Lowering 另填充 plan</span></div>
+      <article class="role-step driver">
+        <div class="role-owner"><strong>gac-compile.cpp</strong><code>L446–477</code></div>
+        <div class="role-action"><strong>⑤ 最终 verify，然后写出 MLIR / manifest</strong><p>到这里 <code>main()</code> 结束。只有输出 LLVM Dialect 后，外部工具才继续生成 LLVM IR 和机器程序。</p></div>
+      </article>
+    </div>
+    <p class="import-result"><strong>关键点：</strong><code>OnnxImporter.cpp</code> 的直接输出是 <code>func.func + gac.conv2d / gac.matmul / gac.softmax ...</code>，不是 Linalg。只有显式继续走 Linalg 路线时，<code>gac-compile.cpp</code> 才调用 <code>createLowerRegularToLinalgPass()</code>。默认流程在高层图优化后就停止。</p>
+  </section>
+
+  <details id="full-topology" class="full-topology">
+    <summary>展开完整拓扑：查看每个 Pass、五种 --emit 和三条后端链</summary>
+
+  <section class="controls" aria-label="选择一条实际编译路径">
+    <div class="field">
+      <label for="emit">停止在哪个 IR 层（--emit）</label>
+      <select id="emit">
+        <option value="import">import</option>
+        <option value="optimized" selected>optimized（源码默认）</option>
+        <option value="linalg">linalg</option>
+        <option value="device">device</option>
+        <option value="llvm">llvm</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="regular">规则算子路线（--regular-lowering）</label>
+      <select id="regular">
+        <option value="linalg" selected>linalg</option>
+        <option value="legacy">legacy</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="target">设备目标（--target）</label>
+      <select id="target">
+        <option value="vortex" selected>vortex</option>
+        <option value="cuda">cuda</option>
+        <option value="native">native</option>
+      </select>
+    </div>
+    <div class="check-field">
+      <input id="save-stages" type="checkbox">
+      <label for="save-stages">写阶段快照（--save-stages）</label>
+    </div>
+    <div class="check-field">
+      <input id="write-manifest" type="checkbox">
+      <label for="write-manifest">写 Runtime plan（--manifest）</label>
+    </div>
+  </section>
+
+  <div id="path-summary" class="path-summary" aria-live="polite"></div>
+  <div class="legend" aria-label="拓扑图图例">
+    <span><i class="swatch" style="--swatch:var(--graph-soft)"></i>高层图</span>
+    <span><i class="swatch" style="--swatch:var(--structured-soft)"></i>Linalg</span>
+    <span><i class="swatch" style="--swatch:var(--device-soft)"></i>设备 IR / 计划</span>
+    <span><i class="swatch" style="--swatch:var(--llvm-soft)"></i>LLVM Dialect</span>
+    <span><i class="swatch" style="--swatch:var(--external-soft)"></i>外部工具</span>
+    <span><i class="line-key active"></i>当前选择路径</span>
+    <span><i class="line-key"></i>未选择分支</span>
+  </div>
+
+  <section class="board-scroll" aria-label="gac-compile 拓扑图">
+    <div class="board" id="board">
+      <canvas id="edges" aria-hidden="true"></canvas>
+      <div id="edge-labels" aria-hidden="true"></div>
+      <div class="external-boundary"><span>gac-compile 进程边界 · 下方由构建脚本继续</span></div>
+    </div>
+  </section>
+  <section id="mobile-flow" class="mobile-flow" aria-label="当前编译路径"></section>
+
+  <section class="workspace" id="detail">
+    <article class="panel">
+      <div class="panel-head">
+        <h2 id="detail-title">选择一个模块</h2>
+        <p id="detail-summary"></p>
+      </div>
+      <div class="contract">
+        <div class="contract-box"><span class="label">输入</span><p id="detail-input"></p></div>
+        <div class="contract-arrow" aria-hidden="true">→</div>
+        <div class="contract-box"><span class="label">输出</span><p id="detail-output"></p></div>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>执行条件</dt><dd id="detail-condition"></dd></div>
+        <div class="fact"><dt>代码位置</dt><dd><code id="detail-location"></code></dd></div>
+        <div class="fact"><dt>责任边界</dt><dd id="detail-boundary"></dd></div>
+      </dl>
+      <div class="relations"><h3>直接相连模块</h3><div id="relations" class="relation-list"></div></div>
+    </article>
+    <article class="panel">
+      <div class="code-head"><h2>对应代码</h2><a id="source-link" href="#">打开源码文件</a></div>
+      <pre><code id="detail-code"></code></pre>
+    </article>
+  </section>
+
+  <section class="mapping">
+    <h2>模块与文件一一对应</h2>
+    <p>这里列出拓扑主节点。点击模块名称会回到上面的代码说明。</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>模块</th><th>产生的表示或产物</th><th>下一个直接消费者</th><th>源码</th></tr></thead>
+      <tbody id="mapping-body"></tbody>
+    </table></div>
+  </section>
+
+  </details>
+
+  <footer>源码快照：分支 <code>lg/bevformer-triton-vortex</code> · HEAD <code>3716adbe6eda</code> · 2026-10-22。页面依据当前工作区源码绘制；尚未提交的源码改动也计入行号。</footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const ROOT = "C:/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/";
+  const nodes = [
+    {id:"cli",row:1,col:3,kind:"control",stage:"入口",title:"输入 ONNX 与命令行参数",out:"input.onnx + cl::opt",summary:"声明并解析输入文件、输出位置、停止层、目标与调度参数。",input:"argc / argv 与 input.onnx",output:"全部 cl::opt 配置值",condition:"始终执行",location:"native/tools/gac-compile.cpp:L38-L143",file:"native/tools/gac-compile.cpp",boundary:"只解析配置，不创建 MLIR，也不读取模型内容。",code:["llvm::cl::ParseCommandLineOptions(argc, argv,","                                  \"ONNX to native GAC MLIR compiler\\n\");"]},
+    {id:"validate",row:2,col:3,kind:"control",stage:"入口校验",title:"参数组合合法性",out:"合法配置 / 立即报错",summary:"在构造 MLIRContext 前检查 emit、target、Linalg、模板和资源参数。",input:"全部命令行配置",output:"一个内部一致的编译策略",condition:"始终执行；失败则 return 1",location:"native/tools/gac-compile.cpp:L145-L250",file:"native/tools/gac-compile.cpp",boundary:"这里验证策略组合，不验证 ONNX 计算图。",code:["if (regularLowering == \"linalg\" &&","    (vortexMatmulSchedule != \"scalar\" ||", "     cudaMatmulSchedule != \"scalar\" || ...)) {","  llvm::errs() << \"Existing CUDA/Vortex templates require ...\";","  return 1;","}"]},
+    {id:"dialects",row:3,col:3,kind:"control",stage:"MLIR 环境",title:"注册 Dialect / 创建 Context",out:"MLIRContext",summary:"注册导入和后续 Pass 可能产生的全部方言。",input:"合法目标与路线",output:"能够创建、解析和验证这些 Operation 的 MLIRContext",condition:"参数校验通过",location:"native/tools/gac-compile.cpp:L251-L265",file:"native/tools/gac-compile.cpp",boundary:"注册方言不等于运行 Pass，也不表示模型一定使用所有方言。",code:["DialectRegistry registry;","gac::registerGacDialects(registry);","gac::registerDeviceDialects(registry);","gac::registerLinalgDialects(registry);","registry.insert<func::FuncDialect, arith::ArithDialect,", "                math::MathDialect, scf::SCFDialect,", "                cf::ControlFlowDialect, LLVM::LLVMDialect>();","MLIRContext context(registry);"]},
+    {id:"import",row:4,col:3,kind:"graph",stage:"01",title:"ONNX → GAC ModuleOp",out:"内存中的 GAC ModuleOp",summary:"把 ONNX 名称连接重建为 SSA Value 连接，并创建 gac.* Operation。",input:"ONNX ModelProto",output:"mlir::ModuleOp + func.func + gac.*",condition:"参数和 Context 有效",location:"native/tools/gac-compile.cpp:L267-L278",file:"native/tools/gac-compile.cpp",boundary:"01-import.mlir 只有启用 --save-stages 才写；这里不执行模型，也不生成设备 Buffer。",code:["auto module = gac::importOnnx(input, context, allowUnsupported);","if (!module || failed(verify(*module)))","  return 1;","(*module)->setAttr(\"gac.constant_fold_profile\",", "                   StringAttr::get(&context, foldProfile));"]},
+    {id:"emit-import",row:4,col:5,kind:"graph",stage:"停止点",title:"--emit=import",out:"停止改变 IR",summary:"导入后不再运行形状推导和图优化，随后汇入公共验证与写出。",input:"导入后的 ModuleOp",output:"等待公共写出的 gac.* ModuleOp",condition:"emit == import",location:"native/tools/gac-compile.cpp:L307-L313",file:"native/tools/gac-compile.cpp",boundary:"这是前端映射检查边界，仍会执行末尾 verify 与 -o 写出。",code:["if (!snapshot(\"01-import.mlir\"))","  return 1;","if (emit != \"import\") {","  // 其余 Pass ...","}"]},
+    {id:"snapshots",row:8,col:1,kind:"control",stage:"可选旁路",title:"--save-stages 阶段快照",out:"01-import / shaped / 02 / 03 / 04",summary:"把当前同一个 ModuleOp 在每个已经到达的边界打印成带源位置的 MLIR。",input:"各阶段当前内存中的 ModuleOp",output:"01-import、01-shaped、02-optimized、02-linalg、03-device、04-llvm",condition:"提供 --save-stages；不改变主编译路径",location:"native/tools/gac-compile.cpp:L280-L309, L321-L322, L355-L356, L377-L378, L425-L426, L441-L442",file:"native/tools/gac-compile.cpp",boundary:"快照不会被下一阶段重新读取；它只是观察旁路。",code:["auto snapshot = [&](llvm::StringRef name) -> bool {","  if (stagesDir.empty()) return true;","  module->print(file.os(), OpPrintingFlags().enableDebugInfo());","  file.keep();","  return true;","};"]},
+    {id:"shape",row:5,col:3,kind:"graph",stage:"01a",title:"第一次 Shape / Constant 边界",out:"带 shape/type 的 ModuleOp",summary:"在合法化之前执行真实的形状与常量边界推导。",input:"导入后的 GAC ModuleOp",output:"带 Tensor shape/type 的 GAC ModuleOp",condition:"emit != import",location:"native/tools/gac-compile.cpp:L311-L322",file:"native/tools/gac-compile.cpp",boundary:"01-shaped.mlir 只有启用 --save-stages 才写；这里不生成设备代码。",code:["PassManager shapes(&context);","shapes.enableVerifier(true);","shapes.addPass(gac::createShapeInferencePass(foldBudget));","if (failed(shapes.run(*module)) ||", "    !snapshot(\"01-shaped.mlir\"))","  return 1;"]},
+    {id:"optimize",row:6,col:3,kind:"graph",stage:"02",title:"合法化 + 图优化 + 布局",out:"内存中的 optimized ModuleOp",summary:"规范 Tensor 算子，反复推导类型，并执行 Canonicalize、CSE 和融合。",input:"已初步推导 shape 的 GAC 图",output:"语义等价、冗余更少且布局明确的 GAC 图",condition:"emit != import；--no-optimize 仅跳过可选优化组",location:"native/tools/gac-compile.cpp:L324-L357",file:"native/tools/gac-compile.cpp",boundary:"仍然是高层图；没有选择线程、Tile 或机器指令。",code:["pm.addPass(gac::createLegalizeTensorOpsPass());","pm.addPass(gac::createShapeInferencePass(foldBudget));","if (!noOptimize) {","  pm.addPass(createCanonicalizerPass());","  pm.addPass(createCSEPass());","  pm.addPass(gac::createGraphFusionPass());","}","pm.addPass(gac::createLayoutPropagationPass());"]},
+    {id:"emit-optimized",row:6,col:5,kind:"graph",stage:"停止点",title:"--emit=optimized",out:"停止改变 IR",summary:"在进入 Linalg 或设备实现前停止，随后汇入公共验证与写出。",input:"02-optimized ModuleOp",output:"等待公共写出的优化后 gac.* ModuleOp",condition:"emit == optimized",location:"native/tools/gac-compile.cpp:L324-L357",file:"native/tools/gac-compile.cpp",boundary:"适合检查图优化结果，不包含设备 Kernel；仍会执行末尾 verify 与 -o 写出。",code:["if (failed(pm.run(*module)))","  return 1;","if (!snapshot(\"02-optimized.mlir\"))","  return 1;"]},
+    {id:"device-check",row:7,col:3,kind:"device",stage:"设备入口",title:"验证目标是否可实现整张图",out:"合法的高层设备图",summary:"在 Linalg 转换之前检查剩余算子、静态形状、索引范围和目标能力。",input:"02-optimized GAC 图",output:"允许进入规则路线与设备 Codegen 的图",condition:"emit == device 或 llvm",location:"native/tools/gac-compile.cpp:L363-L367",file:"native/tools/gac-compile.cpp",boundary:"源码顺序是先验证优化后的 GAC 图，再执行 Linalg/legacy 路线。",code:["if (emit == \"device\" || emit == \"llvm\")","  if (failed(gac::validateDeviceGraph(*module)))","    return 1;"]},
+    {id:"regular-route",row:8,col:3,kind:"control",stage:"路线选择",title:"规则算子走哪条 Lowering？",out:"linalg / legacy",summary:"选择结构化 Linalg 路线，或旧版手写设备模板路线。",input:"优化后的 GAC 图 + regularLowering",output:"唯一一条明确的规则算子路线",condition:"emit=linalg 时直接进入；device/llvm 在设备校验后进入",location:"native/tools/gac-compile.cpp:L158-L183, L369-L379",file:"native/tools/gac-compile.cpp",boundary:"两条路线互斥；Linalg 不会暗中使用 legacy 模板参数。",code:["if (regularLowering == \"linalg\" &&","    (emit == \"linalg\" || emit == \"device\" || emit == \"llvm\")) {","  ... createLowerRegularToLinalgPass() ...","}"]},
+    {id:"linalg",row:9,col:2,kind:"structured",stage:"结构化路线",title:"GAC 规则算子 → Linalg",out:"混合 GAC / Linalg ModuleOp",summary:"规则算子显式表达迭代空间和索引映射；专用不规则算子仍保留 GAC 表达。",input:"规则的 gac.* Operation",output:"同一个 ModuleOp 内的 linalg.* 与剩余专用 gac.*",condition:"regularLowering == linalg",location:"native/tools/gac-compile.cpp:L369-L379",file:"native/tools/gac-compile.cpp",boundary:"02-linalg.mlir 只有启用 --save-stages 才写；Linalg 本身不是机器码。",code:["PassManager structured(&context);","structured.enableVerifier(true);","structured.addPass(gac::createLowerRegularToLinalgPass());","if (failed(structured.run(*module)) ||", "    !snapshot(\"02-linalg.mlir\"))","  return 1;"]},
+    {id:"legacy",row:9,col:4,kind:"device",stage:"模板路线",title:"Legacy 设备模板",out:"保留 GAC 规则算子",summary:"规则算子跳过独立 Linalg 转换，在 Device Lowering 中选择旧版设备模板。",input:"优化后的 gac.* Operation",output:"供 LowerToDevice 直接模板化的图",condition:"regularLowering == legacy 且 emit 为 device/llvm",location:"native/tools/gac-compile.cpp:L158-L183, L382-L426",file:"native/tools/gac-compile.cpp",boundary:"这是显式基线路径，不是 Linalg 失败后的自动回退。",code:["options.regularLowering = regularLowering;","...","lowering.addPass(","    gac::createLowerToDevicePass(options, &plan));"]},
+    {id:"emit-linalg",row:9,col:1,kind:"structured",stage:"停止点",title:"--emit=linalg",out:"停止改变 IR",summary:"在结构化算子层停止，随后汇入公共验证与写出。",input:"Linalg ModuleOp",output:"等待公共写出的 GAC 专用算子 + Linalg 规则算子",condition:"emit == linalg 且 regularLowering == linalg",location:"native/tools/gac-compile.cpp:L162-L165, L369-L379",file:"native/tools/gac-compile.cpp",boundary:"legacy + emit=linalg 会在入口校验阶段被拒绝。",code:["if (emit == \"linalg\" && regularLowering != \"linalg\") {","  llvm::errs() <<", "      \"--emit=linalg requires --regular-lowering=linalg\\n\";","  return 1;","}"]},
+    {id:"options",row:10,col:3,kind:"device",stage:"配置汇合",title:"构造 DeviceOptions",out:"统一后端配置对象",summary:"把目标、Tile、线程工作量、LMEM、CUDA 和 Triton 参数集中传给 Pass。",input:"命令行 cl::opt",output:"gac::DeviceOptions",condition:"进入 device/llvm",location:"native/tools/gac-compile.cpp:L381-L417",file:"native/tools/gac-compile.cpp",boundary:"DeviceOptions 只描述策略，不执行计算。",code:["gac::DeviceOptions options{","    target == \"native\" ? gac::DeviceTarget::Native", "    : target == \"cuda\" ? gac::DeviceTarget::CUDA", "                       : gac::DeviceTarget::Vortex,","    constantsDir};","options.regularLowering = regularLowering;","options.vortexTritonDirectory = vortexTritonDir;"]},
+    {id:"device-lower",row:11,col:3,kind:"device",stage:"03",title:"LowerToDevice：Kernel + Buffer + DAG",out:"设备 ModuleOp + 内存 plan",summary:"物化目标 Kernel、ABI、静态 Buffer 规划和 dispatch 依赖。",input:"合法图 + DeviceOptions",output:"设备级 MLIR 与内存中的 Runtime plan",condition:"emit == device 或 llvm",location:"native/tools/gac-compile.cpp:L418-L426",file:"native/tools/gac-compile.cpp",boundary:"03-device.mlir 只有启用 --save-stages 才写；这里不是 VOLT，也没有生成机器码。",code:["PassManager lowering(&context);","lowering.enableVerifier(true);","lowering.addPass(","    gac::createLowerToDevicePass(options, &plan));","if (failed(lowering.run(*module)))","  return 1;"]},
+    {id:"emit-device",row:11,col:1,kind:"device",stage:"停止点",title:"--emit=device",out:"停止改变 IR",summary:"Kernel/ABI 已形成，但不执行 LLVM Dialect 转换；随后汇入公共验证与写出。",input:"03-device ModuleOp",output:"等待公共写出的设备级 ModuleOp",condition:"emit == device",location:"native/tools/gac-compile.cpp:L418-L443",file:"native/tools/gac-compile.cpp",boundary:"可能仍含 SCF、Arith、Math、MemRef 或 Vortex/CUDA Operation。",code:["if (!snapshot(\"03-device.mlir\"))","  return 1;","if (emit == \"llvm\") {","  // 仅 llvm 路线继续","}"]},
+    {id:"plan",row:11,col:5,kind:"device",stage:"内存旁产物",title:"LowerToDevice 填充 Runtime plan",out:"llvm::json::Object plan",summary:"Device Lowering 同时记录张量、Buffer、dispatch、依赖、ABI 与模板选择。",input:"LowerToDevice 的同一次图遍历",output:"内存中的 JSON 对象；尚未写成文件",condition:"device/llvm 时得到可执行计划",location:"native/tools/gac-compile.cpp:L359-L361, L418-L426",file:"native/tools/gac-compile.cpp",boundary:"这里仅填充内存对象；--manifest 文件在最终输出阶段才序列化。",code:["llvm::json::Object plan;","...","lowering.addPass(","    gac::createLowerToDevicePass(options, &plan));"]},
+    {id:"target-route",row:12,col:3,kind:"control",stage:"目标分支",title:"目标专用 LLVM 前处理",out:"vortex / cuda / native",summary:"只执行当前目标需要的最后一层语义映射。",input:"03-device MLIR + target",output:"可进入通用 LLVM conversion 的 ModuleOp",condition:"emit == llvm",location:"native/tools/gac-compile.cpp:L428-L438",file:"native/tools/gac-compile.cpp",boundary:"这一分支仍产生 MLIR Operation，不进行 LLVM 指令选择。",code:["if (target == \"vortex\")","  pm.addPass(gac::createVortexToLLVMPass());","else if (target == \"cuda\")","  pm.addPass(gac::createCudaMathToLibdevicePass());","gac::addLLVMConversionPasses(pm);"]},
+    {id:"vortex-pass",row:13,col:2,kind:"device",stage:"Vortex",title:"Vortex op → intrinsic / CSR",out:"LLVM Dialect + intrinsic",summary:"把 thread/block/LMEM 等专用语义变成 LLVM intrinsic 或 inline asm。",input:"Vortex Dialect Operation",output:"LLVM Dialect 可翻译形式",condition:"target == vortex",location:"native/lib/VortexPass.cpp:L20-L99",file:"native/lib/VortexPass.cpp",boundary:"这里没有选择最终 Vortex 机器指令；VOLT 稍后处理。",code:["b.create<LLVM::CallIntrinsicOp>(","    op.getLoc(), resultTypes,", "    \"llvm.riscv.vx.uniform\", operands);","...","b.create<LLVM::InlineAsmOp>(...);"]},
+    {id:"cuda-pass",row:13,col:3,kind:"device",stage:"CUDA",title:"CUDA Math → libdevice",out:"LLVM calls",summary:"把 CUDA 特殊数学语义映射成 libdevice 函数声明与调用。",input:"CUDA/Math Operation",output:"LLVM Dialect call",condition:"target == cuda",location:"native/lib/CudaPass.cpp:L35-L92",file:"native/lib/CudaPass.cpp",boundary:"NVPTX 指令选择不在这里发生。",code:["auto declaration =", "    b.create<LLVM::LLVMFuncOp>(op->getLoc(), symbol, type);","auto call =", "    b.create<LLVM::CallOp>(op->getLoc(), declaration, operands);"]},
+    {id:"native-pass",row:13,col:4,kind:"device",stage:"Native",title:"Native：无需目标专用预处理",out:"通用设备 MLIR",summary:"显式主机验证路线直接进入公共 LLVM conversion。",input:"Native 设备 MLIR",output:"待通用转换的 ModuleOp",condition:"target == native",location:"native/tools/gac-compile.cpp:L431-L438",file:"native/tools/gac-compile.cpp",boundary:"它是显式验证目标，不是设备不支持时的自动回退。",code:["if (target == \"vortex\")","  ...","else if (target == \"cuda\")","  ...","// native 不添加目标专用 Pass","gac::addLLVMConversionPasses(pm);"]},
+    {id:"llvm-convert",row:14,col:3,kind:"llvm",stage:"04",title:"标准方言 → LLVM Dialect",out:"内存中的 LLVM Dialect ModuleOp",summary:"把 Affine、SCF、Math、MemRef、Arith、CF 收敛到 LLVM Dialect。",input:"目标预处理后的设备 MLIR",output:"可由 mlir-translate 接受的 LLVM Dialect ModuleOp",condition:"emit == llvm",location:"native/lib/DeviceLowering.cpp:L1755-L1769",file:"native/lib/DeviceLowering.cpp",boundary:"04-llvm.mlir 只有启用 --save-stages 才写；此处还不是真正 LLVM IR。",code:["pm.addPass(createLowerAffinePass());","pm.addPass(createConvertSCFToCFPass());","pm.addPass(createConvertMathToLLVMPass());","pm.addPass(createFinalizeMemRefToLLVMConversionPass(...));","pm.addPass(createArithToLLVMConversionPass(...));","pm.addPass(createConvertControlFlowToLLVMPass(...));"]},
+    {id:"emit-llvm",row:15,col:3,kind:"llvm",stage:"停止点",title:"--emit=llvm",out:"停止改变 IR",summary:"LLVM Dialect 转换结束，随后汇入公共验证与写出。",input:"LLVM Dialect ModuleOp",output:"等待公共写出的 LLVM Dialect ModuleOp",condition:"emit == llvm",location:"native/tools/gac-compile.cpp:L427-L443",file:"native/tools/gac-compile.cpp",boundary:"这里仍是 MLIR 数据结构；mlir-translate 位于进程外。",code:["gac::addLLVMConversionPasses(pm);","if (failed(pm.run(*module)))","  return 1;","if (!snapshot(\"04-llvm.mlir\"))","  return 1;"]},
+    {id:"final-write",row:16,col:3,kind:"control",stage:"共同出口",title:"最终 verify + -o 写出",out:"-o 指定文件；默认 stdout",summary:"所有五种 emit 停止点都在这里重新验证同一个 ModuleOp，并打印当前层的 MLIR 文本。",input:"import / optimized / linalg / device / llvm 任一停止层",output:"用户通过 -o 指定的 MLIR 文件或标准输出",condition:"所选编译路径成功",location:"native/tools/gac-compile.cpp:L446-L475",file:"native/tools/gac-compile.cpp",boundary:"只有 emit=llvm 的输出才可继续交给 mlir-translate；文件名不固定为 kernel.mlir。",code:["if (failed(verify(*module)))","  return 1;","llvm::ToolOutputFile file(output, error,", "                          llvm::sys::fs::OF_Text);","module->print(file.os());","...","file.keep();"]},
+    {id:"manifest",row:16,col:5,kind:"device",stage:"可选最终产物",title:"--manifest 序列化 plan",out:"用户指定的 JSON 文件",summary:"在最终输出阶段把内存 plan 写成 Runtime/验证工具读取的 JSON。",input:"llvm::json::Object plan；device/llvm 时已填充，较早 emit 时为空",output:"--manifest 指定路径的 JSON",condition:"提供 --manifest；任何 emit 都会执行",location:"native/tools/gac-compile.cpp:L462-L473",file:"native/tools/gac-compile.cpp",boundary:"manifest 不是模型 IR、不包含权重，也不是 LowerToDevice 当场写出的文件。",code:["if (!manifestPath.empty()) {","  llvm::ToolOutputFile manifest(manifestPath, error,", "                                llvm::sys::fs::OF_Text);","  manifest.os() << llvm::formatv(","      \"{0:2}\\n\", llvm::json::Value(std::move(plan)));","  manifest.keep();","}"]},
+    {id:"translate",row:18,col:2,kind:"external",stage:"进程外 · 公共",title:"mlir-translate",out:"--mlir-to-llvmir",summary:"标准 MLIR Target LLVMIR 把 LLVM Dialect ModuleOp 转成 llvm::Module。",input:"-o 写出的 LLVM Dialect MLIR（构建脚本通常命名 kernel.mlir）",output:"kernel.ll",condition:"emit=llvm 且调用方继续构建",location:"native/tools/Vortex.mk:L29-L30；native/tools/compile-cuda.sh:L61-L62",file:"native/tools/Vortex.mk",boundary:"翻译算法来自 MLIR；不做 Vortex、CUDA 或主机指令选择。",code:["$(LLVM_PATH)/bin/mlir-translate \\","    --mlir-to-llvmir kernel.mlir -o kernel.ll"]},
+    {id:"llvm-ir",row:18,col:3,kind:"external",stage:"进程外 · 公共产物",title:"真正的 LLVM IR",out:"kernel.ll",summary:"LLVM 的函数、基本块、SSA 指令、目标 triple 与 data layout。",input:"LLVM Dialect MLIR",output:"llvm::Module 的文本形式 .ll",condition:"mlir-translate 成功",location:"由 MLIR Target/LLVMIR 生成",file:"native/tools/Vortex.mk",boundary:"已经离开 MLIR 数据结构，但仍未分配物理寄存器。",code:["define void @kernel(ptr %args) {","  %value = load float, ptr %args","  %sum = fadd float %value, %value","  ret void","}"]},
+    {id:"volt",row:19,col:1,kind:"external",stage:"Vortex 后端",title:"VOLT / LLVM RISCV 后端",out:"ISel + RegAlloc + kernel.o",summary:"选择 Vortex/RISC-V 指令、调度、分配物理寄存器并编码目标文件。",input:"kernel.ll",output:"Vortex/RISC-V kernel.o",condition:"target == vortex",location:"llvm/lib/Target/RISCV/RISCVTargetMachine.cpp",file:"../llvm-project/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp",boundary:"这是 LLVM 机器码后端，不是 MLIR Pass。",code:["LLVM IR","  -> instruction selection","  -> machine scheduling","  -> register allocation","  -> MC encoding","  -> kernel.o"]},
+    {id:"elf",row:20,col:1,kind:"external",stage:"Vortex 设备程序",title:"LLD 链接并打包 vxbin",out:"kernel.elf → kernel.vxbin",summary:"链接 Kernel、启动代码和 Vortex Runtime，再提取可加载设备映像。",input:"kernel.o + vx_start.o + libvortex2.a + linker script",output:"kernel.elf 与 kernel.vxbin",condition:"VOLT 目标文件生成成功",location:"native/tools/Vortex.mk + Vortex SDK common.mk",file:"native/tools/Vortex.mk",boundary:"打包不改变模型数学公式。",code:["kernel.o + vx_start.o + libvortex2.a","  -> ld.lld + link32.ld -> kernel.elf","  -> vxbin.py / objcopy -> kernel.vxbin"]},
+    {id:"vortex-runtime",row:21,col:1,kind:"external",stage:"Vortex 执行",title:"gac-vortex-run",out:"Vortex 输出张量",summary:"读取 manifest、分配设备内存、加载 vxbin、上传输入、按 DAG 启动并读回结果。",input:"kernel.vxbin + manifest + 常量/输入",output:"模型或 Kernel 输出",condition:"Vortex 运行时调用",location:"native/runtime/vortex-run.cpp:L133-L279",file:"native/runtime/vortex-run.cpp",boundary:"真正的输入数值计算从设备启动后发生。",code:["vx_module_load_file(...);","vx_module_get_kernel(...);","vx_enqueue_write(...);","vx_enqueue_launch(...);","vx_enqueue_read(...);"]},
+    {id:"cuda-backend",row:19,col:3,kind:"external",stage:"CUDA 后端",title:"llvm-link + opt + llc(NVPTX)",out:"链接 libdevice / NVPTX Codegen",summary:"链接所需 libdevice，优化 LLVM bitcode，再由 NVPTX 后端生成 PTX。",input:"kernel.ll + libdevice.10.bc",output:"kernel-optimized.bc → kernel.ptx",condition:"target == cuda",location:"native/tools/compile-cuda.sh:L63-L71",file:"native/tools/compile-cuda.sh",boundary:"这条路线不经过 VOLT，也不生成 Vortex vxbin。",code:["llvm-link --only-needed --internalize kernel.ll libdevice.10.bc", "opt -passes='default<O2>' kernel-linked.bc", "llc -march=nvptx64 ... kernel-optimized.bc -o kernel.ptx"]},
+    {id:"ptx",row:20,col:3,kind:"external",stage:"CUDA 设备程序",title:"PTX（可选离线 cubin）",out:"kernel.ptx",summary:"PTX 描述 GPU Kernel；可选 ptxas 生成特定架构 cubin，通常也可由 Driver JIT。",input:"NVPTX LLVM 后端输出",output:"kernel.ptx；可选 kernel.cubin",condition:"NVPTX Codegen 成功",location:"native/tools/compile-cuda.sh:L69-L77",file:"native/tools/compile-cuda.sh",boundary:"PTX 是 NVIDIA 设备程序表示，不是 Vortex ELF。",code:["llc -march=nvptx64 ... -o kernel.ptx","ptxas --gpu-name sm_XX kernel.ptx -o kernel.cubin  # optional"]},
+    {id:"cuda-runtime",row:21,col:3,kind:"external",stage:"CUDA 执行",title:"CUDA Driver / gac-cuda-run",out:"CUDA 输出张量",summary:"读取 plan，加载 PTX，让 Driver JIT/加载模块并按 dispatch 顺序启动 Kernel。",input:"plan.json + kernel.ptx + 常量/输入",output:"模型或 Kernel 输出",condition:"CUDA 运行时调用",location:"native/runtime/cuda-run.cpp:L535-L565, L608-L635",file:"native/runtime/cuda-run.cpp",boundary:"Runtime 管理显存、参数、同步和启动；Kernel 数学由 GPU 执行。",code:["Plan plan = parsePlan(argv[1], Target::CUDA);","device.initialize(plan, argv[2], options.device);","device.launch(plan, iteration, isWarmup, ...);"]},
+    {id:"native-backend",row:19,col:5,kind:"external",stage:"Native 后端",title:"clang -shared 编译主机代码",out:"主机 ISel + 链接",summary:"用主机 LLVM 后端把 kernel.ll 编译并链接为共享库。",input:"kernel.ll",output:"kernels.so（平台对应共享库）",condition:"target == native",location:"native/tests/README.full_model.md:L9-L18",file:"native/tests/README.full_model.md",boundary:"这是显式数值验证路线，不是设备不支持时的自动回退。",code:["clang -shared -fPIC -O2 kernel.ll -lm -o kernels.so"]},
+    {id:"host-so",row:20,col:5,kind:"external",stage:"Native 主机程序",title:"主机共享库",out:"kernels.so",summary:"包含每个 dispatch 可按符号名查找的主机机器码函数。",input:"clang 编译及链接结果",output:"动态加载的 Kernel 符号",condition:"主机共享库构建成功",location:"native/tests/README.full_model.md:L11-L18",file:"native/tests/README.full_model.md",boundary:"它用于验证编译语义，性能不能代表 Vortex 或 CUDA。",code:["kernel.ll -> clang/host LLVM -> kernels.so"]},
+    {id:"native-runtime",row:21,col:5,kind:"external",stage:"Native 执行",title:"ctypes host runner",out:"主机验证结果",summary:"读取 manifest，以 ctypes 逐个查找共享库 Kernel，传入 Tensor 地址并按 DAG 执行。",input:"plan.json + kernels.so + 常量/输入",output:"主机输出及数值比较结果",condition:"显式运行 native 验证脚本",location:"native/tests/run_full_model.py:L187-L207",file:"native/tests/run_full_model.py",boundary:"NumPy 只提供存储和比较，不替代生成的 Kernel 数学。",code:["module = ctypes.CDLL(str(args.library.resolve()))","kernel = getattr(module, dispatch[\"kernel\"])","kernel(*(ctypes.c_void_p(array.ctypes.data) for array in arguments))"]}
+  ];
+
+  const edges = [
+    ["cli","validate",""],["validate","dialects",""],["dialects","import",""],
+    ["import","emit-import","emit=import"],["import","shape","emit≠import"],["import","snapshots","01-import"],
+    ["shape","optimize",""],["shape","snapshots","01-shaped"],
+    ["optimize","emit-optimized","emit=optimized"],["optimize","regular-route","emit=linalg"],
+    ["optimize","device-check","device / llvm"],["device-check","regular-route","验证通过"],
+    ["optimize","snapshots","02-optimized"],
+    ["regular-route","linalg","linalg"],["regular-route","legacy","legacy"],
+    ["linalg","emit-linalg","emit=linalg"],["linalg","options","device / llvm"],["legacy","options","device / llvm"],
+    ["linalg","snapshots","02-linalg"],["options","device-lower",""],
+    ["device-lower","emit-device","emit=device"],["device-lower","plan","填充内存 plan"],
+    ["device-lower","target-route","emit=llvm"],["device-lower","snapshots","03-device"],
+    ["target-route","vortex-pass","vortex"],["target-route","cuda-pass","cuda"],["target-route","native-pass","native"],
+    ["vortex-pass","llvm-convert",""],["cuda-pass","llvm-convert",""],["native-pass","llvm-convert",""],
+    ["llvm-convert","emit-llvm","emit=llvm"],["llvm-convert","snapshots","04-llvm"],
+    ["emit-import","final-write",""],["emit-optimized","final-write",""],
+    ["emit-linalg","final-write",""],["emit-device","final-write",""],["emit-llvm","final-write",""],
+    ["final-write","manifest","若 --manifest"],["plan","manifest","序列化"],
+    ["final-write","translate","emit=llvm · 进程外"],["translate","llvm-ir",""],
+    ["llvm-ir","volt","target=vortex"],["volt","elf",""],["elf","vortex-runtime",""],
+    ["llvm-ir","cuda-backend","target=cuda"],["cuda-backend","ptx",""],["ptx","cuda-runtime",""],
+    ["llvm-ir","native-backend","target=native"],["native-backend","host-so",""],["host-so","native-runtime",""],
+    ["manifest","vortex-runtime","Runtime 读取"],["manifest","cuda-runtime","Runtime 读取"],
+    ["manifest","native-runtime","Runtime 读取"]
+  ].map((e,i)=>({id:"e"+i,from:e[0],to:e[1],label:e[2]}));
+
+  const byId = new Map(nodes.map(n => [n.id,n]));
+  const board = document.getElementById("board");
+  const canvas = document.getElementById("edges");
+  const labels = document.getElementById("edge-labels");
+  const emitSelect = document.getElementById("emit");
+  const regularSelect = document.getElementById("regular");
+  const targetSelect = document.getElementById("target");
+  const saveStagesToggle = document.getElementById("save-stages");
+  const manifestToggle = document.getElementById("write-manifest");
+  const fullTopology = document.getElementById("full-topology");
+  let activeNodes = new Set();
+  let activeEdges = new Set();
+  let selected = "import";
+  let orderedPath = [];
+
+  function fileUrl(file) {
+    if (file.startsWith("../llvm-project/"))
+      return "file:///C:/Users/Thomas/Desktop/universal_ai_compile/" + file.slice(3).replaceAll("\\","/");
+    return "file:///" + (ROOT + file).replaceAll("\\","/");
+  }
+
+  function addNodes() {
+    for (const n of nodes) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "node" + (n.id.startsWith("emit-") ? " stop" : "") +
+        (["regular-route","target-route"].includes(n.id) ? " decision" : "");
+      button.id = "node-" + n.id;
+      button.dataset.node = n.id;
+      button.dataset.kind = n.kind;
+      button.style.gridRow = n.row;
+      button.style.gridColumn = n.col;
+      button.innerHTML = `<span class="node-stage">${n.stage}</span><span class="node-title">${n.title}</span><span class="node-output">${n.out}</span>`;
+      button.addEventListener("click", () => selectNode(n.id, true));
+      board.append(button);
+    }
+  }
+
+  function calculatePath() {
+    const emit = emitSelect.value, regular = regularSelect.value, target = targetSelect.value;
+    const invalid = emit === "linalg" && regular !== "linalg";
+    activeNodes = new Set();
+    // 先清除上一次路径，非法组合也不会残留旧的高亮连线。
+    activeEdges = new Set();
+    orderedPath = [];
+    const activateEdge = (from, to) => {
+      const edge = edges.find(e => e.from === from && e.to === to);
+      if (edge) activeEdges.add(edge.id);
+    };
+    const step = id => {
+      const previous = orderedPath.at(-1);
+      activeNodes.add(id);
+      orderedPath.push(id);
+      if (previous) activateEdge(previous, id);
+    };
+    step("cli");
+    step("validate");
+    if (invalid) return {invalid, text:"参数校验失败：--emit=linalg 必须同时使用 --regular-lowering=linalg"};
+
+    step("dialects");
+    step("import");
+    if (emit === "import") step("emit-import");
+    else {
+      step("shape");
+      step("optimize");
+      if (emit === "optimized") step("emit-optimized");
+      else {
+        if (emit === "device" || emit === "llvm") step("device-check");
+        step("regular-route");
+        if (regular === "linalg") step("linalg"); else step("legacy");
+        if (emit === "linalg") step("emit-linalg");
+        else {
+          step("options");
+          step("device-lower");
+          activeNodes.add("plan");
+          activateEdge("device-lower", "plan");
+          if (emit === "device") step("emit-device");
+          else {
+            step("target-route");
+            step(target + "-pass");
+            step("llvm-convert");
+            step("emit-llvm");
+          }
+        }
+      }
+    }
+
+    step("final-write");
+
+    if (saveStagesToggle.checked) {
+      activeNodes.add("snapshots");
+      for (const source of ["import","shape","optimize","linalg","device-lower","llvm-convert"])
+        if (activeNodes.has(source)) activateEdge(source, "snapshots");
+    }
+    if (manifestToggle.checked) {
+      activeNodes.add("manifest");
+      activateEdge("final-write", "manifest");
+      if (activeNodes.has("plan")) activateEdge("plan", "manifest");
+    }
+
+    // 只有 LLVM Dialect 主输出可继续进入进程外工具链。三种目标从同一
+    // kernel.ll 分叉，不把 CUDA/native 错画成 VOLT/vxbin 路线。
+    if (emit === "llvm") {
+      step("translate");
+      step("llvm-ir");
+      if (target === "vortex") {
+        step("volt"); step("elf");
+        if (manifestToggle.checked) { step("vortex-runtime"); activateEdge("manifest", "vortex-runtime"); }
+      } else if (target === "cuda") {
+        step("cuda-backend"); step("ptx");
+        if (manifestToggle.checked) { step("cuda-runtime"); activateEdge("manifest", "cuda-runtime"); }
+      } else {
+        step("native-backend"); step("host-so");
+        if (manifestToggle.checked) { step("native-runtime"); activateEdge("manifest", "native-runtime"); }
+      }
+    }
+
+    const titles = orderedPath.map(id => byId.get(id).title);
+    return {invalid:false,text:titles.join(" → ")};
+  }
+
+  function updatePath() {
+    const result = calculatePath();
+    const summary = document.getElementById("path-summary");
+    summary.classList.toggle("invalid", result.invalid);
+    summary.innerHTML = `<strong>${result.invalid ? "当前参数组合不会进入编译" : "当前选择的真实路径"}</strong><code>${result.text}</code>`;
+    for (const n of nodes) document.getElementById("node-"+n.id).classList.toggle("active", activeNodes.has(n.id));
+    if (!activeNodes.has(selected)) selected = result.invalid ? "validate" : orderedPath[Math.min(orderedPath.length-1,3)];
+    selectNode(selected, false);
+    renderMobile();
+    requestAnimationFrame(drawEdges);
+  }
+
+  function related(id) {
+    const result = [];
+    for (const e of edges) {
+      if (e.from === id) result.push({id:e.to,prefix:"下游"});
+      if (e.to === id) result.push({id:e.from,prefix:"上游"});
+    }
+    return result;
+  }
+
+  function selectNode(id, scroll) {
+    selected = id;
+    const n = byId.get(id);
+    for (const item of nodes) document.getElementById("node-"+item.id).classList.toggle("selected", item.id === id);
+    document.getElementById("detail-title").textContent = n.title;
+    document.getElementById("detail-summary").textContent = n.summary;
+    document.getElementById("detail-input").textContent = n.input;
+    document.getElementById("detail-output").textContent = n.output;
+    document.getElementById("detail-condition").textContent = n.condition;
+    document.getElementById("detail-location").textContent = n.location;
+    document.getElementById("detail-boundary").textContent = n.boundary;
+    document.getElementById("detail-code").textContent = n.code.join("\n");
+    const link = document.getElementById("source-link");
+    link.href = fileUrl(n.file); link.textContent = "打开 " + n.file.split("/").pop();
+    const host = document.getElementById("relations"); host.replaceChildren();
+    for (const r of related(id)) {
+      const b = document.createElement("button"); b.type="button"; b.className="relation-button";
+      b.textContent = r.prefix + "：" + byId.get(r.id).title;
+      b.addEventListener("click",()=>selectNode(r.id,true)); host.append(b);
+    }
+    if (scroll) document.getElementById("detail").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  function renderMobile() {
+    const host = document.getElementById("mobile-flow"); host.replaceChildren();
+    const visible = orderedPath.filter(id => !["snapshots","manifest"].includes(id));
+    visible.forEach((id,index) => {
+      const row=document.createElement("div"); row.className="mobile-step";
+      const no=document.createElement("span"); no.textContent=String(index+1).padStart(2,"0");
+      const b=document.createElement("button"); b.type="button"; b.textContent=byId.get(id).title;
+      b.addEventListener("click",()=>selectNode(id,true)); row.append(no,b); host.append(row);
+    });
+  }
+
+  function anchor(el, other) {
+    const a=el.getBoundingClientRect(), b=other.getBoundingClientRect(), base=board.getBoundingClientRect();
+    const ac={x:a.left+a.width/2-base.left,y:a.top+a.height/2-base.top};
+    const bc={x:b.left+b.width/2-base.left,y:b.top+b.height/2-base.top};
+    const dx=bc.x-ac.x, dy=bc.y-ac.y;
+    if (Math.abs(dx) > Math.abs(dy))
+      return dx>0 ? {x:a.right-base.left,y:ac.y} : {x:a.left-base.left,y:ac.y};
+    return dy>0 ? {x:ac.x,y:a.bottom-base.top} : {x:ac.x,y:a.top-base.top};
+  }
+
+  function drawEdges() {
+    const dpr=window.devicePixelRatio||1, width=board.scrollWidth, height=board.scrollHeight;
+    canvas.style.width=width+"px"; canvas.style.height=height+"px";
+    canvas.width=Math.round(width*dpr); canvas.height=Math.round(height*dpr);
+    const ctx=canvas.getContext("2d"); ctx.scale(dpr,dpr); ctx.clearRect(0,0,width,height);
+    labels.replaceChildren();
+    const styles=getComputedStyle(document.documentElement);
+    const inactive=styles.getPropertyValue("--line").trim(), active=styles.getPropertyValue("--primary").trim();
+    for (const e of edges) {
+      const from=document.getElementById("node-"+e.from), to=document.getElementById("node-"+e.to);
+      const p1=anchor(from,to), p2=anchor(to,from), on=activeEdges.has(e.id);
+      ctx.strokeStyle=on?active:inactive; ctx.fillStyle=on?active:inactive; ctx.lineWidth=on?2.4:1.25;
+      if (["snapshots","plan","manifest"].includes(e.to) || e.from === "manifest")
+        ctx.setLineDash([5,5]);
+      else
+        ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(p1.x,p1.y);
+      const horizontal=Math.abs(p2.x-p1.x)>Math.abs(p2.y-p1.y);
+      if (horizontal) {
+        const mx=(p1.x+p2.x)/2; ctx.bezierCurveTo(mx,p1.y,mx,p2.y,p2.x,p2.y);
+      } else {
+        const my=(p1.y+p2.y)/2; ctx.bezierCurveTo(p1.x,my,p2.x,my,p2.x,p2.y);
+      }
+      ctx.stroke(); ctx.setLineDash([]);
+      const angle=Math.atan2(p2.y-p1.y,p2.x-p1.x), size=7;
+      ctx.beginPath(); ctx.moveTo(p2.x,p2.y);
+      ctx.lineTo(p2.x-size*Math.cos(angle-.55),p2.y-size*Math.sin(angle-.55));
+      ctx.lineTo(p2.x-size*Math.cos(angle+.55),p2.y-size*Math.sin(angle+.55));
+      ctx.closePath(); ctx.fill();
+      if (e.label) {
+        const l=document.createElement("span"); l.className="edge-label"+(on?" active":""); l.textContent=e.label;
+        l.style.left=((p1.x+p2.x)/2)+"px"; l.style.top=((p1.y+p2.y)/2)+"px"; labels.append(l);
+      }
+    }
+  }
+
+  function buildMapping() {
+    const rows=["import","shape","optimize","device-check","regular-route","linalg","legacy",
+      "options","device-lower","plan","target-route","llvm-convert","final-write","manifest",
+      "translate","llvm-ir","volt","elf","vortex-runtime","cuda-backend","ptx","cuda-runtime",
+      "native-backend","host-so","native-runtime"];
+    const tbody=document.getElementById("mapping-body");
+    for (const id of rows) {
+      const n=byId.get(id), downstream=edges.filter(e=>e.from===id).map(e=>byId.get(e.to).title).join("；")||"—";
+      const tr=document.createElement("tr"), name=document.createElement("button");
+      name.type="button"; name.className="table-node"; name.textContent=n.title; name.addEventListener("click",()=>selectNode(id,true));
+      const td1=document.createElement("td"); td1.append(name);
+      const td2=document.createElement("td"); td2.innerHTML=`<code>${n.out}</code>`;
+      const td3=document.createElement("td"); td3.textContent=downstream;
+      const td4=document.createElement("td"); td4.innerHTML=`<code>${n.location}</code>`;
+      tr.append(td1,td2,td3,td4); tbody.append(tr);
+    }
+  }
+
+  addNodes(); buildMapping();
+  emitSelect.addEventListener("change",updatePath);
+  regularSelect.addEventListener("change",updatePath);
+  targetSelect.addEventListener("change",updatePath);
+  saveStagesToggle.addEventListener("change",updatePath);
+  manifestToggle.addEventListener("change",updatePath);
+  fullTopology.addEventListener("toggle",()=>{
+    if (fullTopology.open) requestAnimationFrame(drawEdges);
+  });
+  new ResizeObserver(()=>requestAnimationFrame(drawEdges)).observe(board);
+  window.addEventListener("load",()=>{ updatePath(); selectNode("import",false); });
+})();
+</script>
+</body>
+</html>

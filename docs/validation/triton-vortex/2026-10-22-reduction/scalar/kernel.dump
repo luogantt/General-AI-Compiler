@@ -1,0 +1,48 @@
+
+/home/thomas/gac-triton-reduction-integration-20261022-final2/triton_reduce_sum_scalar/artifact/kernel.elf:	file format elf32-littleriscv
+
+Disassembly of section .init:
+
+80000000 <_start>:
+80000000: ffff0137     	lui	sp, 0xffff0
+80000004: f14022f3     	csrr	t0, mhartid
+80000008: 00d29313     	slli	t1, t0, 0xd
+8000000c: 40610133     	sub	sp, sp, t1
+80000010: ce102df3     	csrr	s11, 0xce1
+80000014: 34002573     	csrr	a0, mscratch
+80000018: 000d80e7     	jalr	s11
+8000001c: 0000700b     	<unknown>
+80000020: 0000000b     	vx_tmc	zero
+
+Disassembly of section .text:
+
+80000024 <gac_op_0>:
+80000024: 00052583     	lw	a1, 0x0(a0)
+80000028: 00852503     	lw	a0, 0x8(a0)
+8000002c: cd302673     	csrr	a2, 0xcd3
+80000030: cd6026f3     	csrr	a3, 0xcd6
+80000034: cd702773     	csrr	a4, 0xcd7
+80000038: cd8027f3     	csrr	a5, 0xcd8
+8000003c: 00c6e633     	or	a2, a3, a2
+80000040: 00f76733     	or	a4, a4, a5
+80000044: 00e66633     	or	a2, a2, a4
+80000048: 00163693     	seqz	a3, a2
+8000004c: 0016a60b     	vx_split_n	a2, a3
+80000050: 04068063     	beqz	a3, 0x80000090 <gac_op_0+0x6c>
+80000054: 00000693     	li	a3, 0x0
+80000058: f00007d3     	fmv.w.x	fa5, zero
+8000005c: 02400713     	li	a4, 0x24
+80000060: 04000793     	li	a5, 0x40
+80000064: 20f78753     	fmv.s	fa4, fa5
+80000068: 0140006f     	j	0x8000007c <gac_op_0+0x58>
+8000006c: 00d77753     	fadd.s	fa4, fa4, fa3
+80000070: 00168693     	addi	a3, a3, 0x1
+80000074: 00458593     	addi	a1, a1, 0x4
+80000078: 00f68a63     	beq	a3, a5, 0x8000008c <gac_op_0+0x68>
+8000007c: 20f786d3     	fmv.s	fa3, fa5
+80000080: fed766e3     	bltu	a4, a3, 0x8000006c <gac_op_0+0x48>
+80000084: 0005a687     	flw	fa3, 0x0(a1)
+80000088: fe5ff06f     	j	0x8000006c <gac_op_0+0x48>
+8000008c: 00e52027     	fsw	fa4, 0x0(a0)
+80000090: 0006300b     	vx_join	a2
+80000094: 00008067     	ret

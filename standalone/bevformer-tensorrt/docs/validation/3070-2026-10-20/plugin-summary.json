@@ -1,0 +1,672 @@
+{
+  "status": "passed",
+  "started_utc": "2026-10-20T03:29:14.799433+00:00",
+  "fixtures": "delivery/bevformer-tensorrt/tests/fixtures",
+  "output": "results/plugin-verification",
+  "precision": "fp32",
+  "plugins_fp32": true,
+  "environment_overrides": {
+    "NVIDIA_TF32_OVERRIDE": "0"
+  },
+  "rtol": 2e-05,
+  "atol": 2e-05,
+  "warmup": 1,
+  "repeat": 3,
+  "scope": "Six custom-op fixtures only; not whole-model validation or performance",
+  "cases": [
+    {
+      "case": "dcn_mask_bias",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/dcn_mask_bias/model.onnx",
+          "destination": "results/plugin-verification/dcn_mask_bias/model.onnx",
+          "report": "results/plugin-verification/dcn_mask_bias/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/dcn_mask_bias/model.onnx",
+            "--engine",
+            "results/plugin-verification/dcn_mask_bias/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/dcn_mask_bias/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/dcn_mask_bias/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/dcn_mask_bias/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_mask_bias/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_mask_bias/expected.npz",
+            "--output",
+            "results/plugin-verification/dcn_mask_bias/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/dcn_mask_bias/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "mmcv::MMCVModulatedDeformConv2d": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/dcn_mask_bias/expected.npz",
+        "reference_sha256": "87bf7d7a226b4c36c17bd6389b649b718f5035eb37091c231c4cb68b26fd6227",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              1,
+              3,
+              5,
+              6
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 90,
+            "max_absolute_error": 2.384185791015625e-07,
+            "max_relative_error_floor_1e_12": 1.2235720669264555e-06
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.10822399705648422,
+          0.04064000025391579,
+          0.03564799949526787
+        ],
+        "mean": 0.061503998935222626,
+        "median": 0.04064000025391579,
+        "min": 0.03564799949526787,
+        "max": 0.10822399705648422,
+        "p95": 0.10146559737622737
+      }
+    },
+    {
+      "case": "dcn_zero_offset_conv_equivalence",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/dcn_zero_offset_conv_equivalence/model.onnx",
+          "destination": "results/plugin-verification/dcn_zero_offset_conv_equivalence/model.onnx",
+          "report": "results/plugin-verification/dcn_zero_offset_conv_equivalence/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/dcn_zero_offset_conv_equivalence/model.onnx",
+            "--engine",
+            "results/plugin-verification/dcn_zero_offset_conv_equivalence/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/dcn_zero_offset_conv_equivalence/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/dcn_zero_offset_conv_equivalence/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/dcn_zero_offset_conv_equivalence/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_zero_offset_conv_equivalence/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_zero_offset_conv_equivalence/expected.npz",
+            "--output",
+            "results/plugin-verification/dcn_zero_offset_conv_equivalence/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/dcn_zero_offset_conv_equivalence/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "mmcv::MMCVModulatedDeformConv2d": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/dcn_zero_offset_conv_equivalence/expected.npz",
+        "reference_sha256": "e6c1d8138c2b4cfdf4ef3a97e0d29457a9c4407a05eeeb92d7c180bc6b1f7864",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              1,
+              4,
+              5,
+              6
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 120,
+            "max_absolute_error": 2.980232238769531e-07,
+            "max_relative_error_floor_1e_12": 3.2371309617924246e-06
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.08633600175380707,
+          0.02969600073993206,
+          0.025599999353289604
+        ],
+        "mean": 0.04721066728234291,
+        "median": 0.02969600073993206,
+        "min": 0.025599999353289604,
+        "max": 0.08633600175380707,
+        "p95": 0.08067200165241956
+      }
+    },
+    {
+      "case": "dcn_fractional_zero_padding",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/dcn_fractional_zero_padding/model.onnx",
+          "destination": "results/plugin-verification/dcn_fractional_zero_padding/model.onnx",
+          "report": "results/plugin-verification/dcn_fractional_zero_padding/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/dcn_fractional_zero_padding/model.onnx",
+            "--engine",
+            "results/plugin-verification/dcn_fractional_zero_padding/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/dcn_fractional_zero_padding/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/dcn_fractional_zero_padding/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/dcn_fractional_zero_padding/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_fractional_zero_padding/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/dcn_fractional_zero_padding/expected.npz",
+            "--output",
+            "results/plugin-verification/dcn_fractional_zero_padding/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/dcn_fractional_zero_padding/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "mmcv::MMCVModulatedDeformConv2d": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/dcn_fractional_zero_padding/expected.npz",
+        "reference_sha256": "63511da924b021b4c74dd4133b5c8e4c56444fab1ba76924c5153ca5bc970919",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              1,
+              1,
+              2,
+              3
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 6,
+            "max_absolute_error": 0.0,
+            "max_relative_error_floor_1e_12": 0.0
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.10444799810647964,
+          0.03407999873161316,
+          0.028672000393271446
+        ],
+        "mean": 0.05573333241045475,
+        "median": 0.03407999873161316,
+        "min": 0.028672000393271446,
+        "max": 0.10444799810647964,
+        "p95": 0.09741119816899299
+      }
+    },
+    {
+      "case": "msda_exact_pixel_centers",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/msda_exact_pixel_centers/model.onnx",
+          "destination": "results/plugin-verification/msda_exact_pixel_centers/model.onnx",
+          "report": "results/plugin-verification/msda_exact_pixel_centers/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/msda_exact_pixel_centers/model.onnx",
+            "--engine",
+            "results/plugin-verification/msda_exact_pixel_centers/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/msda_exact_pixel_centers/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/msda_exact_pixel_centers/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/msda_exact_pixel_centers/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_exact_pixel_centers/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_exact_pixel_centers/expected.npz",
+            "--output",
+            "results/plugin-verification/msda_exact_pixel_centers/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/msda_exact_pixel_centers/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "gac::MSDeformAttn": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/msda_exact_pixel_centers/expected.npz",
+        "reference_sha256": "b9a26711b1011fbfbb2f99486c82658fbc2efc61b4fdd5adbea0095b05799c13",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              1,
+              4,
+              4
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 16,
+            "max_absolute_error": 0.0,
+            "max_relative_error_floor_1e_12": 0.0
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.03891199827194214,
+          0.015359999611973763,
+          0.01408000010997057
+        ],
+        "mean": 0.02278399933129549,
+        "median": 0.015359999611973763,
+        "min": 0.01408000010997057,
+        "max": 0.03891199827194214,
+        "p95": 0.0365567984059453
+      }
+    },
+    {
+      "case": "msda_multilevel_heads",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/msda_multilevel_heads/model.onnx",
+          "destination": "results/plugin-verification/msda_multilevel_heads/model.onnx",
+          "report": "results/plugin-verification/msda_multilevel_heads/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/msda_multilevel_heads/model.onnx",
+            "--engine",
+            "results/plugin-verification/msda_multilevel_heads/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/msda_multilevel_heads/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/msda_multilevel_heads/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/msda_multilevel_heads/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_multilevel_heads/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_multilevel_heads/expected.npz",
+            "--output",
+            "results/plugin-verification/msda_multilevel_heads/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/msda_multilevel_heads/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "gac::MSDeformAttn": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/msda_multilevel_heads/expected.npz",
+        "reference_sha256": "65033bcc4f6a121a2391386fa855faeaf5b6eaf1f1cef5e11a4eaa959a882154",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              1,
+              3,
+              6
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 18,
+            "max_absolute_error": 1.4901161193847656e-08,
+            "max_relative_error_floor_1e_12": 8.467344584853715e-08
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.02969600073993206,
+          0.013311999849975109,
+          0.010239999741315842
+        ],
+        "mean": 0.017749333443741005,
+        "median": 0.013311999849975109,
+        "min": 0.010239999741315842,
+        "max": 0.02969600073993206,
+        "p95": 0.028057600650936362
+      }
+    },
+    {
+      "case": "msda_batch_three_levels",
+      "status": "passed",
+      "steps": [
+        {
+          "stage": "adapt",
+          "api": "adapt_onnx.adapt_file",
+          "source": "delivery/bevformer-tensorrt/tests/fixtures/msda_batch_three_levels/model.onnx",
+          "destination": "results/plugin-verification/msda_batch_three_levels/model.onnx",
+          "report": "results/plugin-verification/msda_batch_three_levels/adaptation.json"
+        },
+        {
+          "stage": "build",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "build",
+            "--onnx",
+            "results/plugin-verification/msda_batch_three_levels/model.onnx",
+            "--engine",
+            "results/plugin-verification/msda_batch_three_levels/engine.plan",
+            "--precision",
+            "fp32",
+            "--report",
+            "results/plugin-verification/msda_batch_three_levels/build.json",
+            "--device",
+            "0",
+            "--plugins-fp32"
+          ],
+          "log": "results/plugin-verification/msda_batch_three_levels/build.log",
+          "returncode": 0
+        },
+        {
+          "stage": "run",
+          "command": [
+            "<python-environment>/bin/python",
+            "-m",
+            "bevformer_trt",
+            "run",
+            "--engine",
+            "results/plugin-verification/msda_batch_three_levels/engine.plan",
+            "--inputs",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_batch_three_levels/inputs.npz",
+            "--reference",
+            "delivery/bevformer-tensorrt/tests/fixtures/msda_batch_three_levels/expected.npz",
+            "--output",
+            "results/plugin-verification/msda_batch_three_levels/run",
+            "--warmup",
+            "1",
+            "--repeat",
+            "3",
+            "--rtol",
+            "2e-5",
+            "--atol",
+            "2e-5",
+            "--device",
+            "0"
+          ],
+          "log": "results/plugin-verification/msda_batch_three_levels/run.log",
+          "returncode": 0
+        }
+      ],
+      "converted": {
+        "gac::MSDeformAttn": 1
+      },
+      "validation": {
+        "status": "passed",
+        "all_outputs_finite": true,
+        "output_finite": {
+          "Y": true
+        },
+        "scope": "Final output of the last measured execution only",
+        "reference": "delivery/bevformer-tensorrt/tests/fixtures/msda_batch_three_levels/expected.npz",
+        "reference_sha256": "9c4a38244d261de32849de4baac8ab96f2b8e56a6939441ee41602a6ae74cc0b",
+        "rtol": 2e-05,
+        "atol": 2e-05,
+        "outputs": {
+          "Y": {
+            "passed": true,
+            "shape": [
+              2,
+              4,
+              6
+            ],
+            "actual_dtype": "float32",
+            "reference_dtype": "float32",
+            "reference_finite": true,
+            "mismatched_elements": 0,
+            "elements": 48,
+            "max_absolute_error": 1.4901161193847656e-08,
+            "max_relative_error_floor_1e_12": 2.245819967585332e-06
+          }
+        }
+      },
+      "cuda_event_ms": {
+        "samples": [
+          0.03174399957060814,
+          0.014112000353634357,
+          0.012032000347971916
+        ],
+        "mean": 0.019296000090738136,
+        "median": 0.014112000353634357,
+        "min": 0.012032000347971916,
+        "max": 0.03174399957060814,
+        "p95": 0.02998079964891076
+      }
+    }
+  ],
+  "passed": 6,
+  "total": 6,
+  "finished_utc": "2026-10-20T03:29:53.177252+00:00"
+}

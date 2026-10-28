@@ -1,0 +1,4 @@
+# Required by run/check/profile for CUDA memory, streams and events.
+# Install explicitly; setup.sh never silently downloads Torch when this is omitted.
+--index-url https://download.pytorch.org/whl/cu126
+torch==2.7.0+cu126

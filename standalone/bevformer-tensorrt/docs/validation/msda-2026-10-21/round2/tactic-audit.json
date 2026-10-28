@@ -1,0 +1,161 @@
+{
+  "scope": "Full exposed TensorRT Inspector record comparison; not a numerical or binary equivalence proof",
+  "source_layers": [
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\controlled-build-reports\\custom-build.layers.json",
+      "sha256": "7b07cdc37c5847549a0ba135812f671e8044d6887e33b7e9b558c065844b6d2c"
+    },
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\round2-build-reports\\build.layers.json",
+      "sha256": "d79a334bc5cf1b49ca0a5e23cc950ad113ef11a07d895410f8a6f0ae302be96b"
+    }
+  ],
+  "engine_sha256": [
+    "9fb58a02198c63e017ecc09bbee40b23fd99cfa214df4f0391dc9b5fe9955c98",
+    "39888302dfcba0e2d8161ab9f8d4630c2f0f4dc8a1369e1888464b06efa3d19a"
+  ],
+  "layer_counts": [
+    3816,
+    3816
+  ],
+  "differences": [],
+  "compared_fields": "All fields; only globally verified bijective tensor renames normalized",
+  "verified_tensor_renames": [
+    {
+      "before": "__mye35766_myl3057",
+      "after": "__mye35786_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/MatMul_myl3057_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "before": "__mye35846_myl3057",
+      "after": "__mye35848_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/Gemm_myl3057_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Outputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35743_myl3057",
+      "after": "__mye35739_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_3/attentions_1/sampling_offsets/MatMul_myl3057_23",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3057_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_SigmSlicReshReshMulAddCast_myl3057_24",
+          "Inputs",
+          0
+        ]
+      ]
+    }
+  ],
+  "exact_record_count": 3816,
+  "build_settings_equal": {
+    "workspace_limit_bytes": true,
+    "builder_optimization_level": true,
+    "tactic_dram_limit_bytes": true,
+    "max_aux_streams": true,
+    "precision_policy": true,
+    "io": true
+  },
+  "same_input_timing_cache": true,
+  "reordered_layers": [
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]"
+  ],
+  "passed": true,
+  "limitations": [
+    "Inspector does not expose every internal execution decision, weight bytes or machine code.",
+    "Plugin options and compiled library differ intentionally; numeric comparison is independent."
+  ]
+}

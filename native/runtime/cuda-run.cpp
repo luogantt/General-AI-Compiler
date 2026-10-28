@@ -6,6 +6,7 @@
 #include "llvm/Support/FormatVariadic.h"
 #include "llvm/Support/raw_ostream.h"
 #include <chrono>
+#include <cstdlib>
 #include <cuda.h>
 #include <fstream>
 #include <limits>
@@ -24,6 +25,11 @@ using Clock = std::chrono::steady_clock;
 
 double elapsed(Clock::time_point start, Clock::time_point end = Clock::now()) {
   return std::chrono::duration<double, std::milli>(end - start).count();
+}
+
+std::string environment(const char *name) {
+  const char *value = std::getenv(name);
+  return value ? value : "<unset>";
 }
 
 class DriverLibrary {
@@ -212,6 +218,10 @@ struct Device {
   size_t totalMemory = 0;
   size_t completedDispatches = 0;
   json::Array memorySnapshots;
+  // Exclusive host-wall phases. cuModuleLoadDataEx may hit the driver cache;
+  // its wall time is module loading plus any JIT, not pure compiler work.
+  json::Object startupTiming;
+  float driverJitWallMs = 0;
 
   void snapshotMemory(llvm::StringRef stage) {
     size_t free = 0, total = 0;
@@ -268,6 +278,7 @@ struct Device {
   }
 
   void initialize(Plan &plan, const fs::path &ptxPath, int ordinal) {
+    auto phaseStarted = Clock::now();
     CUDA_CHECK(api.init(0));
     int count = 0;
     CUDA_CHECK(api.deviceCount(&count));
@@ -284,28 +295,40 @@ struct Device {
         &minor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
     CUDA_CHECK(api.deviceMemory(&totalMemory, device));
     CUDA_CHECK(api.driverVersion(&version));
+    startupTiming["driver_init_and_device_query_ms"] = elapsed(phaseStarted);
+    phaseStarted = Clock::now();
     CUDA_CHECK(api.retainContext(&context, device));
     CUDA_CHECK(api.setContext(context));
     snapshotMemory("context-created");
+    startupTiming["context_creation_ms"] = elapsed(phaseStarted);
+    phaseStarted = Clock::now();
     CUDA_CHECK(api.createStream(&stream, CU_STREAM_NON_BLOCKING));
     CUDA_CHECK(api.createEvent(&begin, CU_EVENT_DEFAULT));
     CUDA_CHECK(api.createEvent(&end, CU_EVENT_DEFAULT));
+    startupTiming["stream_and_event_creation_ms"] = elapsed(phaseStarted);
 
+    phaseStarted = Clock::now();
     auto ptx = llvm::MemoryBuffer::getFile(ptxPath.string());
     if (!ptx)
       fail("cannot read PTX: " + ptx.getError().message());
     if (!(*ptx)->getBuffer().contains(".version") ||
         !(*ptx)->getBuffer().contains(".target"))
       fail("kernel file is not textual PTX");
+    startupTiming["ptx_file_read_ms"] = elapsed(phaseStarted);
     char information[8192] = {}, errors[8192] = {};
     CUjit_option options[] = {
         CU_JIT_INFO_LOG_BUFFER, CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES,
-        CU_JIT_ERROR_LOG_BUFFER, CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES};
+        CU_JIT_ERROR_LOG_BUFFER, CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES,
+        CU_JIT_WALL_TIME};
     void *values[] = {
         information, reinterpret_cast<void *>(uintptr_t(sizeof(information))),
-        errors, reinterpret_cast<void *>(uintptr_t(sizeof(errors)))};
+        errors, reinterpret_cast<void *>(uintptr_t(sizeof(errors))),
+        &driverJitWallMs};
+    phaseStarted = Clock::now();
     CUresult status =
-        api.loadModule(&module, (*ptx)->getBufferStart(), 4, options, values);
+        api.loadModule(&module, (*ptx)->getBufferStart(), 5, options, values);
+    startupTiming["module_load_ms"] = elapsed(phaseStarted);
+    phaseStarted = Clock::now();
     information[sizeof(information) - 1] = 0;
     errors[sizeof(errors) - 1] = 0;
     jitLog = information;
@@ -319,6 +342,8 @@ struct Device {
       }
     }
     snapshotMemory("module-loaded");
+    startupTiming["module_log_and_memory_query_ms"] = elapsed(phaseStarted);
+    phaseStarted = Clock::now();
     size_t arena = plan.arenaBytes ? allocate(plan.arenaBytes) : 0;
     for (auto &tensor : plan.tensors) {
       tensor.buffer =
@@ -326,6 +351,8 @@ struct Device {
       address(tensor);
     }
     snapshotMemory("buffers-allocated");
+    startupTiming["device_buffer_allocation_ms"] = elapsed(phaseStarted);
+    phaseStarted = Clock::now();
     int maxGrid = 0, maxBlock = 0;
     CUDA_CHECK(api.deviceAttribute(&maxGrid, CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X,
                                    device));
@@ -366,6 +393,8 @@ struct Device {
       for (auto &pointer : pointers)
         parameters.back().push_back(&pointer);
     }
+    startupTiming["kernel_lookup_resources_and_arguments_ms"] =
+        elapsed(phaseStarted);
   }
 
   void initializeProfile() {
@@ -519,14 +548,20 @@ int main(int argc, char **argv) {
     Options options = parseOptions(argc, argv);
     fs::create_directories(outputDirectory);
     stage = "manifest-validation";
+    auto manifestStarted = Clock::now();
     Plan plan = parsePlan(argv[1], Target::CUDA);
     uint64_t plannedBufferBytes = plan.arenaBytes;
     for (const auto &tensor : plan.tensors)
       if (tensor.storage != "arena")
         plannedBufferBytes += tensor.bytes;
+    double manifestMs = elapsed(manifestStarted);
     stage = "driver-initialization-and-ptx-jit";
+    auto driverLibraryStarted = Clock::now();
     Device device;
+    double driverLibraryMs = elapsed(driverLibraryStarted);
     device.initialize(plan, argv[2], options.device);
+    device.startupTiming["manifest_validation_ms"] = manifestMs;
+    device.startupTiming["driver_library_and_symbol_load_ms"] = driverLibraryMs;
     double initialization = elapsed(started);
     stage = "upload";
     json::Array inputFiles, outputFiles;
@@ -564,19 +599,36 @@ int main(int argc, char **argv) {
       if (!trace)
         fail("cannot open dispatch trace");
     }
-    json::Array samples;
+    json::Array samples, warmupSamples, dispatchWallSamples;
     json::Object dispatchProfile;
     double sum = 0;
-    double dispatchWall = 0;
+    double dispatchWall = 0, warmupWall = 0;
+    double firstDispatchGpu = 0, firstDispatchWall = 0;
+    bool launched = false;
+    auto timedLaunch = [&](int iteration, bool isWarmup) {
+      auto launchStarted = Clock::now();
+      double gpuMs = device.launch(plan, iteration, isWarmup,
+                                   options.trace ? &trace : nullptr);
+      double hostMs = elapsed(launchStarted);
+      if (!launched) {
+        firstDispatchGpu = gpuMs;
+        firstDispatchWall = hostMs;
+        launched = true;
+      }
+      if (!isWarmup)
+        dispatchWallSamples.push_back(hostMs);
+      return gpuMs;
+    };
     try {
       stage = "warmup";
+      auto warmupStarted = Clock::now();
       for (int i = 0; i < options.warmup; ++i)
-        device.launch(plan, i, true, options.trace ? &trace : nullptr);
+        warmupSamples.push_back(timedLaunch(i, true));
+      warmupWall = elapsed(warmupStarted);
       stage = "dispatch";
       auto dispatchStarted = Clock::now();
       for (int i = 0; i < options.repeat; ++i) {
-        double duration =
-            device.launch(plan, i, false, options.trace ? &trace : nullptr);
+        double duration = timedLaunch(i, false);
         sum += duration;
         samples.push_back(duration);
       }
@@ -666,6 +718,22 @@ int main(int argc, char **argv) {
             {"outputs", std::move(outputFiles)},
             {"scheduling", "single-cuda-stream-manifest-order"},
             {"jit_log", device.jitLog},
+            {"startup_timing_ms", std::move(device.startupTiming)},
+            {"startup_timing_note",
+             "Host steady-clock phases are non-overlapping. module_load_ms "
+             "measures cuModuleLoadDataEx, including loading and any PTX JIT; "
+             "kernel lookup can trigger deferred loading. initialization_ms "
+             "is the inclusive startup total and must not be added to phases."},
+            {"driver_reported_jit_wall_ms", double(device.driverJitWallMs)},
+            {"driver_jit_timing_note",
+             "CU_JIT_WALL_TIME is a driver-reported diagnostic nested within "
+             "module_load_ms; it is not an additional phase. A cache hit may "
+             "avoid compilation. The runtime does not clear the driver cache."},
+            {"cuda_environment", json::Object{
+                 {"CUDA_CACHE_DISABLE", environment("CUDA_CACHE_DISABLE")},
+                 {"CUDA_CACHE_PATH", environment("CUDA_CACHE_PATH")},
+                 {"CUDA_MODULE_LOADING", environment("CUDA_MODULE_LOADING")},
+                 {"CUDA_MODULE_DATA_LOADING", environment("CUDA_MODULE_DATA_LOADING")}}},
             {"timing_kind", "cuda-events-whole-dispatch-sequence"},
             {"timing_note",
              "GPU interval includes device work and any host submission gaps; "
@@ -674,6 +742,15 @@ int main(int argc, char **argv) {
              "Transfers use host API wall time."},
             {"gpu_dispatch_ms", sum / options.repeat},
             {"gpu_dispatch_samples_ms", std::move(samples)},
+            {"dispatch_wall_samples_ms", std::move(dispatchWallSamples)},
+            {"first_dispatch_gpu_ms", firstDispatchGpu},
+            {"first_dispatch_host_wall_ms", firstDispatchWall},
+            {"first_dispatch_note",
+             "First actual sequence, counted in warmup if warmup_runs > 0; "
+             "otherwise it is the first measured sample. It is not an extra "
+             "run and excludes input upload and initialization."},
+            {"warmup_gpu_samples_ms", std::move(warmupSamples)},
+            {"warmup_host_wall_ms", warmupWall},
             {"initialization_ms", initialization},
             {"upload_ms", upload},
             {"download_ms", download},

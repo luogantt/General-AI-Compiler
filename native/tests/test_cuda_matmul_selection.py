@@ -44,6 +44,7 @@ def main():
         onnx.checker.check_model(model)
         onnx.save(model, directory / "model.onnx")
         command = [str(args.compiler.resolve()), str(directory / "model.onnx"),
+                   "--regular-lowering=legacy",  # This suite checks the existing CUDA templates.
                    "--target=cuda", "--emit=llvm", "--cuda-matmul-schedule=" + schedule,
                    "--constants-dir=" + str(directory), "--manifest=" + str(directory / "plan.json"),
                    "-o", str(directory / "kernel.mlir")]

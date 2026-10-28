@@ -1,0 +1,211 @@
+{
+  "observed_at": "2026-10-18T21:09:54.891197+08:00",
+  "status": {
+    "state": "stopped_by_user",
+    "supervisor_pid": 26466,
+    "started_at": "2026-10-18T12:23:14.071286+00:00",
+    "config": "/home/robot/project/bevformer-tiny-train-20261018/BEVFormer/local_training/bevformer_tiny_fp16_mini.py",
+    "config_sha256": "8ceb3902ae8821fb362fb558405e6e0ef7ad02619d9b84e4f7c4f3bfb88fa05a",
+    "log": "/home/robot/project/bevformer-tiny-train-20261018/logs/train.log",
+    "host": "192.168.3.24",
+    "dataset": "nuScenes v1.0-mini",
+    "training_launcher_pid": 26473,
+    "exit_code": -2,
+    "finished_at": "2026-10-18T13:09:44.345372+00:00",
+    "stopped_at": "2026-10-18T21:09:44.492927+08:00",
+    "stop_reason": "User requested stopping training and writing the training README",
+    "latest_checkpoint": "/home/robot/project/bevformer-tiny-train-20261018/BEVFormer/work_dirs/bevformer_tiny_fp16_mini/epoch_6.pth",
+    "training_processes_stopped": true
+  },
+  "supervisor_alive": false,
+  "files": [
+    "20261018_202326.log.json"
+  ],
+  "epochs": [
+    {
+      "epoch": 1,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 20.600917500000005,
+      "first_loss": 24.89916,
+      "last_loss": 18.43356,
+      "last_time": 1.04475,
+      "last_lr": 1e-05
+    },
+    {
+      "epoch": 2,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 17.754273437500004,
+      "first_loss": 17.9085,
+      "last_loss": 17.17455,
+      "last_time": 1.11561,
+      "last_lr": 2e-05
+    },
+    {
+      "epoch": 3,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 16.717476249999997,
+      "first_loss": 17.37603,
+      "last_loss": 16.2852,
+      "last_time": 1.1905,
+      "last_lr": 2e-05
+    },
+    {
+      "epoch": 4,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 15.798884687499992,
+      "first_loss": 16.59166,
+      "last_loss": 15.19474,
+      "last_time": 1.2199,
+      "last_lr": 2e-05
+    },
+    {
+      "epoch": 5,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 14.943191250000003,
+      "first_loss": 15.61671,
+      "last_loss": 15.19565,
+      "last_time": 1.22128,
+      "last_lr": 2e-05
+    },
+    {
+      "epoch": 6,
+      "last_iter": 320,
+      "logged_intervals": 32,
+      "mean_loss": 14.163714374999998,
+      "first_loss": 14.96731,
+      "last_loss": 14.42356,
+      "last_time": 1.19987,
+      "last_lr": 2e-05
+    },
+    {
+      "epoch": 7,
+      "last_iter": 150,
+      "logged_intervals": 15,
+      "mean_loss": 13.683857333333336,
+      "first_loss": 14.07846,
+      "last_loss": 12.61419,
+      "last_time": 1.24412,
+      "last_lr": 1e-05
+    }
+  ],
+  "validation": [
+    {
+      "mode": "val",
+      "epoch": 1,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.0306,
+      "pts_bbox_NuScenes/mASE": 0.9778,
+      "pts_bbox_NuScenes/mAOE": 1.0589,
+      "pts_bbox_NuScenes/mAVE": 0.9212,
+      "pts_bbox_NuScenes/mAAE": 0.8884,
+      "pts_bbox_NuScenes/NDS": 0.02127,
+      "pts_bbox_NuScenes/mAP": 0.0
+    },
+    {
+      "mode": "val",
+      "epoch": 2,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.0349,
+      "pts_bbox_NuScenes/mASE": 0.9679,
+      "pts_bbox_NuScenes/mAOE": 1.0575,
+      "pts_bbox_NuScenes/mAVE": 0.9431,
+      "pts_bbox_NuScenes/mAAE": 0.8911,
+      "pts_bbox_NuScenes/NDS": 0.01981,
+      "pts_bbox_NuScenes/mAP": 5e-05
+    },
+    {
+      "mode": "val",
+      "epoch": 3,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.0548,
+      "pts_bbox_NuScenes/mASE": 0.944,
+      "pts_bbox_NuScenes/mAOE": 1.1776,
+      "pts_bbox_NuScenes/mAVE": 0.8857,
+      "pts_bbox_NuScenes/mAAE": 0.8577,
+      "pts_bbox_NuScenes/NDS": 0.03136,
+      "pts_bbox_NuScenes/mAP": 0.0002
+    },
+    {
+      "mode": "val",
+      "epoch": 4,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.0415,
+      "pts_bbox_NuScenes/mASE": 0.9195,
+      "pts_bbox_NuScenes/mAOE": 1.1389,
+      "pts_bbox_NuScenes/mAVE": 0.8642,
+      "pts_bbox_NuScenes/mAAE": 0.8485,
+      "pts_bbox_NuScenes/NDS": 0.03745,
+      "pts_bbox_NuScenes/mAP": 0.00136
+    },
+    {
+      "mode": "val",
+      "epoch": 5,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.0515,
+      "pts_bbox_NuScenes/mASE": 0.8985,
+      "pts_bbox_NuScenes/mAOE": 1.1049,
+      "pts_bbox_NuScenes/mAVE": 0.8733,
+      "pts_bbox_NuScenes/mAAE": 0.848,
+      "pts_bbox_NuScenes/NDS": 0.0388,
+      "pts_bbox_NuScenes/mAP": 0.00156
+    },
+    {
+      "mode": "val",
+      "epoch": 6,
+      "iter": 81,
+      "pts_bbox_NuScenes/mATE": 1.1148,
+      "pts_bbox_NuScenes/mASE": 0.879,
+      "pts_bbox_NuScenes/mAOE": 1.1377,
+      "pts_bbox_NuScenes/mAVE": 0.8623,
+      "pts_bbox_NuScenes/mAAE": 0.852,
+      "pts_bbox_NuScenes/NDS": 0.04155,
+      "pts_bbox_NuScenes/mAP": 0.00177
+    }
+  ],
+  "latest_training": {
+    "mode": "train",
+    "epoch": 7,
+    "iter": 150,
+    "lr": 1e-05,
+    "memory": 2697,
+    "data_time": 0.78685,
+    "loss_cls": 0.84436,
+    "loss_bbox": 1.32968,
+    "d0.loss_cls": 0.74467,
+    "d0.loss_bbox": 1.30194,
+    "d1.loss_cls": 0.77334,
+    "d1.loss_bbox": 1.28362,
+    "d2.loss_cls": 0.78821,
+    "d2.loss_bbox": 1.29194,
+    "d3.loss_cls": 0.82313,
+    "d3.loss_bbox": 1.30407,
+    "d4.loss_cls": 0.82433,
+    "d4.loss_bbox": 1.30491,
+    "loss": 12.61419,
+    "grad_norm": 46.22852,
+    "time": 1.24412
+  },
+  "nonfinite_loss_count": 0,
+  "relevant_warnings": [
+    "Traceback (most recent call last):"
+  ],
+  "checkpoints": [
+    {
+      "name": "epoch_4.pth",
+      "bytes": 400785914
+    },
+    {
+      "name": "epoch_5.pth",
+      "bytes": 400785914
+    },
+    {
+      "name": "epoch_6.pth",
+      "bytes": 400785914
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "kind": "gac_msda_plugin_rewrite",
+  "source_msda_count": 18,
+  "replaced_node_count": 6,
+  "nodes": [
+    {
+      "index": 8177,
+      "name": "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    },
+    {
+      "index": 9637,
+      "name": "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    },
+    {
+      "index": 11061,
+      "name": "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    },
+    {
+      "index": 12485,
+      "name": "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    },
+    {
+      "index": 13909,
+      "name": "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    },
+    {
+      "index": 15333,
+      "name": "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn",
+      "inputs": [
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/Reshape_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn__trt_spatial_shapes",
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn__trt_level_start_index",
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/Reshape_5_output_0",
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/Reshape_3_output_0"
+      ],
+      "outputs": [
+        "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/deformable_attention/MSDeformAttn__trt_rank4"
+      ],
+      "source_plugin": "MultiscaleDeformableAttnPlugin_TRT",
+      "source_version": "2",
+      "plugin": "GACMSDeformAttn",
+      "plugin_version": "1",
+      "plugin_namespace": "",
+      "fields": {
+        "channels_per_thread": 4,
+        "block_threads": 128,
+        "specialize": 1,
+        "prefetch": 0
+      }
+    }
+  ],
+  "preservation": {
+    "all_other_model_protobuf_fields_identical": true,
+    "weights_shapes_tensor_edges_identical": true
+  },
+  "validation": {
+    "structural_preservation": "passed",
+    "numerical_accuracy": "not_checked",
+    "performance": "not_measured"
+  },
+  "source_onnx": "/home/robot/project/bevformer-tensorrt-standalone-20261020/models/bevformer-base/adapted.onnx",
+  "source_onnx_sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be",
+  "output_onnx": "/home/robot/project/gac-msda-20261021/full-model-01/adapted.onnx",
+  "output_onnx_sha256": "738524ea3416557b9024861cf637a36c786d16c6c38cb34b2b7833a78a5bbe7d"
+}

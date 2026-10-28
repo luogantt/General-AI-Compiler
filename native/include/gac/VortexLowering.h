@@ -1,7 +1,9 @@
 #ifndef GAC_VORTEX_LOWERING_H
 #define GAC_VORTEX_LOWERING_H
 
-#include "gac/DeviceLowering.h"
+#include "gac/DeviceOptions.h"
+#include "mlir/Pass/Pass.h"
+#include "llvm/Support/JSON.h"
 #include "mlir/Dialect/LLVMIR/LLVMDialect.h"
 #include "mlir/IR/Builders.h"
 

@@ -1,0 +1,986 @@
+{
+  "scope": "ONNX/C++ MLIR/Triton/VOLT/Vortex SimX integration; not full BEVFormer or silicon performance",
+  "status": "passed",
+  "checks": 118,
+  "results": [
+    {
+      "case": "add_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "f36f0f322e74001bc3484c3b881a7d0270d9d6992d6338c3a0a35c9119cf52d8"
+    },
+    {
+      "case": "add_17",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "0616acdf0766c6fcf78283dd786e2928cc2f8c0590f7d1e94df9e0662ba9a8a1"
+    },
+    {
+      "case": "add_1003",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2535c2567eed7db1ae06e9b4fc9be3b0c253973d373b88780ed9554d37a6b96d"
+    },
+    {
+      "case": "fused_float32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "81f0d2709344e842fdda3ff8b61a62e08dac54940fccfd2a8ed98f60d637c5d1"
+    },
+    {
+      "case": "fused_int32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "83dfc2c8d3d6d1b2acbcded23d821613cd55d13a8cbdae21c9e521d106ab5476"
+    },
+    {
+      "case": "duplicate_input",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "79219c0155b85030dee4f67e5b117bcd0c7d60d125525bae915be3329a2218f9"
+    },
+    {
+      "case": "nonfinite_relu",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2a7d75b8330bbfb3576a232f2ee8fddd93fccccc8d2be8c774b37e44bcac09a4"
+    },
+    {
+      "case": "view_alias",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "efaa7c5058da6c86f9000c41d0fdc6a427f522e40d5c85bab3e4d9af2f912a76"
+    },
+    {
+      "case": "broadcast_native",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "6d61a9aa74d4b655b537e4e3aec82c5eaf0e5b726af04d7d1295cd4dec1ab54c"
+    },
+    {
+      "case": "mixed_matmul",
+      "status": "passed",
+      "triton_dispatches": 2,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07,
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "e944ec4e23ee3c11c5f0503176c5cb01d06e0bc4ab7320644e2b524da6da932d"
+    },
+    {
+      "case": "native_fused_matmul",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "9a16678fa3f61d7deeede0d566169d32086141708e8deccdd012276f0696a879"
+    },
+    {
+      "case": "triton_matmul_aligned",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.76837158203125e-07
+      ],
+      "vxbin_sha256": "a9fc4aa76ea315d553bde13d763077a71132cd6844c2c3e3814ece28d878b452"
+    },
+    {
+      "case": "triton_matmul_tail",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "fa8a6ec4620ad56f4e9336a50b9dd231cac1f03185798a03dc79a267a7200ed9"
+    },
+    {
+      "case": "triton_matmul_batched_matched",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.430511474609375e-06
+      ],
+      "vxbin_sha256": "f4fa3a9bb5c1371c9918f741d96fcd96faf9f67ba8a013401922abf1f6d48b8c"
+    },
+    {
+      "case": "triton_matmul_batched_shared_rhs",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.430511474609375e-06
+      ],
+      "vxbin_sha256": "0cde9ae5c6c20ef89eb697f1dd995c755ca81836e0e4c714575586c9ae5e53b2"
+    },
+    {
+      "case": "triton_matmul_rank4_matched",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        7.152557373046875e-07
+      ],
+      "vxbin_sha256": "b910b24d8a9a4c32a08839bf664094985209268affcba769edbb0a12060de52d"
+    },
+    {
+      "case": "triton_matmul_rank4_shared_rhs_k48_constant",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "d9aefef6d3de71af2ca87266d50ebcdd2d1f8253e2438b675338d2b2f13b0a24"
+    },
+    {
+      "case": "triton_matmul_unit_prefix",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        7.152557373046875e-07
+      ],
+      "vxbin_sha256": "b910b24d8a9a4c32a08839bf664094985209268affcba769edbb0a12060de52d"
+    },
+    {
+      "case": "native_matmul_unaligned_k",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        3.5762786865234375e-07
+      ],
+      "vxbin_sha256": "aeb0bca3daa43af848f751ac124627241607efd9d5625ff01127860e8ed88c78"
+    },
+    {
+      "case": "native_matmul_vector_lhs",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "08f86ce63aaf39f7d77c5cfaba840b488f0fff8055c1179d42dd5bf8b2bea00d"
+    },
+    {
+      "case": "native_matmul_vector_rhs",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "349294691a0c09a2f4836edefaf9bc4ef8a72fca982a03cf1459c213e210b630"
+    },
+    {
+      "case": "native_matmul_singleton_broadcast",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "6362dad2751c72ae90aa56ae4d3df198fdf946499a689bc5b62dde88591979e9"
+    },
+    {
+      "case": "native_matmul_shared_lhs",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "318b412d667040c78ebdecbd5745cb043169174e7049e4941319d61e2b626eae"
+    },
+    {
+      "case": "native_matmul_alias_inputs",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.76837158203125e-07
+      ],
+      "vxbin_sha256": "988167d14cc4b2a7634d36ec715f27e514de435084a9d113bf56f8a7bf7266d1"
+    },
+    {
+      "case": "native_matmul_input_reshape",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "d4554a0fcc3253d25cbcd1fc1c4790afdec1ebb311096e9f4d8f207444e98df8"
+    },
+    {
+      "case": "triton_reduce_sum_scalar",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "27b2ef952c6f59e409e61c22b72f15135a7635444e5c5ddc69a2da854e8c9347"
+    },
+    {
+      "case": "triton_reduce_sum_singleton",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "7d36282c14b9d0583c5e5803f8d67783344162a20f9b9098dfd783af886840f5"
+    },
+    {
+      "case": "native_reduce_sum_rank2",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "1ec46c18846bb7737fb710157a60c11e7b3ec23a1673652a7453553844430ea7"
+    },
+    {
+      "case": "native_reduce_sum_too_wide",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1444091796875e-05
+      ],
+      "vxbin_sha256": "d1c770f2e338379ebe08f8bd8312f5a6c6b8a70c26e58cab8c44beb659674f07"
+    },
+    {
+      "case": "triton_softmax_width_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_16",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.4901161193847656e-08
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_tail_19",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        7.450580596923828e-09
+      ],
+      "vxbin_sha256": "d95dccc1c7eae43a894127014e5a0cccc3c2288b25dce5b023c0c25912ca6c95"
+    },
+    {
+      "case": "triton_softmax_extreme_finite",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.9802322387695312e-08
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_nan",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_positive_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_all_negative_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_partial_negative_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_rank2_tail_19",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.4901161193847656e-08
+      ],
+      "vxbin_sha256": "d95dccc1c7eae43a894127014e5a0cccc3c2288b25dce5b023c0c25912ca6c95"
+    },
+    {
+      "case": "triton_softmax_rank3_tail_19",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.2351741790771484e-08
+      ],
+      "vxbin_sha256": "d95dccc1c7eae43a894127014e5a0cccc3c2288b25dce5b023c0c25912ca6c95"
+    },
+    {
+      "case": "triton_softmax_rank3_bev_width_256",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.6566128730773926e-09
+      ],
+      "vxbin_sha256": "bc66a1d6ba848ccd550252811903b5ba5c9905ac1ea8f32f3fdd07b865e5f216"
+    },
+    {
+      "case": "triton_softmax_rank3_width_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "7af76c5f49c3f1f768d4802a44ec19d6edc7669058d31299de8a995f46b066db"
+    },
+    {
+      "case": "triton_softmax_rank2_width_1024",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "wide boundary is compile/selection coverage only",
+      "vxbin_sha256": "81a1b936c941dfa2e856b9dc142038b29d0dca959c813c49446e1f91a48bffa8"
+    },
+    {
+      "case": "native_softmax_rank2_axis0",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        5.960464477539063e-08
+      ],
+      "vxbin_sha256": "fbb87022adc91af8c7505da80e20f3cd346592ea692957a85306185dbf0b7fac"
+    },
+    {
+      "case": "native_softmax_too_wide",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "wide boundary is compile/selection coverage only",
+      "vxbin_sha256": "b5dc061ed439c92be8eff7b69747b6678ce12f88a7add2503fa48347c493a39a"
+    },
+    {
+      "case": "native_softmax_input_reshape",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        7.450580596923828e-09
+      ],
+      "vxbin_sha256": "1cde3c9901184722a714e88b9772b51c1edea51bb478c76a866df058bd6e161e"
+    },
+    {
+      "case": "mixed_softmax_axis0_sibling_add",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        5.960464477539063e-08,
+        0.0
+      ],
+      "vxbin_sha256": "17aa5e1a66eeed304258a79e84c2b866ad320e4c52afa8928956ea6c6d69ac88"
+    },
+    {
+      "case": "triton_layer_norm_bev_width_256",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.76837158203125e-07
+      ],
+      "vxbin_sha256": "b88fa4219219ae5230c74b15345c99d114481562cfbefaa2e1ab2e7b971511dd"
+    },
+    {
+      "case": "triton_layer_norm_tail_19",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "ac814b108f7ef2721d16937097319e3cedcff6fe994a27db7be0c0e71e226320"
+    },
+    {
+      "case": "triton_layer_norm_width_1_epsilon_1e5",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "a61e6fb16a0e27ec752f612e85c0df8527ea34552885dcaad4b01bc07ec692e5"
+    },
+    {
+      "case": "triton_layer_norm_width_1024",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "wide boundary is compile/selection coverage only",
+      "vxbin_sha256": "ffef5ea70661244cf51d9d97803a2f0d9fb7082299ad94a11a5e40169afbaaef"
+    },
+    {
+      "case": "native_layer_norm_rank1",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "11cc74fd51617cc3011c32427a151f004db578925e645a3dead92783c8909e52"
+    },
+    {
+      "case": "native_layer_norm_axis0",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "e3c56f0c212e4e65578081ed134b3d7a39f0711d82dea7fae86badcc1e2ab018"
+    },
+    {
+      "case": "native_layer_norm_too_wide",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "wide boundary is compile/selection coverage only",
+      "vxbin_sha256": "0bbac2655fce1720ce63192680df1745c8e94e7df75183cc81ec4d2c62532a26"
+    },
+    {
+      "case": "native_layer_norm_missing_bias",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "b0a771ab9a64f0c45592aa9e7271a86cff0a351f90eef543f9b0f8d2a765e08e"
+    },
+    {
+      "case": "native_layer_norm_shared_scale_bias",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "eedb2d20a65eca51fe49a9e388a62d5c969eac57fb46d67e2ff9b961543fb736"
+    },
+    {
+      "case": "native_layer_norm_physical_view_alias",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "eedb2d20a65eca51fe49a9e388a62d5c969eac57fb46d67e2ff9b961543fb736"
+    },
+    {
+      "case": "native_layer_norm_input_reshape",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "dfee20aa43dfe5e83ec3ba3234db8371b91f760ea7813e298d986469bef7bff0"
+    },
+    {
+      "case": "native_layer_norm_affine_reshape",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "dfee20aa43dfe5e83ec3ba3234db8371b91f760ea7813e298d986469bef7bff0"
+    },
+    {
+      "case": "native_layer_norm_zero_epsilon",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "a105f951403a5faf808d2363d9f73ce8db41906e044fcc179f3796f8a3f53be3"
+    },
+    {
+      "case": "native_layer_norm_negative_epsilon",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "2322a6b8d1db15f8b13bb9f682f23df1b1fa3ab2aefeffb13816498d5c528ad4"
+    },
+    {
+      "case": "native_layer_norm_nan_epsilon",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "nonfinite epsilon is a Triton-selection rejection case",
+      "vxbin_sha256": "97623b44015b906ffee8615cbc8dbc3c1f769a64671d60487a9f57680561f617"
+    },
+    {
+      "case": "native_layer_norm_inf_epsilon",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 0,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "nonfinite epsilon is a Triton-selection rejection case",
+      "vxbin_sha256": "1d2a193e1b29ead65d230b84950f2c4bebd3afb5d581dc00263d045bbb03c863"
+    },
+    {
+      "case": "mixed_layer_norm_axis0_sibling_add",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 3,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.1920928955078125e-07,
+        0.0
+      ],
+      "vxbin_sha256": "b1534e31b26c2369bf9cd4ab6cf08bd083c244025e864a94c773bd0e83f2091b"
+    },
+    {
+      "case": "reject_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_block",
+      "status": "passed"
+    },
+    {
+      "case": "reject_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_missing_metadata",
+      "status": "passed"
+    },
+    {
+      "case": "batched_matmul_selector_boundaries",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_k",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_kind",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_batches",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_batch_overflow",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_batch_mode",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_partial_batch_contract",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_a_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_b_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_c_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_physical_a_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_duplicate_inputs",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_output_alias",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_k48_block_k_logical",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_k48_block_k_oversized",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_k48_shape_mismatch",
+      "status": "passed"
+    },
+    {
+      "case": "legacy_rank2_matmul_manifest",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_width",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_tile",
+      "status": "passed"
+    },
+    {
+      "case": "softmax_selector_shape_boundaries",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_rows",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_rows_missing",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_elements_overflow",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_width",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_n",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_input_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_output_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_output_bytes",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_output_alias",
+      "status": "passed"
+    },
+    {
+      "case": "layer_norm_selector_internal_fanout",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_rows",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_elements_overflow",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_width",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_n",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_epsilon_zero",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_epsilon_inf",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_epsilon_overflow",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_duplicate_affine_inputs",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_output_alias",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_x_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_scale_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_layer_norm_output_shape",
+      "status": "passed"
+    }
+  ]
+}

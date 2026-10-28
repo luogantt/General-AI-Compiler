@@ -1,0 +1,546 @@
+{
+  "date": "2026-10-21",
+  "scope": "Complete BEVFormer-base fixed cold-frame graph, FP32, raw heads; not temporal streaming or application end-to-end.",
+  "gpu": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "compiler": {
+    "path": "/home/thomas/gac-linalg-cuda-20261021/inputs/gac-compile",
+    "bytes": 52994032,
+    "sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3"
+  },
+  "model": {
+    "path": "/home/thomas/gac-linalg-cuda-20261021/inputs/model.onnx",
+    "bytes": 282985849,
+    "sha256": "85ce569241b6ac540d721244e91cd20ca3966631abb749ab82c98a54f7f32aed"
+  },
+  "runner": {
+    "path": "/home/robot/project/gac-linalg-cuda-20261021/gac-cuda-run",
+    "bytes": 1925912,
+    "sha256": "9b38cc54232f227b5ad7e445905f71a9dfdfb790df92aec9cc92f624325944b7"
+  },
+  "input": {
+    "path": "/home/robot/project/gac-cuda-ptx-20261017/base/cases/full-model/input_0.bin",
+    "bytes": 106905600,
+    "sha256": "ae51b693dcba6ad6d011b0f9d7ab0d1e9a357043175b856257e62bd090844fa9"
+  },
+  "reference_sha256": "77dd2317d73aee213d99bcc1837a2570161e03241bfa4d8fd50cc7fc2ae67181",
+  "all_final_outputs_passed": true,
+  "whole_model_gpu_execution": true,
+  "variants": {
+    "legacy-scalar": {
+      "compile": {
+        "samples": 2,
+        "total_median_seconds": 87.35106024899994,
+        "total_min_seconds": 86.40246543199987,
+        "total_max_seconds": 88.29965506600001,
+        "stage_median_seconds": {
+          "compile": 74.77924321999996,
+          "translate": 0.7166237010000032,
+          "link": 0.36514929349993963,
+          "optimize": 5.957993072500017,
+          "ptx": 5.532050962000028
+        }
+      },
+      "runtime": {
+        "gpu_dispatch_samples_ms": {
+          "count": 6,
+          "median": 20823.734375,
+          "min": 17619.5,
+          "max": 30084.138671875
+        },
+        "dispatch_wall_samples_ms": {
+          "count": 6,
+          "median": 20823.610665,
+          "min": 17619.408198,
+          "max": 30083.911992
+        },
+        "initialization_ms": {
+          "count": 2,
+          "median": 17302.1019715,
+          "min": 17294.054118,
+          "max": 17310.149825
+        },
+        "driver_reported_jit_wall_ms": {
+          "count": 2,
+          "median": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "first_dispatch_gpu_ms": {
+          "count": 2,
+          "median": 17723.8095703125,
+          "min": 17205.0234375,
+          "max": 18242.595703125
+        },
+        "first_dispatch_host_wall_ms": {
+          "count": 2,
+          "median": 17723.733696,
+          "min": 17204.951509,
+          "max": 18242.515883
+        },
+        "upload_ms": {
+          "count": 2,
+          "median": 63.383147500000014,
+          "min": 63.330399000000014,
+          "max": 63.435896000000014
+        },
+        "download_ms": {
+          "count": 2,
+          "median": 6.267631999999999,
+          "min": 6.214237999999999,
+          "max": 6.321026
+        },
+        "input_file_io_ms": {
+          "count": 2,
+          "median": 195.51807699999995,
+          "min": 195.38635500000026,
+          "max": 195.6497989999996
+        },
+        "total_host_wall_ms": {
+          "count": 2,
+          "median": 101507.8043235,
+          "min": 90142.993971,
+          "max": 112872.614676
+        },
+        "startup.context_creation_ms": {
+          "count": 2,
+          "median": 109.4921285,
+          "min": 107.948124,
+          "max": 111.036133
+        },
+        "startup.device_buffer_allocation_ms": {
+          "count": 2,
+          "median": 6.5463335,
+          "min": 6.535897,
+          "max": 6.55677
+        },
+        "startup.driver_init_and_device_query_ms": {
+          "count": 2,
+          "median": 89.53873300000001,
+          "min": 57.083964,
+          "max": 121.993502
+        },
+        "startup.driver_library_and_symbol_load_ms": {
+          "count": 2,
+          "median": 4.842331,
+          "min": 4.816275,
+          "max": 4.868387
+        },
+        "startup.kernel_lookup_resources_and_arguments_ms": {
+          "count": 2,
+          "median": 1.71128,
+          "min": 1.704169,
+          "max": 1.718391
+        },
+        "startup.manifest_validation_ms": {
+          "count": 2,
+          "median": 77.27007649999999,
+          "min": 73.84002,
+          "max": 80.700133
+        },
+        "startup.module_load_ms": {
+          "count": 2,
+          "median": 17012.148562000002,
+          "min": 16982.742793,
+          "max": 17041.554331
+        },
+        "startup.module_log_and_memory_query_ms": {
+          "count": 2,
+          "median": 0.096319,
+          "min": 0.096234,
+          "max": 0.096404
+        },
+        "startup.ptx_file_read_ms": {
+          "count": 2,
+          "median": 0.0324605,
+          "min": 0.031416,
+          "max": 0.033505
+        },
+        "startup.stream_and_event_creation_ms": {
+          "count": 2,
+          "median": 0.021066,
+          "min": 0.0207,
+          "max": 0.021432
+        }
+      },
+      "dispatches": 3224,
+      "arena_bytes": 1554944000,
+      "constant_files": 859,
+      "gpu_active_telemetry_scope": "Samples with GPU utilization >=90%; includes warmup and measured sequences.",
+      "active_clock_mhz_range": [
+        450.0,
+        1530.0
+      ],
+      "active_temperature_c_range": [
+        59.0,
+        89.0
+      ]
+    },
+    "linalg": {
+      "compile": {
+        "samples": 2,
+        "total_median_seconds": 96.34237978649995,
+        "total_min_seconds": 95.15671247799997,
+        "total_max_seconds": 97.52804709499992,
+        "stage_median_seconds": {
+          "compile": 77.6855602645,
+          "translate": 1.6693143904999772,
+          "link": 0.6661124059999963,
+          "optimize": 8.125680171499994,
+          "ptx": 8.195712553999982
+        }
+      },
+      "runtime": {
+        "gpu_dispatch_samples_ms": {
+          "count": 6,
+          "median": 20108.4853515625,
+          "min": 17148.005859375,
+          "max": 22311.453125
+        },
+        "dispatch_wall_samples_ms": {
+          "count": 6,
+          "median": 20108.364852,
+          "min": 17147.914984,
+          "max": 22311.310806
+        },
+        "initialization_ms": {
+          "count": 2,
+          "median": 17390.301416000002,
+          "min": 17366.815488,
+          "max": 17413.787344
+        },
+        "driver_reported_jit_wall_ms": {
+          "count": 2,
+          "median": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "first_dispatch_gpu_ms": {
+          "count": 2,
+          "median": 16511.9228515625,
+          "min": 16481.873046875,
+          "max": 16541.97265625
+        },
+        "first_dispatch_host_wall_ms": {
+          "count": 2,
+          "median": 16511.8629125,
+          "min": 16481.812212,
+          "max": 16541.913613
+        },
+        "upload_ms": {
+          "count": 2,
+          "median": 64.28190850000007,
+          "min": 64.11981800000007,
+          "max": 64.44399900000006
+        },
+        "download_ms": {
+          "count": 2,
+          "median": 6.4139705,
+          "min": 6.194273,
+          "max": 6.633668
+        },
+        "input_file_io_ms": {
+          "count": 2,
+          "median": 144.75264950000008,
+          "min": 143.720269,
+          "max": 145.78503000000012
+        },
+        "total_host_wall_ms": {
+          "count": 2,
+          "median": 93764.45376100001,
+          "min": 92782.807446,
+          "max": 94746.100076
+        },
+        "startup.context_creation_ms": {
+          "count": 2,
+          "median": 111.227694,
+          "min": 110.329147,
+          "max": 112.126241
+        },
+        "startup.device_buffer_allocation_ms": {
+          "count": 2,
+          "median": 6.631596,
+          "min": 6.611387,
+          "max": 6.651805
+        },
+        "startup.driver_init_and_device_query_ms": {
+          "count": 2,
+          "median": 123.06428700000001,
+          "min": 122.923768,
+          "max": 123.204806
+        },
+        "startup.driver_library_and_symbol_load_ms": {
+          "count": 2,
+          "median": 3.2580805,
+          "min": 1.767084,
+          "max": 4.749077
+        },
+        "startup.kernel_lookup_resources_and_arguments_ms": {
+          "count": 2,
+          "median": 1.974838,
+          "min": 1.974047,
+          "max": 1.975629
+        },
+        "startup.manifest_validation_ms": {
+          "count": 2,
+          "median": 106.8375575,
+          "min": 106.073436,
+          "max": 107.601679
+        },
+        "startup.module_load_ms": {
+          "count": 2,
+          "median": 17036.6902135,
+          "min": 17014.676291,
+          "max": 17058.704136
+        },
+        "startup.module_log_and_memory_query_ms": {
+          "count": 2,
+          "median": 0.12189749999999999,
+          "min": 0.116577,
+          "max": 0.127218
+        },
+        "startup.ptx_file_read_ms": {
+          "count": 2,
+          "median": 0.032114500000000004,
+          "min": 0.032091,
+          "max": 0.032138
+        },
+        "startup.stream_and_event_creation_ms": {
+          "count": 2,
+          "median": 0.0212865,
+          "min": 0.020238,
+          "max": 0.022335
+        }
+      },
+      "dispatches": 3752,
+      "arena_bytes": 1639347200,
+      "constant_files": 859,
+      "gpu_active_telemetry_scope": "Samples with GPU utilization >=90%; includes warmup and measured sequences.",
+      "active_clock_mhz_range": [
+        915.0,
+        1530.0
+      ],
+      "active_temperature_c_range": [
+        67.0,
+        89.0
+      ]
+    },
+    "legacy-optimized": {
+      "compile": {
+        "samples": 2,
+        "total_median_seconds": 100.51663527100004,
+        "total_min_seconds": 100.07719115300011,
+        "total_max_seconds": 100.95607938899997,
+        "stage_median_seconds": {
+          "compile": 79.49136842100003,
+          "translate": 1.3184597430000053,
+          "link": 0.6662769135000133,
+          "optimize": 10.579387069999967,
+          "ptx": 8.461143123500023
+        }
+      },
+      "runtime": {
+        "gpu_dispatch_samples_ms": {
+          "count": 6,
+          "median": 4362.061767578125,
+          "min": 4299.2841796875,
+          "max": 4421.93701171875
+        },
+        "dispatch_wall_samples_ms": {
+          "count": 6,
+          "median": 4362.048408000001,
+          "min": 4299.272826,
+          "max": 4421.923367
+        },
+        "initialization_ms": {
+          "count": 2,
+          "median": 22728.820707500003,
+          "min": 22728.816813,
+          "max": 22728.824602
+        },
+        "driver_reported_jit_wall_ms": {
+          "count": 2,
+          "median": 0.0,
+          "min": 0,
+          "max": 0
+        },
+        "first_dispatch_gpu_ms": {
+          "count": 2,
+          "median": 4250.017578125,
+          "min": 4237.2001953125,
+          "max": 4262.8349609375
+        },
+        "first_dispatch_host_wall_ms": {
+          "count": 2,
+          "median": 4250.0288734999995,
+          "min": 4237.211788,
+          "max": 4262.845959
+        },
+        "upload_ms": {
+          "count": 2,
+          "median": 65.29915399999999,
+          "min": 63.71278999999995,
+          "max": 66.88551800000002
+        },
+        "download_ms": {
+          "count": 2,
+          "median": 6.232134,
+          "min": 6.168621,
+          "max": 6.295647
+        },
+        "input_file_io_ms": {
+          "count": 2,
+          "median": 144.32260349999999,
+          "min": 144.13076099999992,
+          "max": 144.51444600000005
+        },
+        "total_host_wall_ms": {
+          "count": 2,
+          "median": 40306.742310500005,
+          "min": 40239.310253,
+          "max": 40374.174368
+        },
+        "startup.context_creation_ms": {
+          "count": 2,
+          "median": 110.63878249999999,
+          "min": 110.106162,
+          "max": 111.171403
+        },
+        "startup.device_buffer_allocation_ms": {
+          "count": 2,
+          "median": 6.6841155,
+          "min": 6.666822,
+          "max": 6.701409
+        },
+        "startup.driver_init_and_device_query_ms": {
+          "count": 2,
+          "median": 123.32362499999999,
+          "min": 123.076568,
+          "max": 123.570682
+        },
+        "startup.driver_library_and_symbol_load_ms": {
+          "count": 2,
+          "median": 6.3131135,
+          "min": 6.290842,
+          "max": 6.335385
+        },
+        "startup.kernel_lookup_resources_and_arguments_ms": {
+          "count": 2,
+          "median": 1.7475315,
+          "min": 1.730404,
+          "max": 1.764659
+        },
+        "startup.manifest_validation_ms": {
+          "count": 2,
+          "median": 99.473825,
+          "min": 99.157014,
+          "max": 99.790636
+        },
+        "startup.module_load_ms": {
+          "count": 2,
+          "median": 22379.9305775,
+          "min": 22378.795508,
+          "max": 22381.065647
+        },
+        "startup.module_log_and_memory_query_ms": {
+          "count": 2,
+          "median": 0.098284,
+          "min": 0.095623,
+          "max": 0.100945
+        },
+        "startup.ptx_file_read_ms": {
+          "count": 2,
+          "median": 0.0386925,
+          "min": 0.033329,
+          "max": 0.044056
+        },
+        "startup.stream_and_event_creation_ms": {
+          "count": 2,
+          "median": 0.021413500000000002,
+          "min": 0.019589,
+          "max": 0.023238
+        }
+      },
+      "dispatches": 3224,
+      "arena_bytes": 1554944000,
+      "constant_files": 859,
+      "gpu_active_telemetry_scope": "Samples with GPU utilization >=90%; includes warmup and measured sequences.",
+      "active_clock_mhz_range": [
+        1200.0,
+        1545.0
+      ],
+      "active_temperature_c_range": [
+        67.0,
+        86.0
+      ]
+    }
+  },
+  "gpu_warnings": [],
+  "timing_scope": {
+    "compile": {
+      "clock": "time.perf_counter subprocess wall time",
+      "included": [
+        "ONNX import and C++ MLIR passes",
+        "constant .bin export",
+        "LLVM IR translation",
+        "libdevice linking",
+        "LLVM O2 optimization",
+        "LLVM NVPTX PTX generation"
+      ],
+      "excluded": [
+        "ONNX export",
+        "setup and file copies",
+        "SHA-256",
+        "reporting",
+        "network transfer",
+        "offline ptxas",
+        "CUDA Driver JIT",
+        "GPU execution"
+      ],
+      "cache_policy": "OS file caches are not flushed; two balanced-order rounds, not cold-cache compilation",
+      "target": "sm_86 +ptx80; FP32 model; fp-contract off; nvptx-fma-level 0",
+      "variants": {
+        "legacy-scalar": [
+          "--regular-lowering=legacy"
+        ],
+        "linalg": [
+          "--regular-lowering=linalg"
+        ],
+        "legacy-optimized": [
+          "--regular-lowering=legacy",
+          "--cuda-matmul-schedule=auto",
+          "--cuda-reduction-schedule=cooperative",
+          "--cuda-conv-channel-tile=8"
+        ]
+      },
+      "order": [
+        [
+          "legacy-scalar",
+          "linalg",
+          "legacy-optimized"
+        ],
+        [
+          "legacy-optimized",
+          "linalg",
+          "legacy-scalar"
+        ],
+        [
+          "legacy-scalar"
+        ]
+      ]
+    },
+    "load_jit": "Host wall time of cuModuleLoadDataEx with CUDA_CACHE_DISABLE=1 and eager module/data loading. Includes module loading; not isolated pure JIT compiler time.",
+    "inference": "CUDA Events across all dispatches on one stream, including host submission gaps; excludes initialization, uploads, downloads, preprocessing and postprocessing.",
+    "samples": "Two valid compile samples, two fresh processes and six timed frames per variant; one warmup per process. GPU runs ABCCBA; clocks not locked."
+  },
+  "source_report_sha256": {
+    "compile-report.json": "999db9fbbd23c881869f451b84d53f153bacb1a59939bc34aff9c03a255440d6",
+    "remote-reports/results/comparison.json": "d409b3a515d780a92be236434357cb0e02b8774a390357f782e6215c716e9ed9",
+    "remote-reports/numerical-validation.json": "a808a6df8055b2bbae0985bcacbbaa428051056eed888434ccb36851a9642e60"
+  },
+  "code_sha256": {
+    "native/runtime/cuda-run.cpp": "f07a33401b15bbd6486995ff7a2b937b4e1dc0d35e167347b31f585c1bbb24cc",
+    "native/tests/benchmark_cuda_lowering.py": "074bfeea905a1d3c0f6dc32dad975d5c2ad7f2a25c9f67c5a5fd81396886fe97",
+    "native/tests/benchmark_cuda_device.py": "c8347eb8e1f2ad9cc2b4cd82d29b1c6691cf018fdfef01c4bc32df1b7d8f9ea3",
+    "native/tests/check_cuda_timing_report.py": "031d9181a0c0419a91191f13701ec5b493c907b378a9feab082984c8a4fde4fa"
+  }
+}

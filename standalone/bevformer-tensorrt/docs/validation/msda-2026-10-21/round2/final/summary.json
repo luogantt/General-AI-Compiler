@@ -1,0 +1,55 @@
+{
+  "status": "accepted_on_fixed_input",
+  "scope": "One inference per sample; input/output copies, loading, preprocessing and warmup excluded",
+  "configuration": {
+    "channels_per_thread": 4,
+    "block_threads": 128,
+    "specialize": 3,
+    "prefetch": 0
+  },
+  "round1_median_ms": 335.59552001953125,
+  "index32_median_ms": 326.88023376464844,
+  "latency_reduction_percent": 2.5969614416710862,
+  "speedup": 1.026662016710248,
+  "inverse_latency_fps": 3.0592244397377457,
+  "samples_per_version": 60,
+  "per_run_medians_ms": {
+    "round1-1": 333.97491455078125,
+    "restored-default": 336.7322692871094,
+    "index32-1": 326.69091796875,
+    "index32-2": 326.97186279296875,
+    "round1-2": 337.15423583984375
+  },
+  "bitwise_equal_to_round1_and_official": true,
+  "validation_file": "comparison.json",
+  "gpu_checks": 342,
+  "independent_oracle_checks": 6,
+  "cpu_tests": 134,
+  "engine_sha256": {
+    "round1-1": "9fb58a02198c63e017ecc09bbee40b23fd99cfa214df4f0391dc9b5fe9955c98",
+    "index32-1": "39888302dfcba0e2d8161ab9f8d4630c2f0f4dc8a1369e1888464b06efa3d19a"
+  },
+  "plugin_libraries": {
+    "round1-1": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so",
+        "sha256": "ab6338e70458d84473f3efee983bc9549b73e316dd5e50f844c889048ff81dbd"
+      }
+    ],
+    "index32-1": [
+      {
+        "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+        "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+      }
+    ]
+  },
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "tested_source_archive_sha256": "ce24247f8b2999050957ba1d8043f8dc93edcd6fe3a36a455f8b94d75d32a4c1",
+  "limitations": [
+    "One fixed real-image input; fixed geometry, no historical frame, raw detection head outputs.",
+    "No nuScenes mAP/NDS or FP32 quantization acceptance.",
+    "GPU clocks were not locked; each run began after temperature <=55C and utilization <10%.",
+    "First-round 18.05% was measured separately; do not add percentages or mix its denominator.",
+    "TensorRT plugin optimization, not native MLIR/PTX performance."
+  ]
+}

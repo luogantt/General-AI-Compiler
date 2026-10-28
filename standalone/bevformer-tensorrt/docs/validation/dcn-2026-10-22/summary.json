@@ -1,0 +1,114 @@
+{
+  "scope": "Same-round A/B/B/A full fixed-graph TensorRT engine; no loading/transfers/preprocessing/temporal history/postprocessing",
+  "baseline_median_ms": 325.9664306640625,
+  "candidate_median_ms": 309.4241027832031,
+  "latency_reduction_percent": 5.074856281108198,
+  "speedup": 1.053461665500731,
+  "candidate_fps": 3.2318102921046403,
+  "samples_per_variant": [
+    60,
+    60
+  ],
+  "runs": {
+    "baseline-1": 325.02783203125,
+    "candidate-1": 309.4630432128906,
+    "candidate-2": 309.3401184082031,
+    "baseline-2": 326.5741271972656
+  },
+  "baseline_engine_sha256": "39888302dfcba0e2d8161ab9f8d4630c2f0f4dc8a1369e1888464b06efa3d19a",
+  "candidate_engine_sha256": "dc4200cd2bd4c21a443e05211d79599d3bf0fa5e2d55f4ae1ddef79c7a8ad08d",
+  "plugin_libraries": [
+    {
+      "path": "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+      "sha256": "940114982108dec7ee661b4f3e17b85bd5191d6c1137e992a2c99bd2927e81c6"
+    },
+    {
+      "path": "/home/robot/project/gac-msda-20261021/build-dcn-plugin/libgac_dcn_plugin.so",
+      "sha256": "d22e5fa2ae9641ac2e8f0b847ce5aaea76f5fe445053ce99b2d448e21cd30982"
+    }
+  ],
+  "inputs_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "cpu_tests": 160,
+  "kernel_checks": {
+    "cases": 16,
+    "checks": 320,
+    "oracle_checks": 4,
+    "invalid_argument_checks": 42
+  },
+  "multi_context_status": "passed",
+  "comparisons": {
+    "baseline-repeat": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      }
+    },
+    "candidate-1": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      }
+    },
+    "candidate-2": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      }
+    },
+    "official-reference": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise_equal": true,
+        "max_abs": 0.0
+      }
+    }
+  },
+  "limitations": [
+    "Single real image batch, fixed geometry and zero-history; not nuScenes mAP/NDS.",
+    "GPU clocks are not locked.",
+    "Do not add percentage gains from separate rounds."
+  ]
+}

@@ -145,6 +145,14 @@ struct Device {
       fail("invalid device core count");
     physicalBuffers = plan.doubleBuffer;
     for (const auto &dispatch : plan.dispatches) {
+      if (dispatch.triton) {
+        if (dispatch.lanes != lanes || dispatch.tritonNumWarps > warps ||
+            dispatch.blockSize > lanes * warps)
+          fail("Triton Vortex lane/warp geometry is incompatible with this device");
+        if (vx_check_occupancy(device, dispatch.blockSize, 0))
+          fail("Triton Vortex program cannot fit one CTA on this device");
+        continue;
+      }
       if (dispatch.vortexSchedule.empty())
         continue;
       if (dispatch.lanes != lanes || dispatch.blockSize > lanes * warps)
@@ -251,16 +259,26 @@ struct Device {
       for (size_t input : dispatch.inputs)
         arguments.back().push_back(address(plan.tensors[input]));
       arguments.back().push_back(address(plan.tensors[dispatch.output]));
+      // Vortex kernel arguments occupy 8-byte host ABI slots.  Scalar i32/f32
+      // arguments live in the low 32 bits of their slot; value-initializing
+      // uint64_t values also proves every high half is zero.
+      if (dispatch.triton && dispatch.tritonKind == "softmax")
+        arguments.back().push_back(uint64_t(dispatch.tritonSoftmaxN));
+      if (dispatch.triton && dispatch.tritonKind == "layer_norm") {
+        arguments.back().push_back(uint64_t(dispatch.tritonLayerNormN));
+        arguments.back().push_back(
+            uint64_t(dispatch.tritonLayerNormEpsilonF32Bits));
+      }
       vx_launch_info_t launch = {};
       launch.struct_size = sizeof(launch);
       launch.kernel = kernels.at(i);
       launch.args_host = arguments.back().data();
       launch.args_size = arguments.back().size() * sizeof(uint64_t);
       launch.ndim = 1;
-      bool tiled = !dispatch.vortexSchedule.empty();
-      launch.grid_dim[0] = tiled ? dispatch.gridSize :
+      bool explicitGeometry = dispatch.triton || !dispatch.vortexSchedule.empty();
+      launch.grid_dim[0] = explicitGeometry ? dispatch.gridSize :
           uint32_t((uint64_t(dispatch.elements) + threads - 1) / threads);
-      launch.block_dim[0] = tiled ? dispatch.blockSize : threads;
+      launch.block_dim[0] = explicitGeometry ? dispatch.blockSize : threads;
       launch.lmem_size = dispatch.lmemBytes;
       events.push_back(nullptr);
       CHECK(vx_enqueue_launch(queue, &launch, prior ? 1 : 0,
@@ -382,12 +400,73 @@ int main(int argc, char **argv) {
     CHECK(vx_queue_finish(device.queue, VX_TIMEOUT_INFINITE));
     auto finished = Clock::now();
     const char *backend = std::getenv("VORTEX_DRIVER");
+    json::Array launchReport;
+    int64_t tritonDispatches = 0;
+    for (const auto &dispatch : plan.dispatches) {
+      bool explicitGeometry = dispatch.triton || !dispatch.vortexSchedule.empty();
+      json::Object launch{
+          {"kernel", dispatch.kernel},
+          {"backend", dispatch.triton ? "triton-vortex" : "native-vortex"},
+          {"elements", int64_t(dispatch.elements)},
+          {"grid_size", explicitGeometry ? int64_t(dispatch.gridSize) :
+              int64_t((uint64_t(dispatch.elements) + device.threads - 1) /
+                      device.threads)},
+          {"block_size", int64_t(explicitGeometry ? dispatch.blockSize : device.threads)},
+          {"lmem_bytes", int64_t(dispatch.lmemBytes)},
+          {"argument_abi", dispatch.triton ? dispatch.tritonAbi
+                                             : "vortex-u64-pointers"}};
+      if (dispatch.triton) {
+        ++tritonDispatches;
+        launch["kind"] = dispatch.tritonKind;
+        if (dispatch.tritonKind == "pointwise") {
+          launch["block_elements"] = int64_t(dispatch.tritonBlockElements);
+        } else if (dispatch.tritonKind == "softmax") {
+          launch["rows"] = int64_t(dispatch.tritonSoftmaxRows);
+          launch["width"] = int64_t(dispatch.tritonSoftmaxWidth);
+          launch["n"] = int64_t(dispatch.tritonSoftmaxN);
+          launch["tile"] = int64_t(dispatch.tritonSoftmaxTile);
+        } else if (dispatch.tritonKind == "layer_norm") {
+          launch["rows"] = int64_t(dispatch.tritonLayerNormRows);
+          launch["width"] = int64_t(dispatch.tritonLayerNormWidth);
+          launch["n"] = int64_t(dispatch.tritonLayerNormN);
+          launch["tile"] = int64_t(dispatch.tritonLayerNormTile);
+          launch["epsilon_f32_bits"] =
+              int64_t(dispatch.tritonLayerNormEpsilonF32Bits);
+        } else if (dispatch.tritonKind == "reduction") {
+          launch["width"] = int64_t(dispatch.tritonReductionWidth);
+          launch["tile"] = int64_t(dispatch.tritonReductionTile);
+        } else if (dispatch.tritonKind == "matmul") {
+          launch["m"] = int64_t(dispatch.m);
+          launch["n"] = int64_t(dispatch.n);
+          launch["k"] = int64_t(dispatch.k);
+          launch["batches"] = int64_t(dispatch.batches);
+          launch["batch_mode"] = dispatch.tritonMatmulBatchMode;
+          launch["block_m"] = int64_t(dispatch.tileM);
+          launch["block_n"] = int64_t(dispatch.tileN);
+          launch["block_k"] = int64_t(dispatch.tileK);
+          auto shape = [](const std::vector<int64_t> &dimensions) {
+            json::Array result;
+            for (int64_t dimension : dimensions)
+              result.push_back(dimension);
+            return result;
+          };
+          launch["a_shape"] = shape(plan.tensors[dispatch.inputs[0]].shape);
+          launch["b_shape"] = shape(plan.tensors[dispatch.inputs[1]].shape);
+          launch["c_shape"] = shape(plan.tensors[dispatch.output].shape);
+        }
+        launch["num_warps"] = int64_t(dispatch.tritonNumWarps);
+      }
+      launchReport.push_back(std::move(launch));
+    }
     json::Object report{
         {"schema_version", 1},
         {"execution", "vortex-device"},
         {"driver", backend ? backend : "runtime-default"},
         {"host_operator_fallback", false},
         {"dispatches", int64_t(plan.dispatches.size())},
+        {"triton_dispatches", tritonDispatches},
+        {"native_dispatches", int64_t(plan.dispatches.size()) - tritonDispatches},
+        {"launches", std::move(launchReport)},
         {"arena_bytes", int64_t(plan.arenaBytes)},
         {"embedded_constant_bytes", int64_t(plan.embeddedConstantBytes)},
         {"trace_dispatches", traceDispatches},

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GAC 算子 Lowering 整体架构</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --hairline: #e1e0d9;
+    --border: rgba(11, 11, 11, 0.10);
+    --code-bg: #f1f0eb;
+    --link: #1c5cab;
+    --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 10px 28px rgba(11, 11, 11, 0.05);
+
+    --cat-shared: #2a78d6;
+    --cat-graph: #eb6834;
+    --cat-regular: #1baf7a;
+    --cat-irregular: #4a3aa7;
+    --cat-accel: #e87ba4;
+    --cat-backend: #008300;
+
+    --cat-shared-soft: rgba(42, 120, 214, 0.10);
+    --cat-graph-soft: rgba(235, 104, 52, 0.10);
+    --cat-regular-soft: rgba(27, 175, 122, 0.12);
+    --cat-irregular-soft: rgba(74, 58, 167, 0.10);
+    --cat-accel-soft: rgba(232, 123, 164, 0.14);
+    --cat-backend-soft: rgba(0, 131, 0, 0.10);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --hairline: #2c2c2a;
+      --border: rgba(255, 255, 255, 0.10);
+      --code-bg: #232322;
+      --link: #86b6ef;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 28px rgba(0, 0, 0, 0.28);
+
+      --cat-shared: #3987e5;
+      --cat-graph: #d95926;
+      --cat-regular: #199e70;
+      --cat-irregular: #9085e9;
+      --cat-accel: #d55181;
+      --cat-backend: #008300;
+
+      --cat-shared-soft: rgba(57, 135, 229, 0.16);
+      --cat-graph-soft: rgba(217, 89, 38, 0.16);
+      --cat-regular-soft: rgba(25, 158, 112, 0.16);
+      --cat-irregular-soft: rgba(144, 133, 233, 0.16);
+      --cat-accel-soft: rgba(213, 81, 129, 0.18);
+      --cat-backend-soft: rgba(0, 131, 0, 0.16);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --hairline: #2c2c2a;
+    --border: rgba(255, 255, 255, 0.10);
+    --code-bg: #232322;
+    --link: #86b6ef;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.30), 0 10px 28px rgba(0, 0, 0, 0.28);
+
+    --cat-shared: #3987e5;
+    --cat-graph: #d95926;
+    --cat-regular: #199e70;
+    --cat-irregular: #9085e9;
+    --cat-accel: #d55181;
+    --cat-backend: #008300;
+
+    --cat-shared-soft: rgba(57, 135, 229, 0.16);
+    --cat-graph-soft: rgba(217, 89, 38, 0.16);
+    --cat-regular-soft: rgba(25, 158, 112, 0.16);
+    --cat-irregular-soft: rgba(144, 133, 233, 0.16);
+    --cat-accel-soft: rgba(213, 81, 129, 0.18);
+    --cat-backend-soft: rgba(0, 131, 0, 0.16);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 48px 0 72px;
+  }
+
+  .hero {
+    padding: 8px 0 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 10px 0 10px;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 750;
+  }
+
+  .lede {
+    max-width: 760px;
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 15.5px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-top: 22px;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--dot);
+    flex: none;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .desc code,
+  .note code,
+  .substage p code,
+  .footer code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 0.92em;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+
+  .control,
+  .filter-btn {
+    appearance: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--ink-2);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .control:hover,
+  .filter-btn:hover {
+    border-color: var(--muted);
+    color: var(--ink);
+  }
+
+  .filter-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+  }
+
+  .control:focus-visible,
+  .filter-btn:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--cat-shared, #2a78d6);
+    outline-offset: 2px;
+  }
+
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    padding-top: 28px;
+  }
+
+  .connector {
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+
+  .connector::before {
+    content: "";
+    width: 2px;
+    height: 100%;
+    background: var(--hairline);
+  }
+
+  .connector::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid var(--hairline);
+  }
+
+  .node {
+    --cat: var(--cat-shared);
+    --cat-soft: var(--cat-shared-soft);
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px 18px 28px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .node:hover {
+    transform: translateY(-2px);
+    border-color: var(--cat);
+  }
+
+  .node::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: var(--cat);
+  }
+
+  .node[data-cat="shared"]   { --cat: var(--cat-shared);    --cat-soft: var(--cat-shared-soft); }
+  .node[data-cat="graph"]    { --cat: var(--cat-graph);     --cat-soft: var(--cat-graph-soft); }
+  .node[data-cat="regular"]  { --cat: var(--cat-regular);   --cat-soft: var(--cat-regular-soft); }
+  .node[data-cat="irregular"]{ --cat: var(--cat-irregular); --cat-soft: var(--cat-irregular-soft); }
+  .node[data-cat="accel"]    { --cat: var(--cat-accel);     --cat-soft: var(--cat-accel-soft); }
+  .node[data-cat="backend"]  { --cat: var(--cat-backend);   --cat-soft: var(--cat-backend-soft); }
+
+  .node-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .node-no {
+    width: 30px;
+    height: 30px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--cat-soft);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--cat-soft);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-size: 11.5px;
+    font-weight: 650;
+    letter-spacing: 0.02em;
+  }
+
+  .badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cat);
+    flex: none;
+  }
+
+  .node h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .node h2 .arrow {
+    color: var(--muted);
+    font-weight: 400;
+    margin: 0 4px;
+  }
+
+  .desc {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 13.5px;
+    max-width: 860px;
+  }
+
+  .code-map {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--hairline);
+    display: grid;
+    gap: 7px;
+  }
+
+  .code-label {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 650;
+  }
+
+  .code-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12.5px;
+    min-width: 0;
+  }
+
+  .code-fn {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  .code-path {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    color: var(--link);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
+    overflow-wrap: anywhere;
+  }
+
+  .code-path:hover {
+    border-bottom-color: var(--link);
+  }
+
+  .op-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .chip {
+    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    font-size: 11.5px;
+    color: var(--ink-2);
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 7px;
+  }
+
+  .note {
+    margin-top: 12px;
+    padding-left: 10px;
+    border-left: 2px solid var(--cat);
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+
+  .fork {
+    margin-top: 4px;
+  }
+
+  .fork-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 4px 0 14px;
+    color: var(--ink-2);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .fork-banner::before,
+  .fork-banner::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: var(--hairline);
+  }
+
+  .fork-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .substage {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--code-bg);
+  }
+
+  .substage h3 {
+    margin: 0 0 6px;
+    font-size: 13.5px;
+    letter-spacing: 0.01em;
+  }
+
+  .substage p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: 12.5px;
+  }
+
+  .substage .code-map {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .accel-grid,
+  .abi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 14px;
+  }
+
+  .accel-block,
+  .abi-block {
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--code-bg);
+  }
+
+  .accel-block h3,
+  .abi-block h3 {
+    margin: 0 0 8px;
+    font-size: 13.5px;
+  }
+
+  .accel-block .code-map,
+  .abi-block .code-map {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .table-section {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .table-section h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .table-section p {
+    margin: 0 0 16px;
+    color: var(--ink-2);
+    font-size: 13.5px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 720px;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+
+  th {
+    font-size: 10.5px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 650;
+    white-space: nowrap;
+  }
+
+  tr:last-child td { border-bottom: 0; }
+
+  td code {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 5px;
+  }
+
+  td a {
+    color: var(--link);
+    text-decoration: none;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
+  }
+
+  td a:hover { border-bottom-color: var(--link); }
+
+  .footer {
+    margin-top: 40px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hairline);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .is-filtered { display: none !important; }
+
+  @media (max-width: 860px) {
+    .page { width: min(100% - 28px, 1180px); padding-top: 28px; }
+    .fork-grid,
+    .accel-grid,
+    .abi-grid { grid-template-columns: 1fr; }
+    .node { padding: 18px 18px 16px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+
+  @media print {
+    :root { --page: #ffffff; --surface: #ffffff; --shadow: none; }
+    body { background: #ffffff; }
+    .controls, .footer { display: none; }
+    .node { break-inside: avoid; box-shadow: none; border: 1px solid #c3c2b7; }
+    .table-wrap { box-shadow: none; }
+    .code-path { color: #000; border-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">GAC · General AI Compiler · Native MLIR Path</div>
+    <h1>算子 Lowering 整体架构</h1>
+    <p class="lede">
+      从 ONNX 算子到设备 Kernel 的完整路径。每张卡片是一个 lowering 阶段，
+      卡片底部列出该阶段真实生效的代码入口；点击路径可直接打开对应源码。
+    </p>
+
+    <div class="legend" aria-label="阶段类别图例">
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-shared)"></span>共享前端 / 语义</span>
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-graph)"></span>图优化 / 分叉</span>
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-regular)"></span>规则路径 Linalg</span>
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-irregular)"></span>不规则路径专用发射</span>
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-accel)"></span>可选加速</span>
+      <span class="legend-item"><span class="legend-dot" style="--dot: var(--cat-backend)"></span>后端 / Runtime</span>
+    </div>
+
+    <div class="controls">
+      <button class="control" id="theme-toggle" type="button" aria-label="切换亮色或深色主题">◐ 深色</button>
+      <span class="filter-group" role="group" aria-label="按类别筛选阶段">
+        <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button class="filter-btn" type="button" data-filter="shared" aria-pressed="false">共享</button>
+        <button class="filter-btn" type="button" data-filter="graph" aria-pressed="false">图优化</button>
+        <button class="filter-btn" type="button" data-filter="regular" aria-pressed="false">规则</button>
+        <button class="filter-btn" type="button" data-filter="irregular" aria-pressed="false">不规则</button>
+        <button class="filter-btn" type="button" data-filter="accel" aria-pressed="false">加速</button>
+        <button class="filter-btn" type="button" data-filter="backend" aria-pressed="false">后端</button>
+      </span>
+    </div>
+  </header>
+
+  <main class="pipeline">
+
+    <!-- 00 -->
+    <article class="node" data-cat="shared">
+      <div class="node-top">
+        <span class="node-no">00</span>
+        <span class="badge">共享 · 导入</span>
+      </div>
+      <h2>ONNX 算子 <span class="arrow">→</span> GAC 方言</h2>
+      <p class="desc">
+        C++ 直接解析 ModelProto，把 ONNX 的 NodeProto 映射成注册过的 <code>gac.*</code> Operation。
+        权重变成 DenseElementsAttr；SSA 关系取代名字查找。标准算子走 op_type 映射，
+        MSDeformAttn 等自定义算子走显式 domain 契约。
+      </p>
+      <div class="op-chips">
+        <span class="chip">Conv → gac.conv2d</span>
+        <span class="chip">MatMul → gac.matmul</span>
+        <span class="chip">Gemm</span>
+        <span class="chip">Softmax</span>
+        <span class="chip">LayerNormalization</span>
+        <span class="chip">gac/MSDeformAttn</span>
+        <span class="chip">mmcv/MMCVModulatedDeformConv2d</span>
+      </div>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">operationName()</span>
+          <a class="code-path" href="../native/lib/OnnxImporter.cpp#L523">native/lib/OnnxImporter.cpp:523</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">customOperationName()</span>
+          <a class="code-path" href="../native/lib/OnnxImporter.cpp#L580">native/lib/OnnxImporter.cpp:580</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">importNode()</span>
+          <a class="code-path" href="../native/lib/OnnxImporter.cpp#L632">native/lib/OnnxImporter.cpp:632</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 01 -->
+    <article class="node" data-cat="shared">
+      <div class="node-top">
+        <span class="node-no">01</span>
+        <span class="badge">共享 · 语义</span>
+      </div>
+      <h2>GAC 语义层：类型、shape、属性校验</h2>
+      <p class="desc">
+        算子只声明“语义”，不执行计算。每个 Operation 的 verify() 和 ShapeInferencePass
+        都调用同一个 <code>inferOperation()</code>：已知维度必须一致，动态维度可以保留，
+        无法证明的语义直接报错。DCNv2 和 MSDeformAttn 使用独立的固定契约推导。
+      </p>
+      <div class="op-chips">
+        <span class="chip">gac.constant</span>
+        <span class="chip">gac.matmul / gemm</span>
+        <span class="chip">gac.conv2d</span>
+        <span class="chip">gac.softmax / layer_norm</span>
+        <span class="chip">gac.ms_deform_attn</span>
+      </div>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">GAC_DECLARE_OP / 算子类</span>
+          <a class="code-path" href="../native/include/gac/Dialect.h#L58">native/include/gac/Dialect.h:58</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">inferOperation()</span>
+          <a class="code-path" href="../native/lib/Dialect.cpp#L558">native/lib/Dialect.cpp:558</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">inferDeformConv()</span>
+          <a class="code-path" href="../native/lib/Dialect.cpp#L313">native/lib/Dialect.cpp:313</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">inferMSDeformAttn()</span>
+          <a class="code-path" href="../native/lib/Dialect.cpp#L413">native/lib/Dialect.cpp:413</a>
+        </div>
+      </div>
+      <div class="note">语义层不读取设备参数，也不决定线程映射；这些属于后续 DeviceLowering。</div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 02 -->
+    <article class="node" data-cat="graph">
+      <div class="node-top">
+        <span class="node-no">02</span>
+        <span class="badge">图优化 · 合法化</span>
+      </div>
+      <h2>形状推导、常量折叠、合法化与融合</h2>
+      <p class="desc">
+        在进入设备 Lowering 前，图会经过固定点形状推导与有预算的 APInt/APFloat 常量折叠；
+        静态 Split 被拆成多个 Slice，ScatterND 被证明为无竞争的只读查找表，
+        单消费者且语义等价的 pattern 被融合。CSE/canonicalize 由上游 MLIR 提供。
+      </p>
+      <div class="op-chips">
+        <span class="chip">split → slice</span>
+        <span class="chip">scatter_nd → slice map</span>
+        <span class="chip">squeeze_if_unit_dim → squeeze</span>
+        <span class="chip">add + relu → add_relu</span>
+        <span class="chip">conv + relu → conv2d_relu</span>
+        <span class="chip">matmul + add → matmul_bias</span>
+        <span class="chip">msda + coord → ms_deform_attn_offsets</span>
+      </div>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">ShapeInferencePass</span>
+          <a class="code-path" href="../native/lib/GraphPasses.cpp#L54">native/lib/GraphPasses.cpp:54</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">foldConstantOperation()</span>
+          <a class="code-path" href="../native/lib/ConstantFolding.cpp#L329">native/lib/ConstantFolding.cpp:329</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">LegalizeTensorOpsPass</span>
+          <a class="code-path" href="../native/lib/TensorLegalization.cpp#L347">native/lib/TensorLegalization.cpp:347</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">GraphFusionPass</span>
+          <a class="code-path" href="../native/lib/GraphPasses.cpp#L199">native/lib/GraphPasses.cpp:199</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">融合 Pattern</span>
+          <a class="code-path" href="../native/lib/fusion/GraphFusionPatterns.cpp#L318">native/lib/fusion/GraphFusionPatterns.cpp:318</a>
+        </div>
+      </div>
+      <div class="note">常量折叠只处理“编译期可证明为常量”的子图；输入依赖的计算不会被参考数据替换。</div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 03 -->
+    <article class="node" data-cat="graph">
+      <div class="node-top">
+        <span class="node-no">03</span>
+        <span class="badge">分叉判定</span>
+      </div>
+      <h2>规则算子？<span class="arrow">→</span> isRegular()</h2>
+      <p class="desc">
+        这是整个 lowering 的唯一分叉点。只有 16 个算子被认定为“规则”，改写成结构化 Linalg；
+        其余算子保留 <code>gac.*</code>，交给专用发射器。规则算子如果形态不合法，
+        会直接报错，不会静默退回旧标量路径。
+      </p>
+      <div class="op-chips">
+        <span class="chip">matmul · gemm · matmul_bias · matmul_bias_relu</span>
+        <span class="chip">add · sub · mul · div · relu · add_relu</span>
+        <span class="chip">reduce_sum · reduce_mean · softmax · layer_norm</span>
+        <span class="chip">conv2d · conv2d_relu</span>
+      </div>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">isRegular()</span>
+          <a class="code-path" href="../native/lib/LinalgLowering.cpp#L415">native/lib/LinalgLowering.cpp:415</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">lowerRegularToLinalg()</span>
+          <a class="code-path" href="../native/lib/LinalgLowering.cpp#L477">native/lib/LinalgLowering.cpp:477</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">preflight()</span>
+          <a class="code-path" href="../native/lib/DeviceLowering.cpp#L725">native/lib/DeviceLowering.cpp:725</a>
+        </div>
+      </div>
+    </article>
+
+    <div class="fork">
+      <div class="fork-banner">分叉：两种 Lowering 策略，最终共用同一套 Buffer 与 dispatch 规划</div>
+      <div class="fork-grid">
+
+        <!-- 04 -->
+        <article class="node" data-cat="regular">
+          <div class="node-top">
+            <span class="node-no">04</span>
+            <span class="badge">规则路径 · Linalg</span>
+          </div>
+          <h2>规则算子 <span class="arrow">→</span> 结构化 Linalg</h2>
+          <p class="desc">
+            把计算暴露为 <code>indexing_maps + iterator_types + payload region</code>。
+            输出维是 parallel，K 轴是唯一 reduction；FP16 输入用 FP32 累加。
+            后续可以直接使用上游 Linalg 的 tiling / fusion 能力，而不是平铺标量循环。
+          </p>
+          <div class="op-chips">
+            <span class="chip">linalg.generic</span>
+            <span class="chip">linalg.matmul</span>
+            <span class="chip">tensor.pad</span>
+          </div>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">lowerPointwise()</span>
+              <a class="code-path" href="../native/lib/LinalgLowering.cpp#L144">native/lib/LinalgLowering.cpp:144</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">lowerMatmul()</span>
+              <a class="code-path" href="../native/lib/LinalgLowering.cpp#L167">native/lib/LinalgLowering.cpp:167</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">lowerReduce()</span>
+              <a class="code-path" href="../native/lib/LinalgLowering.cpp#L321">native/lib/LinalgLowering.cpp:321</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">lowerSoftmax()</span>
+              <a class="code-path" href="../native/lib/LinalgLowering.cpp#L352">native/lib/LinalgLowering.cpp:352</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">lowerLayerNorm()</span>
+              <a class="code-path" href="../native/lib/LinalgLowering.cpp#L364">native/lib/LinalgLowering.cpp:364</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">lowerConvolutionToLinalg()</span>
+              <a class="code-path" href="../native/lib/LinalgConvolution.cpp#L67">native/lib/LinalgConvolution.cpp:67</a>
+            </div>
+          </div>
+
+          <div class="substage">
+            <h3>↓ Linalg → 设备循环</h3>
+            <p>
+              destination 映射到已分配的全局 Buffer，再调用上游 <code>linalgOpToLoops</code>。
+              单消费者 producer 可以在当前输出元素上就地求值；没有设备端 malloc。
+              当前调度是每线程一个输出、归约在线程内串行。
+            </p>
+            <div class="code-map">
+              <span class="code-label">代码映射</span>
+              <div class="code-item">
+                <span class="code-fn">isFusedLinalgProducer()</span>
+                <a class="code-path" href="../native/lib/LinalgDevice.cpp#L13">native/lib/LinalgDevice.cpp:13</a>
+              </div>
+              <div class="code-item">
+                <span class="code-fn">getLinalgDeviceInputs()</span>
+                <a class="code-path" href="../native/lib/LinalgDevice.cpp#L18">native/lib/LinalgDevice.cpp:18</a>
+              </div>
+              <div class="code-item">
+                <span class="code-fn">emitLinalgDeviceElement()</span>
+                <a class="code-path" href="../native/lib/LinalgDevice.cpp#L27">native/lib/LinalgDevice.cpp:27</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 05 -->
+        <article class="node" data-cat="irregular">
+          <div class="node-top">
+            <span class="node-no">05</span>
+            <span class="badge">不规则路径 · 专用发射</span>
+          </div>
+          <h2>不规则算子 <span class="arrow">→</span> emitElement / emitSpatial</h2>
+          <p class="desc">
+            保留 <code>gac.*</code>，由 <code>preflight()</code> 白名单和形状约束把关，
+            再用 ScalarBuilder 创建 typed SCF / Arith / Math / LLVM Operation。
+            空间算子按 level / point 流式处理，不物化 <code>[B,H,D,Q,L,P]</code> 大中间张量。
+          </p>
+          <div class="op-chips">
+            <span class="chip">ms_deform_attn / _offsets</span>
+            <span class="chip">deform_conv2d</span>
+            <span class="chip">grid_sample</span>
+            <span class="chip">resize</span>
+            <span class="chip">scatter_nd</span>
+            <span class="chip">slice</span>
+            <span class="chip">tile</span>
+            <span class="chip">gather</span>
+            <span class="chip">transpose</span>
+            <span class="chip">concat</span>
+            <span class="chip">where / pow / greater</span>
+          </div>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">preflight()</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L725">native/lib/DeviceLowering.cpp:725</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">emitElement()</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L220">native/lib/DeviceLowering.cpp:220</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">emitSpatial()</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L504">native/lib/DeviceLowering.cpp:504</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">deform_conv2d 分支</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L512">native/lib/DeviceLowering.cpp:512</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">ms_deform_attn 分支</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L516">native/lib/DeviceLowering.cpp:516</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">slice / grid_sample / resize</span>
+              <a class="code-path" href="../native/lib/DeviceLowering.cpp#L668">native/lib/DeviceLowering.cpp:668</a>
+            </div>
+          </div>
+          <div class="note">
+            不满足 preflight 的算子直接报错；不会回退 CPU、CUDA 或另一个实现。
+            ScatterND 的常量索引表在 TensorLegalization 中证明并生成。
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 06 -->
+    <article class="node" data-cat="accel">
+      <div class="node-top">
+        <span class="node-no">06</span>
+        <span class="badge">可选加速</span>
+      </div>
+      <h2>计算模板与 Triton/Vortex 二选一</h2>
+      <p class="desc">
+        每个 dispatch 在保持同一份 Buffer 规划和 ABI 的前提下，可以选择设备计算模板，
+        或把满足严格合同的 Linalg 子图交给 Triton/Vortex。选择失败时保留 native 标量路径，
+        并把原因写入 manifest。
+      </p>
+      <div class="accel-grid">
+        <div class="accel-block">
+          <h3>设备计算模板 · templates::select / emit</h3>
+          <div class="op-chips">
+            <span class="chip">CUDA MatMul</span>
+            <span class="chip">CUDA Reduction</span>
+            <span class="chip">CUDA Conv/DCN</span>
+            <span class="chip">Vortex MatMul</span>
+            <span class="chip">Vortex TCU</span>
+          </div>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">templates::select()</span>
+              <a class="code-path" href="../native/templates/Registry.cpp#L116">native/templates/Registry.cpp:116</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">templates::emit()</span>
+              <a class="code-path" href="../native/templates/Registry.cpp#L134">native/templates/Registry.cpp:134</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">templates::annotate()</span>
+              <a class="code-path" href="../native/templates/Registry.cpp#L148">native/templates/Registry.cpp:148</a>
+            </div>
+          </div>
+        </div>
+        <div class="accel-block">
+          <h3>Triton/Vortex · TTIR → 同一 vxbin</h3>
+          <div class="op-chips">
+            <span class="chip">pointwise</span>
+            <span class="chip">tt.dot</span>
+            <span class="chip">tt.reduce</span>
+            <span class="chip">softmax</span>
+            <span class="chip">layer_norm</span>
+          </div>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">selectTritonPointwise / emit</span>
+              <a class="code-path" href="../native/lib/TritonBridge.cpp#L1697">native/lib/TritonBridge.cpp:1697</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">selectTritonDot / emit</span>
+              <a class="code-path" href="../native/lib/TritonBridge.cpp#L1324">native/lib/TritonBridge.cpp:1324</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">selectTritonLayerNorm / emit</span>
+              <a class="code-path" href="../native/lib/TritonBridge.cpp#L631">native/lib/TritonBridge.cpp:631</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">selectTritonSoftmax / emit</span>
+              <a class="code-path" href="../native/lib/TritonBridge.cpp#L950">native/lib/TritonBridge.cpp:950</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">selectTritonReduction / emit</span>
+              <a class="code-path" href="../native/lib/TritonBridge.cpp#L1153">native/lib/TritonBridge.cpp:1153</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        模板与 Triton 都不会绕过 DeviceLowering 的 Buffer 生命周期和依赖检查；
+        它们只替换 Kernel 实现。
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 07 -->
+    <article class="node" data-cat="backend">
+      <div class="node-top">
+        <span class="node-no">07</span>
+        <span class="badge">后端 · 设备规划</span>
+      </div>
+      <h2>统一 dispatch、静态 Buffer 与 manifest</h2>
+      <p class="desc">
+        两条路径在这里汇合。按 SSA last-use 规划 64 字节对齐的全局 arena，
+        建立 dispatch DAG，选择模板/Triton，并把每个 dispatch 的 lowering、ABI、
+        启动参数写入 <code>plan.json</code>。图输出存活到所有 dispatch 结束。
+      </p>
+      <div class="op-chips">
+        <span class="chip">arena_bytes</span>
+        <span class="chip">tensor 表</span>
+        <span class="chip">dispatch 表</span>
+        <span class="chip">lmem_bytes</span>
+        <span class="chip">launch geometry</span>
+      </div>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">lowerToDevice()</span>
+          <a class="code-path" href="../native/lib/DeviceLowering.cpp#L1095">native/lib/DeviceLowering.cpp:1095</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">Buffer 生命周期 / arena</span>
+          <a class="code-path" href="../native/lib/DeviceLowering.cpp#L1371">native/lib/DeviceLowering.cpp:1371</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">dispatch["lowering"]</span>
+          <a class="code-path" href="../native/lib/DeviceLowering.cpp#L1673">native/lib/DeviceLowering.cpp:1673</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">parsePlan()</span>
+          <a class="code-path" href="../native/runtime/dispatch-plan.h#L583">native/runtime/dispatch-plan.h:583</a>
+        </div>
+      </div>
+      <div class="note">
+        复用条件：<code>last_use &lt; new_producer</code>；dispatch 串行依赖；
+        Runtime 会再次校验活跃区间不重叠。
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 08 -->
+    <article class="node" data-cat="backend">
+      <div class="node-top">
+        <span class="node-no">08</span>
+        <span class="badge">后端 · ABI / LLVM</span>
+      </div>
+      <h2>目标 ABI 分叉 <span class="arrow">→</span> LLVM Dialect</h2>
+      <p class="desc">
+        共享的 SCF/Arith/Math 语义在这里套上目标 ABI：CUDA 使用 NVVM 和 64 位直接指针；
+        Vortex 使用 CSR / uniform / RV32 指针解包与 kernel annotation。
+        随后标准 MLIR conversion passes 把整张图收敛到 LLVM Dialect。
+      </p>
+      <div class="abi-grid">
+        <div class="abi-block">
+          <h3>CUDA · PTX</h3>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">LowerToCuda</span>
+              <a class="code-path" href="../native/lib/CudaPass.cpp#L11">native/lib/CudaPass.cpp:11</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">CudaMathToLibdevice</span>
+              <a class="code-path" href="../native/lib/CudaPass.cpp#L27">native/lib/CudaPass.cpp:27</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">configureCudaKernel()</span>
+              <a class="code-path" href="../native/lib/CudaLowering.cpp#L19">native/lib/CudaLowering.cpp:19</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">compile-cuda.sh</span>
+              <a class="code-path" href="../native/tools/compile-cuda.sh#L61">native/tools/compile-cuda.sh:61</a>
+            </div>
+          </div>
+        </div>
+        <div class="abi-block">
+          <h3>Vortex · vxbin</h3>
+          <div class="code-map">
+            <span class="code-label">代码映射</span>
+            <div class="code-item">
+              <span class="code-fn">VortexToLLVM</span>
+              <a class="code-path" href="../native/lib/VortexPass.cpp#L12">native/lib/VortexPass.cpp:12</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">LowerToVortex</span>
+              <a class="code-path" href="../native/lib/VortexPass.cpp#L74">native/lib/VortexPass.cpp:74</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">configureVortexModule()</span>
+              <a class="code-path" href="../native/lib/VortexLowering.cpp#L137">native/lib/VortexLowering.cpp:137</a>
+            </div>
+            <div class="code-item">
+              <span class="code-fn">Vortex.mk</span>
+              <a class="code-path" href="../native/tools/Vortex.mk#L29">native/tools/Vortex.mk:29</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="code-map">
+        <span class="code-label">共享转换</span>
+        <div class="code-item">
+          <span class="code-fn">addLLVMConversionPasses()</span>
+          <a class="code-path" href="../native/lib/DeviceLowering.cpp#L1953">native/lib/DeviceLowering.cpp:1953</a>
+        </div>
+      </div>
+      <div class="note">
+        最终 MLIR 边界是 LLVM Dialect；之后才由 <code>mlir-translate</code>、<code>llc</code>
+        或 VOLT 生成 PTX / vxbin。
+      </div>
+    </article>
+
+    <div class="connector" aria-hidden="true"></div>
+
+    <!-- 09 -->
+    <article class="node" data-cat="backend">
+      <div class="node-top">
+        <span class="node-no">09</span>
+        <span class="badge">Runtime</span>
+      </div>
+      <h2>manifest 驱动的执行</h2>
+      <p class="desc">
+        Runtime 不实现任何算子。它读取并重新校验 <code>plan.json</code>，分配/上传输入，
+        按 dispatch 顺序提交 Kernel，最后下载输出。Triton 与 native Kernel 共用同一张
+        dispatch DAG 和同一份静态 Buffer 规划。
+      </p>
+      <div class="code-map">
+        <span class="code-label">代码映射</span>
+        <div class="code-item">
+          <span class="code-fn">parsePlan()</span>
+          <a class="code-path" href="../native/runtime/dispatch-plan.h#L583">native/runtime/dispatch-plan.h:583</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">validateTritonSchedule()</span>
+          <a class="code-path" href="../native/runtime/dispatch-plan.h#L104">native/runtime/dispatch-plan.h:104</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">gac-cuda-run</span>
+          <a class="code-path" href="../native/runtime/cuda-run.cpp#L535">native/runtime/cuda-run.cpp:535</a>
+        </div>
+        <div class="code-item">
+          <span class="code-fn">gac-vortex-run</span>
+          <a class="code-path" href="../native/runtime/vortex-run.cpp#L305">native/runtime/vortex-run.cpp:305</a>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <section class="table-section">
+    <h2>算子 → 代码速查</h2>
+    <p>按算子族查找默认实现和可选加速路径。所有行都对应上面卡片中的真实入口。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>算子</th>
+            <th>默认实现</th>
+            <th>可选加速 / 备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>matmul</code> <code>gemm</code> <code>matmul_bias*</code></td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L167">LinalgLowering.cpp:167</a> lowerMatmul</td>
+            <td>CUDA/Vortex MatMul 模板；Triton <a href="../native/lib/TritonBridge.cpp#L1324">TritonBridge.cpp:1324</a></td>
+          </tr>
+          <tr>
+            <td><code>add</code> <code>sub</code> <code>mul</code> <code>div</code> <code>relu</code> <code>add_relu</code></td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L144">LinalgLowering.cpp:144</a> lowerPointwise</td>
+            <td>Triton Pointwise <a href="../native/lib/TritonBridge.cpp#L1697">TritonBridge.cpp:1697</a></td>
+          </tr>
+          <tr>
+            <td><code>pow</code> <code>greater</code> <code>less</code> <code>equal</code> <code>where</code> <code>and</code> <code>max</code></td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L220">DeviceLowering.cpp:220</a> emitElement</td>
+            <td>不规则路径；逐元素标量 Kernel</td>
+          </tr>
+          <tr>
+            <td><code>reduce_sum</code> <code>reduce_mean</code></td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L321">LinalgLowering.cpp:321</a> lowerReduce</td>
+            <td>Triton Reduction <a href="../native/lib/TritonBridge.cpp#L1153">TritonBridge.cpp:1153</a>（仅 rank-1 Sum）</td>
+          </tr>
+          <tr>
+            <td><code>softmax</code></td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L352">LinalgLowering.cpp:352</a> lowerSoftmax</td>
+            <td>Triton Softmax <a href="../native/lib/TritonBridge.cpp#L950">TritonBridge.cpp:950</a></td>
+          </tr>
+          <tr>
+            <td><code>layer_norm</code></td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L364">LinalgLowering.cpp:364</a> lowerLayerNorm</td>
+            <td>Triton LayerNorm <a href="../native/lib/TritonBridge.cpp#L631">TritonBridge.cpp:631</a></td>
+          </tr>
+          <tr>
+            <td><code>conv2d</code> <code>conv2d_relu</code></td>
+            <td><a href="../native/lib/LinalgConvolution.cpp#L67">LinalgConvolution.cpp:67</a> lowerConvolutionToLinalg</td>
+            <td>CUDA channel-tiled 模板</td>
+          </tr>
+          <tr>
+            <td><code>deform_conv2d</code></td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L512">DeviceLowering.cpp:512</a></td>
+            <td>CUDA DCNv2 channel-tiled 模板</td>
+          </tr>
+          <tr>
+            <td><code>ms_deform_attn</code> <code>ms_deform_attn_offsets</code></td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L516">DeviceLowering.cpp:516</a></td>
+            <td>流式 level/point；无 Triton / 模板路径</td>
+          </tr>
+          <tr>
+            <td><code>grid_sample</code> <code>resize</code> <code>slice</code> <code>max_pool2d</code> <code>batch_norm</code></td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L698">DeviceLowering.cpp:698</a> 等 emitSpatial 分支</td>
+            <td>不规则路径；按算子分支选择</td>
+          </tr>
+          <tr>
+            <td><code>scatter_nd</code></td>
+            <td><a href="../native/lib/TensorLegalization.cpp#L41">TensorLegalization.cpp:41</a> + <a href="../native/lib/DeviceLowering.cpp#L329">DeviceLowering.cpp:329</a></td>
+            <td>常量索引、无重复；只读 slice 查找表</td>
+          </tr>
+          <tr>
+            <td><code>split</code> <code>squeeze_if_unit_dim</code></td>
+            <td><a href="../native/lib/TensorLegalization.cpp#L272">TensorLegalization.cpp:272</a> / <a href="../native/lib/TensorLegalization.cpp#L223">:223</a></td>
+            <td>在设备 Lowering 前改写成 slice / squeeze</td>
+          </tr>
+          <tr>
+            <td><code>nonzero</code> <code>range</code> <code>shape</code></td>
+            <td><a href="../native/lib/ConstantFolding.cpp#L590">ConstantFolding.cpp:590</a> / <a href="../native/lib/ConstantFolding.cpp#L408">:408</a></td>
+            <td>通常只在纯常量时可折叠；动态形式受限</td>
+          </tr>
+          <tr>
+            <td>分叉判定</td>
+            <td><a href="../native/lib/LinalgLowering.cpp#L415">LinalgLowering.cpp:415</a> isRegular</td>
+            <td>16 个规则算子进入 Linalg，其余走专用发射</td>
+          </tr>
+          <tr>
+            <td>设备合法性</td>
+            <td><a href="../native/lib/DeviceLowering.cpp#L725">DeviceLowering.cpp:725</a> preflight</td>
+            <td>不在白名单的算子明确报错，不静默回退</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="footer">
+    代码位置以当前工作树为准。路径相对于本文件：
+    <code>docs/operator-lowering-architecture.html</code> → <code>../native/...</code>。
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('theme-toggle');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function currentIsDark() {
+      if (root.dataset.theme === 'dark') return true;
+      if (root.dataset.theme === 'light') return false;
+      return media.matches;
+    }
+
+    function syncToggle() {
+      if (!toggle) return;
+      var dark = currentIsDark();
+      toggle.textContent = dark ? '☀ 浅色' : '◐ 深色';
+      toggle.setAttribute('aria-label', dark ? '切换到浅色主题' : '切换到深色主题');
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        root.dataset.theme = currentIsDark() ? 'light' : 'dark';
+        syncToggle();
+      });
+    }
+    if (media.addEventListener) {
+      media.addEventListener('change', syncToggle);
+    }
+    syncToggle();
+
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.filter-btn'));
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('.node[data-cat]'));
+
+    buttons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        var filter = button.getAttribute('data-filter');
+        buttons.forEach(function (other) {
+          other.setAttribute('aria-pressed', String(other === button));
+        });
+        nodes.forEach(function (node) {
+          var show = filter === 'all' || node.getAttribute('data-cat') === filter;
+          node.classList.toggle('is-filtered', !show);
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>

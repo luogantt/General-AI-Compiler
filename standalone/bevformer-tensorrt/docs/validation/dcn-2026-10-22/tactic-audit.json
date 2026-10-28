@@ -1,0 +1,2659 @@
+{
+  "schema": "gac.dcn.inspector_audit.v1",
+  "scope": "All exposed TensorRT Inspector fields; verified tensor renames and intentional DCN identity substitution only",
+  "source_layers": [
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\round2-build-reports\\build.layers.json",
+      "sha256": "d79a334bc5cf1b49ca0a5e23cc950ad113ef11a07d895410f8a6f0ae302be96b"
+    },
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\dcn-evidence\\controlled-dcn-round3\\build.layers.json",
+      "sha256": "7bc61d486643788532961a049ef156d64062a2c20bcf3feeca365982ddfe4e2e"
+    }
+  ],
+  "source_build_reports": [
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\round2-build-reports\\build.json",
+      "sha256": "618fce37093f5dc6b1d617b8a5d78253d3089010d041d02c7535d4b95532df3f"
+    },
+    {
+      "path": "C:\\Users\\Thomas\\Desktop\\universal_ai_compile\\General-AI-Compiler\\build\\msda-optimization-20261021\\dcn-evidence\\controlled-dcn-round3\\build.json",
+      "sha256": "966745563a1897c01c615965c732d1dd44e9568168ad717c7245157c0126ccf0"
+    }
+  ],
+  "engine_sha256": [
+    "39888302dfcba0e2d8161ab9f8d4630c2f0f4dc8a1369e1888464b06efa3d19a",
+    "dc4200cd2bd4c21a443e05211d79599d3bf0fa5e2d55f4ae1ddef79c7a8ad08d"
+  ],
+  "layer_counts": [
+    3816,
+    3816
+  ],
+  "same_layer_membership": true,
+  "compared_fields": "Every field in every layer record; every top-level field except Layers list order is also compared",
+  "verified_tensor_renames": [
+    {
+      "before": "__mye35739_myl3057",
+      "after": "__mye35743_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_3/attentions_1/sampling_offsets/MatMul_myl3057_23",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3057_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_SigmSlicReshReshMulAddCast_myl3057_24",
+          "Inputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35743_myl3055",
+      "after": "__mye35739_myl3055",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_2/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_2/attentions_1/sampling_offsets/MatMul_myl3055_23",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3055_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_SigmSlicReshReshMulAddCast_myl3055_24",
+          "Inputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35766_myl3055",
+      "after": "__mye35786_myl3055",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_2/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_2/attentions_0/attn/MatMul_myl3055_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3055_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3055_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "before": "__mye35776_myl3053",
+      "after": "__mye35780_myl3053",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_1/attention_weights/MatMul+/pts_bbox_head/transformer/decoder/layers_1/attentions_1/sampling_offsets/MatMul_myl3053_14",
+          "Outputs",
+          0
+        ],
+        [
+          "__myl_ReshSigmSlicReshMulAddCast_myl3053_25",
+          "Inputs",
+          0
+        ],
+        [
+          "__myl_ReshSlicSlicMaxSlicMaxSlicMaxSubExpSlicSlicAddSlicAddSlicAddDivReshCast_myl3053_15",
+          "Inputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35786_myl3057",
+      "after": "__mye35766_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/MatMul_myl3057_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "before": "__mye35823_myl3053",
+      "after": "__mye35803_myl3053",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/MatMul_1+/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/MatMul_myl3053_8",
+          "Outputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Inputs",
+          1
+        ]
+      ]
+    },
+    {
+      "before": "__mye35846_myl3055",
+      "after": "__mye35848_myl3055",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_2/attentions_0/attn/Gemm_myl3055_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3055_9",
+          "Outputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35848_myl3057",
+      "after": "__mye35846_myl3057",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_3/attentions_0/attn/Gemm_myl3057_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3057_9",
+          "Outputs",
+          0
+        ]
+      ]
+    },
+    {
+      "before": "__mye35885_myl3053",
+      "after": "__mye35883_myl3053",
+      "unchanged_slots": [
+        [
+          "/pts_bbox_head/transformer/decoder/layers_1/attentions_0/attn/Gemm_myl3053_10",
+          "Inputs",
+          0
+        ],
+        [
+          "_gemm_mha_v2_myl3053_9",
+          "Outputs",
+          0
+        ]
+      ]
+    }
+  ],
+  "expected_dcn_identity_changes": [
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.0/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.1/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.2/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.3/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.4/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.5/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.6/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.7/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.8/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.9/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.10/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.11/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.12/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.13/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.14/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.15/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.16/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.17/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.18/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.19/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.20/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.21/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer3/layer3.22/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.0/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.1/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_1/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_2/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_3/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_4/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    },
+    {
+      "name": "/img_backbone/layer4/layer4.2/conv2_5/MMCVModulatedDeformConv2d",
+      "fields": [
+        "PluginType",
+        "PluginVersion"
+      ],
+      "before": {
+        "PluginType": "ModulatedDeformConv2d",
+        "PluginVersion": "2"
+      },
+      "after": {
+        "PluginType": "GACModulatedDeformConv2d",
+        "PluginVersion": "1"
+      }
+    }
+  ],
+  "expected_dcn_identity_change_count": 156,
+  "all_expected_dcn_nodes_verified": true,
+  "exact_records_after_verified_renames": 3660,
+  "unexpected_differences": [],
+  "top_level_nonlayer_fields_equal": true,
+  "build_settings_equal": {
+    "workspace_limit_bytes": true,
+    "builder_optimization_level": true,
+    "tactic_dram_limit_bytes": true,
+    "max_aux_streams": true,
+    "precision_policy": true,
+    "policy_fingerprint": true,
+    "io": true,
+    "calibrated_ranges": true,
+    "onnx_file_sha256": true
+  },
+  "same_input_timing_cache": true,
+  "output_timing_cache_sha256": [
+    "bc4ce82f21fc3cb4a52733f3410cb2b1fdee69abfce053bc27b30a8131c5afc2",
+    "bc4ce82f21fc3cb4a52733f3410cb2b1fdee69abfce053bc27b30a8131c5afc2"
+  ],
+  "same_output_timing_cache_bytes": true,
+  "plugin_configuration_evidence": {
+    "source": "build.json dcn_implementation_experiment.records/config",
+    "fields": {
+      "block_threads": 128,
+      "specialize": 4
+    },
+    "node_count": 156,
+    "source_onnx_sha256": "c5998d38003a179c9c7146929bf892de9c136f3e91c9f74facdbf23fe2e2a6f7",
+    "transformed_onnx_sha256": "a4b546114ce13abe3afdbfbc5462a68bbd7ab922135434b2fcb6411b61e33973",
+    "config_sha256": "a5056046be5e975cb7d63ada52baf1b48a3da22cfcd45e6e85774ab8bd69ba44",
+    "note": "Inspector does not expose serialized DCN options; configuration is checked from the structural rewrite audit, not inferred from Inspector."
+  },
+  "reordered_layer_count": 63,
+  "reordered_layers": [
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.0/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.0/MSDeformAttn",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.1/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.0/MSDeformAttn",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.2/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.3/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.0/MSDeformAttn",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.4/attentions.1/NonZero[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_2",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_5",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_3[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_1[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_2[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_5[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero_4[size][DevicetoShapeHostCopy]",
+    "/pts_bbox_head/transformer/encoder/layers.5/attentions.1/NonZero[size][DevicetoShapeHostCopy]"
+  ],
+  "passed": true,
+  "limitations": [
+    "Inspector does not expose every execution decision, weight byte, serialized plugin field or generated machine instruction.",
+    "Listed layer order is not a proof of device execution order; reordered records are reported, never silently treated as scheduling equivalence.",
+    "External plugin libraries intentionally differ. Numerical comparison and runtime library hashes require separate run reports.",
+    "This establishes no additional speed or accuracy claim beyond the independent whole-model A/B and output comparisons."
+  ]
+}

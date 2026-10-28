@@ -1,0 +1,5155 @@
+{
+  "schema": "gac.dcn.kernel_checks.v1",
+  "status": "passed",
+  "scope": "Standalone im2col columns, no GEMM/TensorRT or performance claim",
+  "started_utc": "2026-10-21T16:01:34.203420+00:00",
+  "seed": 20261021,
+  "library": "/home/robot/project/gac-msda-20261021/build-dcn-plugin/libgac_dcn_im2col.so",
+  "script_sha256": "a3c3f882e893a64f2dcf8175820eb3ec069ff6ce4af07c3b5ab0f265e5ffd176",
+  "blocks": [
+    128,
+    256,
+    512,
+    1024
+  ],
+  "cases": [
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "seed": 20261021,
+      "arguments": [
+        2,
+        6,
+        5,
+        7,
+        5,
+        7,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        54,
+        2,
+        5,
+        7
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            5,
+            7
+          ],
+          "sha256": "2c8f2c1ee1d6a2d87952020b744c425d8e841116521c5bf1104078dc2de271f9",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            5,
+            7
+          ],
+          "sha256": "90ffd81ad66d87bc9f4124784f48425264356a976f8e433c9c16d0d32f93fff9",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            5,
+            7
+          ],
+          "sha256": "d666cffd3a458e6fc16ef382c9c50209ad159e522d6b222d927e30b5e642348a",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "seed": 20261021,
+      "arguments": [
+        2,
+        6,
+        5,
+        7,
+        5,
+        7,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        54,
+        2,
+        5,
+        7
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            5,
+            7
+          ],
+          "sha256": "61244677aeacefd02647661b303a512bfef12ebae4c236a982371cd5993863ad",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            5,
+            7
+          ],
+          "sha256": "14e9337ea916cb3f2123beb7ffd1ff8cf832cc3a6e2af3a68b541358bdfeef26",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            5,
+            7
+          ],
+          "sha256": "294d2775f51daa956c3f16da6f9c05ce9079f0f15b83aa5bb22f840ac996e328",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "seed": 20261122,
+      "arguments": [
+        1,
+        5,
+        6,
+        7,
+        6,
+        7,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "column_shape": [
+        45,
+        1,
+        6,
+        7
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            5,
+            6,
+            7
+          ],
+          "sha256": "7f4f5012a0c4827edfc6fea0675f94aba8859485e0fe6c48e769d9766618577c",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            18,
+            6,
+            7
+          ],
+          "sha256": "cc1af97680f3978618d507795d6179d55792aab1d57eee1e69036e8fb3686692",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            1,
+            9,
+            6,
+            7
+          ],
+          "sha256": "72fefe49baac9d8c8c96b1386ec6e5a2d3caa0d9fdae7848485cdfd73471fba0",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "seed": 20261122,
+      "arguments": [
+        1,
+        5,
+        6,
+        7,
+        6,
+        7,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "column_shape": [
+        45,
+        1,
+        6,
+        7
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            5,
+            6,
+            7
+          ],
+          "sha256": "c55425c3f142b05982503b3224628059e246076840982454aa3aa1b3e810593c",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            18,
+            6,
+            7
+          ],
+          "sha256": "26eb92e847d347c36f334af2593451f84e0381668680293b3bb141fc1072c473",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            1,
+            9,
+            6,
+            7
+          ],
+          "sha256": "cbd3f32347017524b2c2b31b044ac85a56ef94854b347e7881deead8c41b5536",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "seed": 20261223,
+      "arguments": [
+        2,
+        6,
+        8,
+        9,
+        4,
+        11,
+        3,
+        3,
+        1,
+        2,
+        2,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        54,
+        2,
+        4,
+        11
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            8,
+            9
+          ],
+          "sha256": "39dbc658f5efb0938b31b6610a21e77e6da4c568df14fe2817b2862bd7564059",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            4,
+            11
+          ],
+          "sha256": "1c576211b221fc41efe21918bbfb43d5493ddbf457dfd853febf528cf511487e",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            4,
+            11
+          ],
+          "sha256": "829a31ddf3cdb7bb0ceba90a7140abe660e184eee4cae5ff2c0120640d52149e",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "seed": 20261223,
+      "arguments": [
+        2,
+        6,
+        8,
+        9,
+        4,
+        11,
+        3,
+        3,
+        1,
+        2,
+        2,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        54,
+        2,
+        4,
+        11
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            8,
+            9
+          ],
+          "sha256": "7c0611fda7c02d19bad28c5cf121ebccf8aaf4b341164300a1bc3a4851f0bba4",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            4,
+            11
+          ],
+          "sha256": "8d4fd0f50d80e929dd271225dbcaa565ecd5b0b336176f55ff769e84b1f8d2ad",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            4,
+            11
+          ],
+          "sha256": "2919304b8beb64af3aec25d648076d07eb16636cd07c89ea2c7807fd3426b8dd",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "seed": 20261324,
+      "arguments": [
+        1,
+        5,
+        9,
+        8,
+        9,
+        4,
+        3,
+        3,
+        2,
+        1,
+        1,
+        2,
+        2,
+        1,
+        1
+      ],
+      "column_shape": [
+        45,
+        1,
+        9,
+        4
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            5,
+            9,
+            8
+          ],
+          "sha256": "1ecbb693757695d0c8ebdae2679bd06686a412c4dbae44a513de32612371f65e",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            18,
+            9,
+            4
+          ],
+          "sha256": "8c12fd95ee0359fbbfc731e467757c6696eb3ae8b760b35d5f8e181789c5f0d4",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            1,
+            9,
+            9,
+            4
+          ],
+          "sha256": "a803b44a0180c347566725625e0b4030ab4cff21b2661caddd3f936dc5c05c2c",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "seed": 20261324,
+      "arguments": [
+        1,
+        5,
+        9,
+        8,
+        9,
+        4,
+        3,
+        3,
+        2,
+        1,
+        1,
+        2,
+        2,
+        1,
+        1
+      ],
+      "column_shape": [
+        45,
+        1,
+        9,
+        4
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            5,
+            9,
+            8
+          ],
+          "sha256": "cba0fd965da4f8095adc2fdb9d9db1a58ef47d019b6cdf5d1b7c04a4bf90b717",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            18,
+            9,
+            4
+          ],
+          "sha256": "22d4d90f249cfa0398918b296d61f4ebe9709090afc8752a33aa1465d4625467",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            1,
+            9,
+            9,
+            4
+          ],
+          "sha256": "49b5d6eedb67cc1bf7688b826d1519f3994059ee4783492fa04feada399f7825",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "seed": 20261425,
+      "arguments": [
+        2,
+        6,
+        7,
+        9,
+        4,
+        5,
+        2,
+        3,
+        1,
+        0,
+        2,
+        1,
+        1,
+        2,
+        2
+      ],
+      "column_shape": [
+        36,
+        2,
+        4,
+        5
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "sha256": "d7d239ba157bd87719c062eb542a2c649ae6ac6b752f3643a859af72e9c338d7",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            24,
+            4,
+            5
+          ],
+          "sha256": "e5908bbccc0d7646b9edbb0a75951b14f4781ecfdc47498f0c6a093141541a69",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            12,
+            4,
+            5
+          ],
+          "sha256": "2c21a2ffe85682b4f484459cdb84f6382605df40a2248a5b301298bc0aee5993",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "seed": 20261425,
+      "arguments": [
+        2,
+        6,
+        7,
+        9,
+        4,
+        5,
+        2,
+        3,
+        1,
+        0,
+        2,
+        1,
+        1,
+        2,
+        2
+      ],
+      "column_shape": [
+        36,
+        2,
+        4,
+        5
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            6,
+            7,
+            9
+          ],
+          "sha256": "e87f6c94f8b47e7f77afd1e223fb1137616df57e04d1d73f61a066964f2290fa",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            24,
+            4,
+            5
+          ],
+          "sha256": "630041b2ad9a67d44e4fe8c5fc3a4c8ad1e0104df25b0e8f5d0e68b5a9d1e3bd",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            12,
+            4,
+            5
+          ],
+          "sha256": "f54e4d02c3f8729797939843069352349e8cf3789f9254d471c7a5b31bc36e40",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "seed": 20261526,
+      "arguments": [
+        2,
+        5,
+        4,
+        5,
+        4,
+        5,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "column_shape": [
+        5,
+        2,
+        4,
+        5
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            5,
+            4,
+            5
+          ],
+          "sha256": "1ae2ba288dba33cde53ecc6c3052a4409019f0b3ba08e7f28fef11193af54de3",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            2,
+            4,
+            5
+          ],
+          "sha256": "e5a99c996f85d4f292a753b6193196043e9042e2af8d7a8e25c0eb4118f1794d",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            1,
+            4,
+            5
+          ],
+          "sha256": "2c548d4843aec224012db81f680026760f17ce7db8626ce34c7a872db64db963",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "seed": 20261526,
+      "arguments": [
+        2,
+        5,
+        4,
+        5,
+        4,
+        5,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "column_shape": [
+        5,
+        2,
+        4,
+        5
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            5,
+            4,
+            5
+          ],
+          "sha256": "7f7c5fc7e1f39b562344151d545d10943981ebbb1fe28393c952f75671c5c743",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            2,
+            4,
+            5
+          ],
+          "sha256": "cc3c5e0d72b3d9a60783128fbcee2410204220338efa995773fcabe248de8ea7",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            1,
+            4,
+            5
+          ],
+          "sha256": "c42b7c441870f6beff24b603b778833bf58998fb0cc6955c424c7e30c2a835d8",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "seed": 20261627,
+      "arguments": [
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        18,
+        2,
+        1,
+        1
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            2,
+            1,
+            1
+          ],
+          "sha256": "3b71503729aa391cb633519424b48079d02d77c72fd18625e3651e90684207cb",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            1,
+            1
+          ],
+          "sha256": "9f87e532f0ac9d4b0e3b1d5763077dc444456d9885ad69e7350fd1b983d5e6ed",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            1,
+            1
+          ],
+          "sha256": "ccf0925b7f6df20128c53b29394de3d5e73907f680500043b646e2154c7de865",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "seed": 20261627,
+      "arguments": [
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        18,
+        2,
+        1,
+        1
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            2,
+            2,
+            1,
+            1
+          ],
+          "sha256": "5177d7eb5d222af7441bcc92d726f7dfe1cbd012a2a7642dc87352c7f3ad97f5",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            2,
+            36,
+            1,
+            1
+          ],
+          "sha256": "e3ddce6661065e2f795d24052145d375bba0f7a3a4ff16362fb16485248308f8",
+          "nonfinite_count": 0
+        },
+        "mask": {
+          "shape": [
+            2,
+            18,
+            1,
+            1
+          ],
+          "sha256": "eacf0f9126c6c8d1a3ceaa1dde1ba1d0b18325d663da4b97146459d3e6956cba",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "seed": 20261728,
+      "arguments": [
+        1,
+        8,
+        5,
+        3,
+        5,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        72,
+        1,
+        5,
+        3
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            8,
+            5,
+            3
+          ],
+          "sha256": "0e2224ffad58448d11122f45d84a81bbae914cf00b76a2145629623ae541fdf6",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            36,
+            5,
+            3
+          ],
+          "sha256": "ca429c620fb894ae9753dcfd96c1de1fa44573be9a01843b180c2d4cb9093f88",
+          "nonfinite_count": 3
+        },
+        "mask": {
+          "shape": [
+            1,
+            18,
+            5,
+            3
+          ],
+          "sha256": "a33e6f06af5f18c84b2cbe94450afdc82dfff9957bc56b4846485782a0b0aa48",
+          "nonfinite_count": 0
+        }
+      }
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "seed": 20261728,
+      "arguments": [
+        1,
+        8,
+        5,
+        3,
+        5,
+        3,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      "column_shape": [
+        72,
+        1,
+        5,
+        3
+      ],
+      "inputs": {
+        "input": {
+          "shape": [
+            1,
+            8,
+            5,
+            3
+          ],
+          "sha256": "90eab65dd9b9d0c4acf242af52b9b4208f0b7a98975573c2e2787a1749239014",
+          "nonfinite_count": 0
+        },
+        "offset": {
+          "shape": [
+            1,
+            36,
+            5,
+            3
+          ],
+          "sha256": "1cc493f880e1188f8c423e719214c0fe95cbe082fadf226e4bddd25de778555d",
+          "nonfinite_count": 3
+        },
+        "mask": {
+          "shape": [
+            1,
+            18,
+            5,
+            3
+          ],
+          "sha256": "e395270a6d447c63b4c056437c2ca1d4685c238c4c41ee725513d019469d44d3",
+          "nonfinite_count": 0
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "asymmetric_stride_padding",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "dilated_stride",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 1,
+      "guard_intact": true,
+      "expected_rejection": true,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "pointwise_fallback",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp32",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 0,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 1,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 2,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 3,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 128,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 256,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 512,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "nonfinite_coordinates",
+      "dtype": "fp16",
+      "block": 1024,
+      "specialize": 4,
+      "cuda_status": 0,
+      "guard_intact": true,
+      "finite": true,
+      "bitwise_equal": true,
+      "passed": true,
+      "max_abs": 0.0
+    }
+  ],
+  "oracle_checks": [
+    {
+      "case": "group_tail_b2",
+      "dtype": "fp32",
+      "finite": true,
+      "max_abs": 5.082752474461216e-08,
+      "rtol": 2e-05,
+      "atol": 2e-06,
+      "allclose": true
+    },
+    {
+      "case": "channel_tail_b1",
+      "dtype": "fp32",
+      "finite": true,
+      "max_abs": 6.111189732038724e-08,
+      "rtol": 2e-05,
+      "atol": 2e-06,
+      "allclose": true
+    },
+    {
+      "case": "rectangular_fallback",
+      "dtype": "fp32",
+      "finite": true,
+      "max_abs": 5.224192756170254e-08,
+      "rtol": 2e-05,
+      "atol": 2e-06,
+      "allclose": true
+    },
+    {
+      "case": "single_pixel_group_tail",
+      "dtype": "fp32",
+      "finite": true,
+      "max_abs": 4.531290898057705e-09,
+      "rtol": 2e-05,
+      "atol": 2e-06,
+      "allclose": true
+    }
+  ],
+  "invalid_argument_checks": [
+    {
+      "case": "empty_batch",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "negative_channels",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "nondivisible_groups",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "wrong_output_height",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "empty_kernel",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "negative_padding",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "zero_stride",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "zero_dilation",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "dimension_overflow",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "element_count_overflow",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_dtype",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_block",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_specialization",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_input",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_input",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_offset",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_offset",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_mask",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_mask",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_columns",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_columns",
+      "dtype": "fp32",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "empty_batch",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "negative_channels",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "nondivisible_groups",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "wrong_output_height",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "empty_kernel",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "negative_padding",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "zero_stride",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "zero_dilation",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "dimension_overflow",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "element_count_overflow",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_dtype",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_block",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "unsupported_specialization",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_input",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_input",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_offset",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_offset",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_mask",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_mask",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "null_columns",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    },
+    {
+      "case": "misaligned_columns",
+      "dtype": "fp16",
+      "cuda_status": 1,
+      "storage_unchanged": true,
+      "passed": true
+    }
+  ],
+  "library_sha256": "771ddb40e790732ba7cc0d490d61c0d9fcca42023af5cd5ca5369214d301578a",
+  "environment": {
+    "torch": "2.7.0+cu126",
+    "cuda": "12.6",
+    "device_index": 0,
+    "device_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+    "compute_capability": [
+      8,
+      6
+    ]
+  },
+  "counts": {
+    "cases": 16,
+    "checks": 320,
+    "oracle_checks": 4,
+    "invalid_argument_checks": 42
+  },
+  "finished_utc": "2026-10-21T16:01:36.125789+00:00"
+}

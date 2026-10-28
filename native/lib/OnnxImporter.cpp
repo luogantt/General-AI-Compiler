@@ -19,12 +19,23 @@
 #include <stdexcept>
 #include <string>
 
+// 本文件实现 GAC 的原生 C++ ONNX 前端。完整数据流如下：
+//
+//   ONNX 二进制文件
+//       -> protobuf 解析得到 onnx::ModelProto / GraphProto / NodeProto
+//       -> 创建 mlir::ModuleOp 和 func.func @main
+//       -> 将输入、权重和每个 ONNX 节点转换为 MLIR SSA Value / gac.* Operation
+//       -> func.return
+//
+// 这里没有执行模型，也没有先把模型转换成 Python dict。导入器的任务是把
+// ONNX 的“按字符串名称连接的计算图”重建成 MLIR 的“由 SSA Value 直接连接的
+// Operation 图”。后续图优化、Lowering 和 Codegen 都在这个 ModuleOp 上进行。
 using namespace mlir;
 namespace fs = std::filesystem;
 
 namespace gac {
 namespace {
-// Import errors carry ONNX node locations through the outer diagnostic handler.
+// 导入失败时使用当前 ONNX 节点的 Location 报错，外层只负责统一捕获异常。
 class Importer {
 public:
   Importer(StringRef filename, MLIRContext &context, bool inspection)
@@ -34,13 +45,29 @@ public:
   OwningOpRef<ModuleOp> run();
 
 private:
+  // ONNX 文件路径，也是 MLIR 诊断和 external_data 路径解析的基准。
   std::string filename;
+  // 在同一个 MLIRContext 中创建类型、属性和 Operation。
   OpBuilder builder;
+  // 是否允许用 gac.unsupported 保留尚未支持的节点，仅供导入检查。
   bool inspection;
+  // 当前正在导入的 ONNX 节点位置，用于诊断回溯。
   Location location;
+
+  // ONNX 通过 tensor 名称连接节点，MLIR 通过 SSA Value 连接 Operation。
+  // 这个表就是两种表示之间的核心桥梁：
+  //   "images" -> func.func 的 BlockArgument
+  //   "conv_0" -> gac.conv2d 的 OpResult
+  // Value 是 IR 中的“结果句柄”，这里不保存运行时张量内容。
   llvm::StringMap<Value> values;
+
+  // 从 graph.input/value_info/output 收集到的静态类型声明。它优先用于确定
+  // Operation 的结果类型；没有 value_info 时只能保留元素类型和未知形状。
   llvm::StringMap<Type> declaredTypes;
+
+  // ONNX 每个 domain 都有独立的 opset 版本，例如标准域 "" -> 17。
   llvm::StringMap<int64_t> opsets;
+  // inspection 模式下被保留下来的不支持节点数量。
   uint64_t unsupportedCount = 0;
 
   [[noreturn]] void fail(const Twine &message) {
@@ -62,10 +89,11 @@ private:
                     const NamedAttrList &attrs);
 };
 
-// This recognizes a semantic ONNX subgraph, not a model/node-name shortcut:
+// 识别一个语义明确的 ONNX 控制流子图，而不是按模型名或节点名做特判：
 // If(Equal(Gather(Shape(X), [axis]), [1]), Squeeze(X,[axis]), Identity(X)).
-// The two ranks need not agree. A registered GAC op retains that conditional
-// rank until shape inference knows X; no invalid dead Squeeze is instantiated.
+// 它表示“只有该轴长度为 1 时才 Squeeze，否则保持 X”。导入为一个注册的
+// gac.squeeze_if_unit_dim，可将条件维度保留到 ShapeInference，而不会提前创建
+// 一个在动态形状下可能非法、但运行时不会执行的 Squeeze 分支。
 std::optional<std::pair<Value, int64_t>>
 Importer::matchShapeGuardIf(const onnx::NodeProto &node, std::string &reason) {
   reason = "If is supported only as an exact shape-guarded Squeeze/Identity pattern";
@@ -193,6 +221,8 @@ Importer::matchShapeGuardIf(const onnx::NodeProto &node, std::string &reason) {
 }
 
 Type Importer::elementType(int type) {
+  // ONNX TensorProto 的 dtype 枚举和 MLIR Type 是两套类型系统。这里仅完成
+  // 标量元素类型转换，张量的 rank/shape 由 tensorType() 另外处理。
   auto *ctx = builder.getContext();
   switch (type) {
   case onnx::TensorProto::FLOAT:
@@ -227,6 +257,10 @@ Type Importer::elementType(int type) {
 }
 
 Type Importer::tensorType(const onnx::ValueInfoProto &info) {
+  // ValueInfoProto 描述一个图输入、图输出或中间值的类型。
+  // - 有完整 shape：生成 RankedTensorType。
+  // - 无 shape：生成 UnrankedTensorType。
+  // - 符号维度或未知维度：该维写成 ShapedType::kDynamic。
   if (!info.has_type() || !info.type().has_tensor_type())
     fail("value '" + info.name() + "' must have a tensor type");
   const auto &type = info.type().tensor_type();
@@ -247,6 +281,9 @@ Type Importer::tensorType(const onnx::ValueInfoProto &info) {
 
 std::string Importer::externalBytes(const onnx::TensorProto &proto,
                                     uint64_t expected) {
+  // 大权重可能不嵌在 .onnx 文件中，而由 external_data 指向外部二进制文件。
+  // 除了读取 offset/length，这里还限制路径必须留在模型目录内，防止 ../ 或
+  // 符号链接逃逸。返回值仍是 ONNX 规定的小端原始字节串。
   llvm::StringMap<std::string> entries;
   for (const auto &entry : proto.external_data()) {
     if (!entries.try_emplace(entry.key(), entry.value()).second)
@@ -307,6 +344,9 @@ std::string Importer::externalBytes(const onnx::TensorProto &proto,
 }
 
 DenseElementsAttr Importer::tensor(const onnx::TensorProto &proto) {
+  // 将 ONNX TensorProto 转为 MLIR DenseElementsAttr。DenseElementsAttr 同时保存
+  // RankedTensorType 和常量数据，随后成为 gac.constant 的 value 属性。
+  // 权重可能来自 raw_data、external_data，也可能来自 protobuf repeated 字段。
   Type element = elementType(proto.data_type());
   if (!element)
     fail("unsupported initializer dtype for '" + proto.name() + "'");
@@ -398,6 +438,10 @@ DenseElementsAttr Importer::tensor(const onnx::TensorProto &proto) {
 
 Operation *Importer::create(StringRef name, TypeRange results,
                             ValueRange operands, const NamedAttrList &attrs) {
+  // 这是 ONNX NodeProto 真正变成 MLIR Operation 的位置。
+  // OperationState 描述一个操作的五个核心部分：名称、结果类型、输入 SSA Value、
+  // 属性和 Location；OpBuilder::create() 才把它插入当前 func.func 的 Block。
+  // 因此转换不是简单字符串改名，而是重新构造一个完整且可验证的 MLIR 节点。
   OperationState state(location, name);
   state.addTypes(results);
   state.addOperands(operands);
@@ -406,12 +450,24 @@ Operation *Importer::create(StringRef name, TypeRange results,
 }
 
 void Importer::bind(StringRef name, Value value) {
+  // 注册生产者结果。后面的 ONNX 节点只需用输入名称查表，就能取得前面
+  // Operation 的 SSA Value，从而在 MLIR 中建立 use-def 边。
   if (name.empty() || !values.try_emplace(name, value).second)
     fail("duplicate or empty ONNX SSA value name: " + name);
 }
 
 NamedAttrList Importer::attributes(const onnx::NodeProto &node,
                                    std::string &reason) {
+  // 把 ONNX AttributeProto 转成 MLIR Attribute。这里处理标量、数组和稠密
+  // Tensor 属性；Graph、SparseTensor、TypeProto 等尚未实现的属性不会被静默
+  // 丢弃，而是通过 reason 进入严格报错或 inspection 占位路径。
+  //
+  //   ONNX FLOAT/INT/STRING -> MLIR FloatAttr/IntegerAttr/StringAttr
+  //   ONNX TENSOR           -> MLIR DenseElementsAttr
+  //   ONNX INTS             -> MLIR DenseI64ArrayAttr
+  //   ONNX FLOATS/STRINGS   -> MLIR ArrayAttr
+  //
+  // Attribute 是编译期元数据，例如 Conv 的 strides/pads；它不是 SSA operand。
   NamedAttrList result;
   llvm::StringSet<> seen;
   for (const auto &attr : node.attribute()) {
@@ -465,6 +521,10 @@ NamedAttrList Importer::attributes(const onnx::NodeProto &node,
 }
 
 static StringRef operationName(StringRef type) {
+  // 标准 ONNX op_type 到 GAC 方言操作名的语义映射表。
+  // 这一步只决定“要创建哪一种 Operation”；输入/输出、类型、属性、版本规则和
+  // SSA 连接仍由 importNode() 完成，所以它不是把文本中的名字直接替换一下。
+  // 例如 Conv -> gac.conv2d、Clip -> gac.clamp、MaxPool -> gac.max_pool2d。
   return llvm::StringSwitch<StringRef>(type)
       .Case("Constant", "gac.constant")
       .Case("Conv", "gac.conv2d")
@@ -518,6 +578,8 @@ static StringRef operationName(StringRef type) {
 }
 
 static StringRef customOperationName(StringRef domain, StringRef type) {
+  // 非标准 domain 必须有显式导入契约，避免把同名但语义不同的自定义算子
+  // 错当成标准 ONNX 算子。目前登记 MMCV DCNv2 和 GAC MSDeformAttn。
   if (domain == "mmcv" && type == "MMCVModulatedDeformConv2d")
     return "gac.deform_conv2d";
   if (domain == "gac" && type == "MSDeformAttn")
@@ -527,6 +589,11 @@ static StringRef customOperationName(StringRef domain, StringRef type) {
 
 Type Importer::resultType(const onnx::NodeProto &node, StringRef output,
                           ArrayRef<Value> operands) {
+  // 结果类型的优先级：
+  //   1. ONNX value_info 中的完整声明；
+  //   2. 按算子 schema 推断元素类型，并暂时使用 UnrankedTensorType；
+  //   3. 无法确定时返回 NoneType，importNode() 会给出明确诊断。
+  // 精确结果 shape 会由后续 GAC ShapeInference Pass 继续传播和细化。
   auto declared = declaredTypes.find(output);
   if (declared != declaredTypes.end())
     return declared->second;
@@ -551,9 +618,8 @@ Type Importer::resultType(const onnx::NodeProto &node, StringRef output,
   } else if (!customOperationName(node.domain(), name).empty() ||
              !operationName(name).empty() || name == "Split" ||
              name == "ScatterND" || name == "Tile" || name == "Max" || name == "If") {
-    // These ONNX schemas preserve the data input's element type. Where's first
-    // input is a boolean condition, so its data type comes from its second
-    // input.
+    // 这些算子保持数据输入的元素类型。Where 的第 0 个输入是 bool 条件，
+    // 因此它的结果元素类型取自第 1 个输入；其余算子通常取第 0 个输入。
     size_t index = name == "Where" ? 1 : 0;
     if (operands.size() > index)
       if (auto shaped = dyn_cast<ShapedType>(operands[index].getType()))
@@ -564,6 +630,7 @@ Type Importer::resultType(const onnx::NodeProto &node, StringRef output,
 }
 
 void Importer::importNode(const onnx::NodeProto &node, size_t index) {
+  // 第 1 步：确定稳定的源节点名称和 MLIR Location，使后续错误能定位回 ONNX。
   std::string sourceName = node.name().empty()
                                ? node.op_type() + "#" + std::to_string(index)
                                : node.name();
@@ -574,6 +641,10 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
   auto version = opsets.find(domain);
   if (version == opsets.end())
     fail("node domain has no opset import: " + domain);
+
+  // 第 2 步：把 NodeProto.input() 的字符串名称解析为 MLIR SSA operands。
+  // ONNX 用空字符串表示可选输入缺席，因此不能简单按数组下标压入 operands；
+  // inputPositions 保存压缩前的位置，供验证、Lowering 或 Runtime 恢复原语义。
   SmallVector<Value> operands;
   SmallVector<int64_t> inputPositions;
   for (int i = 0; i < node.input_size(); ++i) {
@@ -597,6 +668,9 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
   std::string reason;
   bool shapeGuardIf = domain.empty() && node.op_type() == "If";
   NamedAttrList attrs;
+
+  // 第 3 步：解析属性。受支持的特殊 If 先折叠为一个高层 GAC 语义操作；
+  // 普通节点则逐项转换 AttributeProto。
   if (shapeGuardIf) {
     if (auto matched = matchShapeGuardIf(node, reason)) {
       operands.assign({matched->first});
@@ -612,6 +686,9 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
                          : customOperationName(domain, node.op_type());
   if (shapeGuardIf)
     target = "gac.squeeze_if_unit_dim";
+
+  // 第 4 步：验证导入契约。除了检查“有没有名字映射”，还检查 domain/opset、
+  // 自定义属性、算子输入输出个数、推理模式以及当前后端支持的 rank 等条件。
   if (!domain.empty() && target.empty())
     reason = "custom ONNX domain has no registered import contract";
   else if (!domain.empty() && version->second != 1)
@@ -672,6 +749,9 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
       if (kernel.size() != 2)
         reason = "only 2D convolution/pooling is supported";
   }
+
+  // 第 5 步：保留 ONNX 来源信息。这些 gac.source_* 属性不参与数学计算，
+  // 但可用于 IR 检查、错误报告和把优化后的节点追溯到原模型。
   attrs.set("gac.source_name", builder.getStringAttr(sourceName));
   attrs.set("gac.source_domain", builder.getStringAttr(domain));
   attrs.set("gac.source_op", builder.getStringAttr(node.op_type()));
@@ -679,6 +759,9 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
   attrs.set("gac.input_positions",
             builder.getDenseI64ArrayAttr(inputPositions));
   attrs.set("gac.output_names", builder.getArrayAttr(outputNames));
+
+  // 第 6 步：构造结果类型。Constant 是特例：先把各种 ONNX 常量编码统一成
+  // DenseElementsAttr，再直接使用常量自身的 RankedTensorType。
   SmallVector<Type> resultTypes;
   if (target == "gac.constant" && reason.empty()) {
     auto value = dyn_cast_or_null<DenseElementsAttr>(attrs.get("value"));
@@ -721,6 +804,10 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
     if (isa<NoneType>(type) && reason.empty())
       reason = "result element type is unknown; provide ONNX value_info or an "
                "explicit type rule";
+
+  // strict 模式下任何语义缺口都会停止编译；inspection 模式则生成
+  // gac.unsupported，并把原始 NodeProto 序列化保存，便于完整查看未知模型。
+  // gac.unsupported 只用于检查，不能进入后端执行编译。
   if (!reason.empty()) {
     if (!inspection)
       fail(reason + ": " + node.op_type());
@@ -731,12 +818,19 @@ void Importer::importNode(const onnx::NodeProto &node, size_t index) {
               builder.getStringAttr(node.SerializeAsString()));
     ++unsupportedCount;
   }
+
+  // 第 7 步：创建 Operation，并将每个 ONNX 输出名称绑定到对应 OpResult。
+  // 至此生产者和后续消费者之间已经形成真正的 MLIR SSA use-def 链。
+  // 例如 ONNX MatMul(A, B) -> C 会成为：
+  //   values["A"], values["B"] -> %c = "gac.matmul"(...) -> values["C"] = %c
   Operation *op = create(target, resultTypes, operands, attrs);
   for (size_t i = 0; i < outputs.size(); ++i)
     bind(outputs[i], op->getResult(i));
 }
 
 OwningOpRef<ModuleOp> Importer::run() {
+  // 1. 解析 protobuf。ModelProto 是整个 ONNX 文件的根对象，内部包含 GraphProto、
+  // opset、元数据以及可选的本地函数定义。
   std::ifstream input(filename, std::ios::binary);
   if (!input)
     fail("cannot open ONNX model: " + filename);
@@ -749,6 +843,8 @@ OwningOpRef<ModuleOp> Importer::run() {
     fail("training_info is not supported by the inference importer");
   if (model.functions_size() && !inspection)
     fail("local ONNX functions require expansion before strict import");
+
+  // 2. 建立 domain -> opset 版本表。后续每个节点都必须在这里找到自己的版本。
   for (const auto &opset : model.opset_import()) {
     std::string domain = opset.domain() == "ai.onnx" ? "" : opset.domain();
     if (opset.version() <= 0 ||
@@ -758,6 +854,9 @@ OwningOpRef<ModuleOp> Importer::run() {
   const auto &graph = model.graph();
   if (graph.sparse_initializer_size())
     fail("sparse initializers are not supported");
+
+  // 3. 收集图输入、中间值和图输出的类型声明。ONNX 不要求每个中间值都有
+  // value_info，所以缺失的 shape 会在导入后由类型规则和 ShapeInference 补全。
   auto recordType = [&](const onnx::ValueInfoProto &info) {
     Type type = tensorType(info);
     auto inserted = declaredTypes.try_emplace(info.name(), type);
@@ -770,6 +869,8 @@ OwningOpRef<ModuleOp> Importer::run() {
     recordType(info);
   for (const auto &info : graph.output())
     recordType(info);
+
+  // 4. 区分运行时输入和 initializer 权重，并由 ONNX 图签名构造 @main 的 ABI。
   llvm::StringSet<> initializers;
   for (const auto &proto : graph.initializer())
     if (proto.name().empty() || !initializers.insert(proto.name()).second)
@@ -791,6 +892,14 @@ OwningOpRef<ModuleOp> Importer::run() {
     results.push_back(declaredTypes.lookup(info.name()));
     outputNames.push_back(builder.getStringAttr(info.name()));
   }
+
+  // 5. 创建顶层 ModuleOp 和 func.func @main：
+  //
+  //   module {
+  //     func.func @main(%images: tensor<...>) -> tensor<...> { ... }
+  //   }
+  //
+  // Module 属性记录模型来源；函数参数和返回类型构成可被后端调用的公开 ABI。
   auto module = OwningOpRef<ModuleOp>(ModuleOp::create(location));
   (*module)->setAttr("gac.source_format", builder.getStringAttr("onnx"));
   (*module)->setAttr("gac.onnx_ir_version",
@@ -809,6 +918,9 @@ OwningOpRef<ModuleOp> Importer::run() {
   module->push_back(function);
   Block *entry = function.addEntryBlock();
   builder.setInsertionPointToStart(entry);
+
+  // 6. 函数实参本身就是 SSA Value。先把图输入名绑定到 BlockArgument，再把
+  // initializer 物化成 gac.constant，使所有后续 Node 都能统一通过 values 查找。
   for (size_t i = 0; i < inputs.size(); ++i)
     bind(graph.input(i).name(), entry->getArgument(i));
   for (const auto &proto : graph.initializer()) {
@@ -826,8 +938,15 @@ OwningOpRef<ModuleOp> Importer::run() {
     bind(proto.name(),
          create("gac.constant", value.getType(), {}, attrs)->getResult(0));
   }
+
+  // 7. ONNX GraphProto.node 应按拓扑顺序排列。逐节点导入后，每个输出立即进入
+  // values 表，因此其消费者可以取得同一个 SSA Value，而无需复制中间张量。
   for (int i = 0; i < graph.node_size(); ++i)
     importNode(graph.node(i), i);
+
+  // 8. 解析图输出名称，生成 func.return，并运行 MLIR verifier 检查结果数量、
+  // 类型、Operation 约束及 SSA 结构。verifier 不执行模型，也不检查数值精度；
+  // 只有结构验证通过的 ModuleOp 才交给后续 Pass。
   SmallVector<Value> returned;
   for (const auto &info : graph.output()) {
     auto found = values.find(info.name());
@@ -849,6 +968,8 @@ OwningOpRef<ModuleOp> Importer::run() {
 
 OwningOpRef<ModuleOp> importOnnx(StringRef path, MLIRContext &context,
                                  bool allowUnsupported) {
+  // 公开入口必须先注册/加载导入结果会用到的方言。GacDialect 提供 gac.* 操作的
+  // 定义与 verifier，FuncDialect 提供 func.func / func.return。
   context.getOrLoadDialect<GacDialect>();
   context.getOrLoadDialect<func::FuncDialect>();
   try {

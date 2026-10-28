@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MLIR 源码关系图 · 从一个加法程序看清调用与数据</title>
+<style>
+:root{--ink:#172c43;--muted:#52677c;--line:#d5dee7;--blue:#2875c9;--paper:#fff;--bg:#f4f6f8;--data:#2875c9;--call:#52677c;--register:#8060b5;--reference:#218272}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1160px;margin:auto;padding:30px 24px 48px}h1{font-size:30px;line-height:1.35;margin:4px 0 12px}h2{font-size:22px;line-height:1.4;margin:0 0 8px}h3{font-size:18px;line-height:1.5;margin:20px 0 10px}p{margin:8px 0}.muted{color:var(--muted)}.eyebrow{font-size:12px;letter-spacing:.1em;color:var(--blue);font-weight:700}.meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere;margin:16px 0}a{color:#185faa;text-underline-offset:3px}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}code,pre{font-family:Consolas,ui-monospace,monospace}code{font-size:.93em}button[disabled]{cursor:default}.intro{padding:15px 18px;border-left:4px solid var(--blue);background:#eaf3ff;margin:18px 0}.intro p{margin:3px 0}.tabs{display:flex;gap:8px;margin:22px 0 18px}.tab{flex:1;text-align:left;background:white;border:1px solid var(--line);border-radius:6px;padding:12px 16px;font-weight:650}.tab[aria-selected=true]{background:#185faa;color:white;border-color:#185faa}.toolbar{display:flex;justify-content:space-between;gap:16px;align-items:start}.toolbar a{white-space:nowrap;font-size:14px}.legend{display:flex;flex-wrap:wrap;gap:8px 22px;padding:10px 0 6px;color:var(--muted);font-size:13px}.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{display:inline-block;width:28px;border-top:3px solid var(--color)}.legend i.dashed{border-top-style:dashed}.hint{font-size:13px;color:var(--muted);margin:3px 0 14px}.board-frame{overflow:auto;border:1px solid var(--line);border-radius:8px;background:white;position:relative}.board{position:relative;margin:auto}.board canvas{position:absolute;inset:0;pointer-events:none}.graph-node{position:absolute;padding:13px;text-align:left;border:2px solid var(--node-line);border-radius:7px;background:var(--node-bg);font-size:16px;line-height:1.5;display:block;box-shadow:none}.graph-node strong{display:block;font-size:18px;line-height:1.4;margin-bottom:8px}.graph-node .body-line{display:block}.graph-node code{display:block;font-size:16px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.graph-node[data-kind=data]{--node-bg:#edf5ff;--node-line:#2875c9}.graph-node[data-kind=shared]{--node-bg:#f2f5f8;--node-line:#627b94}.graph-node[data-kind=specific]{--node-bg:#f4efff;--node-line:#8060b5}.graph-node[data-kind=output]{--node-bg:#eaf7f1;--node-line:#2a8a69}.graph-node:hover,.graph-node:focus-visible{box-shadow:0 0 0 3px #2875c92b}.graph-node.linked{box-shadow:0 0 0 3px #2875c940}.edge-label{position:absolute;transform:translate(-50%,-50%);font-size:14px;line-height:1.45;padding:3px 6px;border:1px solid transparent;border-radius:4px;white-space:pre;text-align:center;background:#fffffff5;color:var(--edge)}.edge-label:hover,.edge-label:focus-visible{border-color:var(--edge);background:#f5f9ff}.board-note{position:absolute;font-size:14px;color:var(--muted);pointer-events:none;white-space:pre}.mobile-relations{display:none}.example{border:1px solid var(--line);background:white;border-radius:7px;margin:20px 0}.example>summary{padding:14px 18px;cursor:pointer;font-weight:650}.example-content{padding:0 18px 18px}.code-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.code-grid h3{font-size:15px}.code-grid pre{font-size:13px;line-height:1.8;padding:12px;background:#f3f6f9;overflow:auto;border-radius:5px}.example .muted{font-size:13px}.context{margin-top:24px;padding:22px;background:white;border:1px solid var(--line);border-radius:7px}.context p{font-size:15px}.directory-table{width:100%;border-collapse:collapse;font-size:14px}.directory-table td,.directory-table th{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top}.directory-table th{font-weight:650;color:var(--muted)}.text-button{border:0;background:none;padding:0;color:#185faa;text-align:left;text-decoration:underline;text-underline-offset:3px}.inline-links{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px}.inline-links button{font-size:14px}.chapter-summary{font-size:15px;border-left:3px solid var(--blue);padding:8px 14px;margin:18px 0 0;background:#edf5ff}.step-row{padding:14px;border-bottom:1px solid var(--line);background:white}.step-row:last-child{border:0}.step-row button{border:0;padding:0;background:none;text-align:left;color:#185faa}.step-row small{display:block;color:var(--muted);margin:6px 0}.step-row .step-description{font-size:14px}.relation-arrow{color:var(--muted);margin:6px 0;font-size:14px}.source-dialog{border:1px solid #bac9d8;border-radius:10px;padding:0;width:min(960px,94vw);max-height:88vh;color:var(--ink);background:white}.source-dialog::backdrop{background:#0b1e34a6}.dialog-header{position:sticky;top:0;z-index:2;display:flex;align-items:start;justify-content:space-between;padding:18px 22px;gap:20px;background:white;border-bottom:1px solid var(--line)}.dialog-header h2{margin:0;font-size:20px}.close{border:1px solid var(--line);border-radius:5px;background:#f4f6f8;padding:5px 12px;white-space:nowrap}.dialog-content{padding:8px 22px 24px}.dialog-content p{font-size:15px}.dialog-content ul{padding-left:22px;font-size:15px}.dialog-content li{margin-bottom:7px}.source-section{margin-top:20px;border-top:1px solid var(--line);padding-top:8px}.source-section h3{margin:10px 0 8px}.source{margin:10px 0;border:1px solid var(--line);border-radius:6px;overflow:hidden}.source summary{padding:10px 12px;cursor:pointer;background:#f5f7fa;overflow-wrap:anywhere;font-size:14px;font-weight:650}.source-meta{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 12px;font-size:12px;color:var(--muted)}.source pre{font:13px/1.8 Consolas,monospace;margin:0;padding:12px;overflow:auto;background:#f8fafc;max-height:480px}.code-line{display:block;min-width:max-content}.ln{display:inline-block;width:45px;text-align:right;padding-right:12px;color:#748499;user-select:none}.relation-list{display:grid;gap:8px}.relation-list button{padding:9px 12px;text-align:left;border:1px solid var(--line);border-radius:5px;background:#f8fafc;font-size:14px}.node-note{color:var(--muted);font-size:13px}footer{font-size:12px;color:var(--muted);margin-top:26px;border-top:1px solid var(--line);padding-top:14px;overflow-wrap:anywhere}[hidden]{display:none!important}
+@media(max-width:760px){main{padding:22px 14px}h1{font-size:25px}.tabs{flex-direction:column}.toolbar{display:block}.toolbar a{display:inline-block;margin:5px 0}.board-frame{display:none}.mobile-relations{display:block;border:1px solid var(--line);border-radius:7px;overflow:hidden}.code-grid{display:block}.context{padding:16px}.directory-table{font-size:13px}.directory-table th,.directory-table td{padding:10px 4px}.dialog-header{padding:16px}.dialog-content{padding:6px 16px 18px}.source-dialog{max-height:92vh}.board-note{white-space:normal}}
+@media print{body{background:white}main{padding:0;max-width:none}.tabs,.hint,.example,.context,.toolbar a,footer{display:none}.board-frame{border:0;overflow:visible}.board{transform-origin:top left}.edge-label{border:0}.source-dialog{display:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">LLVM / MLIR · 本地 C++ 源码关系图</div>
+    <h1>MLIR 如何把一个程序，变成另一个程序？</h1>
+    <p>只追踪一个例子：<code>(x + 0) + y</code>。看清输入、内存结构、变换和输出，再沿箭头找到实现它们的源码。</p>
+    <div class="intro"><p><strong>MLIR 的工作对象是“程序的表示”。</strong>它读取、保存和改写程序；此处不会计算运行时的 x、y。</p><p>方言定义“某个操作是什么意思”；公共框架负责保存、遍历、分派和改写。下面显示的是编译期 C++ 调用。</p></div>
+    <div id="meta" class="meta"></div>
+  </header>
+  <nav id="tabs" class="tabs" role="tablist" aria-label="按顺序理解 MLIR"></nav>
+  <section id="panel" role="tabpanel" tabindex="-1">
+    <div class="toolbar"><div><h2 id="view-title"></h2><p id="view-subtitle" class="muted"></p></div><a id="png" href="#" download>下载这张图 · PNG</a></div>
+    <div class="legend" aria-label="箭头图例">
+      <span><i style="--color:var(--data)"></i>数据 / 返回结果</span><span><i style="--color:var(--call)"></i>C++ 调用</span><span><i class="dashed" style="--color:var(--register)"></i>注册规则</span><span><i class="dashed" style="--color:var(--reference)"></i>包含 / 引用（以线上的文字为准）</span>
+    </div>
+    <p class="hint">点方框查看实现；点箭头文字查看这条关系的源码。蓝色框是程序数据，灰色是公共机制，紫色是具体方言规则，绿色是输出。</p>
+    <div class="board-frame"><div id="board" class="board"><canvas id="edges" aria-hidden="true"></canvas><div id="nodes"></div></div></div>
+    <div id="mobile" class="mobile-relations" aria-label="窄屏按连线阅读"></div>
+    <p class="chapter-summary" id="chapter-summary"></p>
+  </section>
+  <details class="example">
+    <summary>展开完整例子：输入 → 去掉 x + 0 → LLVM dialect</summary>
+    <div class="example-content"><div class="code-grid" id="example-code"></div><p class="muted" id="example-note"></p><p>输入函数的结构也要转换，所以要配合 <code>FuncToLLVM</code>；只有 <code>ArithToLLVM</code> 并不等于完整函数已能导出。</p></div>
+  </details>
+  <section class="context">
+    <h2>换一种方言，哪些东西复用？</h2>
+    <p>这些方言可以同时出现在一个 Module 中。它们共享基础设施，具体的合法性、数学语义和转换规则仍需要各自实现。</p>
+    <table class="directory-table"><thead><tr><th>具体操作 / 规则</th><th>接到公共机制的关系</th><th>源码</th></tr></thead><tbody>
+      <tr><td><code>arith.addi</code><br>整数加法</td><td><code>Operation::fold</code> → 注册的钩子 → <code>AddIOp::fold</code>；通用 Rewriter 应用替换。</td><td><button class="text-button" data-source="fold-dispatch">调用链</button></td></tr>
+      <tr><td><code>scf.for</code><br>结构化循环</td><td>循环也是 Operation；循环体放在 Region / Block 中，循环参数用 Value 表达。</td><td><button class="text-button" data-source="scf">循环定义</button></td></tr>
+      <tr><td><code>linalg</code> 的结构化运算</td><td>通用 <code>tileUsingSCF</code> → <code>TilingInterface</code> → Linalg 的实现；接口返回迭代域和分块后的操作。</td><td><button class="text-button" data-source="linalg">分块调用链</button></td></tr>
+      <tr><td><code>llvm.add</code><br>MLIR 中的低层加法</td><td><code>ModuleTranslation</code> → 方言翻译接口 → LLVM IRBuilder；输出真正的 LLVM IR。</td><td><button class="text-button" data-source="llvm-export">导出调用链</button></td></tr>
+    </tbody></table>
+    <h3>源码从这里读</h3>
+    <p><code>include/mlir/IR</code> 和 <code>lib/IR</code> 是公共对象；<code>Dialect</code> 是具体语义；<code>Transforms</code> 是公共变换机制；<code>Conversion</code> 是表示之间的转换；<code>Target/LLVMIR</code> 是 LLVM IR 导出。</p>
+    <div class="inline-links">
+      <button class="text-button" data-source="opt">谁把流程串起来：mlir-opt</button>
+      <button class="text-button" data-source="bindings">不用文本时：C / Python API → 同一套 C++ 对象</button>
+      <button class="text-button" data-source="printer">只想输出 .mlir：AsmPrinter</button>
+      <button class="text-button" data-source="interfaces">接口：公共算法如何获得具体语义</button>
+    </div>
+  </section>
+  <footer id="footer"></footer>
+</main>
+<dialog class="source-dialog" id="source-dialog" aria-labelledby="detail-title">
+  <div class="dialog-header"><h2 id="detail-title"></h2><button id="close" class="close" type="button">关闭 ×</button></div>
+  <div class="dialog-content" id="detail-content"></div>
+</dialog>
+<script id="source-data" type="application/json">__MLIR_DATA__</script>
+<script>
+"use strict";
+const DATA=JSON.parse(document.getElementById("source-data").textContent);
+const VIEWS=DATA.topology.views;
+const SOURCES=new Map(DATA.nodes.map(n=>[n.id,n]));
+const $=id=>document.getElementById(id);
+const colors={data:"#2875c9",call:"#52677c",register:"#8060b5",reference:"#218272"};
+const summaries={journey:"这条链改变了程序的表示：文本 → MLIR 内存对象 → 优化后的 MLIR → LLVM dialect → LLVM IR。机器码生成和设备执行在这张图之后。",shared:"公共驱动负责找机会并修改图；Arith 的 fold 负责说明这次替换为什么正确。换一种操作，公共机制可以复用，具体规则仍要提供。",storage:"“共用底层”指复用数据结构和 C++ 实现，不是所有方言共享一个操作实例。Operation / Region / Block 构成树，Value 再把定义与使用连接起来。"};
+let current=VIEWS[0],highlight=null;
+const dialog=$("source-dialog");
+function el(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
+function route(){const p=decodeURIComponent(location.hash.slice(1)).split("/");const legacy={overview:"journey",objects:"storage",pipeline:"journey"};if(legacy[p[0]])return {view:legacy[p[0]]};return {view:p[0]||"journey",type:p[1],id:p[2]};}
+function navigate(path){if(location.hash.slice(1)===path){applyRoute();return;}location.hash=path;}
+function applyRoute(){const r=route();const v=VIEWS.find(x=>x.id===r.view)||VIEWS[0];if(current!==v||!$("nodes").children.length)renderView(v);if(r.type==="node"){const n=v.nodes.find(x=>x.id===r.id);if(n){showNode(n);return;}}if(r.type==="edge"){const e=v.edges.find(x=>x.id===r.id);if(e){showEdge(e);return;}}if(r.type==="source"&&SOURCES.has(r.id)){showSource(r.id);return;}if(dialog.open)dialog.close();}
+function renderView(v){current=v;highlight=null;$("view-title").textContent=v.title;$("view-subtitle").textContent=v.subtitle;$("chapter-summary").textContent=summaries[v.id];$("png").href=`assets/mlir-source/${v.id}.png`;$("png").download=`mlir-${v.id}.png`;$("panel").setAttribute("aria-labelledby",`tab-${v.id}`);document.querySelectorAll(".tab").forEach(b=>{const on=b.dataset.view===v.id;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1;});
+  const board=$("board"),nodes=$("nodes");board.style.width=`${v.width}px`;board.style.height=`${v.height}px`;nodes.replaceChildren();
+  v.nodes.forEach(n=>{const b=el("button",undefined,"graph-node");b.type="button";b.dataset.id=n.id;b.dataset.kind=n.kind;b.style.cssText=`left:${n.x}px;top:${n.y}px;width:${n.w}px;height:${n.h}px`;b.setAttribute("aria-label",`${n.title}，查看关系与源码`);b.append(el("strong",n.title));(n.body||[]).forEach(s=>b.append(el("span",s,"body-line")));(n.code||[]).forEach(s=>b.append(el("code",s)));b.addEventListener("click",()=>navigate(`${v.id}/node/${n.id}`));b.addEventListener("mouseenter",()=>mark(n.id));b.addEventListener("mouseleave",()=>mark(null));b.addEventListener("focus",()=>mark(n.id));b.addEventListener("blur",()=>mark(null));nodes.append(b);});
+  v.edges.forEach(e=>{const b=el("button",e.label,"edge-label");b.type="button";b.style.cssText=`left:${e.labelAt[0]}px;top:${e.labelAt[1]}px;--edge:${colors[e.kind]}`;b.setAttribute("aria-label",`${title(e.from)} → ${title(e.to)}：${e.label}，查看源码`);b.addEventListener("click",()=>navigate(`${v.id}/edge/${e.id}`));nodes.append(b);});
+  (v.notes||[]).forEach(n=>{const p=el("div",n.text,"board-note");p.style.cssText=`left:${n.x}px;top:${n.y}px`;nodes.append(p);});
+  draw();renderMobile();
+}
+function title(id){return current.nodes.find(n=>n.id===id).title;}
+function mark(id){highlight=id;document.querySelectorAll(".graph-node").forEach(b=>{const linked=id&&current.edges.some(e=>(e.from===id&&e.to===b.dataset.id)||(e.to===id&&e.from===b.dataset.id));b.classList.toggle("linked",!!linked);});draw();}
+function draw(){const canvas=$("edges"),ctx=canvas.getContext("2d"),dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(current.width*dpr);canvas.height=Math.round(current.height*dpr);canvas.style.width=`${current.width}px`;canvas.style.height=`${current.height}px`;ctx.scale(dpr,dpr);current.edges.forEach(e=>{const active=!highlight||e.from===highlight||e.to===highlight;ctx.globalAlpha=active?1:.16;ctx.strokeStyle=colors[e.kind];ctx.fillStyle=colors[e.kind];ctx.lineWidth=highlight&&active?3:2;ctx.setLineDash(["reference","register"].includes(e.kind)?[7,5]:[]);ctx.beginPath();e.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();ctx.setLineDash([]);const p=e.points.at(-1),q=e.points.at(-2),a=Math.atan2(p[1]-q[1],p[0]-q[0]);ctx.beginPath();ctx.moveTo(...p);ctx.lineTo(p[0]-10*Math.cos(a-.42),p[1]-10*Math.sin(a-.42));ctx.lineTo(p[0]-10*Math.cos(a+.42),p[1]-10*Math.sin(a+.42));ctx.closePath();ctx.fill();});ctx.globalAlpha=1;}
+function renderMobile(){const host=$("mobile");host.replaceChildren();current.edges.forEach(e=>{const row=el("div",undefined,"step-row");const a=el("button",title(e.from));a.addEventListener("click",()=>navigate(`${current.id}/node/${e.from}`));const link=el("button",`↓ ${e.label.replaceAll("\n"," ")}`,"relation-arrow");link.addEventListener("click",()=>navigate(`${current.id}/edge/${e.id}`));link.style.display="block";const b=el("button",title(e.to));b.addEventListener("click",()=>navigate(`${current.id}/node/${e.to}`));row.append(a,link,b);host.append(row);});}
+function openDetail(titleText){$("detail-title").textContent=titleText;$("detail-content").replaceChildren();if(!dialog.open)dialog.showModal();dialog.scrollTop=0;return $("detail-content");}
+function appendRelations(host,node){const list=current.edges.filter(e=>e.from===node.id||e.to===node.id);host.append(el("h3","与其他模块的实际关系"));const group=el("div",undefined,"relation-list");list.forEach(e=>{const b=el("button",`${title(e.from)} → ${e.label.replaceAll("\n"," ")} → ${title(e.to)}`);b.addEventListener("click",()=>navigate(`${current.id}/edge/${e.id}`));group.append(b);});host.append(group);}
+function appendSource(host,id,expanded=false){const spec=SOURCES.get(id),section=el("section",undefined,"source-section");section.append(el("h3",spec.title),el("p",spec.description));const ul=el("ul");spec.points.forEach(p=>ul.append(el("li",p)));section.append(ul);spec.sources.forEach((s,i)=>{const d=el("details",undefined,"source");d.open=expanded&&i===0;d.append(el("summary",`${s.path} · L${s.start}–L${s.end}`));const meta=el("div",undefined,"source-meta"),a=el("a","打开本地源码");a.href=s.uri;a.target="_blank";a.rel="noopener";meta.append(a,el("span",`文件 SHA-256 ${s.sha256.slice(0,16)}…`));const pre=el("pre");s.lines.forEach((line,k)=>{const span=el("span",undefined,"code-line");span.append(el("span",String(s.start+k),"ln"),document.createTextNode(line));pre.append(span);});d.append(meta,pre);section.append(d);});host.append(section);}
+function showNode(n){const host=openDetail(n.title);(n.body||[]).forEach(p=>host.append(el("p",p)));(n.code||[]).forEach(s=>host.append(el("pre",s)));appendRelations(host,n);appendSource(host,n.ref,true);}
+function showEdge(e){const host=openDetail(`${title(e.from)} → ${title(e.to)}`);host.append(el("p",e.label.replaceAll("\n"," ")),el("p",`关系类型：${({data:"传递数据或返回结果",call:"C++ 调用",register:"注册行为 / 定义",reference:"包含或引用，按连线文字区分"})[e.kind]}`,"node-note"));const endpoints=el("div",undefined,"inline-links");[e.from,e.to].forEach(id=>{const b=el("button",`查看：${title(id)}`,"text-button");b.addEventListener("click",()=>navigate(`${current.id}/node/${id}`));endpoints.append(b);});host.append(endpoints);[...new Set(e.refs)].forEach((id,i)=>appendSource(host,id,i===0));}
+function showSource(id){const host=openDetail(SOURCES.get(id).title);appendSource(host,id,true);}
+$("close").addEventListener("click",()=>navigate(current.id));dialog.addEventListener("cancel",e=>{e.preventDefault();navigate(current.id);});dialog.addEventListener("click",e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)navigate(current.id);}});
+const tabLabels=["1 · 输入怎样变成输出","2 · 公共算法怎样调用方言","3 · 方言怎样共用底层存储"];
+VIEWS.forEach((v,i)=>{const b=el("button",tabLabels[i],"tab");b.id=`tab-${v.id}`;b.dataset.view=v.id;b.setAttribute("role","tab");b.setAttribute("aria-controls","panel");b.addEventListener("click",()=>navigate(v.id));b.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","Home","End"].includes(e.key)){e.preventDefault();const next=e.key==="Home"?0:e.key==="End"?VIEWS.length-1:(i+(e.key==="ArrowRight"?1:-1)+VIEWS.length)%VIEWS.length;navigate(VIEWS[next].id);document.getElementById(`tab-${VIEWS[next].id}`).focus();}});$("tabs").append(b);});
+document.querySelectorAll("[data-source]").forEach(b=>b.addEventListener("click",()=>navigate(`${current.id}/source/${b.dataset.source}`)));
+const example=DATA.topology.example;[["输入",example.before],["Canonicalizer 后",example.after],["转换到 LLVM dialect",example.lowered]].forEach(([heading,code])=>{const box=el("div");box.append(el("h3",heading),el("pre",code));$("example-code").append(box);});$("example-note").textContent=example.note;
+$("meta").textContent=`源码快照：LLVM ${DATA.version} · ${DATA.date} · ${DATA.root}`;
+$("footer").textContent="本页依据本地 LLVM / MLIR 源码绘制，点击可离线阅读实际摘录及行号。示例是按源码规则推演，不包含 GAC 项目的运行时，也不表示所有模型都必须经过这些 Pass。生成源：tools/docs/mlir_source_topology.json + build_mlir_source_architecture.py。";
+window.addEventListener("hashchange",applyRoute);window.addEventListener("resize",draw);applyRoute();
+</script>
+</body>
+</html>

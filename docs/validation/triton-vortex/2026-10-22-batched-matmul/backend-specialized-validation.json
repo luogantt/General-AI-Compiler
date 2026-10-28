@@ -1,0 +1,321 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "triton": "3.8.0",
+  "driver": "simx",
+  "target": "vortex-rv32",
+  "runtime": {
+    "warp_size": 4,
+    "num_warps": 4,
+    "num_cores": 1,
+    "local_memory": 16384,
+    "max_threads_per_block": 16
+  },
+  "timing_kind": "host_wall_including_compilation_and_simulation",
+  "cases": [
+    {
+      "name": "dot/exact-16x16x16",
+      "status": "passed",
+      "m": 16,
+      "n": 16,
+      "k": 16,
+      "tile": [
+        16,
+        16,
+        16
+      ],
+      "programs": 1,
+      "elements": 256,
+      "guard_elements": 263,
+      "max_abs_error": 0.0,
+      "masked_store_guard_unchanged": true,
+      "inputs_unchanged": true,
+      "post_op": "add-0.25-relu",
+      "device_execution": true,
+      "host_wall_seconds": 2.6317262199999902
+    },
+    {
+      "name": "dot/tail-19x21x11",
+      "status": "passed",
+      "m": 19,
+      "n": 21,
+      "k": 11,
+      "tile": [
+        16,
+        16,
+        16
+      ],
+      "programs": 4,
+      "elements": 399,
+      "guard_elements": 263,
+      "max_abs_error": 0.0,
+      "masked_store_guard_unchanged": true,
+      "inputs_unchanged": true,
+      "post_op": "add-0.25-relu",
+      "device_execution": true,
+      "host_wall_seconds": 1.5758412259999943
+    },
+    {
+      "name": "dot/batched-matched-prefix-2x17x32x19",
+      "status": "passed",
+      "batch_mode": "matched-prefix",
+      "batches": 2,
+      "a_shape": [
+        2,
+        17,
+        32
+      ],
+      "b_shape": [
+        2,
+        32,
+        19
+      ],
+      "c_shape": [
+        2,
+        17,
+        19
+      ],
+      "logical_k": 32,
+      "tile": [
+        16,
+        16,
+        32
+      ],
+      "programs": 8,
+      "max_abs_error": 0.0,
+      "guard_elements": 263,
+      "masked_store_guard_unchanged": true,
+      "inputs_unchanged": true,
+      "device_execution": true,
+      "host_fallback": false,
+      "fixture": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/batched-matmul-backend-patch/examples/fixtures/batched-matmul/matched-prefix.ttir",
+      "fixture_sha256": "85f0c34a3cc689a63084f95bfd6b15ab026b260625c90d47b8b87a77d996b60f",
+      "host_wall_seconds": 2.4687341540000034
+    },
+    {
+      "name": "dot/batched-shared-rhs-3x17x32x19",
+      "status": "passed",
+      "batch_mode": "shared-rhs",
+      "batches": 3,
+      "a_shape": [
+        3,
+        17,
+        32
+      ],
+      "b_shape": [
+        32,
+        19
+      ],
+      "c_shape": [
+        3,
+        17,
+        19
+      ],
+      "logical_k": 32,
+      "tile": [
+        16,
+        16,
+        32
+      ],
+      "programs": 12,
+      "max_abs_error": 0.0,
+      "guard_elements": 263,
+      "masked_store_guard_unchanged": true,
+      "inputs_unchanged": true,
+      "device_execution": true,
+      "host_fallback": false,
+      "fixture": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/batched-matmul-backend-patch/examples/fixtures/batched-matmul/shared-rhs.ttir",
+      "fixture_sha256": "40ba72f3cc3f0f414a0de9b20ef0941fbd8a3854fc1f980ac44ae02dde206a92",
+      "host_wall_seconds": 3.361955663999993
+    },
+    {
+      "name": "dot/batched-rank4-shared-rhs-4x5x48x7",
+      "status": "passed",
+      "batch_mode": "rank4-shared-k48",
+      "batches": 4,
+      "a_shape": [
+        4,
+        5,
+        48
+      ],
+      "b_shape": [
+        48,
+        7
+      ],
+      "c_shape": [
+        4,
+        5,
+        7
+      ],
+      "logical_k": 48,
+      "tile": [
+        16,
+        16,
+        64
+      ],
+      "programs": 4,
+      "max_abs_error": 0.0,
+      "guard_elements": 263,
+      "masked_store_guard_unchanged": true,
+      "inputs_unchanged": true,
+      "device_execution": true,
+      "host_fallback": false,
+      "fixture": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/batched-matmul-backend-patch/examples/fixtures/batched-matmul/rank4-shared-k48.ttir",
+      "fixture_sha256": "37439e28c65170659141fa6b0d711a7eb9dfebfeb7422a143a09b6173218dbd3",
+      "host_wall_seconds": 1.5345567370000026
+    },
+    {
+      "name": "reject/batched_dot_pid_y",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "pid_y",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "program_id axis 0",
+      "host_wall_seconds": 0.0776078929999926
+    },
+    {
+      "name": "reject/batched_dot_pid_z",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "pid_z",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "program_id axis 0",
+      "host_wall_seconds": 0.10161760500000128
+    },
+    {
+      "name": "reject/batched_dot_wrong_a_base",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_a_base",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "A offset requires batch*M*K",
+      "host_wall_seconds": 0.13903682900001968
+    },
+    {
+      "name": "reject/batched_dot_wrong_b_base",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_b_base",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "B offset must be k*N+col",
+      "host_wall_seconds": 0.11729407199999287
+    },
+    {
+      "name": "reject/batched_dot_wrong_c_base",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_c_base",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "C offset requires batch*M*N",
+      "host_wall_seconds": 0.08460953499999846
+    },
+    {
+      "name": "reject/batched_dot_wrong_a_stride",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_a_stride",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "A offset requires batch*M*K",
+      "host_wall_seconds": 0.09695620300001906
+    },
+    {
+      "name": "reject/batched_dot_huge_m_bound",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "huge_m_bound",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "dimensions and row-major strides must fit signed i32",
+      "host_wall_seconds": 0.08655359299999077
+    },
+    {
+      "name": "reject/batched_dot_wrong_store_mask",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_store_mask",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "store mask must be rowValid && colValid",
+      "host_wall_seconds": 0.0877846090000105
+    },
+    {
+      "name": "reject/batched_dot_dead_op",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "dead_op",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "dead or disconnected operations",
+      "host_wall_seconds": 0.0841473260000214
+    },
+    {
+      "name": "reject/batched_dot_alias",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "alias",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "input/output buffers must not alias",
+      "host_wall_seconds": 0.07624494800001003
+    },
+    {
+      "name": "reject/batched_dot_multiple_dot",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "multiple_dot",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "requires one tt.dot, one store and one return",
+      "host_wall_seconds": 0.0825534649999895
+    },
+    {
+      "name": "reject/batched_dot_multiple_store",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "multiple_store",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "multiple stores to one output",
+      "host_wall_seconds": 0.09234837499997184
+    },
+    {
+      "name": "reject/batched_dot_missing_a_k_mask",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "missing_a_k_mask",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "padded K requires exact row&&K and K&&column masks",
+      "host_wall_seconds": 0.08513328299997625
+    },
+    {
+      "name": "reject/batched_dot_missing_b_k_mask",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "missing_b_k_mask",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "padded K requires exact row&&K and K&&column masks",
+      "host_wall_seconds": 0.09169635999998604
+    },
+    {
+      "name": "reject/batched_dot_wrong_k_mask",
+      "status": "passed",
+      "rejected": true,
+      "fixed_ttir": true,
+      "mutation": "wrong_k_mask",
+      "closed_graph_enforced": true,
+      "matched_diagnostic": "input masks must be exact row and column masks",
+      "host_wall_seconds": 0.09246391799999287
+    }
+  ],
+  "passed_cases": 20,
+  "expected_rejections": 15,
+  "host_wall_seconds": 12.969866846999992
+}

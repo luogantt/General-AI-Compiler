@@ -1,0 +1,628 @@
+{
+  "scope": "MLIR to CUDA PTX / VOLT RV32 object codegen only",
+  "physical_device_execution": false,
+  "simulator_execution": false,
+  "run_id": "20261021T091546082649Z-4a2856cfb21a",
+  "compiler": "/home/thomas/gac-linalg-20261021/gac-compile",
+  "compiler_sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3",
+  "cases": [
+    {
+      "case": "matmul_bias_relu",
+      "target": "cuda",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/matmul_bias_relu/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.ptx"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 1,
+      "dispatches": 1,
+      "external_math": [],
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/matmul_bias_relu/kernel.ptx",
+      "artifact_bytes": 2115,
+      "artifact_sha256": "1360b31bf754a9b7b66f7866dfdafa4488cc0d9ec4e01099d16eabd58e0fb7b2"
+    },
+    {
+      "case": "matmul_bias_relu",
+      "target": "vortex",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/matmul_bias_relu/model.onnx",
+            "--target=vortex",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-mtriple=riscv32-unknown-elf",
+            "-mattr=+m,+a,+f,+xvortex,+zicond",
+            "-target-abi=ilp32f",
+            "-O3",
+            "-code-model=medium",
+            "-disable-loop-idiom-all",
+            "-filetype=obj",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-h",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-s",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-S",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.o"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 1,
+      "dispatches": 1,
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/matmul_bias_relu/kernel.o",
+      "artifact_bytes": 1216,
+      "artifact_sha256": "611a8b2783d0bc1be96d9354c3b50f508bf6a104744e45f1e5288bdc02e2ea6f"
+    },
+    {
+      "case": "grouped_dilated_conv",
+      "target": "cuda",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/grouped_dilated_conv/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.ptx"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 1,
+      "dispatches": 2,
+      "external_math": [],
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grouped_dilated_conv/kernel.ptx",
+      "artifact_bytes": 6192,
+      "artifact_sha256": "44792fba7704a5d604d670552a06dfd27d72584a13cd12e35f4ed7bdb6602af7"
+    },
+    {
+      "case": "grouped_dilated_conv",
+      "target": "vortex",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/grouped_dilated_conv/model.onnx",
+            "--target=vortex",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-mtriple=riscv32-unknown-elf",
+            "-mattr=+m,+a,+f,+xvortex,+zicond",
+            "-target-abi=ilp32f",
+            "-O3",
+            "-code-model=medium",
+            "-disable-loop-idiom-all",
+            "-filetype=obj",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-h",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-s",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-S",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.o"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 1,
+      "dispatches": 2,
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grouped_dilated_conv/kernel.o",
+      "artifact_bytes": 2128,
+      "artifact_sha256": "7ccbbc51bab12e151f0b06932a5c60117dcfd7931a4113fe1379bd068c605d30"
+    },
+    {
+      "case": "layer_norm_axes_and_bias",
+      "target": "cuda",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/layer_norm_axes_and_bias/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.ptx"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 3,
+      "dispatches": 3,
+      "external_math": [
+        ".extern .func  (.param .b32 func_retval0) __nv_sqrtf"
+      ],
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/layer_norm_axes_and_bias/kernel.ptx",
+      "artifact_bytes": 6558,
+      "artifact_sha256": "60bc8217acd2135c1f06f61ecb4996a0bbb288cddbbfda89d1508045a27a830e"
+    },
+    {
+      "case": "layer_norm_axes_and_bias",
+      "target": "vortex",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/layer_norm_axes_and_bias/model.onnx",
+            "--target=vortex",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-mtriple=riscv32-unknown-elf",
+            "-mattr=+m,+a,+f,+xvortex,+zicond",
+            "-target-abi=ilp32f",
+            "-O3",
+            "-code-model=medium",
+            "-disable-loop-idiom-all",
+            "-filetype=obj",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-h",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-s",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-S",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.o"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 3,
+      "dispatches": 3,
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/layer_norm_axes_and_bias/kernel.o",
+      "artifact_bytes": 2312,
+      "artifact_sha256": "3711d58f3a10806c91f59bbcf42b32d0f5081496f9c037ca4760753a7911e0ba"
+    },
+    {
+      "case": "grid_sample_bilinear_boundaries",
+      "target": "cuda",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/grid_sample_bilinear_boundaries/model.onnx",
+            "--target=cuda",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-march=nvptx64",
+            "-mcpu=sm_86",
+            "-mattr=+ptx80",
+            "-O2",
+            "-fp-contract=off",
+            "-nvptx-fma-level=0",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.ptx"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 0,
+      "dispatches": 2,
+      "external_math": [],
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/cuda/grid_sample_bilinear_boundaries/kernel.ptx",
+      "artifact_bytes": 9285,
+      "artifact_sha256": "bb1de0967ffeb9b2ae0de54bed85bb7a5cd2d1769577fcf0c9db48c1ccc64b00"
+    },
+    {
+      "case": "grid_sample_bilinear_boundaries",
+      "target": "vortex",
+      "commands": [
+        {
+          "argv": [
+            "/home/thomas/gac-linalg-20261021/gac-compile",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/native/grid_sample_bilinear_boundaries/model.onnx",
+            "--target=vortex",
+            "--emit=llvm",
+            "--save-stages",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries",
+            "--manifest",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/plan.json",
+            "--constants-dir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/constants",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.mlir"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/mlir-translate",
+            "--mlir-to-llvmir",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.mlir",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/opt",
+            "-passes=verify",
+            "-disable-output",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.ll"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llc",
+            "-mtriple=riscv32-unknown-elf",
+            "-mattr=+m,+a,+f,+xvortex,+zicond",
+            "-target-abi=ilp32f",
+            "-O3",
+            "-code-model=medium",
+            "-disable-loop-idiom-all",
+            "-filetype=obj",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.ll",
+            "-o",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-h",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-s",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.o"
+          ],
+          "returncode": 0
+        },
+        {
+          "argv": [
+            "/home/thomas/gac-volt-llvm20/build-release/bin/llvm-readelf",
+            "-S",
+            "-W",
+            "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.o"
+          ],
+          "returncode": 0
+        }
+      ],
+      "passed": true,
+      "linalg_dispatches": 0,
+      "dispatches": 2,
+      "artifact": "/mnt/c/Users/Thomas/Desktop/universal_ai_compile/General-AI-Compiler/build/linalg-validation/targets/20261021T091546082649Z-4a2856cfb21a/vortex/grid_sample_bilinear_boundaries/kernel.o",
+      "artifact_bytes": 2580,
+      "artifact_sha256": "874ef15eadba19a669e85a26cf5c74113bcedeb2fb4d04752e6d2c09049e3b26"
+    }
+  ]
+}

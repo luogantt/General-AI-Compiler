@@ -1,0 +1,84 @@
+{
+  "library": "GACComputeTemplates",
+  "schema_version": 1,
+  "selection_policy": "explicit options + checked contracts; not autotuning",
+  "templates": [
+    {
+      "arithmetic": "fp32",
+      "collective": true,
+      "id": "cuda.matmul.shared",
+      "operations": [
+        "gac.matmul",
+        "gac.matmul_bias",
+        "gac.matmul_bias_relu"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "static shared A/B tiles; per-thread register accumulators",
+      "target": "cuda"
+    },
+    {
+      "arithmetic": "fp32",
+      "collective": true,
+      "id": "cuda.reduction.row",
+      "operations": [
+        "gac.softmax",
+        "gac.layer_norm"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "static shared reduction scratch; one CTA per row",
+      "target": "cuda"
+    },
+    {
+      "arithmetic": "fp32",
+      "collective": false,
+      "id": "cuda.convolution.channels",
+      "operations": [
+        "gac.conv2d",
+        "gac.conv2d_relu",
+        "gac.deform_conv2d"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "register channel tile; no shared staging",
+      "target": "cuda"
+    },
+    {
+      "arithmetic": "fp32",
+      "collective": true,
+      "id": "vortex.matmul.lmem",
+      "operations": [
+        "gac.matmul",
+        "gac.matmul_bias",
+        "gac.matmul_bias_relu"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "one LMEM A/B stage; register accumulators",
+      "target": "vortex"
+    },
+    {
+      "arithmetic": "fp32",
+      "collective": true,
+      "id": "vortex.matmul.dxa",
+      "operations": [
+        "gac.matmul",
+        "gac.matmul_bias",
+        "gac.matmul_bias_relu"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "two LMEM A/B stages; DXA copy; register accumulators",
+      "target": "vortex"
+    },
+    {
+      "arithmetic": "tf32x3-fp32-accumulate",
+      "collective": true,
+      "id": "vortex.matmul.tcu",
+      "operations": [
+        "gac.matmul",
+        "gac.matmul_bias",
+        "gac.matmul_bias_relu"
+      ],
+      "regular_lowering": "legacy",
+      "storage": "register WMMA fragments; no LMEM/DXA staging",
+      "target": "vortex"
+    }
+  ]
+}

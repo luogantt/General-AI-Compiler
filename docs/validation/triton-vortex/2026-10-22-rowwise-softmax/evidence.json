@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-22",
+  "branch": "lg/bevformer-triton-vortex",
+  "base_commit": "3716adbe6eda45a24be810420f87952a8e7dc795",
+  "scope": "GAC ONNX/C++ MLIR/Triton/VOLT/Vortex SimX row-wise Softmax correctness, selection and ABI validation; not a performance benchmark",
+  "result": {
+    "status": "passed",
+    "gac_integration_checks": 92,
+    "softmax_specific_checks": 30,
+    "backend_softmax_checks": 28,
+    "backend_full_checks": 90,
+    "validation_json_sha256": "4fd92a9d8c2d1191bc870457237db94e508403f0043e5bfa707711babda691d2"
+  },
+  "output_directory": "/home/thomas/gac-triton-rowsoftmax-final5-20261022",
+  "commands": [
+    "cmake --build /home/thomas/gac-templates-20261021-make --target gac-compile gac-vortex-run gac-triton-layernorm-selector-contract gac-triton-softmax-selector-contract -j2",
+    "TRITON_VORTEX_OPT=/mnt/c/Users/Thomas/Desktop/universal_ai_compile/triton/third_party/vortex/build/triton-vortex-opt VORTEX_DRIVER=simx bash build/gac-triton-validation.sh /home/thomas/gac-triton-rowsoftmax-final5-20261022"
+  ],
+  "binary_sha256": {
+    "gac-compile": "9b0427c5f79e489ccbe48b995fb4e3d9ce98c45e506d58f086dde4f59b69e785",
+    "gac-vortex-run": "b67bf0ab970c06789a6e8a0ca62aca4277da7e3fad637abf97bccd16f3e05459",
+    "gac-triton-softmax-selector-contract": "727b630f8207636dde7b6726b87fe46acfc792536bf4648bd812c835ce760335",
+    "triton-vortex-opt": "ccfb92c5d93c5d560d981beb56f535dfdcfd62184f12ef740ed207010270401c"
+  },
+  "source_sha256": {
+    "native/include/gac/TritonBridge.h": "d00b02dcde56b86939dcda83f6ddf65d0f4dd570b38063cf252d2866bfc78c5d",
+    "native/lib/TritonBridge.cpp": "6fff1d7df7abba0297692b9b50afbc7fef4d64670e1a28e854cf6bbacf33f5e9",
+    "native/lib/DeviceLowering.cpp": "7a893b141bbc8a92fe39745bc6a61dfae3b1fc6dc6fd52d45ab98c43030b2648",
+    "native/tools/compile-triton-vortex.py": "3f055e4815d5c62bec2446baeb0112a10bc495718fccffa40dbdefc52d4b062a",
+    "native/runtime/dispatch-plan.h": "92bef09b7767da35e9eb40238a7da41a6ec9064ff940010243686df418c5113c",
+    "native/runtime/vortex-run.cpp": "af98ff70ead4236b9beab3caa44e30180a2bd21c9e16700110fc03711a33ef0b",
+    "native/tests/run_triton_vortex_tests.py": "9b6a9fa4535a797060196015d1cc820ef38006f044e9aeb45326f86ae96299c0",
+    "native/tests/triton_softmax_selector_contract.cpp": "c5d8bb6e6a75b8d0fe5a4726d7ab30ebd1d6f5d82ca0bd761819778c99572b23",
+    "native/CMakeLists.txt": "a74f9a6495f99a3f3307d650a7546ab2efaad3f6e62e843cd45fd7035085d799"
+  },
+  "ttir_sha256": {
+    "legacy-rank1/gac_op_0.ttir": "ddfebfa32812ed0af8c7a7d92ad48fb45877ba5b20b5dd0fd144effecabbfd02",
+    "rank2-tail-19/gac_op_0.ttir": "ddfebfa32812ed0af8c7a7d92ad48fb45877ba5b20b5dd0fd144effecabbfd02",
+    "rank3-tail-19/gac_op_0.ttir": "ddfebfa32812ed0af8c7a7d92ad48fb45877ba5b20b5dd0fd144effecabbfd02",
+    "width-256/gac_op_0.ttir": "37006630776277397d77c1fa5cf54d8966e1092f76e2d907fa0aa9bb5c99d9a5",
+    "width-1/gac_op_0.ttir": "34b2cc29660a4c96610aebe8d787ef505ed582d7b26d7079719f2bb99f7313b7",
+    "width-1024/gac_op_0.ttir": "b7c1cef254e1f2625dc58fcfc0458bc2840f873572b685b4b97dd9f3177ec4ae"
+  },
+  "backend_binary_frozen": true
+}

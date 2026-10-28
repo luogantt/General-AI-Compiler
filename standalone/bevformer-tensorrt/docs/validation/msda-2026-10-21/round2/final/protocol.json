@@ -1,0 +1,131 @@
+[
+  {
+    "stage": "checks",
+    "initial_state": "52, 1410, 7",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "/home/robot/project/gac-msda-20261021/round2b-src/scripts/benchmark_msda.py",
+      "--library",
+      "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so",
+      "--checks-only",
+      "--report",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/checks.json"
+    ],
+    "returncode": 0
+  },
+  {
+    "stage": "round1-1",
+    "initial_state": "53, 1410, 0",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "-m",
+      "bevformer_trt",
+      "run",
+      "--engine",
+      "/home/robot/project/gac-msda-20261021/controlled-01/custom.engine",
+      "--inputs",
+      "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "--output",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/round1-1",
+      "--warmup",
+      "5",
+      "--repeat",
+      "30",
+      "--plugin-library",
+      "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so"
+    ],
+    "returncode": 0
+  },
+  {
+    "stage": "restored-default",
+    "initial_state": "55, 210, 0",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "-m",
+      "bevformer_trt",
+      "run",
+      "--engine",
+      "/home/robot/project/gac-msda-20261021/controlled-01/custom.engine",
+      "--inputs",
+      "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "--output",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/restored-default",
+      "--warmup",
+      "5",
+      "--repeat",
+      "30",
+      "--plugin-library",
+      "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so"
+    ],
+    "returncode": 0
+  },
+  {
+    "stage": "index32-1",
+    "initial_state": "55, 210, 0",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "-m",
+      "bevformer_trt",
+      "run",
+      "--engine",
+      "/home/robot/project/gac-msda-20261021/controlled-round2/candidate.engine",
+      "--inputs",
+      "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "--output",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/index32-1",
+      "--warmup",
+      "5",
+      "--repeat",
+      "30",
+      "--plugin-library",
+      "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so"
+    ],
+    "returncode": 0
+  },
+  {
+    "stage": "index32-2",
+    "initial_state": "55, 210, 0",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "-m",
+      "bevformer_trt",
+      "run",
+      "--engine",
+      "/home/robot/project/gac-msda-20261021/controlled-round2/candidate.engine",
+      "--inputs",
+      "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "--output",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/index32-2",
+      "--warmup",
+      "5",
+      "--repeat",
+      "30",
+      "--plugin-library",
+      "/home/robot/project/gac-msda-20261021/build-round2b/libgac_msda_plugin.so"
+    ],
+    "returncode": 0
+  },
+  {
+    "stage": "round1-2",
+    "initial_state": "55, 210, 0",
+    "command": [
+      "/home/robot/project/gac-tensorrt-20261017/venv/bin/python",
+      "-m",
+      "bevformer_trt",
+      "run",
+      "--engine",
+      "/home/robot/project/gac-msda-20261021/controlled-01/custom.engine",
+      "--inputs",
+      "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "--output",
+      "/home/robot/project/gac-msda-20261021/controlled-round2b/round1-2",
+      "--warmup",
+      "5",
+      "--repeat",
+      "30",
+      "--plugin-library",
+      "/home/robot/project/gac-msda-20261021/build/libgac_msda_plugin.so"
+    ],
+    "returncode": 0
+  }
+]

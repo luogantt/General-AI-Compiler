@@ -1,0 +1,22 @@
+BEVFormer TensorRT standalone tools
+
+Extracted on 2026-10-20 from the TensorRT tooling of:
+https://github.com/luogantt/General-AI-Compiler
+Source tooling revision: 24baf60ca79318cb072881177613608c453a4ea7
+The source project's pyproject.toml declares Apache-2.0 for its code.
+
+This package preserves the numerical adapters, calibration bindings and runtime
+logic, changes imports and CLI entry points for standalone installation, and adds
+independent packaging, documentation and validation.
+
+NVIDIA TensorRT, CUDA and their plugins are external dependencies distributed
+under their own licenses. PyTorch, ONNX, NumPy and OpenCV are also external
+dependencies; their code is not relicensed by this project.
+
+BEVFormer checkpoint weights and nuScenes data are NOT covered by this project's
+code license. Optional model assets must retain their source and license terms.
+The source distribution contains neither full model weights nor nuScenes images.
+
+The tiny synthetic tests/fixtures are numerical DCNv2/MSDA test vectors generated
+by General-AI-Compiler native/tests/generate_base_ops_models.py; no trained
+checkpoint weights or dataset samples are included in those fixtures.

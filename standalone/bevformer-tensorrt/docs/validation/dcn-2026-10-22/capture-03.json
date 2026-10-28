@@ -1,0 +1,253 @@
+{
+  "schema": "gac.dcn.real_capture.v1",
+  "status": "captured",
+  "source_kind": "real_preprocessed_images",
+  "sources": {
+    "onnx": {
+      "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/models/bevformer-base/adapted.onnx",
+      "sha256": "ad34bc2e896916e719e76c50fb5136fecbbf1f8a0fe76543e8743f2e397669be"
+    },
+    "images": {
+      "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/results/real-images.npy",
+      "sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968"
+    },
+    "ranges": {
+      "path": "/home/robot/project/bevformer-tensorrt-standalone-20261020/models/bevformer-base/ranges.json",
+      "sha256": "b213446406e19f32c71b5fd0df191db40c08103bd13e746ddca5c13f586ead6a"
+    }
+  },
+  "engine": "/home/robot/project/gac-msda-20261021/dcn-capture-build-03/capture.engine",
+  "engine_sha256": "5d5a515dcd998e03a0b4d71bdbcbad8d6e06c6246e2d5bc437cef7221fc5615c",
+  "selected_node": {
+    "name": "/img_backbone/layer4/layer4.1/conv2/MMCVModulatedDeformConv2d",
+    "op_type": "ModulatedDeformConv2d",
+    "domain": "trt.plugins",
+    "inputs": [
+      "/img_backbone/layer4/layer4.1/relu/Relu_output_0",
+      "/img_backbone/layer4/layer4.1/conv2/Concat_output_0",
+      "/img_backbone/layer4/layer4.1/conv2/Sigmoid_output_0",
+      "img_backbone.layer4.1.conv2.weight"
+    ],
+    "outputs": [
+      "/img_backbone/layer4/layer4.1/conv2/MMCVModulatedDeformConv2d_output_0"
+    ],
+    "has_bias": false,
+    "plugin_version": "2",
+    "plugin_namespace": "",
+    "attributes": {
+      "stride": [
+        1,
+        1
+      ],
+      "padding": [
+        1,
+        1
+      ],
+      "dilation": [
+        1,
+        1
+      ],
+      "group": 1,
+      "deformable_group": 1
+    },
+    "attribute_pair_order": "[width,height]; symmetric pairs only",
+    "layout": "NCHW"
+  },
+  "precision": "mixed-int8",
+  "engine_io": [
+    {
+      "name": "images",
+      "shape": [
+        1,
+        6,
+        3,
+        928,
+        1600
+      ],
+      "dtype": "DataType.FLOAT",
+      "mode": "input"
+    },
+    {
+      "name": "gac_dcn_capture/input",
+      "shape": [
+        1,
+        512,
+        29,
+        50
+      ],
+      "dtype": "DataType.HALF",
+      "mode": "output"
+    },
+    {
+      "name": "gac_dcn_capture/offset",
+      "shape": [
+        1,
+        18,
+        29,
+        50
+      ],
+      "dtype": "DataType.HALF",
+      "mode": "output"
+    },
+    {
+      "name": "gac_dcn_capture/mask",
+      "shape": [
+        1,
+        9,
+        29,
+        50
+      ],
+      "dtype": "DataType.HALF",
+      "mode": "output"
+    },
+    {
+      "name": "gac_dcn_capture/weight",
+      "shape": [
+        512,
+        512,
+        3,
+        3
+      ],
+      "dtype": "DataType.HALF",
+      "mode": "output"
+    },
+    {
+      "name": "gac_dcn_capture/expected",
+      "shape": [
+        1,
+        512,
+        29,
+        50
+      ],
+      "dtype": "DataType.HALF",
+      "mode": "output"
+    }
+  ],
+  "capture_tensors": {
+    "input": "gac_dcn_capture/input",
+    "offset": "gac_dcn_capture/offset",
+    "mask": "gac_dcn_capture/mask",
+    "weight": "gac_dcn_capture/weight",
+    "expected": "gac_dcn_capture/expected"
+  },
+  "arrays": {
+    "input": {
+      "shape": [
+        1,
+        512,
+        29,
+        50
+      ],
+      "dtype": "float16",
+      "bytes": 1484800
+    },
+    "offset": {
+      "shape": [
+        1,
+        18,
+        29,
+        50
+      ],
+      "dtype": "float16",
+      "bytes": 52200
+    },
+    "mask": {
+      "shape": [
+        1,
+        9,
+        29,
+        50
+      ],
+      "dtype": "float16",
+      "bytes": 26100
+    },
+    "weight": {
+      "shape": [
+        512,
+        512,
+        3,
+        3
+      ],
+      "dtype": "float16",
+      "bytes": 4718592
+    },
+    "expected": {
+      "shape": [
+        1,
+        512,
+        29,
+        50
+      ],
+      "dtype": "float16",
+      "bytes": 1484800
+    }
+  },
+  "archive": "/home/robot/project/gac-msda-20261021/dcn-capture-run-03/capture.npz",
+  "archive_sha256": "22ea04b70ea346c893b2d1e810ca78199ea136cabc5ccd9ab77e9d3370e0f943",
+  "validation": {
+    "status": "passed",
+    "layout": "NCHW",
+    "dtype": "float16",
+    "finite": {
+      "input": true,
+      "offset": true,
+      "mask": true,
+      "weight": true,
+      "expected": true
+    },
+    "attributes": {
+      "stride": [
+        1,
+        1
+      ],
+      "padding": [
+        1,
+        1
+      ],
+      "dilation": [
+        1,
+        1
+      ],
+      "group": 1,
+      "deformable_group": 1
+    },
+    "dimensions": {
+      "N": 1,
+      "Cin": 512,
+      "Cout": 512,
+      "H": 29,
+      "W": 50,
+      "Kh": 3,
+      "Kw": 3,
+      "Ho": 29,
+      "Wo": 50
+    }
+  },
+  "environment": {
+    "utc": "2026-10-21T15:48:40.413577+00:00",
+    "host": "lg-robot",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-4353f6fe-e2ce-7693-a05b-09ae954d3448, 580.178.04, 8192 MiB, 56, 1410 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "plugin_libraries": [],
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "impact": "Parsed the original complete ONNX and applied its precision/range policy before exposing the selected DCNv2 inputs/output as constrained FP16 Identity boundaries. Removed original output marks; TensorRT may prune downstream work and choose different tactics/reformats. These real-image activations belong to the capture engine, not necessarily the original engine.",
+  "timing": "not measured",
+  "expected": "official NVIDIA ModulatedDeformConv2d v2 output from capture engine",
+  "compute": "TensorRT; torch supplies buffers/copies only; Python validates saved metadata"
+}

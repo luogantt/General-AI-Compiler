@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.scratch/
+build/
+dist/
+results/
+*.engine
+*.plan
+models/bevformer-base/
+*.zip
+*.tar.gz
+!tests/fixtures/**/*.npz

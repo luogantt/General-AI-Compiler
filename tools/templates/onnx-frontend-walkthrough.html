@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ONNX 前端：从模型文件到 Graph IR</title>
+<style>
+:root{color-scheme:light;--bg:#f6f8fb;--paper:#fff;--ink:#172b40;--muted:#52647a;--line:#d5deea;--accent:#075cbe;--soft:#edf5ff;--warm:#fff6e5;--warmink:#805615;--green:#16634a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1180px;margin:auto;padding:28px 24px 60px}a{color:var(--accent);text-underline-offset:3px}h1{font-size:clamp(25px,4vw,36px);line-height:1.3;margin:12px 0}h2{font-size:23px;margin:0 0 12px}h3{font-size:17px;margin:0 0 8px}p{margin:8px 0}small,.muted{color:var(--muted)}code{font:14px/1.6 Consolas,ui-monospace,monospace;overflow-wrap:anywhere}pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4;font:13px/1.65 Consolas,ui-monospace,monospace}button{font:inherit;cursor:pointer;color:var(--ink);border:1px solid var(--line);border-radius:6px;background:var(--paper);padding:8px 14px}button:hover{border-color:var(--accent)}button[aria-pressed=true]{border-color:var(--accent);background:var(--soft);color:var(--accent)}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.lead{font-size:18px;max-width:960px}.tag{font-size:13px;color:var(--muted)}.section{margin-top:24px;border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:24px}.callout{padding:12px 16px;border-left:3px solid var(--accent);background:var(--soft);margin:16px 0}.warn{border-color:var(--warmink);background:var(--warm);color:var(--warmink)}.grid{display:grid;gap:14px}.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:1fr 1fr 1fr}.field{border:1px solid var(--line);padding:14px;border-radius:6px}.field small{display:block}.field b{display:block}.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:20px 0 14px}.steps button{text-align:left;display:flex;align-items:center;gap:10px;min-height:65px}.num{font-variant-numeric:tabular-nums;font-size:13px;border:1px solid currentColor;border-radius:50%;width:26px;height:26px;flex-shrink:0;display:grid;place-items:center}.steps small{display:block;font-size:12px}.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.controls{display:flex;gap:8px}.step-heading{margin-bottom:12px}.step-title{font-size:25px;margin:0}.logic{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:12px}.logic>div{padding:14px;background:var(--bg);border-radius:6px}.logic>div:nth-child(2){background:var(--soft)}.logic span{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}.logic p{margin:0}.snapshot{border:1px solid var(--line);border-radius:6px;min-width:0;overflow:hidden}.snapshot h3{padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--line);margin:0}.snapshot pre{padding:14px;max-height:330px;overflow:auto}.state{margin:18px 0}.state .field{font-size:14px}.state strong{display:block;color:var(--accent)}.source{margin-top:18px}.source details{border:1px solid var(--line);border-radius:6px;margin:8px 0}.source summary{padding:12px 14px;cursor:pointer;overflow-wrap:anywhere}.source-meta{padding:0 14px 10px;font-size:13px;color:var(--muted)}.source pre{background:var(--bg);padding:14px;max-height:420px;overflow:auto}.code-line{display:block}.line-number{display:inline-block;min-width:4em;color:var(--muted);user-select:none}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;vertical-align:top;padding:11px;border-bottom:1px solid var(--line)}th{background:var(--bg);font-weight:600}.diagram{overflow:auto;padding:12px 0}.flow{display:grid;grid-template-columns:70px 30px 95px 30px 60px 30px 95px 30px 60px 30px 95px 30px 70px;align-items:center;justify-content:center;min-width:870px;gap:0;text-align:center}.flow .tensor,.flow .op{border:1px solid var(--line);padding:9px 4px;border-radius:5px}.flow .op{background:var(--soft);border-color:var(--accent)}.flow .feed{font-size:13px;grid-row:1;padding-bottom:8px;color:var(--green)}.flow .row{grid-row:2}.flow small{display:block;font-size:11px}.matrices{display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin-top:10px}.matrix{display:inline-grid;grid-template-columns:repeat(2,42px);gap:3px;padding:5px;border-left:2px solid var(--green);border-right:2px solid var(--green);vertical-align:middle;margin:0 8px}.matrix span{background:#edf7f2;text-align:center;padding:4px;font-variant-numeric:tabular-nums;color:var(--green)}.matrix-label{font-size:14px}.chain{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.chain b{border:1px solid var(--line);border-radius:5px;padding:6px 10px;background:var(--paper);font-size:14px}.chain .active{background:var(--soft);border-color:var(--accent)}.links{display:flex;gap:12px;flex-wrap:wrap}.widecode{padding:16px;background:var(--bg);border-radius:6px;max-height:420px;overflow:auto}.backend-buttons{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.status{font-size:14px;color:var(--green)}footer{margin-top:26px;font-size:13px;color:var(--muted)}.small-title{font-size:15px;font-weight:600}.hidden{display:none}
+@media(max-width:800px){.three,.logic{grid-template-columns:1fr}.two{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:18px 14px 40px}.section{padding:18px 14px}.step-title{font-size:22px}}
+@media print{body{background:white}.steps,.controls{display:none}.section{break-inside:avoid}details{display:block}main{max-width:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<a href="index.html">← 架构图目录</a><span class="tag"> · 模型导入专题 · lg/bevformer-vortex-full-ops</span>
+<h1>ONNX 前端怎样提取 Graph IR？</h1>
+<p class="lead">沿着同一个小模型，逐步看清：<strong>读哪个字段 → 做什么转换 → 保存到哪个变量 → 交给哪个接口。</strong></p>
+<div class="chain" aria-label="整体调用链"><b>模型文件 .onnx</b><span>→</span><b>ONNX ModelProto</b><span>→</span><b class="active">GAC Graph（Python 对象）</b><span>→</span><b>优化 / 后端生成 MLIR</b><span>→</span><b>工具链与 Runtime</b></div>
+<p class="muted">ONNX 本身已有计算图。这里的“提取 IR”，是解析已有图并转换成项目自己的表示。前端不会执行一次模型推理来获取每层结果。</p>
+</header>
+
+<section class="section" aria-labelledby="container-title">
+<h2 id="container-title">先看文件里有什么</h2>
+<p>ONNX（Open Neural Network Exchange）定义模型交换格式和算子语义。常见 <code>.onnx</code> 文件是 Protocol Buffers 二进制数据；读取后成为 <code>ModelProto</code> 对象。</p>
+<div class="grid three">
+<div class="field"><b>ModelProto：模型外壳</b><code>ir_version / opset_import / graph</code><small>IR 版本描述格式；opset 描述算子语义版本。两者不是同一个版本号。</small></div>
+<div class="field"><b>GraphProto：计算关系</b><code>node / input / output / value_info</code><small>节点、输入输出接口，以及已知的中间张量类型。</small></div>
+<div class="field"><b>TensorProto：常量数值</b><code>initializer / Constant.value</code><small>权重、bias、shape 参数等。大权重也可能在外置文件中，由模型记录位置。</small></div>
+</div>
+<div class="callout"><strong>文件里的三种内容要分开：</strong>“做什么”由节点描述；“张量多大、什么类型”由类型信息描述；“权重具体是多少”由常量数据保存。输入图像和一般中间激活的实际数值，要在运行时才出现。</div>
+<p class="muted">格式依据：<a href="https://onnx.ai/onnx/intro/concepts.html">ONNX Concepts</a> · <a href="https://onnx.ai/onnx/repo-docs/IR.html">ONNX IR 规范</a>。ONNX 还允许函数、子图等结构；当前 GAC 前端对尚未支持的结构会报错。</p>
+</section>
+
+<section class="section" aria-labelledby="example-title">
+<h2 id="example-title">贯穿全程的小模型：Y = ReLU(X × W + b)</h2>
+<p>这是实际生成并交给项目 <code>load_onnx()</code> 导入的教学模型。<strong>W 是 initializer；b 故意写成 Constant 节点</strong>，让你看到两种常量如何进入同一个字典。</p>
+<div class="diagram" role="img" aria-label="W 输入 MatMul，X 与 W 相乘得到 M；b 输入 Add，M 加 b 得到 Z；ReLU 将 Z 转成 Y。箭头是张量名引用，不表示已执行。">
+<div class="flow">
+<div class="feed" style="grid-column:3">W [2×2]<br>initializer ↓</div><div class="feed" style="grid-column:7">b [2]<br>Constant ↓</div>
+<div class="tensor row">X<small>[1×2]</small></div><span class="row">→</span><div class="op row">MatMul</div><span class="row">→</span><div class="tensor row">M<small>[1×2]</small></div><span class="row">→</span><div class="op row">Add</div><span class="row">→</span><div class="tensor row">Z<small>[1×2]</small></div><span class="row">→</span><div class="op row">Relu</div><span class="row">→</span><div class="tensor row">Y<small>[1×2]</small></div>
+</div></div>
+<div class="matrices"><div class="matrix-label">真实常量 W = <span class="matrix" id="w-matrix"></span></div><div class="matrix-label">真实常量 b = <span class="matrix" id="b-matrix"></span></div><span class="muted">X 尚未输入；M、Z、Y 尚未计算。</span></div>
+<p class="tag" id="example-facts"></p>
+</section>
+
+<section class="section" aria-labelledby="walk-title">
+<h2 id="walk-title">按顺序走一遍前端</h2>
+<p class="muted">前六步构造内存中的 Graph；第七步是可选保存，第八步是后续编译接口。切换步骤只是阅读说明，不会在浏览器里重新执行 Python。</p>
+<nav class="steps" id="steps" aria-label="ONNX 导入步骤"></nav>
+<div class="bar"><span id="position" class="tag" aria-live="polite"></span><div class="controls"><button id="previous" type="button">← 上一步</button><button id="next" type="button">下一步 →</button></div></div>
+<div class="step-heading"><h3 class="step-title" id="step-title"></h3><p id="step-reason" class="muted"></p></div>
+<div class="logic"><div><span>① 已知 / 上一步提供</span><p id="step-input"></p></div><div><span>② 本步做什么</span><p id="step-action"></p></div><div><span>③ 得到什么 / 交给下一步</span><p id="step-output"></p></div></div>
+<div class="state grid three" aria-label="当前步骤的数据状态"><div class="field"><strong>真实常量数值</strong><span id="state-values"></span></div><div class="field"><strong>类型与输入接口</strong><span id="state-types"></span></div><div class="field"><strong>运算与结果</strong><span id="state-nodes"></span></div></div>
+<div class="grid two"><div class="snapshot"><h3 id="before-title">读取的数据</h3><pre id="before"></pre></div><div class="snapshot"><h3 id="after-title">生成的数据</h3><pre id="after"></pre></div></div>
+<p class="callout" id="step-note"></p>
+<div class="source" id="source"></div>
+</section>
+
+<section class="section" aria-labelledby="storage-title">
+<h2 id="storage-title">提取出来的东西，究竟放在哪里？</h2>
+<p><code>load_onnx(path) → Graph</code> 是内存接口。调用返回时，数据主要在 <strong>Host 进程内存</strong>里，尚未分配 Vortex DDR / LMEM。</p>
+<div class="table-wrap"><table><thead><tr><th>Graph 字段</th><th>本例内容</th><th>实际用途</th></tr></thead><tbody>
+<tr><td><code>graph.inputs["X"]</code></td><td><code>TensorSpec((1, 2), "float32")</code></td><td>规定调用者需提供什么输入；不保存 X 的数值。</td></tr>
+<tr><td><code>graph.constants["W"]</code></td><td>2×2 的 NumPy 数组</td><td>保存权重真实数值；b 同样在 constants 中。</td></tr>
+<tr><td><code>graph.nodes[0]</code></td><td><code>MatMul(inputs=("X", "W"), outputs=("M",))</code></td><td>通过名字引用数据，表达运算关系。</td></tr>
+<tr><td><code>graph.value_specs["M"]</code></td><td><code>shape=(1,2), dtype=float32</code></td><td>后端据此推导循环和存储需求；不是 M 的计算结果。</td></tr>
+<tr><td><code>graph.outputs</code></td><td><code>("Y",)</code></td><td>声明最终返回哪些张量。</td></tr>
+<tr><td><code>graph.metadata</code></td><td>来源、opset、转换统计、未支持原因</td><td>追踪来源并做支持分析。</td></tr>
+</tbody></table></div>
+<p class="callout">例如读取一个 MatMul：<code>node.inputs[1] == "W"</code> → 查找 <code>graph.constants["W"]</code> → 得到真实权重数组。节点间连线也是同一个原则：上游的输出名 M，就是下游 Add 的输入名 M。</p>
+<details><summary>展开这个真实小模型的完整 Graph JSON（包含小权重）</summary><pre class="widecode" id="full-graph"></pre></details>
+</section>
+
+<section class="section" aria-labelledby="interface-title">
+<h2 id="interface-title">下一步接口：Graph 怎样交给 MLIR 后端？</h2>
+<p>下一步直接传 Python <code>Graph</code> 对象。文本 <code>graph.ir.txt</code> 是阅读视图，不是必须读取的交换接口。以下两条是不同的后端入口，不是串联调用。</p>
+<div class="backend-buttons" role="group" aria-label="选择后端接口"><button data-backend="tensor" aria-pressed="true">通用 Tensor / Linalg MLIR</button><button data-backend="vortex" aria-pressed="false">Vortex 全图后端</button></div>
+<pre class="widecode" id="backend-api"></pre><p id="backend-explanation"></p>
+<details><summary>查看本例实际生成的 MLIR 文本</summary><pre class="widecode" id="backend-output"></pre></details>
+<div class="callout warn">本页面的小模型已经实际通过 ONNX 导入、常量保存 / 回读和两个后端的 MLIR 文本生成。这里没有调用外部 mlir-opt，也没有编译成机器码或执行设备推理；生成 MLIR 文本与工具链验证是不同步骤。</div>
+<div class="chain"><b>Graph</b><span>→</span><b>后端生成 .mlir</b><span>→</span><b>显式调用 mlir-opt</b><span>→</span><b>LLVM IR / VOLT</b><span>→</span><b>ELF / vxbin</b><span>→</span><b>Runtime</b></div>
+<p class="muted">上面最后一条是 Vortex 的后续工具链。前端不直接把 Python Graph 交给 mlir-opt，也不在 ONNX 导入时加载 MLIR 动态库。设备权重搬运由 artifact 与 Runtime 路径处理。</p>
+</section>
+
+<section class="section" aria-labelledby="real-title">
+<h2 id="real-title">放回真实 BEVFormer，看的是同一条导入逻辑</h2>
+<p>2026-10-15 保存的 BEVFormer-tiny 冷帧 raw-head 导出记录，使用固定标定与 CAN-bus。下列数字来自仓库验证摘要，不是本页重新跑出的模型结果。</p>
+<div class="table-wrap"><table><thead><tr><th>源 ONNX</th><th>导入后的 Graph</th><th>如何理解</th></tr></thead><tbody>
+<tr><td id="real-source-count"></td><td id="real-node-count"></td><td>Constant 可移入常量表；一个源节点也可能展开为多个节点。节点数变化不等于融合加速。</td></tr>
+<tr><td id="real-initializers"></td><td id="real-constants"></td><td>constants 除了权重，还包含从节点中提取或在转换中生成的常量。</td></tr>
+</tbody></table></div>
+<p class="callout warn"><strong>这份真实图目前是检查模式结果。</strong>2,996 个节点仍保留 ONNX 限定名，8 个中间输出尚无完整类型。严格导入在位置编码 Expand 的 shape 非编译期常量处失败，不能直接把这份诊断 Graph 送入后端就声称完成全模型编译。</p>
+<div class="table-wrap"><table><thead><tr><th>strict=True（默认）</th><th>strict=False（检查）</th></tr></thead><tbody><tr><td>要求能忠实转换。无法表示的语义会报错；成功后还执行 GAC ShapeInferencePass。后端仍要单独检查支持范围。</td><td>可保留未合法化的 <code>ai.onnx::…</code> 节点及原因，供查看与支持分析。非法模型或未支持的嵌套控制流仍可能报错。</td></tr></tbody></table></div>
+<p class="links"><a href="bevformer_onnx_ir_inspection.md">BEVFormer 导入记录与范围</a><a href="validation/onnx/bevformer-tiny-cold-2026-10-15/summary.json">保存的验证摘要</a><a href="../build/bevformer-onnx-inspect/inspection/graph-network.html">本地完整网络图</a><a href="../build/bevformer-onnx-inspect/inspection/graph.ir.txt">本地 Graph IR 文本</a></p>
+<small>build 下的链接仅在本地已生成对应文件时可用；本页的步骤、代码与小矩阵均已内嵌，可离线阅读。</small>
+</section>
+<footer>源码摘录由 tools/build_onnx_frontend_docs.py 从当前文件自动生成，含实际行号与 SHA-256。更新源码后运行该脚本刷新本页；加 --check 可检查是否需要刷新。教学样例产物集中在 build/onnx-frontend-walkthrough/。<br>进一步阅读：<a href="https://onnx.ai/onnx/repo-docs/ShapeInference.html">ONNX Shape Inference</a> · <a href="code_layout.md">项目源码分层</a> · <a href="vortex-matmul-end-to-end-v8.html">十个编译阶段</a></footer>
+</main>
+<script type="application/json" id="payload">__PAYLOAD__</script>
+<script>
+"use strict";
+const data=JSON.parse(document.getElementById('payload').textContent), example=data.example, graph=example.graph;
+const el=id=>document.getElementById(id), json=x=>JSON.stringify(x,null,2);
+const steps=[
+ {label:'读取 ONNX',sub:'文件 → ModelProto',title:'1 · 先把文件解码成可访问的对象',
+ reason:'先读出结构，后面才能通过 model.graph.initializer、model.graph.node 等字段访问模型。',
+ input:'.onnx 文件路径，以及它引用的外置权重文件（如果有）。',action:'load_onnx() 调用 onnx.load(..., load_external_data=True)，解析 protobuf 和外置数据。',output:'model：ONNX 的 ModelProto 对象；传给 import_onnx_model(model, ...)。',
+ beforeTitle:'文件中保存的模型（解码后的文字视图）',before:()=>example.source,afterTitle:'此时可以访问的字段',after:()=>`model.ir_version = ${example.ir_version}\nmodel.opset_import = {"ai.onnx": 17}\nmodel.graph.name = "frontend_demo"\nmodel.graph.input = [X]\nmodel.graph.output = [Y]\nmodel.graph.initializer = [W]\nmodel.graph.node = [Constant, MatMul, Add, Relu]`,
+ note:'ONNX 不是图像，也不只是权重文件。它保存带语义的计算图；onnx_frontend.py 才是我们编译器的 ONNX 前端实现。',sources:['load']},
+ {label:'检查与推形状',sub:'合法格式 → 已知类型',title:'2 · 检查格式，并补充能推导的 shape',
+ reason:'算子转换需要知道输入维度、类型和 opset。不能只按算子名称猜语义。',
+ input:'上一阶段的 ModelProto；本例 X=[1,2]、W=[2,2]，中间类型尚未显式写入。',action:'checker 检查结构和约束；ONNX infer_shapes 根据算子规则和已有类型推导中间类型。',output:'带补充 value_info 的 ModelProto：例如 M、Z 的 shape 都是 [1,2]。',
+ beforeTitle:'最初可知的信息',before:()=>`X: float32[1,2]\nW: float32[2,2]\nY: float32[1,2]\n中间 M、Z 未在原始 value_info 中声明`,afterTitle:'ONNX shape inference 之后',after:()=>example.inferred,
+ note:'推导 M 的 shape=[1,2]，不等于算出 M 的两个数值。动态形状或未支持算子可能使推导不完整；data_prop=True 可传播部分形状相关常量，也不是完整推理。',sources:['check']},
+ {label:'提取权重',sub:'TensorProto → ndarray',title:'3 · 解码 initializer，把真实数值放进 constants',
+ reason:'上一阶段确认了模型结构；现在先建立常量表，后续节点才能按名字引用权重。',
+ input:'model.graph.initializer 中的 W：名字、dtype、dims 以及序列化的数据。',action:'numpy_helper.to_array(initializer, base_dir=...) 解码数组；_contiguous_tensor() 保持 rank 并保证连续存储。',output:'局部变量 constants["W"]：一个 float32 NumPy ndarray，shape=(2,2)。',
+ beforeTitle:'读取的 initializer 字段',before:()=>`name: "W"\ndata_type: FLOAT\ndims: [2, 2]\nraw_data: 16 字节\n# 这 16 字节编码了四个 float32 数值`,afterTitle:'得到的 constants 字典',after:()=>`constants["W"] = np.array(\n    ${json(graph.constants.W.data)},\n    dtype=np.float32\n)\n\n# 此刻 b 还在源 Constant 节点里；第 5 步才收集。`,
+ note:'这里是 Host 进程内存中的数组，不是 GPU SRAM 或双 Buffer。除权重外，initializer 也可能装 bias、索引或 shape 等常量。',sources:['weights']},
+ {label:'建立类型表',sub:'ValueInfo → TensorSpec',title:'4 · 把“类型描述”和“实际数据”分开保存',
+ reason:'节点使用张量名，但后端还需要知道这个名字对应多大的张量、什么精度。',
+ input:'graph.input、value_info、graph.output，以及已经解码的 initializer。',action:'_tensor_spec() 转换 shape/dtype；常量类型也可从 ndarray 补齐；构造调用者需提供的 inputs。',output:'value_specs：张量名 → TensorSpec；inputs：真正的运行时输入接口。',
+ beforeTitle:'读取输入声明',before:()=>`ValueInfoProto:\n  name = "X"\n  elem_type = FLOAT\n  shape = [1, 2]\n\ninitializer "W" 已在 constants 中。`,afterTitle:'生成 Python 类型对象',after:()=>`inputs = {\n  "X": TensorSpec((1, 2), "float32")\n}\nvalue_specs["W"] = TensorSpec((2, 2), "float32")\nvalue_specs["M"] = TensorSpec((1, 2), "float32")\n\n# TensorSpec 不含 data 字段。`,
+ note:'TensorSpec 能保留符号维度或未知维度；目标后端是否接受动态 shape，要后续检查。IR≥4 中“既是输入又是 initializer”的可覆盖默认值语义，当前前端会明确拒绝。',sources:['types','spec']},
+ {label:'转换算子',sub:'NodeProto → Node',title:'5 · 顺着原图节点，把源算子转换成规范算子',
+ reason:'类型和常量已可查询；现在才有条件忠实解释每个算子的输入、属性及 opset 差异。',
+ input:'ONNX graph.node 的已有拓扑顺序：Constant → MatMul → Add → Relu。',action:'_translate_node() 收集 Constant，转换运算节点；保留输入输出名称，用同名建立依赖。',output:'nodes 中留下 MatMul、Add、ReLU；constants 现在包含 W 和 b。',
+ beforeTitle:'源 ONNX 的四个节点',before:()=>`Constant(value=[0.5,-0.5]) → "b"\nMatMul("X", "W") → "M"\nAdd("M", "b") → "Z"\nRelu("Z") → "Y"`,afterTitle:'本次导入真正生成的 Node 列表',after:()=>json(graph.nodes),
+ note:'一个源节点可以变成 0、1 或多个 GAC 节点：Constant → 常量表；Relu → ReLU；Gemm 可展开为 MatMul、Add 等。Conv → Conv2D、Clip → Clamp 还要转换属性，并非纯粹替换名字。',sources:['translate','constant','direct']},
+ {label:'返回 Graph IR',sub:'组装 → 校验 → 返回',title:'6 · 把这些表组装成一个 Graph 对象',
+ reason:'前面的 constants、inputs、nodes、value_specs 都是局部变量；到这里才组成统一接口。',
+ input:'输入类型表、常量数组、规范节点、输出名称，以及导入诊断信息。',action:'Graph(...) 组装；validate() 检查名字、定义和拓扑依赖；strict=True 时再运行 GAC ShapeInferencePass 并校验。',output:'load_onnx() 返回 Graph；调用者可直接 graph.constants、graph.nodes 访问。',
+ beforeTitle:'组装时的变量',before:()=>`inputs = {"X": TensorSpec(...)}\nconstants = {"W": ndarray(...), "b": ndarray(...)}\nnodes = [MatMul, Add, ReLU]\noutputs = ("Y",)\nvalue_specs = {...}\nmetadata = {"import": {...}}`,afterTitle:'调用接口',after:()=>`from gac.frontends.onnx_frontend import load_onnx\n\ngraph = load_onnx("example.onnx", strict=True)\nweight = graph.constants["W"]\nfirst_node = graph.nodes[0]\n# first_node.inputs == ("X", "W")\n# first_node.outputs == ("M",)`,
+ note:'这里得到的是设备无关的 Python Graph IR，不是 MLIR dialect，也不是机器指令。Graph.validate 检查已有节点顺序是否合法，不在这里搜索最优调度。',sources:['graph','node']},
+ {label:'可选保存与查看',sub:'内存对象 → 文件',title:'7 · 要查看或跨进程保存，才把 Graph 写成文件',
+ reason:'内存对象已经可以直接交给后端；落盘是保存、查看和回读的另一条用途。',
+ input:'上一阶段已经返回的 Graph。',action:'inspect_onnx_ir.py 输出结构 JSON、真实常量 NPZ、阅读用 TXT，并生成检查页面。',output:'canonical.graph.json + constants.npz 可配合回读；graph.ir.txt / HTML 供人查看。',
+ beforeTitle:'默认不会自动创建的文件',before:()=>`graph = load_onnx(path)\n# 此调用返回内存对象，不自动保存 JSON/TXT。\n\n# 想检查文件时调用：\npython tools/inspect_onnx_ir.py \\\n  --model example.onnx --output build/inspection`,afterTitle:'本教学模型的简化保存 / 回读示例（W、b）',after:()=>`structure = graph.to_dict(include_constant_data=False)\n# structure 写入 canonical.graph.json\n# 下面适用于本例 W、b；通用检查工具使用 _write_constants()\n# 以兼容 file 等可能与 np.savez 参数冲突的张量名。\nnp.savez("constants.npz", **graph.constants)\n\nwith np.load("constants.npz", allow_pickle=False) as arrays:\n    restored = Graph.from_dict(\n        structure, external_constants=arrays\n    )`,
+ note:'graph.ir.txt 是 Graph 的文字阅读视图，不是 MLIR 语法；NPZ 是 Host 文件，不是设备显存地址。检查工具默认先 strict=False 查看，并另外尝试 strict=True 记录结果。',sources:['serialize']},
+ {label:'交给后端',sub:'Graph → 后端 MLIR',title:'8 · 后端接收同一个 Graph，生成自己的执行表示',
+ reason:'前端负责还原模型语义；后端开始检查目标能力并制定计算、内存和代码生成方案。',
+ input:'通过前端导入的 Graph：常量、节点、类型和接口。',action:'通用 compile_mlir(graph) 或 Vortex compile_vortex_graph(graph) 各自检查和编译；需要调用者选择入口。',output:'MLIR 文本及目标计划；之后才可调用外部工具链进行验证、Lowering 和机器码生成。',
+ beforeTitle:'通用 MLIR 接口示例',before:()=>`from gac.targets.mlir import compile_mlir\n\nprogram = compile_mlir(graph, fuse=False)\nmlir_text = program.source\n# graph 的名字映射到 MLIR SSA 值。\n# 本路径把常量写成 arith.constant dense。`,afterTitle:'Vortex 接口示例（另一条路径）',after:()=>`from gac.targets.vortex.compiler import compile_vortex_graph\n\nprogram = compile_vortex_graph(graph, optimize=False)\nmlir_text = program.source\n# 十阶段流水线，包含 Buffer / Schedule。\n# 未指定 mlir_opt 时不会启动外部 mlir-opt。`,
+ note:'Graph 能表达某个算子，不代表任意后端都支持它。通用 MLIR 路径支持范围较小；Vortex 有自己的合法化、代码生成和权重打包方式。不要把两条路径串成必经链。',sources:['mlir','emitter','vortex','toolchain']}
+];
+let current=0;
+function sourcePanel(key){const s=data.sources[key],d=document.createElement('details'),summary=document.createElement('summary');summary.textContent=`对应源码 · ${s.path} · L${s.start}–L${s.end}`;d.append(summary);const meta=document.createElement('div');meta.className='source-meta';const a=document.createElement('a');a.href='../'+s.path;a.textContent='打开源文件';meta.append(a,document.createTextNode(' · SHA-256 '+s.sha256.slice(0,16)+'…'));d.append(meta);const pre=document.createElement('pre');s.text.split('\n').forEach((line,i)=>{const span=document.createElement('span');span.className='code-line';const n=document.createElement('span');n.className='line-number';n.textContent=s.start+i;span.append(n,document.createTextNode(line||' '));pre.append(span)});d.append(pre);return d}
+steps.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.dataset.step=i;b.setAttribute('aria-pressed','false');const n=document.createElement('span');n.className='num';n.textContent=i+1;const t=document.createElement('span');t.textContent=s.label;const sub=document.createElement('small');sub.textContent=s.sub;t.append(sub);b.append(n,t);b.addEventListener('click',()=>select(i));el('steps').append(b)});
+function select(i,changeHash=true){current=Math.max(0,Math.min(steps.length-1,i));const s=steps[current];document.querySelectorAll('[data-step]').forEach((b,k)=>b.setAttribute('aria-pressed',String(k===current)));for(const [id,value] of Object.entries({'step-title':s.title,'step-reason':s.reason,'step-input':s.input,'step-action':s.action,'step-output':s.output,'before-title':s.beforeTitle,'after-title':s.afterTitle,'before':s.before(),'after':s.after(),'step-note':s.note}))el(id).textContent=value;el('position').textContent=`第 ${current+1} / ${steps.length} 步 · 查看实际源码可展开下方条目`;el('previous').disabled=current===0;el('next').disabled=current===steps.length-1;el('source').replaceChildren(...s.sources.map(sourcePanel));
+ el('state-values').textContent=current<2?'W、b 仍在 ONNX 对象中；尚未建立 GAC constants。':current<4?'constants 已保存 W；b 尚待遍历 Constant 节点。':'constants 保存 W、b 两个真实数组。';
+ el('state-types').textContent=current<1?'只有 ONNX 原始输入 / 输出类型。':current<3?'ONNX 已补充可推导类型；尚未转换为 GAC TensorSpec。':'inputs 和 value_specs 保存 TensorSpec；不保存运行时数值。';
+ el('state-nodes').textContent=current<4?'仍是 ONNX NodeProto；尚未生成 GAC Node。':current<5?'nodes 已有三个 GAC Node；尚未组装返回 Graph。':'Graph 已包含三个节点；M、Z、Y 仍只有关系和类型。';if(changeHash)history.replaceState(null,'','#step-'+(current+1));}
+el('previous').addEventListener('click',()=>select(current-1));el('next').addEventListener('click',()=>select(current+1));
+function fromHash(){const m=location.hash.match(/^#step-([1-8])$/);select(m?Number(m[1])-1:0,false)}window.addEventListener('hashchange',fromHash);
+for(const [id,name] of [['w-matrix','W'],['b-matrix','b']])graph.constants[name].data.flat().forEach(v=>{const n=document.createElement('span');n.textContent=v;el(id).append(n)});
+el('example-facts').textContent=`示例 ONNX：${example.file_bytes} 字节 · IR ${example.ir_version} / opset ${example.opset} · 4 个源节点 → ${graph.nodes.length} 个 GAC 节点 · 1 个 initializer → 2 个常量数组。`;
+el('full-graph').textContent=json(graph);
+function backend(kind){document.querySelectorAll('[data-backend]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.backend===kind)));const tensor=kind==='tensor';el('backend-api').textContent=tensor?'graph = load_onnx("example.onnx")\nprogram = compile_mlir(graph, fuse=False)\ntext = program.source  # Tensor / Linalg / Arith 等 MLIR 文本':'graph = load_onnx("example.onnx")\nprogram = compile_vortex_graph(graph, optimize=False)\ntext = program.source  # Vortex 设备 MLIR\n# 真正验证 / Lowering 时，显式传入固定 VOLT 工具链的 mlir_opt 路径。';el('backend-explanation').textContent=tensor?'本例 W、b 会生成 dense 常量，张量名通过 emitter 的 values 字典映射为 %arg0、%v0 等 SSA 值。MatMul 生成 Linalg 运算；Python emitter 输出文本，外部 mlir-opt 的验证需另外调用。该入口只支持其明确检查过的算子、类型与形状。':`本例未启用图优化，生成 ${example.vortex_dispatches} 个 Dispatch。Vortex 在自己的十阶段中做类型检查、合法化、分区、模板、Tiling、Schedule 和设备 MLIR 生成。权重在生成 artifact 时另存为常量二进制，由 Runtime 上传；不要求把大权重全部嵌入 MLIR。`;el('backend-output').textContent=tensor?example.mlir:example.vortex_mlir;}
+document.querySelectorAll('[data-backend]').forEach(b=>b.addEventListener('click',()=>backend(b.dataset.backend)));
+const real=data.bevformer;el('real-source-count').textContent=real.onnx.nodes.toLocaleString()+' 个源节点';el('real-node-count').textContent=real.import.canonical_node_count.toLocaleString()+' 个 Graph 节点（含未合法化节点）';el('real-initializers').textContent=real.onnx.initializers+' 个 initializer';el('real-constants').textContent=real.import.constant_count.toLocaleString()+' 个常量数组';
+backend('tensor');fromHash();
+</script>
+</body>
+</html>

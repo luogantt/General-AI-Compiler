@@ -14,6 +14,7 @@ gac_model="$(realpath -- "$1")"
 gac_output="$(realpath -m -- "$2")"
 mkdir -p -- "$gac_output"
 "$GAC_NATIVE_BIN/gac-compile" "$gac_model" --emit=llvm --target=vortex \
+  --regular-lowering "${GAC_REGULAR_LOWERING:-linalg}" \
   --constant-fold-profile "${GAC_CONSTANT_FOLD_PROFILE:-default}" \
   --vortex-matmul-schedule "${GAC_VORTEX_MATMUL_SCHEDULE:-scalar}" \
   --tile-m "${GAC_TILE_M:-4}" --tile-n "${GAC_TILE_N:-4}" \

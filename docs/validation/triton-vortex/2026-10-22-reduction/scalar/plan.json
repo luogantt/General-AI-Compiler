@@ -1,0 +1,81 @@
+{
+  "arena_bytes": 64,
+  "compiler_backend": "native-mlir",
+  "compute_template_library": "GACComputeTemplates/v1",
+  "dispatches": [
+    {
+      "bufferization": "shared static global buffers; scalar reduction accumulator",
+      "compute_template": {
+        "id": "triton.vortex.reduce-sum-fp32",
+        "reason": "validated static rank-one FP32 full-axis ReduceSum",
+        "selected": true
+      },
+      "depends_on": [],
+      "elements": 1,
+      "inputs": [
+        "A"
+      ],
+      "kernel": "gac_op_0",
+      "lowering": "linalg-to-triton",
+      "op": "linalg.generic",
+      "output": "Y",
+      "schedule": "one masked power-of-two TTIR tile; one axis-zero tt.reduce",
+      "source_node": "ReduceSum#0",
+      "triton": {
+        "abi": "vortex-u64-pointers",
+        "block_size": 4,
+        "grid_size": 1,
+        "kind": "reduction",
+        "lanes": 4,
+        "num_warps": 1,
+        "tile": 64,
+        "ttir_file": "gac_op_0.ttir",
+        "width": 37
+      },
+      "wait_for_dispatch": -1
+    }
+  ],
+  "double_buffer": false,
+  "embedded_constant_bytes": 0,
+  "inputs": [
+    "A"
+  ],
+  "kernel_backends": "native-vortex + triton-vortex; single linked device module",
+  "linalg_dispatches": 1,
+  "linalg_fused_producers": 1,
+  "lmem_bytes": 0,
+  "outputs": [
+    "Y"
+  ],
+  "regular_lowering": "linalg",
+  "schedule": "serialized dispatches; SSA last-use buffer reuse",
+  "schema_version": 1,
+  "target": "vortex",
+  "template": "per-dispatch native kernels or flat masked Triton tiles",
+  "tensors": [
+    {
+      "bytes": 148,
+      "dtype": "float32",
+      "name": "A",
+      "offset": 0,
+      "shape": [
+        37
+      ],
+      "storage": "input"
+    },
+    {
+      "bytes": 4,
+      "dtype": "float32",
+      "name": "Y",
+      "offset": 0,
+      "shape": [],
+      "storage": "arena"
+    }
+  ],
+  "triton_dispatches": 1,
+  "view_elision": {
+    "dispatches_removed": 0,
+    "logical_copy_bytes_removed": 0,
+    "public_output_views_materialized": true
+  }
+}

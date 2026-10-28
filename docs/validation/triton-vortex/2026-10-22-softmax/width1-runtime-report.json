@@ -1,0 +1,70 @@
+{
+  "arena_bytes": 64,
+  "device_counters": {
+    "available": false
+  },
+  "device_profile": {
+    "build_barrier_slots": 8,
+    "build_profile_note": "Barrier count and TCU TF32 support are build-profile assertions; the public device caps do not query them. Use a driver/simulator/RTL built with the matching profile.",
+    "build_tcu_tf32": false,
+    "cores": 1,
+    "isa_flags": 4618173026592,
+    "lanes": 4,
+    "lmem_bytes_per_core": 16384,
+    "warps_per_core": 4
+  },
+  "dispatch_wall_ms": 36.052624000000002,
+  "dispatches": 1,
+  "download_ms": 7.4698609999999999,
+  "driver": "simx",
+  "dxa_physical_buffers": false,
+  "embedded_constant_bytes": 0,
+  "execution": "vortex-device",
+  "host_operator_fallback": false,
+  "initialization_ms": 103.038326,
+  "inputs": [
+    {
+      "file": "input_0.bin",
+      "name": "A",
+      "tensor_index": 0
+    }
+  ],
+  "launches": [
+    {
+      "argument_abi": "vortex-u64-pointers-i32-n",
+      "backend": "triton-vortex",
+      "block_size": 4,
+      "elements": 1,
+      "grid_size": 1,
+      "kernel": "gac_op_0",
+      "kind": "softmax",
+      "lmem_bytes": 0,
+      "n": 1,
+      "num_warps": 1,
+      "tile": 16,
+      "width": 1
+    }
+  ],
+  "max_dispatch_lmem_bytes": 0,
+  "native_dispatches": 0,
+  "outputs": [
+    {
+      "dtype": "float32",
+      "file": "output_0.bin",
+      "name": "Y",
+      "shape": [
+        1
+      ],
+      "tensor_index": 1
+    }
+  ],
+  "profile_counters": false,
+  "schema_version": 1,
+  "threads_per_block": 16,
+  "timing_kind": "host_wall_clock",
+  "timing_note": "Includes host/runtime overhead; simulator wall time is not silicon inference latency. Upload/download times include file I/O.",
+  "total_host_wall_ms": 158.39362600000001,
+  "trace_dispatches": true,
+  "triton_dispatches": 1,
+  "upload_ms": 11.832815
+}

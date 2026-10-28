@@ -1,0 +1,77 @@
+{
+  "arena_bytes": 2048,
+  "compiler_backend": "native-mlir",
+  "compute_template_library": "GACComputeTemplates/v1",
+  "dispatches": [
+    {
+      "bufferization": "static global destinations; thread-local scalar fusion buffers; no device malloc",
+      "compute_template": {
+        "collective": false,
+        "id": "linalg.output-thread",
+        "selection_policy": "explicit-options-and-contracts"
+      },
+      "depends_on": [],
+      "elements": 512,
+      "inputs": [
+        "A"
+      ],
+      "kernel": "gac_op_0",
+      "lowering": "linalg-to-scf",
+      "op": "linalg.generic",
+      "output": "Y",
+      "schedule": "parallel output coordinates per thread; serial reduction loops",
+      "source_node": "MatMul#0",
+      "triton_exclusion": "layer_norm: requires the canonical Linalg LayerNormalization root; softmax: requires a canonical linalg.softmax root; reduction: requires a canonical Linalg sum-reduction root; dot: Triton MatMul requires distinct A and B physical buffers; pointwise: destination initializer is read; this bridge does not lower reductions",
+      "wait_for_dispatch": -1
+    }
+  ],
+  "double_buffer": false,
+  "embedded_constant_bytes": 0,
+  "inputs": [
+    "A"
+  ],
+  "kernel_backends": "native-vortex + triton-vortex; single linked device module",
+  "linalg_dispatches": 1,
+  "linalg_fused_producers": 1,
+  "lmem_bytes": 0,
+  "outputs": [
+    "Y"
+  ],
+  "regular_lowering": "linalg",
+  "schedule": "serialized dispatches; SSA last-use buffer reuse",
+  "schema_version": 1,
+  "target": "vortex",
+  "template": "per-dispatch native kernels or flat masked Triton tiles",
+  "tensors": [
+    {
+      "bytes": 2048,
+      "dtype": "float32",
+      "name": "A",
+      "offset": 0,
+      "shape": [
+        2,
+        16,
+        16
+      ],
+      "storage": "input"
+    },
+    {
+      "bytes": 2048,
+      "dtype": "float32",
+      "name": "Y",
+      "offset": 0,
+      "shape": [
+        2,
+        16,
+        16
+      ],
+      "storage": "arena"
+    }
+  ],
+  "triton_dispatches": 0,
+  "view_elision": {
+    "dispatches_removed": 0,
+    "logical_copy_bytes_removed": 0,
+    "public_output_views_materialized": true
+  }
+}

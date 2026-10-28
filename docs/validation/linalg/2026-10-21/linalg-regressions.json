@@ -1,0 +1,312 @@
+{
+  "scope": "real Linalg lowering + native CPU numerical tests + CUDA device IR mutation",
+  "cuda_or_vortex_hardware_execution": false,
+  "performance_measured": false,
+  "compiler_sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3",
+  "cases": [
+    {
+      "name": "simple_add",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Z": 0.0
+      }
+    },
+    {
+      "name": "matmul_broadcast_batches",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 192,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.7881393432617188e-07
+      }
+    },
+    {
+      "name": "matmul_vector_dot",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      }
+    },
+    {
+      "name": "matmul_left_vector",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      }
+    },
+    {
+      "name": "matmul_bias_relu_fused_dispatch",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.1920928955078125e-07
+      }
+    },
+    {
+      "name": "matmul_fanout_public_intermediate",
+      "passed": true,
+      "linalg_dispatches": 3,
+      "arena_bytes": 192,
+      "arena_tensor_count": 3,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "M": 2.9802322387695312e-08,
+        "Y": 5.960464477539063e-08,
+        "Z": 0.0
+      }
+    },
+    {
+      "name": "pointwise_fanout_keeps_producer",
+      "passed": true,
+      "linalg_dispatches": 3,
+      "arena_bytes": 192,
+      "arena_tensor_count": 3,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 0.0,
+        "Z": 0.0
+      }
+    },
+    {
+      "name": "gemm_transposed_alpha_beta",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      }
+    },
+    {
+      "name": "matmul_fp16_fp32_accumulation",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "matmul_fp16_fusion_keeps_rounding",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "add_broadcast",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 128,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "add_int64_exact",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "broadcast_consumer_keeps_producer",
+      "passed": true,
+      "linalg_dispatches": 2,
+      "arena_bytes": 128,
+      "arena_tensor_count": 2,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "reduction_consumer_keeps_producer",
+      "passed": true,
+      "linalg_dispatches": 2,
+      "arena_bytes": 128,
+      "arena_tensor_count": 2,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "reduce_sum_nonlast_axes",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      }
+    },
+    {
+      "name": "reduce_sum_negative_keepdims",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "reduce_mean_all_rank_zero",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 1.4901161193847656e-08
+      }
+    },
+    {
+      "name": "reduce_mean_nonlast_axes",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 64,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      }
+    },
+    {
+      "name": "reduce_sum_empty_axes_noop",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 128,
+      "arena_tensor_count": 1,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 1,
+      "max_absolute_errors": {
+        "Y": 0.0
+      }
+    },
+    {
+      "name": "layer_norm_last_axis",
+      "passed": true,
+      "linalg_dispatches": 3,
+      "arena_bytes": 256,
+      "arena_tensor_count": 3,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      }
+    },
+    {
+      "name": "layer_norm_suffix_axes",
+      "passed": true,
+      "linalg_dispatches": 3,
+      "arena_bytes": 256,
+      "arena_tensor_count": 3,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      }
+    },
+    {
+      "name": "conv_grouped_padded_strided_dilated",
+      "passed": true,
+      "linalg_dispatches": 1,
+      "arena_bytes": 1728,
+      "arena_tensor_count": 2,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 2,
+      "max_absolute_errors": {
+        "Y": 2.384185791015625e-07
+      }
+    },
+    {
+      "name": "mixed_add_gridsample_relu",
+      "passed": true,
+      "linalg_dispatches": 2,
+      "arena_bytes": 192,
+      "arena_tensor_count": 3,
+      "buffer_lifetimes_validated": true,
+      "dispatches": 3,
+      "max_absolute_errors": {
+        "Y": 2.9802322387695312e-08
+      }
+    },
+    {
+      "name": "linalg_payload_is_authoritative",
+      "passed": true,
+      "check": "Changed Linalg Add payload to Sub; CUDA device IR contains Sub, not reconstructed Add"
+    },
+    {
+      "name": "legacy_schedule_requires_explicit_opt_in",
+      "passed": true
+    },
+    {
+      "name": "reject_empty_graph_output",
+      "passed": true,
+      "diagnostic": "no initialized device tensor"
+    },
+    {
+      "name": "reject_encoded_linalg_tensor",
+      "passed": true,
+      "diagnostic": "unencoded row-major tensors"
+    },
+    {
+      "name": "reject_linalg_external_capture",
+      "passed": true,
+      "diagnostic": "must not capture external SSA values"
+    }
+  ],
+  "passed": true
+}

@@ -1,3 +1,15 @@
+// GAC 方言的语义实现。
+//
+// Dialect.h 只声明算子类；本文件负责两件事：
+//   1. 注册 GacDialect 和全部 Operation；
+//   2. 在 inferOperation() 中实现每个算子的类型、形状、属性和广播规则。
+//
+// 设计原则：
+// - 只做“推导/校验”，不执行算子，也不为某个设备做调度决策；
+// - 已知维度必须一致，未知维度可以保留为动态；
+// - 无法证明的语义直接报错，不猜测 ONNX 行为；
+// - 自定义算子（DCNv2/MSDeformAttn）只接受一种明确的输入布局和属性拼写。
+
 #include "gac/Dialect.h"
 #include "mlir/IR/BuiltinAttributes.h"
 #include "mlir/IR/BuiltinTypes.h"
@@ -11,6 +23,9 @@
 using namespace mlir;
 namespace gac {
 
+// 注册 GAC 方言及全部手写 Operation 类。这里必须与 Dialect.h 中的
+// GAC_DECLARE_OP 列表保持一致；SplitOp/UnsupportedOp 是特殊的多结果/
+// 检查算子，单独列出。
 GacDialect::GacDialect(MLIRContext *context)
     : Dialect(getDialectNamespace(), context, TypeID::get<GacDialect>()) {
   addOperations<ConstantOp, MatMulOp, GemmOp, AddOp, SubOp, MulOp, DivOp, PowOp,
@@ -26,10 +41,13 @@ GacDialect::GacDialect(MLIRContext *context)
                 ScatterNDOp, NonZeroOp, SplitOp, UnsupportedOp>();
 }
 
+/// 把 GAC 方言注册到 MLIRContext。
 void registerGacDialects(DialectRegistry &registry) {
   registry.insert<GacDialect>();
 }
 
+/// 读取整数数组属性。同时兼容 DenseI64ArrayAttr 和 ArrayAttr；
+/// 任一元素不是整数时返回空数组，由调用方决定这是否是错误。
 SmallVector<int64_t> getI64ArrayAttr(Operation *op, StringRef name) {
   if (auto values = op->getAttrOfType<DenseI64ArrayAttr>(name))
     return SmallVector<int64_t>(values.asArrayRef());
@@ -46,6 +64,9 @@ SmallVector<int64_t> getI64ArrayAttr(Operation *op, StringRef name) {
   return {};
 }
 
+/// 如果 Value 来自 gac.constant 且携带 DenseIntElementsAttr，返回其元素。
+/// 这是形状推导和常量折叠识别静态参数（axis、shape、indices 等）的入口；
+/// 超过 64 位的整数返回 nullopt，避免静默截断。
 std::optional<SmallVector<int64_t>> getConstantIntegers(Value value) {
   if (!value)
     return std::nullopt;
@@ -65,14 +86,14 @@ std::optional<SmallVector<int64_t>> getConstantIntegers(Value value) {
 }
 
 namespace {
+/// 读取整数属性；属性缺失时返回 fallback。
 int64_t integer(Operation *op, StringRef name, int64_t fallback) {
   auto value = op->getAttrOfType<IntegerAttr>(name);
   return value ? value.getInt() : fallback;
 }
 
-// ONNX omits optional inputs with empty names. The importer keeps their
-// original positions so Resize's sizes cannot accidentally become its roi, for
-// example.
+// ONNX 用空名字省略可选输入。导入器保留它们的原始位置，
+// 例如 Resize 的 sizes 不会因为缺少 roi 而错位成第 1 个操作数。
 Value operand(Operation *op, unsigned position) {
   auto positions = getI64ArrayAttr(op, "gac.input_positions");
   if (positions.empty())
@@ -83,11 +104,14 @@ Value operand(Operation *op, unsigned position) {
   return {};
 }
 
+/// 仅当 Value 存在且类型是 RankedTensorType 时返回它，否则返回空类型。
 RankedTensorType ranked(Value value) {
   return value ? dyn_cast<RankedTensorType>(value.getType())
                : RankedTensorType();
 }
 
+/// 优先从指定位置的常量操作数读取整数参数；没有操作数时再读同名属性。
+/// 返回 nullopt 表示参数缺失或不是编译期常量。
 std::optional<SmallVector<int64_t>>
 constantParameter(Operation *op, unsigned index, StringRef attrName) {
   if (Value value = operand(op, index))
@@ -97,12 +121,13 @@ constantParameter(Operation *op, unsigned index, StringRef attrName) {
   return std::nullopt;
 }
 
+/// 动态维度与任何维度兼容；两个已知维度必须相等。
 bool compatibleDim(int64_t a, int64_t b) {
   return ShapedType::isDynamic(a) || ShapedType::isDynamic(b) || a == b;
 }
 
-/// NumPy/ONNX trailing-axis broadcasting. An unknown dimension joined with a
-/// known non-one dimension is known; two incompatible known dimensions fail.
+/// NumPy/ONNX 的尾部对齐广播。未知维度与已知非 1 维度合并后取已知值；
+/// 两个不兼容的已知维度直接报错。
 LogicalResult broadcast(Operation *op, ArrayRef<int64_t> lhs,
                         ArrayRef<int64_t> rhs, SmallVectorImpl<int64_t> &out) {
   out.assign(std::max(lhs.size(), rhs.size()), 1);
@@ -126,6 +151,11 @@ LogicalResult broadcast(Operation *op, ArrayRef<int64_t> lhs,
   return success();
 }
 
+/// 把推导出的类型写回 result，同时保留已声明信息并做一致性检查：
+/// - 元素类型必须一致；
+/// - 已声明的 rank 必须与推导 rank 相同；
+/// - 已知维度冲突时报错，动态维度用推导值补全；
+/// - update=false 时只校验不修改（verifier 使用）。
 LogicalResult assignType(Operation *op, TensorType inferred, bool update,
                          unsigned resultIndex = 0) {
   auto result = op->getResult(resultIndex);
@@ -157,6 +187,8 @@ LogicalResult assignType(Operation *op, TensorType inferred, bool update,
   return success();
 }
 
+/// ONNX TensorProto.DataType 编码 → MLIR 元素类型。
+/// 只在这里做一次映射；未支持的编码返回空类型，由导入器报错。
 Type onnxElementType(MLIRContext *context, int64_t code) {
   switch (code) {
   case 1:
@@ -190,6 +222,7 @@ Type onnxElementType(MLIRContext *context, int64_t code) {
   }
 }
 
+/// 把负轴转换为 rank 内的正轴，并检查越界。
 LogicalResult normalizedAxis(Operation *op, int64_t &axis, int64_t rank) {
   if (axis < 0)
     axis += rank;
@@ -198,6 +231,11 @@ LogicalResult normalizedAxis(Operation *op, int64_t &axis, int64_t rank) {
   return success();
 }
 
+/// 推导 ONNX MatMul 的输出形状：
+/// - 标量操作数不允许；
+/// - 左侧最后一维必须与右侧倒数第二维兼容（K 维）；
+/// - batch 维按尾部对齐广播；
+/// - rank-1 操作数按 ONNX 规则消去/补回对应维。
 LogicalResult matmulShape(Operation *op, RankedTensorType lhs,
                           RankedTensorType rhs,
                           SmallVectorImpl<int64_t> &shape) {
@@ -220,9 +258,9 @@ LogicalResult matmulShape(Operation *op, RankedTensorType lhs,
   return success();
 }
 
-// Custom ONNX contracts deliberately have one spelling and one layout. Do not
-// infer a different DCN/MSDA schema from operand ranks or silently ignore a
-// misspelled attribute: such an import can otherwise compile the wrong model.
+// 自定义 ONNX 契约只接受一种属性拼写和一种输入布局。不要根据操作数 rank
+// 猜出另一种 DCN/MSDA schema，也不要静默忽略拼错的属性；否则可能把错误的
+// 模型当成正确模型编译。这里同时拒绝可选输入中出现空洞。
 LogicalResult customInputs(Operation *op, unsigned min, unsigned max) {
   if (op->getNumOperands() < min || op->getNumOperands() > max)
     return op->emitOpError("invalid custom operator operand count");
@@ -232,6 +270,7 @@ LogicalResult customInputs(Operation *op, unsigned min, unsigned max) {
   return success();
 }
 
+/// 读取可选整数属性；缺失时使用 fallback。属性存在但不是 64 位以内整数时报错。
 LogicalResult intParameter(Operation *op, StringRef key, int64_t fallback,
                            int64_t &out) {
   out = fallback;
@@ -244,6 +283,7 @@ LogicalResult intParameter(Operation *op, StringRef key, int64_t fallback,
   return success();
 }
 
+/// 读取二维整数属性（stride/padding/dilation）；缺失时使用 {fallback, fallback}。
 LogicalResult pairParameter(Operation *op, StringRef key, int64_t fallback,
                             SmallVector<int64_t> &out) {
   out = op->hasAttr(key) ? getI64ArrayAttr(op, key)
@@ -253,6 +293,7 @@ LogicalResult pairParameter(Operation *op, StringRef key, int64_t fallback,
   return success();
 }
 
+/// 如果属性存在，必须精确等于 expected；缺失则接受。
 LogicalResult exactString(Operation *op, StringRef key, StringRef expected) {
   if (Attribute attr = op->getAttr(key)) {
     auto value = dyn_cast<StringAttr>(attr);
@@ -262,13 +303,17 @@ LogicalResult exactString(Operation *op, StringRef key, StringRef expected) {
   return success();
 }
 
-// Multiplication of nonnegative shape components, with no signed overflow.
+// 计算两个非负 shape 分量的乘积；任一为负或发生有符号溢出时返回 nullopt。
 std::optional<int64_t> shapeProduct(int64_t a, int64_t b) {
   if (a < 0 || b < 0 || (b && a > INT64_MAX / b))
     return std::nullopt;
   return a * b;
 }
 
+/// DCNv2（MMCVModulatedDeformConv2d）的形状/属性推导。
+/// 契约固定为 X/offset/mask NCHW、W OIHW、可选 bias[O]；
+/// 这里校验 groups、deform_groups、通道可整除性、offset/mask 通道数，
+/// 并按 stride/dilation/padding 计算输出 H/W。当前只支持 FP32。
 LogicalResult inferDeformConv(Operation *op, bool update) {
   if (failed(customInputs(op, 4, 5)))
     return failure();
@@ -359,6 +404,12 @@ LogicalResult inferDeformConv(Operation *op, bool update) {
                     update);
 }
 
+/// MSDeformAttn 的形状/属性推导，同时覆盖融合后的 ms_deform_attn_offsets。
+/// 固定契约：value[B,S,H,D]、spatial_shapes[L,2] i64、
+/// locations[B,Q,H,L,P,2]、weights[B,Q,H,L,P]；
+/// offsets 形式额外接收 normalizer/reference，并要求 coordinate_shape
+/// 与 locations 的元素数一致。输出为 [B,Q,H*D]。
+/// spatial_shapes 未折叠时允许保留动态形状，但设备合法化前必须变成常量。
 LogicalResult inferMSDeformAttn(Operation *op, bool update) {
   bool offsets = op->getName().getStringRef() == "gac.ms_deform_attn_offsets";
   unsigned count = offsets ? 6 : 4;
@@ -396,9 +447,9 @@ LogicalResult inferMSDeformAttn(Operation *op, bool update) {
           "MSDeformAttn expects value[B,S,H,D], shapes[L,2], "
           "locations[B,Q,H,L,P,2], weights[B,Q,H,L,P]");
   if (offsets) {
-    // coordinate_shape is the logical shape at the original Add, possibly
-    // [B,Q,H,L,P/Z,Z,2]. Both surrounding reshapes preserve flat element order.
-    // Div broadcasts in locations shape; Add broadcasts in coordinate_shape.
+    // coordinate_shape 是原始 Add 处的逻辑形状，可能是 [B,Q,H,L,P/Z,Z,2]。
+    // 前后两个 Reshape 都保持一维展平顺序；Div 在 locations 形状上广播，
+    // Add 在 coordinate_shape 上广播。
     auto coordinate = op->getAttrOfType<DenseI64ArrayAttr>("coordinate_shape");
     auto normalizer = ranked(operand(op, 4)),
          reference = ranked(operand(op, 5));
@@ -450,8 +501,8 @@ LogicalResult inferMSDeformAttn(Operation *op, bool update) {
       (!compatibleDim(spatial.getDimSize(1), 2) || spatial.getDimSize(0) == 0))
     return op->emitOpError(
         "MSDeformAttn spatial_shapes must be nonempty i64[L,2]");
-  // Shape/Gather/Concat may not have folded at import verification yet. The
-  // graph IR can express this chain; device legalization requires constants.
+  // 导入期验证时 Shape/Gather/Concat 可能还没有折叠。图 IR 可以保留这条链；
+  // 设备合法化阶段才要求它成为常量。
   if (sizes) {
     if (sizes->empty() || sizes->size() % 2)
       return op->emitOpError("MSDeformAttn spatial_shapes needs pairs of H,W");
@@ -504,6 +555,17 @@ LogicalResult inferMSDeformAttn(Operation *op, bool update) {
 }
 } // namespace
 
+// 所有 gac.* 算子的统一语义入口。
+//
+// 调用方式：
+// - 每个 Operation 的 verify() 以 update=false 调用，只校验不修改；
+// - ShapeInferencePass 以 update=true 调用，把推导到的类型写回 SSA。
+//
+// 处理顺序：
+//   1. 通用前置检查（gac 命名空间、结果数量、constant 特例、张量操作数）；
+//   2. 自定义布局算子先分派到 inferDeformConv/inferMSDeformAttn；
+//   3. 其余算子按名字进入各自分支，复用 broadcast/assignType 工具。
+// 这里只推导和校验语义，不执行算子，也不为任何后端做调度决策。
 LogicalResult inferOperation(Operation *op, bool update) {
   StringRef name = op->getName().getStringRef();
   if (!name.starts_with("gac.") || name == "gac.unsupported")
@@ -512,6 +574,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
     return op->emitOpError("Split requires at least one tensor result");
   if (op->getNumResults() != 1 && name != "gac.split")
     return op->emitOpError("requires one tensor result");
+  // 常量：类型直接来自 DenseElementsAttr，不接受操作数。
   if (name == "gac.constant") {
     auto attr = op->getAttrOfType<DenseElementsAttr>("value");
     if (!attr)
@@ -525,6 +588,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
   for (Value input : op->getOperands())
     if (!isa<TensorType>(input.getType()))
       return op->emitOpError("requires tensor operands");
+  // 自定义布局算子单独处理，避免通用广播/索引逻辑误判它们的多操作数契约。
   if (name == "gac.deform_conv2d")
     return inferDeformConv(op, update);
   if (name == "gac.ms_deform_attn" || name == "gac.ms_deform_attn_offsets")
@@ -544,6 +608,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     return success();
   };
 
+  // 带 shape 守卫的 Squeeze：仅当轴 extent 已知且等于 1 时删除该轴；
+  // extent 未知时两种 rank 都可能，因此保留原 rank，不根据 ONNX 分支声明猜测。
   if (name == "gac.squeeze_if_unit_dim") {
     if (failed(require(1, 1)))
       return failure();
@@ -555,8 +621,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     int64_t axis = attribute.getInt();
     if (failed(normalizedAxis(op, axis, a.getRank())))
       return failure();
-    // An unknown extent can produce either rank. Do not infer a rank from the
-    // ONNX branch declaration or speculate that the Squeeze branch is taken.
+    // extent 未知时两种 rank 都可能。不要根据 ONNX 分支声明推断 rank，
+    // 也不要假设一定走 Squeeze 分支。
     if (a.isDynamicDim(axis))
       return success();
     shape.assign(a.getShape().begin(), a.getShape().end());
@@ -616,8 +682,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
         sizes = SmallVector<int64_t>(outputs, extent / outputs);
       } else {
         int64_t chunk = extent / outputs + (extent % outputs != 0);
-        // ONNX requires the final chunk to be the smaller one, rather than
-        // silently inventing extra empty results for an invalid partition.
+        // ONNX 要求最后一块是较小的那块，而不是为非法划分静默补出
+        // 额外的空结果。
         if (chunk && outputs - 1 > extent / chunk)
           return op->emitOpError(
               "Split num_outputs produces an invalid final chunk");
@@ -635,6 +701,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     return success();
   }
 
+  // NonZero 输出 [rank, N] 的 i64 索引。N 依赖数据，只有输入是常量时才能
+  // 在编译期确定；运行时输入则保持动态，不能把输出 shape 当成已知值。
   if (name == "gac.nonzero") {
     if (failed(require(1, 1)))
       return failure();
@@ -664,13 +732,14 @@ LogicalResult inferOperation(Operation *op, bool update) {
             count += !item.isZero();
       }
     }
-    // A runtime input only determines the first dimension. The number of
-    // nonzero elements is data dependent, and must remain dynamic until a
-    // legitimate constant fold or a dynamic-shape runtime resolves it.
+    // 运行时输入只能确定第一维。非零元素个数依赖数据，必须保持动态，
+    // 直到合法的常量折叠或动态 shape 运行时解析它。
     shape = {a ? a.getRank() : ShapedType::kDynamic, count};
     return finish();
   }
 
+  // Tile：repeats 必须是 rank-1 i64；每维输出 = 输入 extent * repeat。
+  // repeats 非常量时保留动态维度，重复次数为 0 时该维确定为 0。
   if (name == "gac.tile") {
     if (failed(require(2, 2)))
       return failure();
@@ -701,6 +770,9 @@ LogicalResult inferOperation(Operation *op, bool update) {
     return finish();
   }
 
+  // ScatterND：输出 shape 与 data 相同；这里校验 indices 的 rank/depth、
+  // reduction 模式与 opset 的兼容性，以及 updates 必须匹配被索引的切片形状。
+  // 设备端还要求 indices 为编译期常量且不重复（见 preflight/TensorLegalization）。
   if (name == "gac.scatter_nd") {
     if (failed(require(3, 3)))
       return failure();
@@ -745,6 +817,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     return finish();
   }
 
+  // 逐元素二元算子：要求两个输入元素类型一致，按尾部对齐广播；
+  // Where 的条件必须是 i1，比较类算子的输出元素类型为 i1。
   bool binary =
       llvm::StringSwitch<bool>(name)
           .Cases("gac.add", "gac.sub", "gac.mul", "gac.div", true)
@@ -783,6 +857,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
       element = IntegerType::get(op->getContext(), 1);
     return finish();
   }
+  // MatMul 及其融合形式（bias/ReLU/GELU）。融合形式多一个 bias 操作数，
+  // 但 K 维和 batch 广播规则与普通 MatMul 完全相同；这里只校验，不展开融合。
   if (name == "gac.matmul" || name == "gac.matmul_bias" ||
       name == "gac.matmul_bias_relu" || name == "gac.matmul_bias_gelu") {
     bool fused = name != "gac.matmul";
@@ -823,6 +899,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Gemm 只接受 rank-2 A/B，按 transA/transB 选择 K 维；
+  // 可选 bias 必须能广播到 [M,N]，不会扩张输出。
   if (name == "gac.gemm") {
     if (failed(require(2, 3)))
       return failure();
@@ -843,6 +921,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Shape 返回 i64 向量；start/end 是 ONNX 的切片参数，负值按 rank 归一化后
+  // clamp 到 [0, rank]，输出长度是两者之差。
   if (name == "gac.shape") {
     if (failed(require(1, 1)))
       return failure();
@@ -859,6 +939,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
                                       clamp(integer(op, "start", 0)))};
     return finish();
   }
+  // ConstantOfShape：维度必须可静态求值；value 是单元素常量，缺省元素类型为 FP32。
   if (name == "gac.constant_of_shape") {
     if (failed(require(1, 1)))
       return failure();
@@ -877,6 +958,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
         value ? value.getElementType() : Float32Type::get(op->getContext());
     return finish();
   }
+  // Range 的输出长度依赖 start/limit/delta；只有三者都是常量时才能确定。
+  // 使用 128 位 APInt 精确计算上取整，避免主机浮点精度差异影响长度。
   if (name == "gac.range") {
     if (failed(require(3, 3)))
       return failure();
@@ -901,9 +984,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
         delta->size() == 1) {
       if ((*delta)[0] == 0)
         return op->emitOpError("Range delta must not be zero");
-      // A signed i64 interval can span 2^64-1. Compute its exact ceiling in
-      // wider integers, never host floating point (whose precision varies by
-      // platform). Handle the empty direction before division/conversion.
+      // 有符号 i64 区间可能跨越 2^64-1。用更宽的整数精确计算上取整，
+      // 绝不使用主机浮点（精度随平台变化）。先处理空方向再除法/转换。
       APInt begin = APInt(64, (*start)[0], true).sext(128);
       APInt end = APInt(64, (*limit)[0], true).sext(128);
       APInt step = APInt(64, (*delta)[0], true).sext(128);
@@ -920,10 +1002,13 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // 到这里仍未返回的算子默认继承输入 0 的 shape；
+  // 后续分支只修正元素类型、布局或个别维度。
   if (!a)
     return success();
   shape.assign(a.getShape().begin(), a.getShape().end());
 
+  // Cast 只改变元素类型，不改变 shape；目标类型由 ONNX 'to' 编码决定。
   if (name == "gac.cast") {
     if (failed(require(1, 1)))
       return failure();
@@ -932,6 +1017,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
       return op->emitOpError("unsupported ONNX Cast destination type");
     return finish();
   }
+  // Transpose：perm 必须覆盖每个轴恰好一次；缺省 perm 表示反转所有轴。
   if (name == "gac.transpose") {
     if (failed(require(1, 1)))
       return failure();
@@ -951,6 +1037,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Reshape：shape 参数必须可静态求值。allowzero=0 时 0 表示复制输入对应维；
+  // -1 表示唯一可推导维，必须保证元素数整除且结果唯一。
   if (name == "gac.reshape") {
     if (failed(require(1, 2)))
       return failure();
@@ -972,9 +1060,9 @@ LogicalResult inferOperation(Operation *op, bool update) {
         if (inferredIndex >= 0)
           return op->emitOpError("Reshape has multiple inferred dimensions");
         inferredIndex = index;
-        // ONNX uses -1 for inference; MLIR's dynamic dimension is a distinct
-        // sentinel (INT64_MIN in LLVM 20). Never multiply or store ONNX -1 as
-        // a RankedTensorType extent.
+        // ONNX 用 -1 表示推导；MLIR 的动态维是另一个哨兵值
+        // （LLVM 20 中是 INT64_MIN）。绝不能把 ONNX 的 -1 当作
+        // RankedTensorType extent 参与乘法或存储。
         shape[index] = ShapedType::kDynamic;
       } else if (dimension < -1)
         return op->emitOpError("invalid Reshape dimension");
@@ -984,9 +1072,9 @@ LogicalResult inferOperation(Operation *op, bool update) {
     if (hasLiteralZero && inferredIndex >= 0)
       return op->emitOpError("Reshape allowzero=1 cannot combine zero and -1");
 
-    // Count only known nonnegative extents. Zero makes a product known even if
-    // another axis is dynamic; otherwise unknown axes keep it unresolved. A
-    // separate optional avoids confusing an unknown product with ONNX's -1.
+    // 只统计已知的非负 extent。只要有一个轴为 0，即使其他轴动态，乘积也已知；
+    // 否则动态轴让乘积保持未知。用独立的 optional 避免把“未知乘积”与
+    // ONNX 的 -1 混淆。
     auto checkedProduct =
         [&](ArrayRef<int64_t> dimensions,
             std::optional<int64_t> &product) -> LogicalResult {
@@ -1032,6 +1120,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
       return op->emitOpError("Reshape changes element count");
     return finish();
   }
+  // Expand：目标 shape 必须可静态求值；按尾部广播规则与输入 shape 合并。
   if (name == "gac.expand") {
     if (failed(require(1, 2)))
       return failure();
@@ -1044,6 +1133,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
       return failure();
     return finish();
   }
+  // Concat：除 axis 外所有维必须兼容；axis 维相加，任一输入为动态则该维动态。
   if (name == "gac.concat") {
     int64_t axis = integer(op, "axis", 0);
     if (failed(normalizedAxis(op, axis, a.getRank())))
@@ -1064,6 +1154,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Gather：输出 shape = data[:axis] + indices.shape + data[axis+1:].
   if (name == "gac.gather") {
     if (failed(require(2, 2)))
       return failure();
@@ -1077,6 +1168,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     shape.append(a.getShape().begin() + axis + 1, a.getShape().end());
     return finish();
   }
+  // Unsqueeze 在指定位置插入长度 1 的轴；Squeeze 删除 axes 指定的轴，
+  // 未给 axes 时删除所有长度为 1 的轴（要求输入完全静态）。
   if (name == "gac.unsqueeze" || name == "gac.squeeze") {
     if (failed(require(1, 2)))
       return failure();
@@ -1112,6 +1205,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // ReduceSum/ReduceMean：axes 为空且 noop_with_empty_axes=0 时归约所有轴；
+  // keepdims 控制是否保留长度为 1 的轴；重复轴和越界轴都报错。
   if (name == "gac.reduce_sum" || name == "gac.reduce_mean") {
     if (failed(require(1, 2)))
       return failure();
@@ -1139,6 +1234,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
         shape.push_back(1);
     return finish();
   }
+  // Conv/MaxPool 固定 NCHW/OIHW，支持 NOTSET/VALID/SAME_* padding、stride、
+  // dilation 和 groups；输出 H/W 按卷积公式计算，ceil_mode 只用于池化。
   if (name == "gac.conv2d" || name == "gac.conv2d_relu" ||
       name == "gac.max_pool2d") {
     bool pool = name == "gac.max_pool2d";
@@ -1220,6 +1317,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // GridSample 固定 2D：X[N,C,H,W] + grid[N,Ho,Wo,2] → [N,C,Ho,Wo]。
   if (name == "gac.grid_sample") {
     if (failed(require(2, 2)))
       return failure();
@@ -1234,6 +1332,9 @@ LogicalResult inferOperation(Operation *op, bool update) {
              b.getDimSize(2)};
     return finish();
   }
+  // Resize 支持 roi/scales/sizes，sizes 与 scales 不能同时非空；
+  // axes 缺省为所有轴，指定的轴可以少于 rank。输出维按 sizes 或
+  // floor(input * scale) 计算。
   if (name == "gac.resize") {
     if (!operand(op, 0) || op->getNumOperands() > 4)
       return op->emitOpError("Resize requires X and optional roi/scales/sizes");
@@ -1302,6 +1403,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Slice：starts/ends/axes/steps 必须是编译期常量。负索引按 ONNX 规则
+  // 归一化，输出长度按 (end - start) / step 向上取整，步长为 0 或轴重复报错。
   if (name == "gac.slice") {
     auto starts = constantParameter(op, 1, "starts"),
          ends = constantParameter(op, 2, "ends");
@@ -1345,6 +1448,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // Softmax/LayerNorm 保持输入 shape。LayerNorm 的 Scale/B 必须能广播进 X
+  // 且不能增加维度；axis 缺省为最后一维。
   if (name == "gac.softmax" || name == "gac.layer_norm") {
     if (failed(require(1, name == "gac.layer_norm" ? 3 : 1)))
       return failure();
@@ -1372,6 +1477,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
     }
     return finish();
   }
+  // BatchNorm 推理形式：X 至少 rank-2，后面四个参数（scale/bias/mean/var）
+  // 必须是一维且长度等于通道数；输出与 X 同 shape。
   if (name == "gac.batch_norm") {
     if (failed(require(5, 5)))
       return failure();
@@ -1385,6 +1492,7 @@ LogicalResult inferOperation(Operation *op, bool update) {
               "BatchNorm parameters must match the channel axis");
     return finish();
   }
+  // Clip/Clamp：min/max 必须是标量，且元素类型与数据一致；输出与输入同 shape。
   if (name == "gac.clamp") {
     if (failed(require(1, 3)))
       return failure();
@@ -1395,7 +1503,8 @@ LogicalResult inferOperation(Operation *op, bool update) {
               "Clip min/max must be scalars with the data element type");
     return finish();
   }
-  // Remaining registered operations are shape-preserving unary tensor math.
+  // 其余已注册算子是保形单输入张量数学（relu/sigmoid/exp/log/sin/cos/sqrt/
+  // identity/gelu 等）：只要求一个张量操作数，shape 与元素类型继承输入。
   if (failed(require(1, 1)))
     return failure();
   return finish();

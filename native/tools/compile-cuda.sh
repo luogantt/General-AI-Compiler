@@ -46,6 +46,7 @@ gac_check_compiler() {
   fi
 }
 "$gac_compiler" "$gac_model" --emit=llvm --target=cuda \
+  --regular-lowering "${GAC_REGULAR_LOWERING:-linalg}" \
   --cuda-matmul-schedule "${GAC_CUDA_MATMUL_SCHEDULE:-scalar}" \
   --cuda-tile-m "${GAC_CUDA_TILE_M:-32}" --cuda-tile-n "${GAC_CUDA_TILE_N:-32}" \
   --cuda-tile-k "${GAC_CUDA_TILE_K:-16}" \

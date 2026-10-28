@@ -1,0 +1,144 @@
+{
+  "scope": "BEVFormer-base static mixed INT8/FP16 TensorRT engine; one real six-camera input, fixed synthetic geometry, no temporal history; copies and decode excluded",
+  "order": [
+    "stock-1",
+    "custom-1",
+    "custom-2",
+    "stock-2"
+  ],
+  "warmup_per_run": 5,
+  "measured_frames_per_run": 20,
+  "per_run_median_ms": {
+    "stock-1": 413.7747802734375,
+    "custom-1": 339.17247009277344,
+    "custom-2": 338.74034118652344,
+    "stock-2": 413.72056579589844
+  },
+  "pooled_median_ms": {
+    "stock": 413.7738494873047,
+    "custom": 339.0859375
+  },
+  "latency_reduction_percent": 18.050418623566557,
+  "speedup_ratio": 1.2202624872560652,
+  "inverse_latency_fps": {
+    "stock": 2.416779120379578,
+    "custom": 2.949104900582909
+  },
+  "input_sha256": "b473352f8c2e4c88002a3d3fcf7323226d0c6cdf53b9ec66dac433a0d73c5968",
+  "engine_sha256": {
+    "stock": "c4ae0052219475bbd96e2ec5923aead49c643126dd9ce83bb79a1b6a76666259",
+    "custom": "9fb58a02198c63e017ecc09bbee40b23fd99cfa214df4f0391dc9b5fe9955c98"
+  },
+  "comparison": {
+    "fresh_stock_vs_old": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      }
+    },
+    "custom_vs_fresh_stock": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      }
+    },
+    "stock_repeat": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      }
+    },
+    "custom_repeat": {
+      "bev_embed": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_cls_scores": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      },
+      "all_bbox_preds": {
+        "finite": true,
+        "bitwise": true,
+        "allclose": true,
+        "mismatched_elements": 0,
+        "max_abs": 0.0,
+        "relative_rmse": 0.0
+      }
+    }
+  },
+  "limitations": [
+    "Timing cache does not guarantee all tactics equal; see tactic audit.",
+    "GPU clocks not locked; both runs start at 55C but end at different temperatures.",
+    "Single input only, not a nuScenes mAP/NDS validation.",
+    "Speedup is for complete rebuilt engines, not isolated MSDA contribution."
+  ]
+}

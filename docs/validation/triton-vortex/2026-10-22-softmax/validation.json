@@ -1,0 +1,432 @@
+{
+  "scope": "ONNX/C++ MLIR/Triton/VOLT/Vortex SimX integration; not full BEVFormer or silicon performance",
+  "status": "passed",
+  "checks": 48,
+  "results": [
+    {
+      "case": "add_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "f36f0f322e74001bc3484c3b881a7d0270d9d6992d6338c3a0a35c9119cf52d8"
+    },
+    {
+      "case": "add_17",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "0616acdf0766c6fcf78283dd786e2928cc2f8c0590f7d1e94df9e0662ba9a8a1"
+    },
+    {
+      "case": "add_1003",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2535c2567eed7db1ae06e9b4fc9be3b0c253973d373b88780ed9554d37a6b96d"
+    },
+    {
+      "case": "fused_float32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "81f0d2709344e842fdda3ff8b61a62e08dac54940fccfd2a8ed98f60d637c5d1"
+    },
+    {
+      "case": "fused_int32",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 64,
+      "warps": 2,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "83dfc2c8d3d6d1b2acbcded23d821613cd55d13a8cbdae21c9e521d106ab5476"
+    },
+    {
+      "case": "duplicate_input",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "79219c0155b85030dee4f67e5b117bcd0c7d60d125525bae915be3329a2218f9"
+    },
+    {
+      "case": "nonfinite_relu",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "2a7d75b8330bbfb3576a232f2ee8fddd93fccccc8d2be8c774b37e44bcac09a4"
+    },
+    {
+      "case": "view_alias",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "efaa7c5058da6c86f9000c41d0fdc6a427f522e40d5c85bab3e4d9af2f912a76"
+    },
+    {
+      "case": "broadcast_native",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "6d61a9aa74d4b655b537e4e3aec82c5eaf0e5b726af04d7d1295cd4dec1ab54c"
+    },
+    {
+      "case": "mixed_matmul",
+      "status": "passed",
+      "triton_dispatches": 2,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07,
+        1.1920928955078125e-07
+      ],
+      "vxbin_sha256": "e944ec4e23ee3c11c5f0503176c5cb01d06e0bc4ab7320644e2b524da6da932d"
+    },
+    {
+      "case": "native_fused_matmul",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.384185791015625e-07
+      ],
+      "vxbin_sha256": "9a16678fa3f61d7deeede0d566169d32086141708e8deccdd012276f0696a879"
+    },
+    {
+      "case": "triton_matmul_aligned",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.76837158203125e-07
+      ],
+      "vxbin_sha256": "a9fc4aa76ea315d553bde13d763077a71132cd6844c2c3e3814ece28d878b452"
+    },
+    {
+      "case": "triton_matmul_tail",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        9.5367431640625e-07
+      ],
+      "vxbin_sha256": "fa8a6ec4620ad56f4e9336a50b9dd231cac1f03185798a03dc79a267a7200ed9"
+    },
+    {
+      "case": "native_matmul_unaligned_k",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        4.76837158203125e-07
+      ],
+      "vxbin_sha256": "aeb0bca3daa43af848f751ac124627241607efd9d5625ff01127860e8ed88c78"
+    },
+    {
+      "case": "triton_reduce_sum_scalar",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "27b2ef952c6f59e409e61c22b72f15135a7635444e5c5ddc69a2da854e8c9347"
+    },
+    {
+      "case": "triton_reduce_sum_singleton",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "7d36282c14b9d0583c5e5803f8d67783344162a20f9b9098dfd783af886840f5"
+    },
+    {
+      "case": "native_reduce_sum_rank2",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.682209014892578e-07
+      ],
+      "vxbin_sha256": "1ec46c18846bb7737fb710157a60c11e7b3ec23a1673652a7453553844430ea7"
+    },
+    {
+      "case": "native_reduce_sum_too_wide",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.9073486328125e-06
+      ],
+      "vxbin_sha256": "d1c770f2e338379ebe08f8bd8312f5a6c6b8a70c26e58cab8c44beb659674f07"
+    },
+    {
+      "case": "triton_softmax_width_1",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_16",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.4901161193847656e-08
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_tail_19",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.4901161193847656e-08
+      ],
+      "vxbin_sha256": "28324e7365222b8b1f562ac0ab92ef13e4920d7af46445ce05b6b18470767c30"
+    },
+    {
+      "case": "triton_softmax_extreme_finite",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        2.9802322387695312e-08
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_nan",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_positive_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_all_negative_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "triton_softmax_partial_negative_inf",
+      "status": "passed",
+      "triton_dispatches": 1,
+      "native_dispatches": 0,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        0.0
+      ],
+      "vxbin_sha256": "76bd1c39f37c884733e35f7059c79ca3b574d373db617b8caf9c1f766c82e15d"
+    },
+    {
+      "case": "native_softmax_rank2_last_axis",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        1.4901161193847656e-08
+      ],
+      "vxbin_sha256": "1cde3c9901184722a714e88b9772b51c1edea51bb478c76a866df058bd6e161e"
+    },
+    {
+      "case": "native_softmax_rank2_axis0",
+      "status": "passed",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [
+        5.960464477539063e-08
+      ],
+      "vxbin_sha256": "fbb87022adc91af8c7505da80e20f3cd346592ea692957a85306185dbf0b7fac"
+    },
+    {
+      "case": "native_softmax_too_wide",
+      "status": "passed",
+      "validation": "compile-and-selection-only",
+      "triton_dispatches": 0,
+      "native_dispatches": 1,
+      "block": 128,
+      "warps": 1,
+      "max_abs_errors": [],
+      "runtime_skipped_reason": "1025-wide scalar native Softmax exceeded the 10-minute SimX bound",
+      "vxbin_sha256": "b5dc061ed439c92be8eff7b69747b6678ce12f88a7add2503fa48347c493a39a"
+    },
+    {
+      "case": "reject_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_block",
+      "status": "passed"
+    },
+    {
+      "case": "reject_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_missing_metadata",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_k",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_dot_kind",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_width",
+      "status": "passed"
+    },
+    {
+      "case": "reject_reduction_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_grid",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_width",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_n",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_tile",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_abi",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_input_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_output_shape",
+      "status": "passed"
+    },
+    {
+      "case": "reject_softmax_output_bytes",
+      "status": "passed"
+    }
+  ]
+}

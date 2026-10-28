@@ -1,0 +1,62 @@
+{
+  "scope": "Environment and FP32 add smoke test only; not BEVFormer validation",
+  "passed": true,
+  "environment": {
+    "utc": "2026-10-20T03:13:55.873230+00:00",
+    "host": "<test-host>",
+    "python": "3.11.16",
+    "tensorrt": "10.13.3.9",
+    "nvidia_smi": "NVIDIA GeForce RTX 3070 Ti Laptop GPU, GPU-REDACTED, 580.178.04, 8192 MiB, 45, 1410 MHz, [N/A]",
+    "NVIDIA_TF32_OVERRIDE": "0",
+    "CUDA_VISIBLE_DEVICES": null,
+    "CUDA_MODULE_LOADING": "LAZY",
+    "torch": "2.7.0+cu126",
+    "torch_cuda": "12.6",
+    "cuda_initialization": "PyTorch; required for run buffers and events",
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+      "compute_capability": [
+        8,
+        6
+      ],
+      "total_memory_bytes": 8220901376
+    }
+  },
+  "plugins": [
+    {
+      "name": "ModulatedDeformConv2d",
+      "version": "2",
+      "namespace": ""
+    },
+    {
+      "name": "MultiscaleDeformableAttnPlugin_TRT",
+      "version": "2",
+      "namespace": ""
+    }
+  ],
+  "actual": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ],
+  "expected": [
+    [
+      0.0,
+      2.0,
+      4.0
+    ],
+    [
+      6.0,
+      8.0,
+      10.0
+    ]
+  ]
+}

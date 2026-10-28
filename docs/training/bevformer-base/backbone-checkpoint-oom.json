@@ -1,0 +1,11 @@
+{
+  "model": "full BEVFormer-Base",
+  "batch_per_gpu": 1,
+  "precision": "official FP16 adapter",
+  "checkpointing": "ResNet backbone only",
+  "phase": "current-frame training forward / encoder spatial attention",
+  "optimizer_updates": 0,
+  "passed": false,
+  "error": "RuntimeError: CUDA out of memory. Tried to allocate 182.00 MiB (GPU 0; 11.63 GiB total capacity; 9.68 GiB already allocated; 67.44 MiB free; 10.02 GiB reserved in total by PyTorch)",
+  "note": "A failed configuration, not a claim that every memory optimization has failed."
+}

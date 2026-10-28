@@ -1,0 +1,190 @@
+{
+  "scope": "template registry codegen/launch contracts; no hardware execution",
+  "compiler_sha256": "4fbfe9ad1acd72974483a34be059db44d489b4699ef7379da9d7a9168460e71a",
+  "reference_compiler_sha256": "4a2856cfb21ad455a876aca6693954c32c5293502987af38d499611e71bad4b3",
+  "passed": true,
+  "cases": [
+    {
+      "name": "cuda_matmul",
+      "emit": "device",
+      "template": "cuda.matmul.shared",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_matmul",
+      "emit": "llvm",
+      "template": "cuda.matmul.shared",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_softmax",
+      "emit": "device",
+      "template": "cuda.reduction.row",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_softmax",
+      "emit": "llvm",
+      "template": "cuda.reduction.row",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_layer_norm",
+      "emit": "device",
+      "template": "cuda.reduction.row",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_layer_norm",
+      "emit": "llvm",
+      "template": "cuda.reduction.row",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_conv",
+      "emit": "device",
+      "template": "cuda.convolution.channels",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_conv",
+      "emit": "llvm",
+      "template": "cuda.convolution.channels",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_lmem",
+      "emit": "device",
+      "template": "vortex.matmul.lmem",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_lmem",
+      "emit": "llvm",
+      "template": "vortex.matmul.lmem",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_dxa",
+      "emit": "device",
+      "template": "vortex.matmul.dxa",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_dxa",
+      "emit": "llvm",
+      "template": "vortex.matmul.dxa",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_tcu",
+      "emit": "device",
+      "template": "vortex.matmul.tcu",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_tcu",
+      "emit": "llvm",
+      "template": "vortex.matmul.tcu",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_fp16_fallback",
+      "emit": "device",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_fp16_fallback",
+      "emit": "llvm",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_channel_fallback",
+      "emit": "device",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "cuda_channel_fallback",
+      "emit": "llvm",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_budget_fallback",
+      "emit": "device",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_budget_fallback",
+      "emit": "llvm",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_dxa_batch_fallback",
+      "emit": "device",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_dxa_batch_fallback",
+      "emit": "llvm",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_tcu_lanes_fallback",
+      "emit": "device",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "vortex_tcu_lanes_fallback",
+      "emit": "llvm",
+      "template": "gac.scalar",
+      "reference_ir_and_launch_equal": true,
+      "passed": true
+    },
+    {
+      "name": "default_linalg",
+      "passed": true
+    },
+    {
+      "name": "linalg_no_bypass",
+      "correctly_rejected": true,
+      "passed": true
+    },
+    {
+      "name": "invalid_cuda_tile",
+      "correctly_rejected": true,
+      "passed": true
+    }
+  ]
+}

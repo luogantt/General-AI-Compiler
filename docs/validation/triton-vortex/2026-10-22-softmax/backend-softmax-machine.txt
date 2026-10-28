@@ -1,0 +1,77 @@
+Triton/Vortex rank-one FP32 Softmax machine-code validation
+Date: 2026-10-22
+Status: PASSED
+
+Toolchain
+  Triton: 3.8.0
+  MLIR/LLVM/VOLT: 20.1.8 Vortex fork
+  Target: riscv32-unknown-unknown-elf / Vortex RV32
+  Execution: Vortex SimX, 1 core, 4 warps/core, 4 lanes/warp
+
+Source contract
+  Real @triton.jit stable Softmax TTIR:
+    masked load(other=-Inf)
+    -> tt.reduce(axis=0, arith.maxnumf)
+    -> arith.subf
+    -> math.exp
+    -> tt.reduce(axis=0, arith.addf)
+    -> arith.divf
+    -> masked tt.store
+  ABI: (input pointer slot:u64, output pointer slot:u64, N slot:low i32)
+  No CPU or CUDA fallback.
+
+Numerical validation
+  Softmax-only: 20/20 passed; 4 of the 20 are expected rejection cases.
+  Full backend regression: 76/76 passed; 12 of the 76 are expected rejection cases.
+  Finite-case maximum absolute error: 2.9802322387695312e-08.
+  Covered logical/physical sizes: 1/16, 16/16, 13/16, 23/32, 32/32,
+    37/64, 64/64, 65/128, 256/256, 1023/1024 and 1024/1024.
+  Covered non-finite semantics: NaN, +Inf, all -Inf, finite mixed with -Inf.
+  Covered rejection semantics: wrong first combiner, unstable Softmax graph,
+    extra scale after normalization, and input/output buffer aliasing.
+
+SIMT control-flow invariant
+  The explicit split receives the original per-lane leader predicate.
+  Only the guard branch after split receives llvm.riscv.vx.uniform.
+  Every inspected softmax_f32 symbol contains exactly one vx_split and one
+  matching vx_join; both use token register s2.
+  The validation harness also reads the final LLVM IR for every executing
+  positive case and asserts exactly one split call and one join call.
+
+VOLT llvm-objdump excerpts (--disassemble-symbols=softmax_f32)
+
+  BLOCK=16
+    80000024 <softmax_f32>:
+    80000058: 0005a90b  vx_split s2, a1
+    800005b4: 0009300b  vx_join s2
+    kernel.elf SHA-256:
+      045AA7613A5A83DFDCF55BA0079D744E026EEA9FFAE6DB97A781B6152A832768
+
+  BLOCK=32
+    80000024 <softmax_f32>:
+    80000050: 0005a90b  vx_split s2, a1
+    80000600: 0009300b  vx_join s2
+    kernel.elf SHA-256:
+      2B3000085E76415EDEF77E13221AB204EA20A363F061C39CCB29E810664924FE
+
+  BLOCK=64
+    80000024 <softmax_f32>:
+    80000050: 0005a90b  vx_split s2, a1
+    8000013c: 0009300b  vx_join s2
+    kernel.elf SHA-256:
+      B66ADB13B5153D2E7ADE48C837BDD62640D6D8CE7A1A7C4237FEAF03F9E8A3EC
+
+Validated source SHA-256
+  native/Lowering.cpp:
+    E2F55AC0FD34FA8970B0BFFE15CA1DE5C886E7BC2F3CF0A9ED7731C8BC71C119
+  examples/validate_backend.py:
+    0F036648621D799C7B7628923890F6BF3F3671AD8EA978483A02A3143BB22965
+
+Primary evidence
+  docs/validation/simx-softmax-2026-10-22.json
+  docs/validation/simx-full-2026-10-22.json
+
+Scope
+  This is a serial CTA-leader correctness baseline. It is not a performance
+  Softmax, row-wise rank>=2 Softmax, LayerNorm implementation, LMEM/DXA/TCU
+  implementation, or complete Triton operator backend.
