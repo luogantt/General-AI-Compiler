@@ -1,0 +1,27 @@
+{
+  "allclose": true,
+  "asm_keys": [
+    "ttadapter",
+    "npubin"
+  ],
+  "irsource_signature_before": {
+    "0": "*f32>",
+    "1": "*f32>",
+    "2": "*f32>"
+  },
+  "irsource_signature_patched": {
+    "0": "*fp32",
+    "1": "*fp32",
+    "2": "*fp32"
+  },
+  "max_abs": 9.5367431640625e-07,
+  "mean_abs": 2.0256993593648076e-07,
+  "normalized_path": "/root/work/a2-ttir-bridge/gac_op_0.normalized.ttir",
+  "normalized_sha256": "d1ecc70b82ff256eb8921e4ffdd4b21752eba6fdfc6e7892ef75a7c7f0753bf5",
+  "npubin_bytes": 2048,
+  "npubin_sha256": "76534ecb5ffaf636d4d661a7006c1c59343641c95bf0c42f5a574918f22a7658",
+  "out00": -4.485867977142334,
+  "ref00": -4.485867500305176,
+  "source": "/root/work/General-AI-Compiler/docs/validation/triton-vortex/2026-10-22-dot/aligned/gac_op_0.ttir",
+  "target": "GPUTarget(backend='npu', arch='Ascend910B2', warp_size=0)"
+}

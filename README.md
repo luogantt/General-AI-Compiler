@@ -13,10 +13,10 @@
 | 设备编译与 Runtime | Dispatch 划分、静态 Buffer 复用、设备代码生成；Runtime 负责分配、上传、启动、同步和下载 |
 | CUDA / Vortex | 共用前端和语义层，分别生成 PTX 或 VOLT 的 ELF/vxbin；已有矩阵分块、归约及 Vortex LMEM/DXA/TCU 实验模板 |
 | Triton / Vortex（适配基线） | C++ 将支持的 Linalg 子图送入 Triton；与原生 Vortex 内核链接到同一 vxbin，共用 Buffer 与 Runtime。[使用与边界](native/README.triton-vortex.md) |
-| GalaxeaVLA / Ascend 910（第一阶段） | 已加入 G0.5 Action Expert SwiGLU MLP 的安全权重合同、Canonical Graph、固定 ONNX 导出、910 环境探针和标准 TTIR-only 目标；尚无 `npubin` 编译或物理 NPU Runtime。[范围、许可证与验收](docs/galaxeavla-ascend910.md) |
+| GalaxeaVLA / Ascend 910B（第一阶段） | 已加入 G0.5 Action Expert SwiGLU MLP 的安全权重合同、固定 ONNX、标准 TTIR 和原子 Triton-Ascend `npubin` 编译交接；已在真实 910B2 上验证合成权重切片，尚无 GAC NPU Runtime 或整模型执行。[范围、许可证与验收](docs/galaxeavla-ascend910.md) |
 | TensorRT | 完整 Base 固定 ONNX 的插件适配、构建、推理、混合 INT8/FP16、逐层 profiling，以及自定义 MSDA / DCNv2 Kernel 优化 |
 
-**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 当前只完成静态 MLP 切片和 TTIR 工件边界，未在 910 上完成二进制编译、执行或整模型验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
+**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已在真实 910B2 上完成合成权重 MLP 切片及若干 GAC TTIR dispatch 的 `npubin` 编译与执行验证，但没有加载官方 checkpoint，也没有 GAC 端的 Ascend buffer/launch Runtime 或整模型验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
 
 ## 编译链
 
@@ -30,7 +30,7 @@ Linalg（规则算子）＋ GAC 专用 Lowering（采样等不规则算子）
 循环、线程映射、Dispatch、Buffer 规划
   ├─ CUDA Lowering → NVVM / LLVM → NVPTX → PTX → CUDA Driver → NVIDIA GPU
   ├─ Vortex Lowering → LLVM → VOLT → ELF / vxbin → Vortex Runtime
-  └─ Ascend phase 1 → standard TTIR artifacts（当前停止；无 npubin/Runtime）
+  └─ Ascend phase 1 → standard TTIR → Triton-Ascend → npubin 工件（无 GAC NPU Runtime）
 ```
 
 TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → TensorRT Runtime`。本次约 18% 的收益来自其中的 **C++/CUDA 自定义插件**，没有计入原生 MLIR → PTX 路径。默认 Linalg 路线与旧专用模板的选择方式见[原生架构](native/README.md)。

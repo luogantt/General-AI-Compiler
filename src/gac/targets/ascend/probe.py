@@ -191,7 +191,10 @@ def probe_ascend_environment(
 
     environment = dict(os.environ if environ is None else environ)
     npu_smi = _command_probe("npu-smi", ("info",))
-    atc = _command_probe("atc", ("--version",))
+    # CANN 9.0/9.1 ATC rejects ``--version`` even when the compiler is fully
+    # installed.  ``--help`` is the stable, non-mutating discovery contract
+    # across both releases and therefore avoids a false negative on 910B/A2.
+    atc = _command_probe("atc", ("--help",))
     runtime = _python_runtime_probe(python_executable or sys.executable)
     toolkit_roots = _existing_toolkit_roots(environment)
 
@@ -247,7 +250,10 @@ def probe_ascend_environment(
         blockers.append(
             "Triton-Ascend compilation/execution is unverified; no kernel smoke test was run"
         )
-    blockers.append("GAC Ascend npubin compilation and physical launcher are not implemented")
+    blockers.append(
+        "the compile-only GAC-to-Triton-Ascend npubin hand-off is unverified by this "
+        "discovery probe; a GAC physical launcher/runtime is not implemented"
+    )
 
     return {
         "schema_version": 1,

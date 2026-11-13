@@ -1,0 +1,45 @@
+{
+  "artifacts": {
+    "metadata": {
+      "bytes": 2892,
+      "file": "dispatches/0000-gac_op_0/metadata.json",
+      "sha256": "3f2d7fc58a8bb5f806ebbc3c7a8709f6f08ac8872214b8fca7b1dfd9f719548a"
+    },
+    "normalized_ttir": {
+      "bytes": 15619,
+      "file": "dispatches/0000-gac_op_0/normalized.ttir",
+      "sha256": "187408987702104e851b83b51cb43ddb2e4b28e1cb5200f857341b7022d4d52c"
+    },
+    "npubin": {
+      "bytes": 2136,
+      "file": "dispatches/0000-gac_op_0/kernel.npubin",
+      "sha256": "7b9ab767834aec865e787597a61488027353d598e1ffa791e75034c96734c006"
+    },
+    "ttadapter": {
+      "bytes": 8847,
+      "file": "dispatches/0000-gac_op_0/kernel.ttadapter.mlir",
+      "sha256": "6092edadda4193b3cdc1e2d3b3706c3aedf5ff0a265e1c2004244243fbc29d70"
+    }
+  },
+  "asm_keys": [
+    "npubin",
+    "ttadapter"
+  ],
+  "dispatch_index": 0,
+  "irsource_signature": {
+    "0": "*f32>",
+    "1": "*f32>",
+    "2": "*f32>"
+  },
+  "kernel_name": "gac_op_0",
+  "launcher_signature": {
+    "0": "*fp32",
+    "1": "*fp32",
+    "2": "*fp32"
+  },
+  "manifest_kernel": "gac_op_0",
+  "source": {
+    "file": "gac_op_0.ttir",
+    "sha256": "074834bcd9416bd6afeb04f166c1ca668857278d4b00e4c520ceddb02332677e"
+  }
+}

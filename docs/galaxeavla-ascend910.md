@@ -3,18 +3,20 @@
 ## Status and boundary
 
 This branch starts the port from `lg/bevformer-triton-vortex-deep`.  It does
-not yet claim that the complete GalaxeaVLA model runs on Ascend.  The first
-reviewable unit is the real Qwen3.5 Action Expert SwiGLU MLP contract; the
-native side may export standard TTIR for an Ascend hand-off, but GAC does not
-yet compile `npubin` or launch physical NPU kernels.
+not claim that the complete GalaxeaVLA model runs on Ascend.  The first
+reviewable unit is the real Qwen3.5 Action Expert SwiGLU MLP contract.  The
+native side exports standard TTIR and the Python hand-off can compile a
+validated all-Triton manifest to `ttadapter` plus `npubin` with the active
+Triton-Ascend stack.  GAC still has no Ascend buffer planner or physical
+kernel-launch runtime.
 
 | Capability | Current status |
 | --- | --- |
 | G0.5 Action Expert MLP graph import | Implemented, static FP32 slice |
 | NumPy reference validation | Implemented |
 | Ascend host/CANN/torch_npu discovery probe | Implemented, discovery-only and fail-closed |
-| Standard TTIR review artifact | Phase-1 export only |
-| Triton-Ascend `npubin` compilation | Not implemented |
+| Standard TTIR review artifact | Implemented, all-Triton and fail-closed |
+| Triton-Ascend `npubin` compilation | Implemented as an atomic compile-only hand-off |
 | GAC Ascend physical runtime | Not implemented |
 | Complete G0.5 inference | Not implemented |
 
@@ -128,8 +130,26 @@ gac-compile build/galaxeavla/action-expert-layer0.onnx \
 
 This command does not create an NPU binary.  `--emit=llvm`, Vortex ABI fields,
 native fallback dispatches, and backend launch geometry are rejected for the
-Ascend target.  A later tool must compile each checked TTIR module with the
-matching Triton-Ascend/CANN stack and write an `npubin` plus launcher metadata.
+Ascend target.  On the version-matched NPU image, compile the checked hand-off
+without overwriting an existing output directory:
+
+```bash
+gac-ascend-compile-ttir build/galaxeavla/ascend-plan.json \
+  --ttir-dir build/galaxeavla/ttir \
+  --output-dir build/galaxeavla/ascend-compiled \
+  --cache-dir /tmp/gac-triton-cache \
+  --always-compile
+```
+
+The command validates the complete manifest and snapshots every source before
+loading vendor packages.  It accepts only `target=ascend`,
+`execution=artifact-only`, `artifact_format=standard-ttir`, an all-Triton
+dispatch set, and an active supported NPU target.  Each dispatch gets
+normalized TTIR, `ttadapter`, `npubin`, metadata and SHA-256 records in a
+staging tree; the output directory is published atomically only after every
+dispatch succeeds.  This is still compilation, not execution.  The launcher
+signature recorded in the report does not allocate buffers, infer launch
+geometry, or submit kernels.
 
 ## Environment separation
 
@@ -176,7 +196,58 @@ Primary compatibility references:
 
 - [Ascend PyTorch compatibility matrix](https://github.com/Ascend/pytorch/blob/master/COMPATIBILITY.en.md)
 - [Triton-Ascend README and supported products](https://github.com/triton-lang/triton-ascend/blob/main/README.md)
+- [Triton-Ascend released image/version matrix](https://github.com/triton-lang/triton-ascend/blob/main/docker/OVERVIEW.md)
 - [Triton-Ascend architecture](https://github.com/triton-lang/triton-ascend/blob/main/docs/en/architecture_design_and_core_features.md)
+
+## Physical 910B2 validation
+
+The phase-1 evidence was collected on 2026-11-13 with one physical 64 GB
+Ascend 910B2.  The image pairing exactly follows the published Triton-Ascend
+3.2.1 image: Ubuntu 22.04, CANN 9.0.0, Python 3.11, PyTorch 2.7.1,
+torch_npu 2.7.1.post4, and Triton-Ascend 3.2.1.  The imported implementation
+reports `triton.__version__ == 3.2.0` and the active target reports
+`npu/Ascend910B2`; both values are retained because distribution metadata and
+the imported Triton implementation are not the same version field.
+
+The checked-in [validation record](validation/ascend/galaxeavla-g05-mlp-910b2-2026-11-13/README.md)
+contains the reports, compiler intermediates, hashes and reproducers.  The
+main results are:
+
+- all 738 GAC Python tests completed successfully on the AArch64 image (31
+  skipped), including
+  all 21 Galaxea-specific tests;
+- the fixed six-operation ONNX result exactly matched the GAC host reference;
+- vector add, Sigmoid and `tl.dot` MatMul each compiled to `ttadapter` and
+  `npubin` and executed on the 910B2;
+- the synthetic official-shape MLP ran as three Triton MatMul dispatches plus
+  a fused SwiGLU dispatch: 100/100 deterministic FP32 cases passed at
+  `rtol=atol=1e-4`, with global maximum absolute error `1.86e-7`;
+- after 50 warm-ups, 200 synchronized Triton samples had p50 0.899 ms and p95
+  0.918 ms, with 54,401,536 bytes peak allocated.  The conservative
+  16x16x16 `tl.dot` kernels are a correctness baseline, not a tuned
+  performance claim;
+- independent generic TTIR emitted by GAC for MatMul, Softmax, ReduceSum and
+  LayerNorm was normalized by the hand-off, compiled to `npubin`, launched,
+  and matched its PyTorch reference;
+- the official-shape synthetic ONNX was also imported by the native GAC
+  compiler, fused to four standard-TTIR dispatches, atomically compiled to
+  four `npubin` files, and executed in manifest order on the 910B2.  Every
+  intermediate passed its CPU reference at `rtol=atol=1e-5`; the final output
+  maximum absolute error was `2.01e-7`.  This closes the phase-1 MLP chain,
+  but the narrow validation launcher is not a general GAC NPU runtime.
+
+All of those runs use deterministic synthetic weights.  No G0.5 checkpoint
+was downloaded or loaded, so the license gate remains open.  A separate
+original `Ascend 910` (non-910B) host passed a torch_npu eager MLP baseline,
+but it is not counted as Triton-Ascend evidence because the current project
+support list names A2/910B rather than that original SKU.
+
+The image's preinstalled Triton LLVM/MLIR identifies as `20.0.0git`, while the
+native GAC build contract is LLVM/MLIR 20.1.8.  The on-image native build used
+a separate validation copy with narrow API/printing compatibility edits and a
+compiler permissiveness flag for an LLVM-header issue.  Those temporary edits
+were not used as evidence of a new supported native toolchain; the exact
+details are retained with the validation record.
 
 ## Complete-model blockers
 

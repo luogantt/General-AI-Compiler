@@ -4,7 +4,7 @@ from contextlib import redirect_stdout
 import io
 import json
 import unittest
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 from gac.targets.ascend.probe import probe_ascend_environment
 from gac.tools.probe_ascend import main
@@ -63,6 +63,7 @@ class AscendProbeTests(unittest.TestCase):
         self.assertFalse(report["readiness"]["gac_physical_runtime_ready"])
         self.assertIn("Ascend 910B4", report["hardware"]["products"])
         self.assertEqual(report["host"]["python_executable"], "/opt/g05/bin/python")
+        self.assertIn(call("atc", ("--help",)), _commands.call_args_list)
 
     @patch("gac.targets.ascend.probe._existing_toolkit_roots", return_value=("/usr/local/Ascend/latest",))
     @patch("gac.targets.ascend.probe._python_runtime_probe", return_value=_runtime("Ascend 910"))

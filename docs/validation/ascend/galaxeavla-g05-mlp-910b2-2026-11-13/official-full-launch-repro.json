@@ -1,0 +1,198 @@
+{
+  "cache_dir": "/root/work/a2-ttir-bridge/repro-cache",
+  "checks": {
+    "gac_op_0_gate": {
+      "actual_max": 1.3542879819869995,
+      "actual_min": -1.2984625101089478,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 2.0265579223632812e-06,
+      "max_rel_clamped": 0.023165710270404816,
+      "mean_abs": 1.4396039205166744e-07,
+      "reference_max": 1.3542888164520264,
+      "reference_min": -1.2984617948532104
+    },
+    "gac_op_1_up": {
+      "actual_max": 1.4771016836166382,
+      "actual_min": -1.328078269958496,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 1.9073486328125e-06,
+      "max_rel_clamped": 0.013230495154857635,
+      "mean_abs": 1.42852229600976e-07,
+      "reference_max": 1.4771020412445068,
+      "reference_min": -1.3280785083770752
+    },
+    "gac_op_2_fused": {
+      "actual_max": 0.6772235035896301,
+      "actual_min": -0.7489310503005981,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 1.043081283569336e-06,
+      "max_rel_clamped": 0.02316461317241192,
+      "mean_abs": 2.730944537177038e-08,
+      "reference_max": 0.6772242188453674,
+      "reference_min": -0.7489312291145325
+    },
+    "gac_op_3_output": {
+      "actual_max": 0.1427236944437027,
+      "actual_min": -0.13633255660533905,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 2.0116567611694336e-07,
+      "max_rel_clamped": 0.1577901393175125,
+      "mean_abs": 3.2593248988632695e-08,
+      "reference_max": 0.14272372424602509,
+      "reference_min": -0.13633257150650024
+    }
+  },
+  "compiled": [
+    {
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "kernel": "gac_op_0",
+      "normalized_sha256": "e2250c96d175cf548fb094c14036d2e8001cbd4ffd6da49dbb61817388e92354",
+      "npubin_bytes": 2136,
+      "npubin_sha256": "7b9ab767834aec865e787597a61488027353d598e1ffa791e75034c96734c006",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "source_sha256": "074834bcd9416bd6afeb04f166c1ca668857278d4b00e4c520ceddb02332677e"
+    },
+    {
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "kernel": "gac_op_1",
+      "normalized_sha256": "743d8b8b9cd11e73efa10be5b1a99199e29a81975969255bbc293e8bddbc1877",
+      "npubin_bytes": 2136,
+      "npubin_sha256": "5ccdcebc3cf0abc78524aea9933ce12b9774bfe584cdf5b50a8cfdbfb673ea98",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "source_sha256": "92efc051d3e4e1d2ae399504e151a9860df83c635e2bcdbb3a38c1571849b13c"
+    },
+    {
+      "grid": [
+        1024,
+        1,
+        1
+      ],
+      "kernel": "gac_op_2",
+      "normalized_sha256": "8938625e9f066e973cad3313ff41f333e2dc9ece2bb77a0ec99b1b44adffc8f0",
+      "npubin_bytes": 3792,
+      "npubin_sha256": "9d387b3e4b1c3b3496415079fd81d68f2a74e115733c2131ee17be882c4355cc",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "source_sha256": "6c427df053deef71f24dee11ea5bb1871e1e6c13757670e0cc564e787074be95"
+    },
+    {
+      "grid": [
+        128,
+        1,
+        1
+      ],
+      "kernel": "gac_op_3",
+      "normalized_sha256": "161f405980ce48a105f92dbebc45da1e1edf3a2441876c41fb7c106bb46d8e89",
+      "npubin_bytes": 2328,
+      "npubin_sha256": "2aa85b04add0a5aed7f5927cb8554b7eceef504a8238f2689e2b5c7c524e73ec",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "source_sha256": "e387097f884ef71022a892fbad9f4e0b218b2c891db2b0f6d7b3e13910cfab54"
+    }
+  ],
+  "constant_hashes": {
+    "tensor_1.bin": "137c8225d248c2297f4824cac34e964e4be9701e3f03324ccfa7a3d1fd0414bb",
+    "tensor_2.bin": "bae8dd59fb47a1993abf99c6fd91213256028f8855dfdb3be8f25cd071ed18eb",
+    "tensor_3.bin": "a25002ba888532120116c2affe017b72752446bb43a31edd84649374ef9e8244"
+  },
+  "constants_dir": "/root/work/a2-gac-native-official/constants",
+  "cpu_oracle_seconds": 0.7988986899144948,
+  "device": "Ascend910B2",
+  "device_index": 0,
+  "dispatch_order": [
+    "gac_op_0",
+    "gac_op_1",
+    "gac_op_2",
+    "gac_op_3"
+  ],
+  "input": {
+    "dtype": "float32",
+    "max": 4.077393531799316,
+    "min": -4.120599746704102,
+    "seed": 20261113,
+    "shape": [
+      1,
+      32,
+      1024
+    ]
+  },
+  "kind": "official-gac-mlp-validation-launcher",
+  "npu_four_dispatch_seconds_including_first_launch": 18.962307369802147,
+  "peak_memory_allocated_bytes": 52170752,
+  "peak_memory_reserved_bytes": 58720256,
+  "plan": "/root/work/a2-gac-native-official-delivery/plan.json",
+  "plan_sha256": "08bcd8efff476a4ab3dc47d02d73c56c160840f43106fdb14c19b88454ae3e30",
+  "scope": "pinned validation only; not a general GAC runtime",
+  "source_hashes": {
+    "gac_op_0": "074834bcd9416bd6afeb04f166c1ca668857278d4b00e4c520ceddb02332677e",
+    "gac_op_1": "92efc051d3e4e1d2ae399504e151a9860df83c635e2bcdbb3a38c1571849b13c",
+    "gac_op_2": "6c427df053deef71f24dee11ea5bb1871e1e6c13757670e0cc564e787074be95",
+    "gac_op_3": "e387097f884ef71022a892fbad9f4e0b218b2c891db2b0f6d7b3e13910cfab54"
+  },
+  "status": "passed",
+  "strict_official_hashes_validated": true,
+  "target": {
+    "arch": "Ascend910B2",
+    "backend": "npu",
+    "warp_size": 0
+  },
+  "timing_note": "first launch includes lazy launcher/module initialization; not a benchmark",
+  "ttir_dir": "/root/work/a2-gac-native-official-delivery/ttir",
+  "versions": {
+    "torch": "2.7.1+cpu",
+    "torch_npu": "2.7.1.post4",
+    "triton_ascend_distribution": "3.2.1",
+    "triton_distribution": "3.5.0",
+    "triton_imported": "3.2.0"
+  }
+}

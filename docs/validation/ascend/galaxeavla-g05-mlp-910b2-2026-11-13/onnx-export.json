@@ -1,0 +1,71 @@
+{
+  "expected_checkpoint_sha256_matched": true,
+  "format": "onnx",
+  "full_model": false,
+  "initializers": {
+    "down_proj_weight": [
+      4096,
+      1024
+    ],
+    "gate_proj_weight": [
+      1024,
+      4096
+    ],
+    "up_proj_weight": [
+      1024,
+      4096
+    ]
+  },
+  "input": {
+    "dtype": "float32",
+    "name": "hidden_states",
+    "shape": [
+      1,
+      32,
+      1024
+    ]
+  },
+  "model_adapter": "galaxeavla-qwen35-mlp",
+  "model_scope": "action-expert-layer0-qwen35-swiglu-mlp",
+  "nodes": {
+    "count": 6,
+    "names": [
+      "gate_proj",
+      "gate_sigmoid",
+      "gate_silu",
+      "up_proj",
+      "swiglu_mul",
+      "down_proj"
+    ],
+    "op_types": [
+      "MatMul",
+      "Sigmoid",
+      "Mul",
+      "MatMul",
+      "Mul",
+      "MatMul"
+    ]
+  },
+  "official_g05_dimensions": true,
+  "onnx_sha256": "d5f8820c572e8223d9afff6dd1d9cfa10b7446cd2e71bdd28164a0606fc7ea6d",
+  "opset": 17,
+  "output": "/root/work/a2-gac-validation/g05-layer0-synthetic.onnx",
+  "output_tensor": {
+    "dtype": "float32",
+    "name": "output",
+    "shape": [
+      1,
+      32,
+      1024
+    ]
+  },
+  "size_bytes": 50334268,
+  "source_checkpoint_digest_kind": "trusted-extractor-attestation-not-cryptographically-bound",
+  "source_checkpoint_sha256": "cb82f783f8f918302ad7aa57117b5873cc138c5aaac3cf58273931de665fcc1d",
+  "source_weights_sha256": "5da4607f1b909c319fb78779ef898a2d89ed98c841611d39f2ec7604bd467ab2",
+  "upstream_license_url": "https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/LICENSE-G0.5",
+  "upstream_repository": "https://github.com/OpenGalaxea/GalaxeaVLA",
+  "upstream_source_revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+  "upstream_usage_notice": "G0.5 Community License applies; non-commercial and internal-evaluation restrictions must be reviewed before use",
+  "weight_layout": "[input_channel, output_channel]"
+}

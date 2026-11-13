@@ -1,0 +1,179 @@
+{
+  "checks": {
+    "gac_op_0_gate": {
+      "actual_max": 1.3542879819869995,
+      "actual_min": -1.2984625101089478,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 2.0265579223632812e-06,
+      "max_rel_clamped": 0.023165710270404816,
+      "mean_abs": 1.4396039205166744e-07,
+      "reference_max": 1.3542888164520264,
+      "reference_min": -1.2984617948532104
+    },
+    "gac_op_1_up": {
+      "actual_max": 1.4771016836166382,
+      "actual_min": -1.328078269958496,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 1.9073486328125e-06,
+      "max_rel_clamped": 0.013230495154857635,
+      "mean_abs": 1.42852229600976e-07,
+      "reference_max": 1.4771020412445068,
+      "reference_min": -1.3280785083770752
+    },
+    "gac_op_2_fused": {
+      "actual_max": 0.6772235035896301,
+      "actual_min": -0.7489310503005981,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 1.043081283569336e-06,
+      "max_rel_clamped": 0.02316461317241192,
+      "mean_abs": 2.730944537177038e-08,
+      "reference_max": 0.6772242188453674,
+      "reference_min": -0.7489312291145325
+    },
+    "gac_op_3_output": {
+      "actual_max": 0.1427236944437027,
+      "actual_min": -0.13633255660533905,
+      "allclose_rtol1e-4_atol1e-4": true,
+      "allclose_rtol1e-5_atol1e-5": true,
+      "finite": true,
+      "max_abs": 2.0116567611694336e-07,
+      "max_rel_clamped": 0.1577901393175125,
+      "mean_abs": 3.2593248988632695e-08,
+      "reference_max": 0.14272372424602509,
+      "reference_min": -0.13633257150650024
+    }
+  },
+  "cpu_oracle_seconds": 0.8873369297944009,
+  "device": "Ascend910B2",
+  "dispatch_order": [
+    "gac_op_0",
+    "gac_op_1",
+    "gac_op_2",
+    "gac_op_3"
+  ],
+  "input": {
+    "dtype": "float32",
+    "max": 4.077393531799316,
+    "min": -4.120599746704102,
+    "seed": 20261113,
+    "shape": [
+      1,
+      32,
+      1024
+    ]
+  },
+  "npu_four_dispatch_seconds_including_first_launch": 19.348142030183226,
+  "npubins": [
+    {
+      "bytes": 2136,
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "kernel": "gac_op_0",
+      "sha256": "7b9ab767834aec865e787597a61488027353d598e1ffa791e75034c96734c006",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      }
+    },
+    {
+      "bytes": 2136,
+      "grid": [
+        512,
+        1,
+        1
+      ],
+      "kernel": "gac_op_1",
+      "sha256": "5ccdcebc3cf0abc78524aea9933ce12b9774bfe584cdf5b50a8cfdbfb673ea98",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      }
+    },
+    {
+      "bytes": 3792,
+      "grid": [
+        1024,
+        1,
+        1
+      ],
+      "kernel": "gac_op_2",
+      "sha256": "9d387b3e4b1c3b3496415079fd81d68f2a74e115733c2131ee17be882c4355cc",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      }
+    },
+    {
+      "bytes": 2328,
+      "grid": [
+        128,
+        1,
+        1
+      ],
+      "kernel": "gac_op_3",
+      "sha256": "2aa85b04add0a5aed7f5927cb8554b7eceef504a8238f2689e2b5c7c524e73ec",
+      "signature_after": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "signature_before": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      }
+    }
+  ],
+  "peak_memory_allocated_bytes": 52170752,
+  "peak_memory_reserved_bytes": 58720256,
+  "plan": "/root/work/a2-gac-native-official/plan.json",
+  "plan_sha256": "08bcd8efff476a4ab3dc47d02d73c56c160840f43106fdb14c19b88454ae3e30",
+  "status": "passed",
+  "target": "GPUTarget(backend='npu', arch='Ascend910B2', warp_size=0)",
+  "versions": {
+    "torch": "2.7.1+cpu",
+    "torch_npu": "2.7.1.post4",
+    "triton": "3.2.0"
+  },
+  "weights": [
+    {
+      "file": "tensor_1.bin",
+      "sha256": "137c8225d248c2297f4824cac34e964e4be9701e3f03324ccfa7a3d1fd0414bb"
+    },
+    {
+      "file": "tensor_2.bin",
+      "sha256": "bae8dd59fb47a1993abf99c6fd91213256028f8855dfdb3be8f25cd071ed18eb"
+    },
+    {
+      "file": "tensor_3.bin",
+      "sha256": "a25002ba888532120116c2affe017b72752446bb43a31edd84649374ef9e8244"
+    }
+  ]
+}

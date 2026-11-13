@@ -1,0 +1,15 @@
+.......................................................................................................................................s.....................................................................................................................................s.....................................................................s......................................................s......ss......................................s.....s.........................................s.s...........sss..........................................................................................................................usage: python -m unittest [-h]
+python -m unittest: error: --uniad-root does not contain projects/mmdet3d_plugin: /tmp/tmpxvqqdk_g
+....usage: python -m unittest [-h] --uniad-root UNIAD_ROOT --output OUTPUT
+                          [--device DEVICE] [--warmup WARMUP]
+                          [--measure MEASURE] [--workers WORKERS]
+                          [--log-interval LOG_INTERVAL] [--seed SEED]
+                          [--deterministic]
+                          [--cfg-options KEY=VALUE [KEY=VALUE ...]]
+                          config checkpoint
+python -m unittest: error: the following arguments are required: --uniad-root
+......................................s..........ss..........s....sssssssss...........sssss................
+----------------------------------------------------------------------
+Ran 738 tests in 71.000s
+
+OK (skipped=31)

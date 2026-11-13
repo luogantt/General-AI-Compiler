@@ -1,0 +1,223 @@
+{
+  "dispatch_count": 4,
+  "dispatches": [
+    {
+      "artifacts": {
+        "metadata": {
+          "bytes": 2892,
+          "file": "dispatches/0000-gac_op_0/metadata.json",
+          "sha256": "3f2d7fc58a8bb5f806ebbc3c7a8709f6f08ac8872214b8fca7b1dfd9f719548a"
+        },
+        "normalized_ttir": {
+          "bytes": 15619,
+          "file": "dispatches/0000-gac_op_0/normalized.ttir",
+          "sha256": "187408987702104e851b83b51cb43ddb2e4b28e1cb5200f857341b7022d4d52c"
+        },
+        "npubin": {
+          "bytes": 2136,
+          "file": "dispatches/0000-gac_op_0/kernel.npubin",
+          "sha256": "7b9ab767834aec865e787597a61488027353d598e1ffa791e75034c96734c006"
+        },
+        "ttadapter": {
+          "bytes": 8847,
+          "file": "dispatches/0000-gac_op_0/kernel.ttadapter.mlir",
+          "sha256": "6092edadda4193b3cdc1e2d3b3706c3aedf5ff0a265e1c2004244243fbc29d70"
+        }
+      },
+      "asm_keys": [
+        "npubin",
+        "ttadapter"
+      ],
+      "compile_report": {
+        "bytes": 1214,
+        "file": "dispatches/0000-gac_op_0/compile.json",
+        "sha256": "7cd4bff3e1809e969558d7c3c0e6db2270a83c484aa8035eb23fc1954e845ffe"
+      },
+      "dispatch_index": 0,
+      "irsource_signature": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "kernel_name": "gac_op_0",
+      "launcher_signature": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "manifest_kernel": "gac_op_0",
+      "source": {
+        "file": "gac_op_0.ttir",
+        "sha256": "074834bcd9416bd6afeb04f166c1ca668857278d4b00e4c520ceddb02332677e"
+      }
+    },
+    {
+      "artifacts": {
+        "metadata": {
+          "bytes": 2892,
+          "file": "dispatches/0001-gac_op_1/metadata.json",
+          "sha256": "e78194b48dd16ef95c1b1598b26f1b640f05f597292727a7f95ee9c1d2a7fb8d"
+        },
+        "normalized_ttir": {
+          "bytes": 15619,
+          "file": "dispatches/0001-gac_op_1/normalized.ttir",
+          "sha256": "b7f18a73b13a7d5df499d085a6d759ab0cbe322bfea5e9b17d6fedb00390ed82"
+        },
+        "npubin": {
+          "bytes": 2136,
+          "file": "dispatches/0001-gac_op_1/kernel.npubin",
+          "sha256": "5ccdcebc3cf0abc78524aea9933ce12b9774bfe584cdf5b50a8cfdbfb673ea98"
+        },
+        "ttadapter": {
+          "bytes": 8847,
+          "file": "dispatches/0001-gac_op_1/kernel.ttadapter.mlir",
+          "sha256": "2ddc86cf3aae113886c30593d99b12bbcb64878d31d3e4f8344ad37f6f658619"
+        }
+      },
+      "asm_keys": [
+        "npubin",
+        "ttadapter"
+      ],
+      "compile_report": {
+        "bytes": 1214,
+        "file": "dispatches/0001-gac_op_1/compile.json",
+        "sha256": "f4de227ef21a92eea055b1702d491c03d3af3d899e4b7248f6e07a032741cef9"
+      },
+      "dispatch_index": 1,
+      "irsource_signature": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "kernel_name": "gac_op_1",
+      "launcher_signature": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "manifest_kernel": "gac_op_1",
+      "source": {
+        "file": "gac_op_1.ttir",
+        "sha256": "92efc051d3e4e1d2ae399504e151a9860df83c635e2bcdbb3a38c1571849b13c"
+      }
+    },
+    {
+      "artifacts": {
+        "metadata": {
+          "bytes": 2892,
+          "file": "dispatches/0002-gac_op_2/metadata.json",
+          "sha256": "6716883b8131aef789e170b481b2467e049a735e801dc7b35f53d0f0226143da"
+        },
+        "normalized_ttir": {
+          "bytes": 7158,
+          "file": "dispatches/0002-gac_op_2/normalized.ttir",
+          "sha256": "09d08a9fc5f8b237eaf9a1fa7a60b29f8af5fd2d36252d866b6a61623027b7bb"
+        },
+        "npubin": {
+          "bytes": 3792,
+          "file": "dispatches/0002-gac_op_2/kernel.npubin",
+          "sha256": "9d387b3e4b1c3b3496415079fd81d68f2a74e115733c2131ee17be882c4355cc"
+        },
+        "ttadapter": {
+          "bytes": 8074,
+          "file": "dispatches/0002-gac_op_2/kernel.ttadapter.mlir",
+          "sha256": "57b3cd6d197d887b57c6048b88cdd62615d839714d50ccd36c5a87de36875be3"
+        }
+      },
+      "asm_keys": [
+        "npubin",
+        "ttadapter"
+      ],
+      "compile_report": {
+        "bytes": 1213,
+        "file": "dispatches/0002-gac_op_2/compile.json",
+        "sha256": "5960562b7c52be10870382d9d4c620bb65771599c6e18ecb3deb92b4c12d1d50"
+      },
+      "dispatch_index": 2,
+      "irsource_signature": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "kernel_name": "gac_op_2",
+      "launcher_signature": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "manifest_kernel": "gac_op_2",
+      "source": {
+        "file": "gac_op_2.ttir",
+        "sha256": "6c427df053deef71f24dee11ea5bb1871e1e6c13757670e0cc564e787074be95"
+      }
+    },
+    {
+      "artifacts": {
+        "metadata": {
+          "bytes": 2892,
+          "file": "dispatches/0003-gac_op_3/metadata.json",
+          "sha256": "7fcad29320579a5720baf730b661d4e73874cfd3c804f4085ce76cbdbffeac2d"
+        },
+        "normalized_ttir": {
+          "bytes": 15615,
+          "file": "dispatches/0003-gac_op_3/normalized.ttir",
+          "sha256": "b3f7906d927f8db91678a6568f735f1986075ea00b6f99fde6f53e658419325e"
+        },
+        "npubin": {
+          "bytes": 2328,
+          "file": "dispatches/0003-gac_op_3/kernel.npubin",
+          "sha256": "2aa85b04add0a5aed7f5927cb8554b7eceef504a8238f2689e2b5c7c524e73ec"
+        },
+        "ttadapter": {
+          "bytes": 8843,
+          "file": "dispatches/0003-gac_op_3/kernel.ttadapter.mlir",
+          "sha256": "8e82c7ff83d09f53fdd225a225e4e91822deaede2a55c5ee8db4d7921660bec5"
+        }
+      },
+      "asm_keys": [
+        "npubin",
+        "ttadapter"
+      ],
+      "compile_report": {
+        "bytes": 1214,
+        "file": "dispatches/0003-gac_op_3/compile.json",
+        "sha256": "76666148bcc847e9c35435f6be73b78588cf52026db6f06b5103496444329efa"
+      },
+      "dispatch_index": 3,
+      "irsource_signature": {
+        "0": "*f32>",
+        "1": "*f32>",
+        "2": "*f32>"
+      },
+      "kernel_name": "gac_op_3",
+      "launcher_signature": {
+        "0": "*fp32",
+        "1": "*fp32",
+        "2": "*fp32"
+      },
+      "manifest_kernel": "gac_op_3",
+      "source": {
+        "file": "gac_op_3.ttir",
+        "sha256": "e387097f884ef71022a892fbad9f4e0b218b2c891db2b0f6d7b3e13910cfab54"
+      }
+    }
+  ],
+  "kind": "gac-ascend-triton-compilation",
+  "output_dir": "/root/work/a2-gac-formal-compiled-v3",
+  "schema_version": 1,
+  "source_manifest": {
+    "path": "/root/work/a2-gac-native-official-delivery/plan.json",
+    "sha256": "08bcd8efff476a4ab3dc47d02d73c56c160840f43106fdb14c19b88454ae3e30"
+  },
+  "target": {
+    "arch": "Ascend910B2",
+    "backend": "npu",
+    "warp_size": 0
+  },
+  "versions": {
+    "torch": "2.7.1+cpu",
+    "torch_npu": "2.7.1.post4",
+    "triton": "3.2.0",
+    "triton_ascend": "3.2.1"
+  }
+}

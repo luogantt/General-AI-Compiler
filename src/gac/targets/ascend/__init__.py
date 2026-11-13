@@ -1,10 +1,20 @@
-"""Ascend target discovery utilities.
+"""Ascend discovery and standard-TTIR compilation utilities.
 
-The physical compiler/runtime is intentionally not exported here yet.  Phase 1
-only provides a fail-closed environment probe while the native compiler learns
-to emit reviewable TTIR artifacts for an Ascend hand-off.
+The compiler hand-off produces ``npubin`` review artifacts with the active
+Triton-Ascend stack.  It remains compile-only: GAC does not expose an Ascend
+buffer planner or physical kernel-launch runtime here.
 """
 
 from .probe import probe_ascend_environment
+from .triton_compile import (
+    compile_ascend_ttir,
+    compile_ascend_ttir_manifest,
+    validate_ascend_manifest,
+)
 
-__all__ = ["probe_ascend_environment"]
+__all__ = [
+    "compile_ascend_ttir",
+    "compile_ascend_ttir_manifest",
+    "probe_ascend_environment",
+    "validate_ascend_manifest",
+]

@@ -1,0 +1,39 @@
+{
+  "checkpoint_loaded": false,
+  "contract": {
+    "activation": "silu",
+    "batch": 1,
+    "canonical_weight_layout": "[input_channel, output_channel]",
+    "component": "model.action_expert.layers.0.mlp",
+    "dtype": "float32",
+    "full_model": false,
+    "hidden_size": 1024,
+    "intermediate_size": 4096,
+    "kind": "galaxeavla-qwen35-action-expert-layer0-swiglu-mlp",
+    "layer": 0,
+    "model_adapter": "galaxeavla-qwen35-mlp",
+    "model_scope": "action-expert-layer0-qwen35-swiglu-mlp",
+    "official_g05_dimensions": true,
+    "operation_order": [
+      "MatMul",
+      "Sigmoid",
+      "Mul",
+      "MatMul",
+      "Mul",
+      "MatMul"
+    ],
+    "schema_version": 1,
+    "source_weight_layout": "[out_features, in_features]",
+    "tokens": 32,
+    "upstream_license_url": "https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/LICENSE-G0.5",
+    "upstream_repository": "https://github.com/OpenGalaxea/GalaxeaVLA",
+    "upstream_source_revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+    "upstream_usage_notice": "G0.5 Community License applies; non-commercial and internal-evaluation restrictions must be reviewed before use"
+  },
+  "seed": 20261113,
+  "source_checkpoint_digest_attestation": "cb82f783f8f918302ad7aa57117b5873cc138c5aaac3cf58273931de665fcc1d",
+  "synthetic": true,
+  "weights": "/root/work/a2-gac-validation/g05-layer0-synthetic.gacweights",
+  "weights_sha256": "5da4607f1b909c319fb78779ef898a2d89ed98c841611d39f2ec7604bd467ab2",
+  "weights_size_bytes": 50333263
+}

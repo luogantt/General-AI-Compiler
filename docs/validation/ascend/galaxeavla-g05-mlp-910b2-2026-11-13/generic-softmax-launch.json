@@ -1,0 +1,35 @@
+{
+  "N": 19,
+  "allclose": true,
+  "atol": 1e-06,
+  "grid": [
+    3,
+    1,
+    1
+  ],
+  "max_abs": 5.960464477539063e-08,
+  "mean_abs": 2.478564464780675e-09,
+  "npubin_bytes": 3208,
+  "npubin_sha256": "5d419253b7ec1156aa2ee5ab12dd4a48d64a69d5975e7134eccdeaca64a13bac",
+  "row_sums": [
+    0.9999998807907104,
+    0.9999998807907104,
+    1.0
+  ],
+  "rtol": 1e-05,
+  "shape": [
+    3,
+    19
+  ],
+  "signature_after": {
+    "0": "*fp32",
+    "1": "*fp32",
+    "2": "i32"
+  },
+  "signature_before": {
+    "0": "*f32>",
+    "1": "*f32>",
+    "2": "i32"
+  },
+  "source": "/root/work/a2-ttir-bridge/softmax19/gac_op_0.normalized.ttir"
+}

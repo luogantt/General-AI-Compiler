@@ -1,0 +1,76 @@
+{
+  "blockers": [
+    "torch_npu execution is unverified; this discovery-only probe does not launch an NPU operator",
+    "Triton-Ascend compilation/execution is unverified; no kernel smoke test was run",
+    "the compile-only GAC-to-Triton-Ascend npubin hand-off is unverified by this discovery probe; a GAC physical launcher/runtime is not implemented"
+  ],
+  "cann": {
+    "ascend_opp_path_set": true,
+    "atc": {
+      "available": true,
+      "executable": "/usr/local/Ascend/cann-9.0.0/bin/atc",
+      "ok": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "ATC start working now, please wait for a moment.\nusage: atc <args>\ngenerate offline model example:\natc --model=./alexnet.prototxt --weight=./alexnet.caffemodel --framework=0 --output=./domi --soc_version=<soc_version> \ngenerate offline model for single op example:\natc --singleop=./op_list.json --output=./op_model --soc_version=<soc_version> \n\n===== Basic Functionality =====\n[General]\n  --h/help            Show this help message\n  --mode              Run mode.\n                       0: default, generate offline model;\n                       1: convert model to JSON format;\n                       3: only pre-check;\n                       5: convert ge dump txt file to JSON format;\n                       6: display model info;\n                       30: convert original graph to execute-om for nano(offline model)\n\n[Input]\n  --model             Model file\n  --weight            Weight file. Required when framework is Caffe\n  --om                The model file to be converted to json\n  --framework         Framework type. 0:Caffe; 1:MindSpore; 3:Tensorflow; 5:Onnx\n  --input_format      Format of input data. E.g.: \"NCHW\"\n  --input_shape       Shape of static input data or shape range of dynamic input. Separate multiple nodes with semicolons (;). Use double quotation marks (\") to enclose each argument.\n                      E.g.: \"input_name1:n1,c1,h1,w1;input_name2:n2,c2,h2,w2\"\n                            \"input_name1:n1~n2,c1,h1,w1;input_name2:n3~n4,c2,h2,w2\"\n  --input_hint_shape  Shape hint of dynamic input. Separate multiple nodes with semicolons (;). Use double quotation marks (\") to enclose each argument.\n                      E.g.: \"index1:[n1,c1,h1,w1];index2:[n2,c2,h2,w2]\"\n  --input_shape_range This option is deprecated and will be removed in future version, please use input_shape instead.Shape range of input data. Separate multiple nodes with semicolons (;).\n                      Use double quotation marks (\") to enclose each argument.\n                      E.g.: \"input_name1:[n1~n2,c1,h1,w1];input_name2:[n2,c2~c3,h2,w2]\"\n  --dynamic_batch_size Set dynamic batch size. E.g.: \"batchsize1,batchsize2,batchsize3\"\n  --dynamic_image_size Set dynamic image size. Separate multiple nodes with semicolons (;). Use double quotation marks (\") to enclose each argument.\n                       E.g.: \"imagesize1_height,imagesize1_width;imagesize2_height,imagesize2_width\"\n  --dynamic_dims      Set dynamic dims. Separate multiple nodes with semicolons (;). Use double quotation marks (\") to enclose each argument.\n                       E.g.: \"dims1_n1,dims1_n2;dims2_n1,dims2_n2\"\n  --singleop          Single op definition file. atc will generate offline.model(s) for single op if --singleop is set.\n\n[Output]\n  --output            Output file path&name(needn't suffix, will add .om/.exeom automatically).\n                      If --mode is set to 30, an additional dbg file will be generated.\n                      If --singleop is set, this arg specifies the directory to which the single op offline model will be generated.\n  --output_type       Set net output type. Support FP32, FP16, UINT8, INT8. E.g.: FP16, indicates that all out nodes are set to FP16.\n                      \"node1:0:FP16;node2:1:FP32\", indicates setting the datatype of multiple out nodes.\n  --check_report      The pre-checking report file. Default value is: \"check_result.json\"\n  --json              The output json file path&name which is converted from a model\n  --host_env_os            OS type of the target execution environment.\n                           The parameters that support setting are the OS types of the opp package\n                           Supported host env os as list:\n                           linux \n                           default: linux\n  --host_env_cpu           CPU type of the target execution environment.\n                           The parameters that support setting are the CPU types of the opp package\n                           Supported host env cpu as list:\n                           support cpu: x86_64 aarch64 , respond to os: linux\n              "
+    },
+    "toolkit_roots": [
+      "/usr/local/Ascend/cann-9.0.0"
+    ]
+  },
+  "hardware": {
+    "exact_sku_confirmation_required": false,
+    "npu_smi": {
+      "available": true,
+      "executable": "/usr/local/bin/npu-smi",
+      "ok": true,
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "+------------------------------------------------------------------------------------------------------------------+\n| npu-smi 26.1.1                              Version: 26.1.1                                                      |\n+---------------------------+---------------+----------------------------------------------------------------------+\n| NPU   Name                | Health        | Power(W)             Temp(C)                 Hugepages-Usage(page)   |\n| Chip                      | Bus-Id        | AICore(%)            Memory-Usage(MB)        HBM-Usage(MB)           |\n+===========================+===============+======================================================================+\n| 7     910B2               | OK            | 94.3                 44                      0    / 0                |\n| 0                         | 0000:42:00.0  | 0                    0    / 0                3415 / 65536            |\n+===========================+===============+======================================================================+\n+---------------------------+---------------+----------------------------------------------------------------------+\n| NPU     Chip              | Process id    | Process name       | Process memory(MB)    | Process id in container |\n+===========================+===============+======================================================================+\n| No running processes found in NPU 7                                                                              |\n+===========================+===============+======================================================================+"
+    },
+    "present": true,
+    "products": [
+      "910B2",
+      "Ascend910B2"
+    ],
+    "triton_supported_product_confirmed": true
+  },
+  "host": {
+    "machine": "aarch64",
+    "python_executable": "/usr/local/python3.11.15/bin/python",
+    "python_version": "3.11.15",
+    "system": "Linux"
+  },
+  "kind": "gac-ascend-environment-probe",
+  "python_runtime": {
+    "device_count": 1,
+    "device_names": [
+      "Ascend910B2"
+    ],
+    "error": null,
+    "importable": true,
+    "probe_returncode": 0,
+    "probe_stderr": "",
+    "torch_npu_version": "2.7.1.post4",
+    "torch_version": "2.7.1+cpu",
+    "triton_importable": true,
+    "triton_target": {
+      "arch": "Ascend910B2",
+      "backend": "npu",
+      "warp_size": 0
+    },
+    "triton_version": "3.2.0"
+  },
+  "readiness": {
+    "full_galaxeavla_ready": false,
+    "gac_npubin_compiler_ready": false,
+    "gac_physical_runtime_ready": false,
+    "gac_ttir_export_only": true,
+    "torch_npu_discoverable": true,
+    "torch_npu_execution_verified": false,
+    "triton_ascend_compile_verified": false,
+    "triton_ascend_discoverable": true,
+    "triton_ascend_execution_verified": false
+  },
+  "schema_version": 1
+}
