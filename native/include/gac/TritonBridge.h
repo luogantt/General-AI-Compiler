@@ -1,6 +1,7 @@
 #ifndef GAC_TRITON_BRIDGE_H
 #define GAC_TRITON_BRIDGE_H
 
+#include "gac/LinalgDevice.h"
 #include "mlir/IR/Value.h"
 #include "mlir/Support/LogicalResult.h"
 #include "llvm/ADT/SmallVector.h"
@@ -68,7 +69,8 @@ struct TritonLayerNormPlan {
 // Match only the complete canonical ONNX LayerNormalization decomposition:
 // zero+sum -> mean -> zero+squared-deviation-sum -> affine normalization.
 // Every role, indexing map, scalar payload and SSA use must agree; partial
-// matches stay on the native Vortex Linalg path.
+// matches stay on an execution target's native path; an export-only target
+// rejects the complete graph instead of inventing a fallback.
 bool selectTritonLayerNorm(mlir::Operation *op, TritonLayerNormPlan &plan,
                            std::string &reason);
 
@@ -79,7 +81,7 @@ mlir::LogicalResult emitTritonLayerNorm(
     const TritonLayerNormPlan &plan, llvm::StringRef outputFile);
 
 // Select only linalg.softmax over the last axis of a static FP32 tensor.
-// Wider, non-last-axis and non-FP32 forms retain the native Vortex path.
+// Wider, non-last-axis and non-FP32 forms are reported as ineligible.
 bool selectTritonSoftmax(mlir::Operation *op, TritonSoftmaxPlan &plan,
                          std::string &reason);
 
@@ -92,7 +94,7 @@ mlir::LogicalResult emitTritonSoftmax(
 
 // Select only the canonical Linalg sum produced by ReduceSum over the sole
 // axis of a rank-one tensor. Rank-zero and one-element tensor results share the
-// same one-pointer output ABI. Every unsupported reduction stays native.
+// same one-pointer output ABI. Every unsupported reduction is reported.
 bool selectTritonReduction(mlir::Operation *op,
                            TritonReductionPlan &plan,
                            std::string &reason);
@@ -106,7 +108,7 @@ mlir::LogicalResult emitTritonReduction(
 // Select canonical row-major FP32 Linalg MatMul. Rank-2 retains the legacy
 // batch=1 contract. For rank>=3, A must have C's exact batch prefix; B may
 // either have that same prefix or be one rank-2 matrix shared by every batch.
-// A rejected candidate stays native.
+// A rejected candidate is left to the caller's explicit fallback policy.
 bool selectTritonDot(mlir::Operation *op, TritonDotPlan &plan,
                      std::string &reason);
 
@@ -119,8 +121,12 @@ mlir::LogicalResult emitTritonDot(mlir::Operation *op,
 
 // The first bridge supports only same-shape pointwise Linalg payloads. This
 // includes their already-selected, single-use fused producers. A rejected
-// candidate remains on the native device path; reason explains that decision.
-bool selectTritonPointwise(mlir::Operation *op, std::string &reason);
+// candidate is left to the caller's explicit fallback policy; reason explains
+// that decision.
+bool selectTritonPointwise(
+    mlir::Operation *op, std::string &reason,
+    LinalgFusionPolicy fusionPolicy =
+        LinalgFusionPolicy::AllEligibleProducers);
 
 // Emit one standard TTIR kernel, with deduplicated leaf-input pointers followed
 // by the output pointer. Shapes are static, so no extra scalar argument is
@@ -129,7 +135,10 @@ bool selectTritonPointwise(mlir::Operation *op, std::string &reason);
 mlir::LogicalResult emitTritonPointwise(mlir::Operation *op,
                                         llvm::StringRef kernelName,
                                         int64_t block,
-                                        llvm::StringRef outputFile);
+                                        llvm::StringRef outputFile,
+                                        LinalgFusionPolicy fusionPolicy =
+                                            LinalgFusionPolicy::
+                                                AllEligibleProducers);
 
 } // namespace gac
 #endif

@@ -5,7 +5,7 @@
 #include <string>
 
 namespace gac {
-enum class DeviceTarget { Vortex, Native, CUDA };
+enum class DeviceTarget { Vortex, Native, CUDA, Ascend };
 
 struct DeviceOptions {
   // Native is an explicit numerical test target, never an execution fallback.
@@ -28,9 +28,11 @@ struct DeviceOptions {
   // Regular tensor algebra uses Linalg by default. The old device-specific
   // templates remain an explicit baseline; they must never bypass this choice.
   std::string regularLowering = "linalg";
-  // Optional TTIR artifacts for eligible structured pointwise dispatches.
-  // The common allocator and dependency plan remain authoritative.
-  std::string vortexTritonDirectory;
+  // Optional standard TTIR artifacts for eligible structured dispatches.
+  // The common allocator and dependency plan remain authoritative.  Ascend is
+  // currently export-only: every dispatch must satisfy a Triton contract and
+  // no device binary or runtime ABI is produced here.
+  std::string tritonDirectory;
   int64_t tritonBlock = 128, tritonNumWarps = 1;
 };
 

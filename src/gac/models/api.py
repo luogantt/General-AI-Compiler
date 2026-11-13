@@ -33,6 +33,10 @@ class ModelAdapter(Protocol):
 # Strings keep registry inspection free of model, NumPy and target imports.
 _FACTORIES: dict[str, Callable[[], ModelAdapter] | tuple[str, str]] = {
     "bevformer-step": ("gac.models.bevformer.adapter", "BEVFormerStepAdapter"),
+    "galaxeavla-qwen35-mlp": (
+        "gac.models.galaxeavla.adapter",
+        "GalaxeaVLAQwen35MLPAdapter",
+    ),
     "uniad-ffn": ("gac.models.uniad.adapter", "UniADFFNAdapter"),
 }
 

@@ -82,6 +82,24 @@ static Value relu(OpBuilder &b, Location loc, Value value) {
       : Value(b.create<arith::CmpIOp>(loc, arith::CmpIPredicate::slt, value, zero));
   return b.create<arith::SelectOp>(loc, negative, zero, value);
 }
+static Value sigmoidF32(OpBuilder &b, Location loc, Value value) {
+  // exp(-abs(x)) never overflows.  Selecting z/(1+z) for x < 0 and
+  // 1/(1+z) otherwise is algebraically equivalent to sigmoid(x), while the
+  // naive 1/(1+exp(-x)) form overflows for large negative inputs.
+  Value zero = number(b, loc, value.getType(), 0);
+  Value one = number(b, loc, value.getType(), 1);
+  Value negative =
+      b.create<arith::CmpFOp>(loc, arith::CmpFPredicate::OLT, value, zero);
+  Value negated = b.create<arith::NegFOp>(loc, value);
+  Value magnitude = b.create<arith::SelectOp>(
+      loc, negative, negated, value);
+  Value negativeMagnitude = b.create<arith::NegFOp>(loc, magnitude);
+  Value z = b.create<math::ExpOp>(loc, negativeMagnitude);
+  Value denominator = b.create<arith::AddFOp>(loc, one, z);
+  Value positive = b.create<arith::DivFOp>(loc, one, denominator);
+  Value negativeResult = b.create<arith::DivFOp>(loc, z, denominator);
+  return b.create<arith::SelectOp>(loc, negative, negativeResult, positive);
+}
 static AffineMap identity(unsigned rank, MLIRContext *context) {
   return AffineMap::getMultiDimIdentityMap(rank, context);
 }
@@ -148,7 +166,9 @@ static FailureOr<Value> lowerPointwise(OpBuilder &b, Operation *op,
   return pointwise(b, op->getLoc(), op->getOperands(), out, "elementwise",
       [&](OpBuilder &nested, Location at, ValueRange args) {
         Value result = castScalar(nested, at, args[0], compute);
-        if (kind != "relu") {
+        if (kind == "sigmoid") {
+          result = sigmoidF32(nested, at, result);
+        } else if (kind != "relu") {
           Value rhs = castScalar(nested, at, args[1], compute);
           result = binary(nested, at, kind == "add_relu" ? "add" : kind,
                           result, rhs);
@@ -416,6 +436,7 @@ static bool isRegular(StringRef kind) {
   return llvm::StringSwitch<bool>(kind)
       .Cases("matmul", "gemm", "matmul_bias", "matmul_bias_relu", true)
       .Cases("add", "sub", "mul", "div", "relu", "add_relu", true)
+      .Case("sigmoid", true)
       .Cases("reduce_sum", "reduce_mean", "softmax", "layer_norm", true)
       .Cases("conv2d", "conv2d_relu", true).Default(false);
 }
@@ -454,6 +475,8 @@ static LogicalResult validate(Operation *op) {
     return op->emitOpError("Linalg Gemm requires floating-point tensors");
   if (kind == "softmax" && !isa<FloatType>(dataElement))
     return op->emitOpError("Linalg Softmax requires floating-point tensors");
+  if (kind == "sigmoid" && !dataElement.isF32())
+    return op->emitOpError("Linalg Sigmoid currently requires FP32 tensors");
   return success();
 }
 

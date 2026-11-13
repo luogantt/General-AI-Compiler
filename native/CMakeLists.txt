@@ -79,6 +79,10 @@ add_executable(gac-triton-batched-matmul-selector-contract
   tests/triton_batched_matmul_selector_contract.cpp)
 target_compile_options(gac-triton-batched-matmul-selector-contract PRIVATE -fno-rtti)
 target_link_libraries(gac-triton-batched-matmul-selector-contract PRIVATE GACCompiler)
+add_executable(gac-triton-ascend-export-contract
+  tests/triton_ascend_export_contract.cpp)
+target_compile_options(gac-triton-ascend-export-contract PRIVATE -fno-rtti)
+target_link_libraries(gac-triton-ascend-export-contract PRIVATE GACCompiler)
 install(TARGETS gac-compile gac-opt RUNTIME DESTINATION bin)
 
 # CUDA is optional: only NVIDIA's official headers are required to build the

@@ -8,14 +8,29 @@
 
 namespace gac {
 
+// Device targets may choose how aggressively a single-consumer producer is
+// folded into its Linalg consumer.  The default preserves the existing scalar
+// device schedule, which can evaluate a reduction producer inside one output
+// coordinate.  Ascend TTIR pointwise export uses PointwiseProducersOnly so a
+// MatMul or other reduction remains an independent dispatch eligible for its
+// dedicated Triton selector.
+enum class LinalgFusionPolicy {
+  AllEligibleProducers,
+  PointwiseProducersOnly,
+};
+
 // A single-use producer can be evaluated for the consumer's current output
 // element when its indexing proves that no other producer element is needed.
-bool isFusedLinalgProducer(mlir::Operation *op);
+bool isFusedLinalgProducer(
+    mlir::Operation *op,
+    LinalgFusionPolicy policy = LinalgFusionPolicy::AllEligibleProducers);
 
 // Tensor operands required by a dispatch. An unused DPS initializer (typically
 // tensor.empty) has no value to transfer and is deliberately absent from its ABI.
 // Eligible producers are recursively expanded to their deduplicated leaf inputs.
-llvm::SmallVector<mlir::Value> getLinalgDeviceInputs(mlir::Operation *op);
+llvm::SmallVector<mlir::Value> getLinalgDeviceInputs(
+    mlir::Operation *op,
+    LinalgFusionPolicy policy = LinalgFusionPolicy::AllEligibleProducers);
 
 // The initial device schedule assigns one output element to each thread and
 // keeps reduction dimensions sequential inside that thread.

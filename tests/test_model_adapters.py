@@ -80,7 +80,7 @@ class ModelAdapterTests(unittest.TestCase):
                 register_model_adapter(name, lambda: None)
 
     def test_builtin_adapters_reject_unknown_options_before_io(self):
-        for name in ("bevformer-step", "uniad-ffn"):
+        for name in ("bevformer-step", "galaxeavla-qwen35-mlp", "uniad-ffn"):
             adapter = get_model_adapter(name)
             with self.subTest(name=name), self.assertRaises(TypeError):
                 adapter.load("nonexistent", unknown_option=True)
@@ -107,12 +107,14 @@ class ModelAdapterTests(unittest.TestCase):
 
     def test_registry_and_selected_uniad_adapter_do_not_import_bevformer_or_targets(self):
         sources = [
-            "from gac.models.api import list_model_adapters; assert list_model_adapters()==('bevformer-step','uniad-ffn'); "
-            "blocked=('numpy','gac.targets','gac.execution','gac.models.bevformer','gac.models.uniad')",
+            "from gac.models.api import list_model_adapters; assert list_model_adapters()==('bevformer-step','galaxeavla-qwen35-mlp','uniad-ffn'); "
+            "blocked=('numpy','gac.targets','gac.execution','gac.models.bevformer','gac.models.galaxeavla','gac.models.uniad')",
             "from gac.models.api import get_model_adapter; get_model_adapter('uniad-ffn'); "
-            "blocked=('torch','cupy','gac.targets','gac.execution','gac.models.bevformer')",
+            "blocked=('torch','cupy','gac.targets','gac.execution','gac.models.bevformer','gac.models.galaxeavla')",
             "from gac.models.api import get_model_adapter; get_model_adapter('bevformer-step'); "
-            "blocked=('numpy','torch','cupy','gac.targets','gac.execution','gac.models.uniad')",
+            "blocked=('numpy','torch','cupy','gac.targets','gac.execution','gac.models.galaxeavla','gac.models.uniad')",
+            "from gac.models.api import get_model_adapter; get_model_adapter('galaxeavla-qwen35-mlp'); "
+            "blocked=('numpy','torch','cupy','gac.targets','gac.execution','gac.models.bevformer','gac.models.uniad')",
         ]
         for code in sources:
             with self.subTest(code=code):

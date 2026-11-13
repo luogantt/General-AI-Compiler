@@ -43,6 +43,8 @@ gac-uniad-make-synthetic = "gac.tools.uniad_make_synthetic_bundle:main"
 gac-uniad-compile-ffn = "gac.tools.uniad_compile_ffn:main"
 gac-uniad-benchmark-ffn = "gac.tools.uniad_benchmark_ffn:main"
 gac-uniad-benchmark-e2e = "gac.tools.uniad_benchmark_e2e:main"
+gac-ascend-probe = "gac.tools.probe_ascend:main"
+gac-galaxeavla-export-mlp-onnx = "gac.tools.export_galaxeavla_mlp_onnx:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

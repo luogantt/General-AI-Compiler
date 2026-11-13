@@ -391,7 +391,7 @@ def build(args: argparse.Namespace) -> Path:
 
         report["triton_version"] = triton.__version__
         run_step("gac-compile", [compiler, model, "--emit=llvm", "--target=vortex",
-                 "--regular-lowering=linalg", f"--vortex-triton-dir={source_dir}",
+                 "--regular-lowering=linalg", f"--triton-dir={source_dir}",
                  f"--constant-fold-profile={args.constant_fold_profile}",
                  f"--triton-block={args.block}", f"--triton-num-warps={args.num_warps}",
                  f"--vortex-lanes={args.lanes}", "--save-stages", output,

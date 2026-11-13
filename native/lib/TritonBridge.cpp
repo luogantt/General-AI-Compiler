@@ -72,11 +72,13 @@ bool arithmetic(StringRef name) {
       .Cases("arith.addi", "arith.subi", "arith.muli", "arith.cmpi", true)
       .Cases("arith.andi", "arith.ori", "arith.xori", "arith.select", true)
       .Cases("arith.maxsi", "arith.maxui", "arith.minsi", "arith.minui", true)
+      .Case("math.exp", true)
       .Default(false);
 }
 
 bool checkCandidate(Operation *op, RankedTensorType expected,
-                    llvm::DenseSet<Operation *> &checked, std::string &reason) {
+                    llvm::DenseSet<Operation *> &checked,
+                    LinalgFusionPolicy fusionPolicy, std::string &reason) {
   auto reject = [&](StringRef message) {
     reason = message.str();
     return false;
@@ -159,8 +161,8 @@ bool checkCandidate(Operation *op, RankedTensorType expected,
   // producer from this dispatch, or its tensor would lack allocated storage.
   for (OpOperand *operand : current.getDpsInputOperands())
     if (Operation *producer = operand->get().getDefiningOp();
-        isFusedLinalgProducer(producer) &&
-        !checkCandidate(producer, expected, checked, reason))
+        isFusedLinalgProducer(producer, fusionPolicy) &&
+        !checkCandidate(producer, expected, checked, fusionPolicy, reason))
       return false;
   return true;
 }
@@ -1694,7 +1696,8 @@ LogicalResult emitTritonDot(Operation *op, StringRef kernelName,
   return success();
 }
 
-bool selectTritonPointwise(Operation *op, std::string &reason) {
+bool selectTritonPointwise(Operation *op, std::string &reason,
+                           LinalgFusionPolicy fusionPolicy) {
   reason.clear();
   if (!op || op->getNumResults() != 1) {
     reason = "requires one result";
@@ -1706,25 +1709,27 @@ bool selectTritonPointwise(Operation *op, std::string &reason) {
     return false;
   }
   llvm::DenseSet<Operation *> checked;
-  return checkCandidate(op, output, checked, reason);
+  return checkCandidate(op, output, checked, fusionPolicy, reason);
 }
 
 LogicalResult emitTritonPointwise(Operation *op, StringRef kernelName,
-                                  int64_t block, StringRef outputFile) {
+                                  int64_t block, StringRef outputFile,
+                                  LinalgFusionPolicy fusionPolicy) {
   std::string reason;
-  if (!selectTritonPointwise(op, reason))
+  if (!selectTritonPointwise(op, reason, fusionPolicy))
     return op->emitOpError("cannot emit Triton pointwise kernel: ") << reason;
   if (block < 16 || block > 1024 || !llvm::isPowerOf2_64(block))
     return op->emitOpError("Triton block must be a power of two in [16,1024]");
 
   DialectRegistry registry;
-  registry.insert<arith::ArithDialect, InterchangeDialect>();
+  registry.insert<arith::ArithDialect, math::MathDialect,
+                  InterchangeDialect>();
   MLIRContext context(registry);
   context.loadAllAvailableDialects();
   OpBuilder builder(&context);
   Location loc = builder.getUnknownLoc();
   OwningOpRef<ModuleOp> module = ModuleOp::create(loc);
-  SmallVector<Value> leaves = getLinalgDeviceInputs(op);
+  SmallVector<Value> leaves = getLinalgDeviceInputs(op, fusionPolicy);
   auto output = cast<RankedTensorType>(op->getResult(0).getType());
   SmallVector<Type> arguments;
   for (Value leaf : leaves)
@@ -1805,7 +1810,12 @@ LogicalResult emitTritonPointwise(Operation *op, StringRef kernelName,
       Value input = operand->get();
       auto found = values.find(input);
       if (found == values.end()) {
-        auto producer = emit(input.getDefiningOp());
+        Operation *producerOp = input.getDefiningOp();
+        if (!isFusedLinalgProducer(producerOp, fusionPolicy))
+          return current->emitOpError(
+                     "Triton fusion policy omitted an input from the dispatch ABI"),
+                 failure();
+        auto producer = emit(producerOp);
         if (failed(producer))
           return failure();
         values[input] = *producer;

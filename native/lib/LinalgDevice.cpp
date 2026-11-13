@@ -70,11 +70,17 @@ SmallVector<Value> outputCoordinates(OpBuilder &builder, Location loc,
 
 } // namespace
 
-bool isFusedLinalgProducer(Operation *op) {
+bool isFusedLinalgProducer(Operation *op, LinalgFusionPolicy policy) {
   auto producer = dyn_cast_or_null<linalg::LinalgOp>(op);
   if (!producer || !producer.hasPureTensorSemantics() ||
       producer.getNumDpsInits() != 1 || op->getNumResults() != 1 ||
       !op->getResult(0).hasOneUse())
+    return false;
+  if (policy == LinalgFusionPolicy::PointwiseProducersOnly &&
+      llvm::any_of(producer.getIteratorTypesArray(),
+                   [](utils::IteratorType type) {
+                     return type != utils::IteratorType::parallel;
+                   }))
     return false;
   // Aggregate named operations have no scalar payload region.  They remain
   // explicit roots so their complete numerical contract is not lost.
@@ -132,14 +138,15 @@ bool isFusedLinalgProducer(Operation *op) {
          source.getNumElements() == 1 && destination.getNumElements() == 1;
 }
 
-SmallVector<Value> getLinalgDeviceInputs(Operation *op) {
+SmallVector<Value> getLinalgDeviceInputs(Operation *op,
+                                         LinalgFusionPolicy policy) {
   if (auto softmax = dyn_cast<linalg::SoftmaxOp>(op))
     return SmallVector<Value>{softmax.getInput()};
   SmallVector<Value> inputs;
   llvm::DenseSet<Value> seen;
   std::function<void(linalg::LinalgOp)> visitOperation;
   auto visitValue = [&](Value value) {
-    if (isFusedLinalgProducer(value.getDefiningOp())) {
+    if (isFusedLinalgProducer(value.getDefiningOp(), policy)) {
       visitOperation(cast<linalg::LinalgOp>(value.getDefiningOp()));
     } else if (seen.insert(value).second) {
       inputs.push_back(value);

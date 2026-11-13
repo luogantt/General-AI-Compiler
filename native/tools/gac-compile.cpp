@@ -65,7 +65,8 @@ static llvm::cl::opt<std::string> regularLowering(
 // native 只用于主机数值验证，不会在设备不支持时被自动选作回退后端。
 static llvm::cl::opt<std::string> target(
     "target", llvm::cl::init("vortex"),
-    llvm::cl::desc("vortex | cuda | native (explicit host verification)"));
+    llvm::cl::desc("vortex | cuda | native (explicit host verification) | "
+                   "ascend (standard TTIR export only)"));
 
 // 可选辅助产物：设备执行计划、外置常量目录以及每阶段 MLIR 快照。
 static llvm::cl::opt<std::string> manifestPath("manifest");
@@ -74,13 +75,19 @@ static llvm::cl::opt<std::string> stagesDir(
     "save-stages",
     llvm::cl::desc("Directory for verified per-layer MLIR snapshots"));
 
-// -------------------------- 可选 Triton/Vortex 桥接 -----------------------
+// ----------------------------- 可选 Triton 桥接 ---------------------------
 
-// 当指定目录时，符合条件的 Linalg pointwise dispatch 会另外导出 TTIR。
-// GAC 的内存规划和依赖 DAG 仍然是主计划；Triton 只承接这些候选 Kernel 的实现。
+// 当指定目录时，符合条件的 Linalg dispatch 会另外导出标准 TTIR。
+// GAC 的内存规划和依赖 DAG 仍然是主计划；目标后端只承接这些候选 Kernel 的实现。
+static llvm::cl::opt<std::string> tritonDir(
+    "triton-dir",
+    llvm::cl::desc(
+        "Emit eligible Linalg dispatches as standard TTIR in this directory"));
+// Keep the existing spelling for Vortex callers.  Ascend must use the generic
+// spelling so it cannot be mistaken for the Vortex compile/runtime path.
 static llvm::cl::opt<std::string> vortexTritonDir(
     "vortex-triton-dir",
-    llvm::cl::desc("Emit eligible Linalg pointwise dispatches as TTIR in this directory"));
+    llvm::cl::desc("Deprecated Vortex-only alias for --triton-dir"));
 static llvm::cl::opt<int64_t> tritonBlock("triton-block", llvm::cl::init(128));
 static llvm::cl::opt<int64_t> tritonNumWarps("triton-num-warps", llvm::cl::init(1));
 
@@ -151,7 +158,8 @@ int main(int argc, char **argv) {
     llvm::errs() << "unknown --emit value\n";
     return 1;
   }
-  if (target != "native" && target != "vortex" && target != "cuda") {
+  if (target != "native" && target != "vortex" && target != "cuda" &&
+      target != "ascend") {
     llvm::errs() << "unknown --target value\n";
     return 1;
   }
@@ -163,12 +171,40 @@ int main(int argc, char **argv) {
     llvm::errs() << "--emit=linalg requires --regular-lowering=linalg\n";
     return 1;
   }
-  // Triton 桥接依赖 Linalg 结构、Vortex 目标、完整 LLVM 阶段和 manifest 中的
-  // dispatch 元数据，因此四个条件缺一不可。
-  if (!vortexTritonDir.empty() &&
-      (target != "vortex" || regularLowering != "linalg" || emit != "llvm" ||
-       manifestPath.empty())) {
-    llvm::errs() << "--vortex-triton-dir requires --target=vortex, "
+  if (!tritonDir.empty() && !vortexTritonDir.empty()) {
+    llvm::errs() << "pass only one of --triton-dir and --vortex-triton-dir\n";
+    return 1;
+  }
+  if (!vortexTritonDir.empty() && target != "vortex") {
+    llvm::errs() << "--vortex-triton-dir is a Vortex-only compatibility option; "
+                   "use --triton-dir for another target\n";
+    return 1;
+  }
+  std::string effectiveTritonDir =
+      !tritonDir.empty() ? tritonDir.getValue() : vortexTritonDir.getValue();
+  // Vortex produces LLVM and later links native and Triton kernels.  Ascend is
+  // deliberately a different boundary: this executable exports only standard
+  // TTIR plus a checked plan, and has no LLVM lowering, binary, or runtime.
+  if (target == "ascend") {
+    if (effectiveTritonDir.empty() || constantsDir.empty() ||
+        regularLowering != "linalg" || emit != "device" ||
+        manifestPath.empty()) {
+      llvm::errs()
+          << "--target=ascend is standard-TTIR export only and requires "
+             "--triton-dir, --constants-dir, --regular-lowering=linalg, "
+             "--emit=device and --manifest; Ascend LLVM/binary/runtime "
+             "lowering is not available\n";
+      return 1;
+    }
+    if (tritonNumWarps.getNumOccurrences()) {
+      llvm::errs() << "--triton-num-warps is a backend launch option and is not "
+                       "accepted by Ascend TTIR-only export\n";
+      return 1;
+    }
+  } else if (!effectiveTritonDir.empty() &&
+             (target != "vortex" || regularLowering != "linalg" ||
+              emit != "llvm" || manifestPath.empty())) {
+    llvm::errs() << "Vortex TTIR export requires --target=vortex, "
                    "--regular-lowering=linalg, --emit=llvm and --manifest\n";
     return 1;
   }
@@ -385,6 +421,7 @@ int main(int argc, char **argv) {
     gac::DeviceOptions options{
         target == "native" ? gac::DeviceTarget::Native
         : target == "cuda" ? gac::DeviceTarget::CUDA
+        : target == "ascend" ? gac::DeviceTarget::Ascend
                            : gac::DeviceTarget::Vortex,
         constantsDir};
 
@@ -411,7 +448,7 @@ int main(int argc, char **argv) {
 
     // 公共 Lowering 路线以及可选 Triton 导出设置。
     options.regularLowering = regularLowering;
-    options.vortexTritonDirectory = vortexTritonDir;
+    options.tritonDirectory = effectiveTritonDir;
     options.tritonBlock = tritonBlock;
     options.tritonNumWarps = tritonNumWarps;
 

@@ -107,9 +107,12 @@ static bool isLinalgDeviceOperation(Operation *op) {
 
 // A destination tensor whose payload is never read (e.g. tensor.empty in a
 // pointwise op) is a shape carrier, not a runtime input or an allocation.
-static SmallVector<Value> deviceInputs(Operation *op) {
+static SmallVector<Value>
+deviceInputs(Operation *op,
+             LinalgFusionPolicy fusionPolicy =
+                 LinalgFusionPolicy::AllEligibleProducers) {
   if (isLinalgDeviceOperation(op))
-    return getLinalgDeviceInputs(op);
+    return getLinalgDeviceInputs(op, fusionPolicy);
   return SmallVector<Value>(op->getOperands());
 }
 
@@ -1097,17 +1100,32 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   const bool native = options.target == DeviceTarget::Native;
   const bool cuda = options.target == DeviceTarget::CUDA;
   const bool vortex = options.target == DeviceTarget::Vortex;
-  const bool tritonEnabled = !options.vortexTritonDirectory.empty();
+  const bool ascend = options.target == DeviceTarget::Ascend;
+  const bool tritonEnabled = !options.tritonDirectory.empty();
+  const LinalgFusionPolicy linalgFusionPolicy =
+      ascend ? LinalgFusionPolicy::PointwiseProducersOnly
+             : LinalgFusionPolicy::AllEligibleProducers;
+  if (ascend && (!tritonEnabled || options.constantsDirectory.empty()))
+    return module.emitError(
+        "Ascend is a standard-TTIR export-only target and requires both "
+        "Triton artifact and constants directories; no native fallback, "
+        "binary, or runtime exists");
   if (tritonEnabled) {
     auto powerOfTwo = [](int64_t n) { return n > 0 && !(n & (n - 1)); };
-    if (!vortex || options.regularLowering != "linalg" ||
+    if ((!vortex && !ascend) || options.regularLowering != "linalg" ||
         !powerOfTwo(options.tritonBlock) || options.tritonBlock < 16 ||
-        options.tritonBlock > 1024 || !powerOfTwo(options.tritonNumWarps) ||
-        options.tritonNumWarps > 4 || !powerOfTwo(options.vortexLanes) ||
-        options.vortexLanes > 32)
-      return module.emitError("Triton requires Vortex/Linalg, power-of-two block "
-                              "16..1024, warps 1..4 and lanes 1..32");
-    if (auto error = llvm::sys::fs::create_directories(options.vortexTritonDirectory))
+        options.tritonBlock > 1024)
+      return module.emitError(
+          "Triton export requires the Vortex or Ascend target, Linalg "
+          "lowering, and a power-of-two logical block in 16..1024");
+    if (vortex &&
+        (!powerOfTwo(options.tritonNumWarps) ||
+         options.tritonNumWarps > 4 || !powerOfTwo(options.vortexLanes) ||
+         options.vortexLanes > 32))
+      return module.emitError(
+          "Triton/Vortex requires power-of-two warps 1..4 and lanes 1..32");
+    if (auto error =
+            llvm::sys::fs::create_directories(options.tritonDirectory))
       return module.emitError("cannot create Triton artifact directory: ")
              << error.message();
   }
@@ -1130,7 +1148,7 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   SmallVector<func::FuncOp> functions(module.getOps<func::FuncOp>());
   if (functions.size() != 1)
     return module.emitError(
-        "native device lowering requires exactly one graph function");
+        "device lowering requires exactly one graph function");
   auto func = functions.front();
   if (!llvm::hasSingleElement(func.getBody()))
     return func.emitError("graph function must have one block");
@@ -1139,8 +1157,9 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
     return func.emitError("graph must terminate with func.return");
   // LayerNorm is a closed multi-operation Linalg graph.  Select every complete
   // instance before collecting graph roots, then hide all five internal
-  // operations atomically.  A partial match remains entirely on the native
-  // Vortex path; no intermediate buffer or dispatch is silently dropped.
+  // operations atomically.  A partial match remains entirely on an execution
+  // target's native path; the Ascend export-only target rejects it.  No
+  // intermediate buffer or dispatch is silently dropped.
   llvm::DenseMap<Operation *, TritonLayerNormPlan> tritonLayerNormPlans;
   llvm::DenseSet<Operation *> tritonLayerNormInternal;
   // Also remember the structural ownership of every LayerNorm decomposition,
@@ -1203,7 +1222,7 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
         found != tritonLayerNormPlans.end())
       return SmallVector<Value>{found->second.input, found->second.scale,
                                 found->second.bias};
-    return deviceInputs(op);
+    return deviceInputs(op, linalgFusionPolicy);
   };
   SmallVector<Operation *> graphNodes, constants;
   int64_t fusedLinalgProducers = 0;
@@ -1235,7 +1254,7 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
           graphNodes.push_back(&op);
           continue;
         }
-        if (isFusedLinalgProducer(&op)) {
+        if (isFusedLinalgProducer(&op, linalgFusionPolicy)) {
           ++fusedLinalgProducers;
           continue;
         }
@@ -1346,6 +1365,80 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
       return failure();
     nodes.push_back(op);
   }
+  struct TritonChoice {
+    bool layerNorm = false, softmax = false, reduction = false, dot = false,
+         pointwise = false;
+    bool rejectedLayerNormMember = false;
+    TritonLayerNormPlan layerNormPlan;
+    TritonSoftmaxPlan softmaxPlan;
+    TritonReductionPlan reductionPlan;
+    TritonDotPlan dotPlan;
+    std::string layerNormReason, softmaxReason, reductionReason, dotReason,
+        pointwiseReason;
+
+    bool selected() const {
+      return layerNorm || softmax || reduction || dot || pointwise;
+    }
+    std::string exclusion() const {
+      if (rejectedLayerNormMember)
+        return "operation belongs to an ineligible closed LayerNorm aggregate; "
+               "layer_norm: " +
+               layerNormReason;
+      return "layer_norm: " + layerNormReason + "; softmax: " +
+             softmaxReason + "; reduction: " + reductionReason +
+             "; dot: " + dotReason + "; pointwise: " + pointwiseReason;
+    }
+  };
+  auto chooseTriton = [&](Operation *op) -> FailureOr<TritonChoice> {
+    TritonChoice choice;
+    bool layerNormMatches =
+        tritonEnabled && selectTritonLayerNorm(
+                             op, choice.layerNormPlan,
+                             choice.layerNormReason);
+    choice.layerNorm = tritonLayerNormPlans.count(op);
+    if (layerNormMatches != choice.layerNorm) {
+      op->emitError("Triton LayerNorm selection changed during device planning");
+      return failure();
+    }
+    choice.rejectedLayerNormMember =
+        tritonLayerNormOwned.contains(op) && !choice.layerNorm;
+    choice.softmax =
+        tritonEnabled && !choice.layerNorm &&
+        !choice.rejectedLayerNormMember &&
+        selectTritonSoftmax(op, choice.softmaxPlan, choice.softmaxReason);
+    choice.reduction =
+        tritonEnabled && !choice.layerNorm &&
+        !choice.rejectedLayerNormMember && !choice.softmax &&
+        selectTritonReduction(op, choice.reductionPlan,
+                              choice.reductionReason);
+    choice.dot =
+        tritonEnabled && !choice.layerNorm &&
+        !choice.rejectedLayerNormMember && !choice.softmax &&
+        !choice.reduction &&
+        selectTritonDot(op, choice.dotPlan, choice.dotReason);
+    choice.pointwise =
+        tritonEnabled && !choice.layerNorm &&
+        !choice.rejectedLayerNormMember && !choice.softmax &&
+        !choice.reduction && !choice.dot &&
+        selectTritonPointwise(op, choice.pointwiseReason,
+                              linalgFusionPolicy);
+    return choice;
+  };
+  // Ascend has no native fallback in this phase.  Prove the complete dispatch
+  // set before writing constants or TTIR so a rejected later node cannot leave
+  // a partial, apparently usable artifact set behind.
+  if (ascend)
+    for (Operation *op : nodes) {
+      FailureOr<TritonChoice> choice = chooseTriton(op);
+      if (failed(choice))
+        return failure();
+      if (!choice->selected())
+        return op->emitError(
+                   "Ascend TTIR-only export rejected this dispatch; every "
+                   "dispatch must match a supported Triton contract because "
+                   "no native fallback or runtime is available: ")
+               << choice->exclusion();
+    }
   llvm::DenseMap<Operation *, SmallVector<int32_t>> scatterTables;
   int64_t embeddedBytes = 0;
   for (Operation *op : nodes)
@@ -1432,12 +1525,15 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   for (const auto &a : allocations)
     if (a.storage != "arena")
       resident += a.bytes;
-  // Vortex's pointer ABI is RV32. CUDA uses independent 64-bit allocations;
-  // its aggregate address space must not inherit this Vortex-only budget.
-  // Individual tensor sizes remain bounded by the checked scalar template.
-  if (!cuda && resident > INT32_MAX) {
+  // Vortex's pointer ABI is RV32, and the explicit Native verification path
+  // retains its existing signed-32-bit aggregate lowering contract. CUDA uses
+  // independent 64-bit allocations; Ascend exports TTIR pointer arguments and
+  // likewise must not inherit the Vortex/Native aggregate address budget.
+  // Individual tensor sizes remain bounded by the common checked index model.
+  if ((vortex || native) && resident > INT32_MAX) {
     auto diagnostic = emitError(
-        func.getLoc(), "aggregate buffers exceed signed RV32 budget: ");
+        func.getLoc(),
+        "aggregate buffers exceed signed 32-bit Vortex/Native budget: ");
     diagnostic << resident << " bytes (arena " << arena
                << ", embedded constants " << embeddedBytes
                << ", peak simultaneously live arena " << peakLive
@@ -1483,44 +1579,23 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
     if (failed(templates::select(op, options, selection)))
       return failure();
     std::string name = "gac_op_" + std::to_string(idx);
-    TritonLayerNormPlan tritonLayerNormPlan;
-    TritonSoftmaxPlan tritonSoftmaxPlan;
-    TritonReductionPlan tritonReductionPlan;
-    TritonDotPlan tritonDotPlan;
-    std::string tritonLayerNormReason, tritonSoftmaxReason,
-        tritonReductionReason, tritonDotReason, tritonPointwiseReason;
-    bool layerNormMatches =
-        tritonEnabled &&
-        selectTritonLayerNorm(op, tritonLayerNormPlan,
-                              tritonLayerNormReason);
-    bool useTritonLayerNorm = tritonLayerNormPlans.count(op);
-    if (layerNormMatches != useTritonLayerNorm)
-      return op->emitError(
-          "Triton LayerNorm selection changed during device planning");
-    bool rejectedLayerNormMember =
-        tritonLayerNormOwned.contains(op) && !useTritonLayerNorm;
-    bool useTritonSoftmax =
-        tritonEnabled && !useTritonLayerNorm && !rejectedLayerNormMember &&
-        selectTritonSoftmax(op, tritonSoftmaxPlan, tritonSoftmaxReason);
-    bool useTritonReduction =
-        tritonEnabled && !useTritonLayerNorm && !rejectedLayerNormMember &&
-        !useTritonSoftmax &&
-        selectTritonReduction(op, tritonReductionPlan,
-                              tritonReductionReason);
-    bool useTritonDot =
-        tritonEnabled && !useTritonLayerNorm && !rejectedLayerNormMember &&
-        !useTritonSoftmax && !useTritonReduction &&
-        selectTritonDot(op, tritonDotPlan, tritonDotReason);
-    bool useTritonPointwise =
-        tritonEnabled && !useTritonLayerNorm && !rejectedLayerNormMember &&
-        !useTritonSoftmax && !useTritonReduction && !useTritonDot &&
-        selectTritonPointwise(op, tritonPointwiseReason);
-    bool useTriton = useTritonLayerNorm || useTritonSoftmax ||
-                     useTritonReduction || useTritonDot ||
-                     useTritonPointwise;
+    FailureOr<TritonChoice> selectedTriton = chooseTriton(op);
+    if (failed(selectedTriton))
+      return failure();
+    TritonChoice tritonChoice = std::move(*selectedTriton);
+    bool useTritonLayerNorm = tritonChoice.layerNorm;
+    bool useTritonSoftmax = tritonChoice.softmax;
+    bool useTritonReduction = tritonChoice.reduction;
+    bool useTritonDot = tritonChoice.dot;
+    bool useTritonPointwise = tritonChoice.pointwise;
+    bool useTriton = tritonChoice.selected();
+    auto &tritonLayerNormPlan = tritonChoice.layerNormPlan;
+    auto &tritonSoftmaxPlan = tritonChoice.softmaxPlan;
+    auto &tritonReductionPlan = tritonChoice.reductionPlan;
+    auto &tritonDotPlan = tritonChoice.dotPlan;
     int64_t elements = tensor(op->getResult(0)).getNumElements();
     if (useTriton) {
-      llvm::SmallString<256> path(options.vortexTritonDirectory);
+      llvm::SmallString<256> path(options.tritonDirectory);
       llvm::sys::path::append(path, name + ".ttir");
       LogicalResult emitted = useTritonLayerNorm
                                   ? emitTritonLayerNorm(
@@ -1534,10 +1609,15 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
                               : useTritonDot
                                   ? emitTritonDot(op, name, tritonDotPlan, path)
                                   : emitTritonPointwise(
-                                        op, name, options.tritonBlock, path);
+                                        op, name, options.tritonBlock, path,
+                                        linalgFusionPolicy);
       if (failed(emitted))
         return failure();
     } else {
+      if (ascend)
+        return op->emitError(
+            "internal error: Ascend TTIR-only preflight allowed a native "
+            "fallback dispatch");
       kernelNames.push_back(name);
       b.setInsertionPointToEnd(module.getBody());
       std::string tableName;
@@ -1690,18 +1770,37 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
         isLinalgDeviceOperation(op) ? "linalg.output-thread"
         : isa<tensor::PadOp>(op) ? "tensor.pad.scalar" : "gac.scalar");
     if (useTriton) {
+      auto tritonTemplateId = [&](StringRef suffix) {
+        return (ascend ? "triton.standard." : "triton.vortex.") +
+               suffix.str();
+      };
+      auto finishTritonContract =
+          [&](llvm::json::Object contract, StringRef vortexAbi,
+              StringRef ttirSignature) {
+            if (vortex) {
+              contract["num_warps"] = options.tritonNumWarps;
+              contract["lanes"] = options.vortexLanes;
+              contract["block_size"] =
+                  options.tritonNumWarps * options.vortexLanes;
+              contract["abi"] = vortexAbi.str();
+            } else {
+              contract["artifact_format"] = "standard-ttir";
+              contract["ttir_signature"] = ttirSignature.str();
+            }
+            return contract;
+          };
       ++tritonDispatches;
       dispatch["lowering"] = "linalg-to-triton";
       if (useTritonLayerNorm) {
         dispatch["compute_template"] = llvm::json::Object{
-            {"id", "triton.vortex.layer-norm-fp32"},
+            {"id", tritonTemplateId("layer-norm-fp32")},
             {"selected", true},
             {"reason", "validated closed ONNX LayerNormalization Linalg subgraph"}};
         dispatch["schedule"] =
             "one row per TTIR program; two masked axis-zero add reductions";
         dispatch["bufferization"] =
             "static X/Scale/Bias/Y buffers; mean and variance remain scalar SSA values";
-        dispatch["triton"] = llvm::json::Object{
+        llvm::json::Object contract{
             {"kind", "layer_norm"},
             {"ttir_file", name + ".ttir"},
             {"rows", tritonLayerNormPlan.rows},
@@ -1709,51 +1808,49 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
             {"n", tritonLayerNormPlan.width},
             {"tile", tritonLayerNormPlan.tile},
             {"epsilon_f32_bits", int64_t(tritonLayerNormPlan.epsilonF32Bits)},
-            {"num_warps", options.tritonNumWarps},
-            {"lanes", options.vortexLanes},
-            {"block_size", options.tritonNumWarps * options.vortexLanes},
-            {"grid_size", tritonLayerNormPlan.gridSize},
-            {"abi", "vortex-u64-pointers-i32-n-f32-epsilon"}};
+            {"grid_size", tritonLayerNormPlan.gridSize}};
+        dispatch["triton"] = finishTritonContract(
+            std::move(contract), "vortex-u64-pointers-i32-n-f32-epsilon",
+            "ptr<X:f32>, ptr<Scale:f32>, ptr<Bias:f32>, ptr<Y:f32>, i32 N, "
+            "f32 epsilon");
       } else if (useTritonSoftmax) {
         dispatch["compute_template"] = llvm::json::Object{
-            {"id", "triton.vortex.softmax-fp32"},
+            {"id", tritonTemplateId("softmax-fp32")},
             {"selected", true},
             {"reason", "validated static FP32 last-axis row-wise Softmax"}};
         dispatch["schedule"] =
             "one row per TTIR program; masked max and sum tt.reduce stages";
         dispatch["bufferization"] =
             "separate static FP32 input/output buffers; scalar reductions";
-        dispatch["triton"] = llvm::json::Object{
+        llvm::json::Object contract{
             {"kind", "softmax"},
             {"ttir_file", name + ".ttir"},
             {"rows", tritonSoftmaxPlan.rows},
             {"width", tritonSoftmaxPlan.width},
             {"n", tritonSoftmaxPlan.width},
             {"tile", tritonSoftmaxPlan.tile},
-            {"num_warps", options.tritonNumWarps},
-            {"lanes", options.vortexLanes},
-            {"block_size", options.tritonNumWarps * options.vortexLanes},
-            {"grid_size", tritonSoftmaxPlan.gridSize},
-            {"abi", "vortex-u64-pointers-i32-n"}};
+            {"grid_size", tritonSoftmaxPlan.gridSize}};
+        dispatch["triton"] = finishTritonContract(
+            std::move(contract), "vortex-u64-pointers-i32-n",
+            "ptr<input:f32>, ptr<output:f32>, i32 N");
       } else if (useTritonReduction) {
         dispatch["compute_template"] = llvm::json::Object{
-            {"id", "triton.vortex.reduce-sum-fp32"},
+            {"id", tritonTemplateId("reduce-sum-fp32")},
             {"selected", true},
             {"reason", "validated static rank-one FP32 full-axis ReduceSum"}};
         dispatch["schedule"] =
             "one masked power-of-two TTIR tile; one axis-zero tt.reduce";
         dispatch["bufferization"] =
             "shared static global buffers; scalar reduction accumulator";
-        dispatch["triton"] = llvm::json::Object{
+        llvm::json::Object contract{
             {"kind", "reduction"},
             {"ttir_file", name + ".ttir"},
             {"width", tritonReductionPlan.width},
             {"tile", tritonReductionPlan.tile},
-            {"num_warps", options.tritonNumWarps},
-            {"lanes", options.vortexLanes},
-            {"block_size", options.tritonNumWarps * options.vortexLanes},
-            {"grid_size", tritonReductionPlan.gridSize},
-            {"abi", "vortex-u64-pointers"}};
+            {"grid_size", tritonReductionPlan.gridSize}};
+        dispatch["triton"] = finishTritonContract(
+            std::move(contract), "vortex-u64-pointers",
+            "ptr<input:f32>, ptr<output:f32>");
       } else if (useTritonDot) {
         llvm::json::Array aShape, bShape, cShape;
         for (int64_t extent : tritonDotPlan.aShape)
@@ -1763,14 +1860,14 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
         for (int64_t extent : tritonDotPlan.cShape)
           cShape.push_back(extent);
         dispatch["compute_template"] = llvm::json::Object{
-            {"id", "triton.vortex.matmul-fp32"},
+            {"id", tritonTemplateId("matmul-fp32")},
             {"selected", true},
             {"reason", "validated static FP32 rank-two or batched MatMul"}};
         dispatch["schedule"] =
             "flattened batch/tile program id; one 16x16 output tile and one masked power-of-two-K IEEE tt.dot";
         dispatch["bufferization"] =
             "shared static global buffers; dot accumulator in registers";
-        dispatch["triton"] = llvm::json::Object{
+        llvm::json::Object contract{
             {"kind", "matmul"},
             {"ttir_file", name + ".ttir"},
             {"m", tritonDotPlan.m},
@@ -1784,37 +1881,31 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
             {"block_m", tritonDotPlan.blockM},
             {"block_n", tritonDotPlan.blockN},
             {"block_k", tritonDotPlan.blockK},
-            {"num_warps", options.tritonNumWarps},
-            {"lanes", options.vortexLanes},
-            {"block_size", options.tritonNumWarps * options.vortexLanes},
-            {"grid_size", tritonDotPlan.gridSize},
-            {"abi", "vortex-u64-pointers"}};
+            {"grid_size", tritonDotPlan.gridSize}};
+        dispatch["triton"] = finishTritonContract(
+            std::move(contract), "vortex-u64-pointers",
+            "ptr<A:f32>, ptr<B:f32>, ptr<C:f32>");
       } else {
         dispatch["compute_template"] = llvm::json::Object{
-            {"id", "triton.vortex.pointwise"},
+            {"id", tritonTemplateId("pointwise")},
             {"selected", true},
             {"reason", "validated same-shape pointwise Linalg subgraph"}};
         dispatch["schedule"] =
             "flat masked TTIR blocks; lane-strided output elements";
         dispatch["bufferization"] =
             "shared static global arena; fused intermediates in registers";
-        dispatch["triton"] = llvm::json::Object{
+        llvm::json::Object contract{
             {"kind", "pointwise"},
             {"ttir_file", name + ".ttir"},
             {"block_elements", options.tritonBlock},
-            {"num_warps", options.tritonNumWarps},
-            {"lanes", options.vortexLanes},
-            {"block_size", options.tritonNumWarps * options.vortexLanes},
             {"grid_size",
-             (elements + options.tritonBlock - 1) / options.tritonBlock},
-            {"abi", "vortex-u64-pointers"}};
+             (elements + options.tritonBlock - 1) / options.tritonBlock}};
+        dispatch["triton"] = finishTritonContract(
+            std::move(contract), "vortex-u64-pointers",
+            "deduplicated input pointers..., output pointer");
       }
     } else if (tritonEnabled) {
-      dispatch["triton_exclusion"] =
-          "layer_norm: " + tritonLayerNormReason + "; softmax: " +
-          tritonSoftmaxReason + "; reduction: " + tritonReductionReason +
-          "; dot: " + tritonDotReason + "; pointwise: " +
-          tritonPointwiseReason;
+      dispatch["triton_exclusion"] = tritonChoice.exclusion();
     }
     if (std::holds_alternative<CudaMatmulPlan>(selection.plan))
       ++cudaOptimizedMatmuls;
@@ -1852,7 +1943,8 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
   manifest = llvm::json::Object{
       {"schema_version", 1},
       {"compiler_backend", "native-mlir"},
-      {"target", native ? "native" : cuda ? "cuda" : "vortex"},
+      {"target", native ? "native" : cuda ? "cuda" : ascend ? "ascend"
+                                                               : "vortex"},
       {"inputs", std::move(inputs)},
       {"outputs", std::move(outputs)},
       {"tensors", std::move(tensors)},
@@ -1866,17 +1958,31 @@ LogicalResult lowerToDevice(ModuleOp module, const DeviceOptions &options,
            // Cumulative logical copy volume, not a claim about peak memory.
            {"logical_copy_bytes_removed", elidedViewCopyBytes},
            {"public_output_views_materialized", true}}},
-      {"lmem_bytes", maxLmemBytes},
-      {"double_buffer", usesDoubleBuffer},
       {"template", "one output per SIMT thread; serial reductions"}};
+  if (!ascend) {
+    manifest["lmem_bytes"] = maxLmemBytes;
+    manifest["double_buffer"] = usesDoubleBuffer;
+  }
   manifest["compute_template_library"] = "GACComputeTemplates/v1";
   manifest["regular_lowering"] = options.regularLowering;
   manifest["linalg_dispatches"] = linalgDispatches;
   manifest["linalg_fused_producers"] = fusedLinalgProducers;
   if (tritonEnabled) {
     manifest["triton_dispatches"] = tritonDispatches;
-    manifest["kernel_backends"] = "native-vortex + triton-vortex; single linked device module";
-    manifest["template"] = "per-dispatch native kernels or flat masked Triton tiles";
+    if (ascend) {
+      manifest["artifact_format"] = "standard-ttir";
+      manifest["execution"] = "artifact-only";
+      manifest["runtime_available"] = false;
+      manifest["kernel_backends"] =
+          "standard TTIR export only; no Ascend binary or native fallback";
+      manifest["template"] =
+          "one standard TTIR module per dispatch; no device executable";
+    } else {
+      manifest["kernel_backends"] =
+          "native-vortex + triton-vortex; single linked device module";
+      manifest["template"] =
+          "per-dispatch native kernels or flat masked Triton tiles";
+    }
   }
   if (vortex && options.vortexMatmulSchedule != "scalar") {
     manifest["vortex_matmul_schedule"] = options.vortexMatmulSchedule;
@@ -1922,8 +2028,8 @@ struct LowerToDevice : PassWrapper<LowerToDevice, OperationPass<ModuleOp>> {
       : options(std::move(options)), manifest(manifest) {}
   StringRef getArgument() const final { return "gac-lower-to-device"; }
   StringRef getDescription() const final {
-    return "Lower static GAC graph operations to SIMT scalar kernels and "
-           "the selected device launch ABI";
+    return "Lower static GAC graph operations to checked device kernels or "
+           "standard TTIR export artifacts";
   }
   void getDependentDialects(DialectRegistry &r) const override {
     r.insert<LLVM::LLVMDialect, arith::ArithDialect, math::MathDialect,

@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
   gac::DeviceOptions options;
   options.target = gac::DeviceTarget::Vortex;
   options.regularLowering = "linalg";
-  options.vortexTritonDirectory = argv[2];
+  options.tritonDirectory = argv[2];
   llvm::json::Object manifest;
   if (failed(gac::lowerToDevice(*module, options, manifest)))
     return fail("device planning failed for the rejected fanout graph");
