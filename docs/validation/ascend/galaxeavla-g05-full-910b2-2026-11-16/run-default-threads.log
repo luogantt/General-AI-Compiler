@@ -1,0 +1,86 @@
+[progress] Validating source and checkpoint assets
+[progress] Loading full G0.5 policy
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+[shape_meta] Image 'head_rgb' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'left_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_left]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'right_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 73874.212 ms
+[progress] Cold request started
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Cold request complete: 7618.828 ms; outputs finite
+[progress] Warmup 1/5 started
+[progress] Warmup 1/5 complete: 6120.152 ms
+[progress] Warmup 2/5 started
+[progress] Warmup 2/5 complete: 6533.779 ms
+[progress] Warmup 3/5 started
+[progress] Warmup 3/5 complete: 6501.474 ms
+[progress] Warmup 4/5 started
+[progress] Warmup 4/5 complete: 6008.488 ms
+[progress] Warmup 5/5 started
+[progress] Warmup 5/5 complete: 6341.268 ms
+[progress] Measurement 1/30 started
+[progress] Measurement 1/30 complete: 6004.194 ms
+[progress] Measurement 2/30 started
+[progress] Measurement 2/30 complete: 5089.497 ms
+[progress] Measurement 3/30 started
+[progress] Measurement 3/30 complete: 5845.630 ms
+[progress] Measurement 4/30 started
+[progress] Measurement 4/30 complete: 5365.167 ms
+[progress] Measurement 5/30 started
+[progress] Measurement 5/30 complete: 5490.972 ms
+[progress] Measurement 6/30 started
+[progress] Measurement 6/30 complete: 5317.004 ms
+[progress] Measurement 7/30 started
+[progress] Measurement 7/30 complete: 5536.682 ms
+[progress] Measurement 8/30 started
+[progress] Measurement 8/30 complete: 5893.517 ms
+[progress] Measurement 9/30 started
+[progress] Measurement 9/30 complete: 4830.303 ms
+[progress] Measurement 10/30 started
+[progress] Measurement 10/30 complete: 5680.230 ms
+[progress] Measurement 11/30 started
+[progress] Measurement 11/30 complete: 4898.427 ms
+[progress] Measurement 12/30 started
+[progress] Measurement 12/30 complete: 4966.921 ms
+[progress] Measurement 13/30 started
+[progress] Measurement 13/30 complete: 6325.806 ms
+[progress] Measurement 14/30 started
+[progress] Measurement 14/30 complete: 5371.787 ms
+[progress] Measurement 15/30 started
+[progress] Measurement 15/30 complete: 4917.324 ms
+[progress] Measurement 16/30 started
+[progress] Measurement 16/30 complete: 5833.608 ms
+[progress] Measurement 17/30 started
+[progress] Measurement 17/30 complete: 5843.887 ms
+[progress] Measurement 18/30 started
+[progress] Measurement 18/30 complete: 5778.339 ms
+[progress] Measurement 19/30 started
+[progress] Measurement 19/30 complete: 5456.770 ms
+[progress] Measurement 20/30 started
+[progress] Measurement 20/30 complete: 4885.296 ms
+[progress] Measurement 21/30 started
+[progress] Measurement 21/30 complete: 4665.244 ms
+[progress] Measurement 22/30 started
+[progress] Measurement 22/30 complete: 5341.347 ms
+[progress] Measurement 23/30 started
+[progress] Measurement 23/30 complete: 4949.218 ms
+[progress] Measurement 24/30 started
+[progress] Measurement 24/30 complete: 5430.367 ms
+[progress] Measurement 25/30 started
+[progress] Measurement 25/30 complete: 5370.273 ms
+[progress] Measurement 26/30 started
+[progress] Measurement 26/30 complete: 6057.162 ms
+[progress] Measurement 27/30 started
+[progress] Measurement 27/30 complete: 5724.668 ms
+[progress] Measurement 28/30 started
+[progress] Measurement 28/30 complete: 5121.518 ms
+[progress] Measurement 29/30 started
+[progress] Measurement 29/30 complete: 5611.796 ms
+[progress] Measurement 30/30 started
+[progress] Measurement 30/30 complete: 5216.073 ms
+Wrote synthetic full-model benchmark: /root/work/results/g05-full-910b2-20261116.json
+p50 recompute: 5401.077 ms; theoretical 16-action capacity: 2.962 Hz

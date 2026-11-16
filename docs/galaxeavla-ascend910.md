@@ -2,13 +2,16 @@
 
 ## Status and boundary
 
-This branch starts the port from `lg/bevformer-triton-vortex-deep`.  It does
-not claim that the complete GalaxeaVLA model runs on Ascend.  The first
-reviewable unit is the real Qwen3.5 Action Expert SwiGLU MLP contract.  The
-native side exports standard TTIR and the Python hand-off can compile a
-validated all-Triton manifest to `ttadapter` plus `npubin` with the active
-Triton-Ascend stack.  GAC still has no Ascend buffer planner or physical
-kernel-launch runtime.
+This branch starts the port from `lg/bevformer-triton-vortex-deep`. It now has
+two distinct execution paths: the GAC compiler validates an Action Expert MLP
+slice through standard TTIR and Triton-Ascend `npubin`, while the
+[TorchNPU source overlay](../integrations/galaxeavla/README.md) runs the complete
+official G0.5 checkpoint in eager mode on Ascend 910B2. The latter includes
+vision/VLM, CoT generation, ten flow-matching steps, discrete action AR and
+ActionCodec. Full-model timing and its synthetic-input limitations are recorded
+in the [2026-11-16 report](validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md).
+GAC still has no general Ascend buffer planner or physical kernel-launch runtime;
+the complete model has not been compiled by GAC or Triton-Ascend.
 
 | Capability | Current status |
 | --- | --- |
@@ -18,7 +21,8 @@ kernel-launch runtime.
 | Standard TTIR review artifact | Implemented, all-Triton and fail-closed |
 | Triton-Ascend `npubin` compilation | Implemented as an atomic compile-only hand-off |
 | GAC Ascend physical runtime | Not implemented |
-| Complete G0.5 inference | Not implemented |
+| Complete G0.5 inference | Official checkpoint runs through the TorchNPU eager overlay; synthetic-input timing only |
+| Complete G0.5 GAC compilation | Not implemented |
 
 The upstream source baseline used for this plan is GalaxeaVLA commit
 `89f2322b4ad016e192437adc1a2c253b05bab246`.  Relevant primary sources are the
@@ -26,7 +30,7 @@ The upstream source baseline used for this plan is GalaxeaVLA commit
 [Qwen3.5 mixture implementation](https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/src/g05/models/g05/qwen35/mixture_qwen35.py),
 and [upstream dependency declaration](https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/pyproject.toml).
 
-## License gate
+## Upstream license
 
 G0.5 code and weights use the
 [G0.5 Community License](https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/LICENSE-G0.5),
@@ -35,12 +39,11 @@ purposes and narrowly defined internal evaluation.  Its internal-PoC language
 also requires “Authorized Hardware” and an “Authorized Image”, but the license
 does not define those terms or state that Ascend 910 qualifies.
 
-Before downloading or executing the gated checkpoint on Ascend, obtain written
-confirmation from Galaxea for the exact NPU SKU and software image, or obtain a
-separate commercial license.  Do not commit checkpoint data to this repository.
-Any distributed modification or derivative must retain the upstream license,
-notices, and modification statements.  This is a release gate, not an optional
-documentation item.
+The technical measurements here do not establish a license grant or determine
+whether a particular hardware/image combination is authorized. Users must review
+the upstream terms for their use. Checkpoint data is not distributed in this
+repository. The overlay carries an upstream license link, NOTICE and per-file
+modification statements; this repository's Apache-2.0 license does not relicense it.
 
 ## Phase-1 model contract
 
@@ -236,8 +239,9 @@ main results are:
   maximum absolute error was `2.01e-7`.  This closes the phase-1 MLP chain,
   but the narrow validation launcher is not a general GAC NPU runtime.
 
-All of those runs use deterministic synthetic weights.  No G0.5 checkpoint
-was downloaded or loaded, so the license gate remains open.  A separate
+All of those **2026-11-13 phase-1 runs** use deterministic synthetic weights;
+they did not download or load a G0.5 checkpoint. The later full-model run is
+documented separately above. A separate
 original `Ascend 910` (non-910B) host passed a torch_npu eager MLP baseline,
 but it is not counted as Triton-Ascend evidence because the current project
 support list names A2/910B rather than that original SKU.
@@ -249,7 +253,7 @@ compiler permissiveness flag for an LLVM-header issue.  Those temporary edits
 were not used as evidence of a new supported native toolchain; the exact
 details are retained with the validation record.
 
-## Complete-model blockers
+## Remaining complete-model compiler work
 
 G0.5 is not a conventional static Qwen graph.  The VLM has 24 layers: 18
 GatedDeltaNet linear-attention layers and six full-attention layers.  The

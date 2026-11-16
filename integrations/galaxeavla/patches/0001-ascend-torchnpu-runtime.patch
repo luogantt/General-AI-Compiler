@@ -1,0 +1,983 @@
+diff --git a/scripts/serve_policy.py b/scripts/serve_policy.py
+index b36b62f..763a7d0 100644
+--- a/scripts/serve_policy.py
++++ b/scripts/serve_policy.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """WebSocket policy server with training-inference-consistent action prediction.
+ 
+ Reuses the model/processor loading path from eval_open_loop.py to keep training
+@@ -477,7 +479,11 @@ def main():
+     parser.add_argument("--ckpt_path", required=True, help="Path to checkpoint file")
+     parser.add_argument("--host", default="0.0.0.0")
+     parser.add_argument("--port", type=int, default=8765)
+-    parser.add_argument("--device", default="cuda", help="CUDA device for model inference")
++    parser.add_argument(
++        "--device",
++        default="cuda",
++        help="PyTorch device for model inference (for example cuda or npu:0)",
++    )
+     parser.add_argument(
+         "--action_steps",
+         type=int,
+diff --git a/src/g05/models/g05/g05_model_qwen35.py b/src/g05/models/g05/g05_model_qwen35.py
+index 5fc609e..1ff3531 100644
+--- a/src/g05/models/g05/g05_model_qwen35.py
++++ b/src/g05/models/g05/g05_model_qwen35.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """
+ G05ModelQwen35 — Qwen3.5 variant of G05Model.
+ 
+@@ -27,6 +29,59 @@ from .model.utils import _load_all_safetensors
+ logger = logging.getLogger(__name__)
+ 
+ 
++def _patchify_temporal_images(
++    images: torch.Tensor,
++    *,
++    temporal_patch_size: int,
++    patch_size: int,
++    merge_size: int,
++) -> torch.Tensor:
++    """Build Conv3D patches without materializing a tensor above rank eight.
++
++    This is algebraically identical to the original rank-nine
++    ``reshape(...).permute(...).reshape(...)`` expression.  The temporal/channel
++    transpose is performed before spatial patch splitting so the largest
++    intermediate has rank eight, which is accepted by TorchNPU.
++    """
++
++    total_k, channels, height, width = images.shape
++    grid_h = height // patch_size
++    grid_w = width // patch_size
++
++    images_temporal = images.unsqueeze(2).expand(
++        -1, -1, temporal_patch_size, -1, -1
++    )
++    # Preserve the original expression's first reinterpretation from
++    # [K, C, T, H, W] to [K, T, C, H, W], then put C,T in their final vector
++    # order and collapse them before splitting both spatial axes.
++    temporal_channels = (
++        images_temporal.reshape(
++            total_k,
++            temporal_patch_size,
++            channels,
++            height,
++            width,
++        )
++        .permute(0, 2, 1, 3, 4)
++        .contiguous()
++        .reshape(total_k, channels * temporal_patch_size, height, width)
++    )
++    return (
++        temporal_channels.reshape(
++            total_k,
++            channels * temporal_patch_size,
++            grid_h // merge_size,
++            merge_size,
++            patch_size,
++            grid_w // merge_size,
++            merge_size,
++            patch_size,
++        )
++        .permute(0, 2, 5, 3, 6, 1, 4, 7)
++        .reshape(total_k * grid_h * grid_w, -1)
++    )
++
++
+ class G05ModelQwen35(G05Model):
+     """Qwen3.5 variant: hybrid attention + MRoPE + Conv3D vision.
+ 
+@@ -225,21 +280,11 @@ class G05ModelQwen35(G05Model):
+             images = einops.rearrange(cam_tensor, "b n c h w -> (b n) c h w")
+             total_k = images.shape[0]
+ 
+-            images_temporal = images.unsqueeze(2).expand(-1, -1, temporal_patch_size, -1, -1)
+-            patches_k = (
+-                images_temporal.reshape(
+-                    total_k,
+-                    temporal_patch_size,
+-                    C,
+-                    grid_h // merge_size,
+-                    merge_size,
+-                    patch_size,
+-                    grid_w // merge_size,
+-                    merge_size,
+-                    patch_size,
+-                )
+-                .permute(0, 3, 6, 4, 7, 2, 1, 5, 8)
+-                .reshape(total_k * grid_h * grid_w, -1)
++            patches_k = _patchify_temporal_images(
++                images,
++                temporal_patch_size=temporal_patch_size,
++                patch_size=patch_size,
++                merge_size=merge_size,
+             )
+             grid_thw_k = torch.tensor(
+                 [[1, grid_h, grid_w]] * total_k,
+diff --git a/src/g05/models/g05/g05_policy.py b/src/g05/models/g05/g05_policy.py
+index fe1c2b2..b3bd11d 100644
+--- a/src/g05/models/g05/g05_policy.py
++++ b/src/g05/models/g05/g05_policy.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
+ # Copyright (c) 2026 Galaxea
+ 
+@@ -28,6 +30,7 @@ from omegaconf import DictConfig, OmegaConf
+ from g05.models.base_policy import BasePolicy
+ 
+ from g05.utils.training.action_accuracy import ActionAccuracyEvaluator
++from g05.utils.common.device import synchronize_device
+ from g05.utils.common.import_utils import get_obj_from_str
+ from g05.utils.logging.log_box import log_box
+ from g05.utils.logging.logging_config import get_logger
+@@ -101,11 +104,6 @@ def _model_log(fh, msg_fn):
+     fh.flush()
+ 
+ 
+-def _sync_if_cuda_available() -> None:
+-    if torch.cuda.is_available():
+-        torch.cuda.synchronize()
+-
+-
+ class G05Policy(BasePolicy):
+     """G05 Policy wrapper.
+ 
+@@ -891,7 +889,7 @@ class G05Policy(BasePolicy):
+ 
+         # FM action (continuous)
+         if self.continuous_action:
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             t_fm0 = time.monotonic()
+             results["action"] = self.model.inference_fm(
+                 attention_mask=state.attention_mask,
+@@ -901,12 +899,12 @@ class G05Policy(BasePolicy):
+                 position_ids_override=state.position_ids,
+                 embodiment_types=[s.get("embodiment") for s in samples],
+             )
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             timing["fm_action_ms"] = (time.monotonic() - t_fm0) * 1000.0
+ 
+         # AR action (discrete)
+         if self.discrete_action:
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             t_ar0 = time.monotonic()
+             ar_out = self.model.inference_ar(
+                 state.last_hidden,
+@@ -917,7 +915,7 @@ class G05Policy(BasePolicy):
+                 stop_token_ids=self._get_action_stop_token_ids(),
+                 max_new_tokens=self._get_action_generation_max_new_tokens(),
+             )
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             timing["ar_decode_ms"] = (time.monotonic() - t_ar0) * 1000.0
+             # Sync state: in the non-BAR path, past_key_values is appended in place.
+             # attention_mask / position_ids must grow together, otherwise the final
+@@ -950,7 +948,7 @@ class G05Policy(BasePolicy):
+                     input_parts_meta_list = [fallback_meta] * len(samples)
+                 else:
+                     input_parts_meta_list = None
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             t_decode0 = time.monotonic()
+             decoded_actions, decoded_tokens, _, absent_keys_per_sample = self.processor.decode_ar(
+                 gen_list,
+@@ -962,7 +960,7 @@ class G05Policy(BasePolicy):
+                 embodiments=[s.get("embodiment") for s in samples],
+                 input_parts_meta_list=input_parts_meta_list,
+             )
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             timing["decode_ar_total_ms"] = (time.monotonic() - t_decode0) * 1000.0
+             decode_timing = getattr(self.processor, "_last_decode_ar_timing", None)
+             if isinstance(decode_timing, dict):
+@@ -1015,13 +1013,13 @@ class G05Policy(BasePolicy):
+         action_gt = kwargs.pop("actions", None)
+         results = {}
+         timing: Dict[str, float] = {}
+-        _sync_if_cuda_available()
++        synchronize_device(pixel_values)
+         t_total0 = time.monotonic()
+ 
+         # Stage 1: Prefill
+         t0 = time.monotonic()
+         state = self.prefill(samples, pixel_values)
+-        _sync_if_cuda_available()
++        synchronize_device(state.device)
+         timing["prefill_ms"] = (time.monotonic() - t0) * 1000.0
+ 
+         # Stage 2: optional CoT generation (AR -> EOV stop).
+@@ -1033,7 +1031,7 @@ class G05Policy(BasePolicy):
+                 stop_token_ids=[eov_id] if eov_id is not None else None,
+                 trim_token_ids=self._get_trim_token_ids(include_eov=True),
+             )
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             timing["cot_generate_text_ms"] = (time.monotonic() - t0) * 1000.0
+             results["cot_text"] = state.generated_texts
+             results["generated_ids"] = state.generated_ids
+@@ -1048,7 +1046,7 @@ class G05Policy(BasePolicy):
+                 action_dim_is_pad=action_dim_is_pad,
+                 action_gt=action_gt,
+             )
+-            _sync_if_cuda_available()
++            synchronize_device(state.device)
+             timing["generate_action_total_ms"] = (time.monotonic() - t0) * 1000.0
+             action_timing = action_results.pop("_timing", {})
+             if isinstance(action_timing, dict):
+@@ -1060,7 +1058,7 @@ class G05Policy(BasePolicy):
+                 "No action prediction method: check discrete_action/continuous_action config flags"
+             )
+ 
+-        _sync_if_cuda_available()
++        synchronize_device(state.device)
+         timing["forward_inference_total_ms"] = (time.monotonic() - t_total0) * 1000.0
+         results["_timing"] = timing
+         return results
+diff --git a/src/g05/models/g05/helpers/ar_helper.py b/src/g05/models/g05/helpers/ar_helper.py
+index 70d9d7d..5899404 100644
+--- a/src/g05/models/g05/helpers/ar_helper.py
++++ b/src/g05/models/g05/helpers/ar_helper.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
+ # Copyright (c) 2026 Galaxea
+ 
+@@ -22,6 +24,7 @@ import torch.nn.functional as F
+ 
+ from ..io.input_preprocessor import TOKEN_INDEX
+ from g05.models.kv_cache import SparseKVCache as _SKV
++from g05.utils.common.device import device_autocast_disabled
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -187,7 +190,7 @@ class ARHelper:
+     # CE Loss
+     # ------------------------------------------------------------------
+ 
+-    @torch.autocast("cuda", enabled=False)
++    @device_autocast_disabled
+     def cal_ce_loss(
+         self,
+         vlm_hidden: torch.Tensor,
+diff --git a/src/g05/models/g05/inferencer.py b/src/g05/models/g05/inferencer.py
+index 7430ace..e1ed0ff 100644
+--- a/src/g05/models/g05/inferencer.py
++++ b/src/g05/models/g05/inferencer.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
+ # Copyright (c) 2026 Galaxea
+ 
+@@ -13,17 +15,13 @@ from typing import Any
+ import torch
+ 
+ from g05.data_processor.processor.mixture_processor import MixtureProcessor
++from g05.utils.common.device import autocast_context, synchronize_device
+ from g05.utils.data.data_utils import collate_fn_pad_sequences, custom_collate_fn
+ from g05.utils.common.pytorch_utils import dict_apply
+ 
+ logger = logging.getLogger(__name__)
+ 
+ 
+-def _sync_if_cuda_available() -> None:
+-    if torch.cuda.is_available():
+-        torch.cuda.synchronize()
+-
+-
+ @dataclasses.dataclass(slots=True)
+ class PreparedSample:
+     """Preprocessed sample plus its sub_processor reference."""
+@@ -69,15 +67,15 @@ class PolicyInferencer:
+         if not obs_dicts:
+             return [], {"preprocess_ms": 0.0, "infer_ms": 0.0, "postprocess_ms": 0.0}
+ 
+-        _sync_if_cuda_available()
++        synchronize_device(self.device)
+         t0 = time.monotonic()
+         prepared = [self._prepare(obs_dict) for obs_dict in obs_dicts]
+         padding_input_id = prepared[0].sub_processor.pad_token_id
+         batch = self._collate([p.sample for p in prepared], padding_input_id=padding_input_id)
+-        _sync_if_cuda_available()
++        synchronize_device(self.device)
+         t1 = time.monotonic()
+         batch = self.forward_batch(batch)
+-        _sync_if_cuda_available()
++        synchronize_device(self.device)
+         t2 = time.monotonic()
+         model_timing = batch.pop("_timing", {})
+         cot_texts = batch.get("cot_text")
+@@ -87,7 +85,7 @@ class PolicyInferencer:
+             if cot_texts is not None:
+                 action["_cot_text"] = cot_texts[i]
+             results.append(action)
+-        _sync_if_cuda_available()
++        synchronize_device(self.device)
+         t3 = time.monotonic()
+         timing = {
+             "preprocess_ms": (t1 - t0) * 1000.0,
+@@ -105,7 +103,7 @@ class PolicyInferencer:
+     def forward_batch(self, batch: dict) -> dict:
+         """Core: to device → predict_action → to cpu."""
+         batch = dict_apply(batch, lambda x: x.to(self.device) if isinstance(x, torch.Tensor) else x)
+-        with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
++        with torch.no_grad(), autocast_context(self.device, dtype=torch.bfloat16):
+             batch = self.policy.predict_action(batch)
+         batch = dict_apply(batch, lambda x: x.cpu() if isinstance(x, torch.Tensor) else x)
+         return batch
+diff --git a/src/g05/models/g05/model/modules.py b/src/g05/models/g05/model/modules.py
+index ded2b95..82989bf 100644
+--- a/src/g05/models/g05/model/modules.py
++++ b/src/g05/models/g05/model/modules.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0 AND Apache-2.0
+ # Copyright (c) 2026 Galaxea
+ # Copyright 2024 Big Vision Authors.
+@@ -10,6 +12,8 @@ from typing import Tuple
+ import torch
+ import torch.nn as nn
+ 
++from g05.utils.common.device import device_autocast_disabled
++
+ 
+ class SinusoidalPosEmbPi0(nn.Module):
+     def __init__(self, dim: int, min_period: float = 4e-3, max_period: float = 4.0):
+@@ -20,7 +24,7 @@ class SinusoidalPosEmbPi0(nn.Module):
+         if dim % 2 != 0:
+             raise ValueError(f"dimension ({dim}) must be divisible by 2")
+ 
+-    @torch.autocast("cuda", enabled=False)  # Critical!!!
++    @device_autocast_disabled  # Critical: keep the precision island on the execution device.
+     def forward(
+         self,
+         t: torch.FloatTensor,
+@@ -46,6 +50,9 @@ def get_safe_dtype(target_dtype, device_type):
+             return torch.float32
+         if target_dtype == torch.float64:
+             return torch.float64
++    if device_type == "npu" and target_dtype == torch.float64:
++        # Ascend does not implement float64 tensor kernels.
++        return torch.float32
+     return target_dtype
+ 
+ 
+@@ -70,7 +77,7 @@ class AdaptiveRMSNorm(nn.Module):
+         normed_inputs = x * torch.rsqrt(var + self.eps)
+         return normed_inputs
+ 
+-    @torch.autocast("cuda", enabled=False)  # Critical!!!
++    @device_autocast_disabled  # Critical: keep the precision island on the execution device.
+     def forward(
+         self, x: torch.FloatTensor, cond: torch.FloatTensor
+     ) -> Tuple[torch.FloatTensor, torch.FloatTensor]:
+diff --git a/src/g05/models/g05/model/utils.py b/src/g05/models/g05/model/utils.py
+index 9a4bdb8..cc2330a 100644
+--- a/src/g05/models/g05/model/utils.py
++++ b/src/g05/models/g05/model/utils.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
+ # Copyright (c) 2026 Galaxea
+ 
+@@ -64,13 +66,13 @@ def eager_attention_forward(
+     key_states = repeat_kv(key, module.num_key_value_groups)
+     value_states = repeat_kv(value, module.num_key_value_groups)
+     attn_weights = torch.matmul(query, key_states.transpose(2, 3)) * scaling
+-    with torch.autocast("cuda", enabled=False):
++    with torch.autocast(query.device.type, enabled=False):
+         # Gemma 2 style soft capping: tanh(logits / cap) * cap
+         if softcap is not None:
+             attn_weights = (torch.tanh(attn_weights.float() / softcap) * softcap).to(query.dtype)
+     if attention_mask is not None:
+         attn_weights = attn_weights + attention_mask[:, :, :, : key_states.shape[-2]]
+-    with torch.autocast("cuda", enabled=False):
++    with torch.autocast(query.device.type, enabled=False):
+         attn_weights = nn.functional.softmax(attn_weights, dim=-1, dtype=torch.float32).to(
+             query.dtype
+         )
+diff --git a/src/g05/models/g05/qwen35/gated_deltanet.py b/src/g05/models/g05/qwen35/gated_deltanet.py
+index 116a620..373d1d6 100644
+--- a/src/g05/models/g05/qwen35/gated_deltanet.py
++++ b/src/g05/models/g05/qwen35/gated_deltanet.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """
+ Qwen3.5 GatedDeltaNet — linear attention with gated delta rule.
+ 
+@@ -305,7 +307,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+         self.A_log = nn.Parameter(torch.log(A))
+ 
+         # Use FusedRMSNormGated when available, else fallback
+-        if FusedRMSNormGated is not None:
++        if FusedRMSNormGated is not None and torch.cuda.is_available():
+             self.norm = FusedRMSNormGated(
+                 self.head_v_dim,
+                 eps=config.rms_norm_eps,
+@@ -389,7 +391,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+         a = self.in_proj_a(hidden_states)
+ 
+         if use_precomputed_states:
+-            mixed_qkv = self.causal_conv1d_update(
++            causal_conv_update = (
++                self.causal_conv1d_update
++                if hidden_states.device.type == "cuda"
++                else torch_causal_conv1d_update
++            )
++            mixed_qkv = causal_conv_update(
+                 mixed_qkv,
+                 conv_state,
+                 self.conv1d.weight.squeeze(1),
+@@ -400,7 +407,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+             if cache_params is not None and return_kv_cache:
+                 conv_state = F.pad(mixed_qkv, (self.conv_kernel_size - mixed_qkv.shape[-1], 0))
+                 cache_params.conv_states[self.layer_idx] = conv_state
+-            if self.causal_conv1d_fn is not None:
++            if self.causal_conv1d_fn is not None and hidden_states.device.type == "cuda":
+                 mixed_qkv = self.causal_conv1d_fn(
+                     x=mixed_qkv,
+                     weight=self.conv1d.weight.squeeze(1),
+@@ -423,7 +430,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+         value = value.reshape(batch_size, seq_len, -1, self.head_v_dim)
+ 
+         beta = b.sigmoid()
+-        with torch.autocast(device_type="cuda", enabled=False):
++        with torch.autocast(device_type=hidden_states.device.type, enabled=False):
+             A = -torch.exp(self.A_log.float())
+             dt = F.softplus(a.float() + self.dt_bias.float())
+             g = A * dt
+@@ -433,8 +440,13 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+ 
+         if not use_precomputed_states:
+             init_state = recurrent_state if cache_params is not None else None
++            chunk_gated_delta_rule = (
++                self.chunk_gated_delta_rule
++                if hidden_states.device.type == "cuda"
++                else torch_chunk_gated_delta_rule
++            )
+             # Full-sequence chunk: VLM output is UNCHANGED regardless of split_idx
+-            core_attn_out, last_recurrent_state = self.chunk_gated_delta_rule(
++            core_attn_out, last_recurrent_state = chunk_gated_delta_rule(
+                 query,
+                 key,
+                 value,
+@@ -453,7 +465,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+                 and cache_params is not None
+                 and return_kv_cache
+             ):
+-                _, split_recurrent_state = self.chunk_gated_delta_rule(
++                _, split_recurrent_state = chunk_gated_delta_rule(
+                     query[:, :split_idx],
+                     key[:, :split_idx],
+                     value[:, :split_idx],
+@@ -466,7 +478,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+                 )
+                 cache_params.split_recurrent_states[self.layer_idx] = split_recurrent_state
+         else:
+-            core_attn_out, last_recurrent_state = self.recurrent_gated_delta_rule(
++            recurrent_gated_delta_rule = (
++                self.recurrent_gated_delta_rule
++                if hidden_states.device.type == "cuda"
++                else torch_recurrent_gated_delta_rule
++            )
++            core_attn_out, last_recurrent_state = recurrent_gated_delta_rule(
+                 query,
+                 key,
+                 value,
+@@ -485,7 +502,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+         # FusedRMSNormGated (FLA fast path) outputs dtype == input dtype, so pass fp32
+         # explicitly and disable autocast to guarantee fp32 norm regardless of which
+         # implementation (FLA Triton kernel vs. fallback Qwen3_5RMSNormGated) is active.
+-        with torch.autocast("cuda", enabled=False):
++        with torch.autocast(core_attn_out.device.type, enabled=False):
+             core_attn_out = self.norm(core_attn_out.float(), z.float())
+         core_attn_out = core_attn_out.reshape(batch_size, seq_len, -1)
+ 
+diff --git a/src/g05/models/g05/qwen35/mixture_qwen35.py b/src/g05/models/g05/qwen35/mixture_qwen35.py
+index 02fa6f6..03a3c64 100644
+--- a/src/g05/models/g05/qwen35/mixture_qwen35.py
++++ b/src/g05/models/g05/qwen35/mixture_qwen35.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """
+ MixtureQwen35 — Complete Qwen3.5 LLM module for g05 architecture.
+ 
+@@ -227,7 +229,7 @@ class MixtureDecoderLayerQwen35(nn.Module):
+             value_states = value_states.view(bsz, seq_len, num_kv_heads, head_dim).transpose(1, 2)
+ 
+             # Apply partial RoPE in fp32 to match the reference joint-model precision.
+-            with torch.autocast("cuda", enabled=False):
++            with torch.autocast(query_states.device.type, enabled=False):
+                 orig_qk_dtype = query_states.dtype
+                 q_fp32 = query_states.float()
+                 k_fp32 = key_states.float()
+@@ -578,7 +580,7 @@ class MixtureQwen35(nn.Module):
+         # NB: torch.zeros(()) (a fill kernel), not torch.tensor(0.0) (a sync H2D copy
+         # that is illegal inside CUDA-graph capture — FlashRT commit/FM graphs).
+         _dtype_ref = torch.zeros((), device=hidden_states.device)
+-        with torch.autocast("cuda", enabled=False):
++        with torch.autocast(hidden_states.device.type, enabled=False):
+             cos, sin = self.layers[full_attn_layer_idx].self_attn.rotary_emb(
+                 _dtype_ref, position_ids
+             )
+diff --git a/src/g05/models/g05/qwen35/modules.py b/src/g05/models/g05/qwen35/modules.py
+index 15950ca..c9e3492 100644
+--- a/src/g05/models/g05/qwen35/modules.py
++++ b/src/g05/models/g05/qwen35/modules.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """
+ Qwen3.5 basic modules: MRoPE, RMSNorm, RMSNormGated.
+ 
+@@ -10,6 +12,8 @@ import torch
+ import torch.nn as nn
+ import torch.nn.functional as F
+ 
++from g05.utils.common.device import device_autocast_disabled
++
+ 
+ # ---------------------------------------------------------------------------
+ # RoPE helpers
+@@ -141,7 +145,7 @@ class Qwen3_5RMSNorm(nn.Module):
+     def _norm(self, x):
+         return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
+ 
+-    @torch.autocast("cuda", enabled=False)
++    @device_autocast_disabled
+     def forward(self, x):
+         output = self._norm(x.float())
+         output = output * (1.0 + self.weight.float())
+@@ -164,7 +168,7 @@ class Qwen3_5RMSNormGated(nn.Module):
+         self.weight = nn.Parameter(torch.ones(hidden_size))
+         self.variance_epsilon = eps
+ 
+-    @torch.autocast("cuda", enabled=False)
++    @device_autocast_disabled
+     def forward(self, hidden_states, gate=None):
+         input_dtype = hidden_states.dtype
+         hidden_states = hidden_states.to(torch.float32)
+diff --git a/src/g05/models/g05/qwen35/vision.py b/src/g05/models/g05/qwen35/vision.py
+index 3606d5c..80214e2 100644
+--- a/src/g05/models/g05/qwen35/vision.py
++++ b/src/g05/models/g05/qwen35/vision.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ """
+ Qwen3.5 Vision Model — complete ViT with Conv3D patch embedding, 2D RoPE,
+ learnable absolute position embedding, and PatchMerger projector.
+@@ -209,7 +211,7 @@ class Qwen3_5VisionAttention(nn.Module):
+ 
+         seq_length = query_states.shape[0]
+ 
+-        if _flash_attn_varlen is not None:
++        if _flash_attn_varlen is not None and query_states.device.type == "cuda":
+             cu_seqlens_cuda = cu_seqlens.cuda() if not cu_seqlens.is_cuda else cu_seqlens
+             max_seqlen = (cu_seqlens_cuda[1:] - cu_seqlens_cuda[:-1]).max().item()
+             if _flash_attn_backend == "fa4":
+@@ -240,7 +242,8 @@ class Qwen3_5VisionAttention(nn.Module):
+         else:
+             if not _VISION_FLASH_ATTN_WARNED:
+                 logger.warning(
+-                    "flash_attn not installed — vision attention uses SDPA fallback. "
++                    "flash_attn unavailable for the current device — vision attention uses "
++                    "the SDPA fallback. "
+                     "For Hopper/Blackwell GPUs (H100/B200), install FA4: "
+                     "pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), "
+                     "install FA2: pip install flash-attn --no-build-isolation"
+diff --git a/src/g05/tokenizer/interface/vq_base.py b/src/g05/tokenizer/interface/vq_base.py
+index 4a95904..a7b6cb1 100644
+--- a/src/g05/tokenizer/interface/vq_base.py
++++ b/src/g05/tokenizer/interface/vq_base.py
+@@ -1,3 +1,5 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ # SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
+ # Copyright (c) 2026 Galaxea
+ 
+@@ -25,6 +27,7 @@ import torch
+ from omegaconf import DictConfig, OmegaConf
+ 
+ from g05.tokenizer.models.protocol import DecodeMetadata, _validate_backend
++from g05.utils.common.device import autocast_context
+ from g05.utils.common.import_utils import get_obj_from_str
+ 
+ from .base_action_tokenizer import ActionIdxBatch, BaseActionTokenizer, DecodeResult, TokenIds
+@@ -299,8 +302,7 @@ class VQActionTokenizer(BaseActionTokenizer):
+         if "num_residuals" not in kw and self._default_num_residuals is not None:
+             kw["num_residuals"] = self._default_num_residuals
+ 
+-        use_amp = torch.cuda.is_available()
+-        with torch.no_grad(), torch.autocast("cuda", dtype=torch.float32, enabled=use_amp):
++        with torch.no_grad(), autocast_context(action, enabled=False):
+             codes_dict = self.action_tokenizer.encode(
+                 action,
+                 action_dim_is_pad=kw.get("action_dim_is_pad"),
+@@ -506,7 +508,7 @@ class VQActionTokenizer(BaseActionTokenizer):
+             codes_dict[k] = torch.tensor(rule_batch, dtype=torch.long, device=self.device)
+             # (B, rule_tokens_per_key)
+ 
+-        with torch.autocast("cuda", dtype=torch.float32, enabled=True):
++        with autocast_context(self.device, enabled=False):
+             ret = self.action_tokenizer.decode(
+                 codes_dict,
+                 key_dims=fwd_kwargs.get("key_dims"),
+@@ -623,7 +625,7 @@ class VQActionTokenizer(BaseActionTokenizer):
+             if backend_ad and action_dim < backend_ad:
+                 codes["_input_action_dim"] = int(action_dim)
+ 
+-        with torch.autocast("cuda", dtype=torch.float32, enabled=True):
++        with autocast_context(self.device, enabled=False):
+             ret = self.action_tokenizer.decode(
+                 codes,
+                 key_dims=fwd_kwargs.get("key_dims"),
+diff --git a/src/g05/utils/checkpoint/checkpoint_utils.py b/src/g05/utils/checkpoint/checkpoint_utils.py
+index 652ec36..ac3d766 100644
+--- a/src/g05/utils/checkpoint/checkpoint_utils.py
++++ b/src/g05/utils/checkpoint/checkpoint_utils.py
+@@ -1,8 +1,11 @@
++# Modified by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
+ import torch
+ import logging
+ import itertools
+ from contextlib import contextmanager
+ from typing import Optional, List, Dict, Any, Tuple
++from g05.utils.common.device import empty_device_cache
+ from g05.utils.logging.log_box import log_box
+ 
+ logger = logging.getLogger(__name__)
+@@ -486,7 +489,7 @@ def load_state_dict_safely(
+ 
+     # 5. Manual cleanup.
+     del update_dict
+-    torch.cuda.empty_cache()
++    empty_device_cache()
+ 
+     # 6. Logging — structured box
+     manually_handled = {k for k, _, _ in mismatched_keys}
+diff --git a/src/g05/utils/common/device.py b/src/g05/utils/common/device.py
+new file mode 100644
+index 0000000..4281b3c
+--- /dev/null
++++ b/src/g05/utils/common/device.py
+@@ -0,0 +1,129 @@
++# Added by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
++# SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
++# Copyright (c) 2026 Galaxea
++
++"""Small device helpers shared by inference and checkpoint loading.
++
++The upstream inference path historically assumed CUDA for autocast, timing and
++cache cleanup.  These helpers deliberately use PyTorch's registered device
++backend instead, which keeps CUDA behaviour unchanged while also supporting
++PrivateUse1 backends such as TorchNPU.
++"""
++
++from __future__ import annotations
++
++from collections.abc import Mapping, Sequence
++from contextlib import AbstractContextManager
++from functools import wraps
++from typing import Any
++
++import torch
++
++
++_KNOWN_DEVICE_TYPES = {
++    "cpu",
++    "cuda",
++    "npu",
++    "mps",
++    "xpu",
++    "hpu",
++    "mtia",
++    "meta",
++    "privateuseone",
++}
++_PRIVATEUSE1_BACKEND_NAME = getattr(torch._C, "_get_privateuse1_backend_name", lambda: "")()
++
++
++def device_type(value: Any, *, default: str = "cpu") -> str:
++    """Resolve a PyTorch device type from a device, tensor or nested batch."""
++
++    if isinstance(value, torch.Tensor):
++        return value.device.type
++    if isinstance(value, torch.device):
++        return value.type
++    if isinstance(value, str):
++        candidate = value.split(":", 1)[0].lower()
++        return (
++            candidate
++            if candidate in _KNOWN_DEVICE_TYPES or candidate == _PRIVATEUSE1_BACKEND_NAME
++            else default
++        )
++    if isinstance(value, Mapping):
++        for item in value.values():
++            resolved = device_type(item, default="")
++            if resolved:
++                return resolved
++    elif isinstance(value, Sequence) and not isinstance(value, (str, bytes, bytearray)):
++        for item in value:
++            resolved = device_type(item, default="")
++            if resolved:
++                return resolved
++    return default
++
++
++def current_accelerator_type() -> str | None:
++    """Return the first available registered accelerator backend, if any."""
++
++    # Prefer NPU when both plugins are visible: the Ascend image may ship a CPU
++    # PyTorch wheel whose CUDA namespace exists but is not the execution backend.
++    for backend_name in ("npu", "cuda"):
++        backend = getattr(torch, backend_name, None)
++        is_available = getattr(backend, "is_available", None)
++        if callable(is_available) and is_available():
++            return backend_name
++    return None
++
++
++def autocast_context(
++    value: Any,
++    *,
++    dtype: torch.dtype | None = None,
++    enabled: bool = True,
++) -> AbstractContextManager:
++    """Create autocast for the tensor/device that will execute the operation."""
++
++    kwargs: dict[str, Any] = {"device_type": device_type(value), "enabled": enabled}
++    if dtype is not None:
++        kwargs["dtype"] = dtype
++    return torch.autocast(**kwargs)
++
++
++def device_autocast_disabled(function):
++    """Disable autocast on the device of the first tensor argument."""
++
++    @wraps(function)
++    def wrapped(*args, **kwargs):
++        execution_type = device_type((args, kwargs), default="")
++        if not execution_type:
++            execution_type = current_accelerator_type() or "cpu"
++        with autocast_context(execution_type, enabled=False):
++            return function(*args, **kwargs)
++
++    return wrapped
++
++
++def synchronize_device(value: Any = None) -> None:
++    """Synchronize an available CUDA/NPU backend; CPU is intentionally a no-op."""
++
++    resolved_type = device_type(value, default="") or current_accelerator_type()
++    if not resolved_type or resolved_type == "cpu":
++        return
++    backend = getattr(torch, resolved_type, None)
++    is_available = getattr(backend, "is_available", None)
++    synchronize = getattr(backend, "synchronize", None)
++    if callable(is_available) and is_available() and callable(synchronize):
++        synchronize()
++
++
++def empty_device_cache(value: Any = None) -> None:
++    """Release unused allocator blocks for an available CUDA/NPU backend."""
++
++    resolved_type = device_type(value, default="") or current_accelerator_type()
++    if not resolved_type or resolved_type == "cpu":
++        return
++    backend = getattr(torch, resolved_type, None)
++    is_available = getattr(backend, "is_available", None)
++    empty_cache = getattr(backend, "empty_cache", None)
++    if callable(is_available) and is_available() and callable(empty_cache):
++        empty_cache()
+diff --git a/tests/test_device_utils.py b/tests/test_device_utils.py
+new file mode 100644
+index 0000000..a919e44
+--- /dev/null
++++ b/tests/test_device_utils.py
+@@ -0,0 +1,59 @@
++# Added by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
++# SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
++# Copyright (c) 2026 Galaxea
++
++from unittest import mock
++
++import torch
++
++from g05.utils.common.device import (
++    autocast_context,
++    device_autocast_disabled,
++    device_type,
++    empty_device_cache,
++    synchronize_device,
++)
++
++
++def test_device_type_resolves_nested_batches():
++    batch = {"metadata": ["r1lite"], "input": {"x": torch.ones(2)}}
++    assert device_type(batch) == "cpu"
++    assert device_type("npu:0") == "npu"
++    assert device_type(torch.device("cpu")) == "cpu"
++
++
++def test_cpu_autocast_context_is_usable():
++    x = torch.ones(2, dtype=torch.float32)
++    with autocast_context(x, dtype=torch.bfloat16):
++        result = x @ x
++    assert result.shape == torch.Size([])
++
++
++def test_device_autocast_disabled_uses_tensor_device():
++    @device_autocast_disabled
++    def identity(x):
++        return x + 1
++
++    assert torch.equal(identity(torch.tensor([1.0])), torch.tensor([2.0]))
++
++
++def test_cpu_synchronize_and_empty_cache_are_noops():
++    with mock.patch.object(torch.cuda, "synchronize") as synchronize:
++        synchronize_device("cpu")
++    with mock.patch.object(torch.cuda, "empty_cache") as empty_cache:
++        empty_device_cache(torch.device("cpu"))
++    synchronize.assert_not_called()
++    empty_cache.assert_not_called()
++
++
++def test_registered_npu_backend_is_dispatched(monkeypatch):
++    backend = mock.Mock()
++    backend.is_available.return_value = True
++    monkeypatch.setattr(torch, "npu", backend, raising=False)
++
++    synchronize_device("npu:0")
++    empty_device_cache("npu:0")
++
++    backend.synchronize.assert_called_once_with()
++    backend.empty_cache.assert_called_once_with()
+diff --git a/tests/test_qwen35_device_fallbacks.py b/tests/test_qwen35_device_fallbacks.py
+new file mode 100644
+index 0000000..ae9497b
+--- /dev/null
++++ b/tests/test_qwen35_device_fallbacks.py
+@@ -0,0 +1,104 @@
++# Added by General-AI-Compiler for Ascend/TorchNPU compatibility.
++
++# SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
++# Copyright (c) 2026 Galaxea
++
++from types import SimpleNamespace
++
++import torch
++
++from g05.models.g05.qwen35 import gated_deltanet as gated_deltanet_module
++from g05.models.g05.qwen35 import vision as vision_module
++from g05.models.g05.g05_model_qwen35 import _patchify_temporal_images
++
++
++def _gdn_config():
++    return SimpleNamespace(
++        hidden_size=8,
++        linear_num_value_heads=2,
++        linear_num_key_heads=1,
++        linear_key_head_dim=2,
++        linear_value_head_dim=2,
++        linear_conv_kernel_dim=3,
++        hidden_act="silu",
++        rms_norm_eps=1e-6,
++        linear_attn_backend="torch",
++    )
++
++
++def test_gated_delta_net_cpu_ignores_selected_cuda_fast_paths():
++    layer = gated_deltanet_module.Qwen3_5GatedDeltaNet(_gdn_config(), layer_idx=0)
++
++    def forbidden_fast_path(*args, **kwargs):
++        raise AssertionError("a CUDA-only fast path ran for a CPU tensor")
++
++    layer.causal_conv1d_fn = forbidden_fast_path
++    layer.chunk_gated_delta_rule = forbidden_fast_path
++    layer.recurrent_gated_delta_rule = forbidden_fast_path
++
++    result = layer(torch.randn(1, 4, 8))
++
++    assert result.shape == (1, 4, 8)
++    assert torch.isfinite(result).all()
++
++
++def test_vision_attention_cpu_ignores_installed_flash_attention(monkeypatch):
++    config = SimpleNamespace(hidden_size=8, num_heads=2)
++    layer = vision_module.Qwen3_5VisionAttention(config)
++
++    def forbidden_flash_attention(*args, **kwargs):
++        raise AssertionError("FlashAttention ran for a CPU tensor")
++
++    monkeypatch.setattr(vision_module, "_flash_attn_varlen", forbidden_flash_attention)
++    query = torch.randn(4, 2, 4)
++    key = torch.randn(4, 2, 4)
++    value = torch.randn(4, 2, 4)
++    cu_seqlens = torch.tensor([0, 2, 4], dtype=torch.int32)
++
++    result = layer._attend_spatial(query, key, value, cu_seqlens)
++
++    assert result.shape == (4, 8)
++    assert torch.isfinite(result).all()
++
++
++def _original_rank_nine_patchify(images, temporal_patch_size, patch_size, merge_size):
++    total_k, channels, height, width = images.shape
++    grid_h = height // patch_size
++    grid_w = width // patch_size
++    images_temporal = images.unsqueeze(2).expand(
++        -1, -1, temporal_patch_size, -1, -1
++    )
++    return (
++        images_temporal.reshape(
++            total_k,
++            temporal_patch_size,
++            channels,
++            grid_h // merge_size,
++            merge_size,
++            patch_size,
++            grid_w // merge_size,
++            merge_size,
++            patch_size,
++        )
++        .permute(0, 3, 6, 4, 7, 2, 1, 5, 8)
++        .reshape(total_k * grid_h * grid_w, -1)
++    )
++
++
++@torch.no_grad()
++def test_rank_eight_patchify_is_exactly_equal_to_original_rank_nine_expression():
++    for shape, patch_size, merge_size in (
++        ((2, 3, 256, 256), 16, 2),
++        ((3, 2, 16, 24), 4, 2),
++    ):
++        images = torch.arange(torch.tensor(shape).prod()).reshape(shape).float()
++        expected = _original_rank_nine_patchify(images, 2, patch_size, merge_size)
++        actual = _patchify_temporal_images(
++            images,
++            temporal_patch_size=2,
++            patch_size=patch_size,
++            merge_size=merge_size,
++        )
++
++        assert actual.shape == expected.shape
++        assert torch.equal(actual, expected)

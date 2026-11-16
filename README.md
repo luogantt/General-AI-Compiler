@@ -4,6 +4,8 @@
 
 **TensorRT 最新结果：完整 BEVFormer-base 固定图达到 309.42 ms/帧（约 3.23 FPS）。** RTX 3070 Ti Laptop 8 GB 上，第三轮优化 DCNv2 后，同轮整网对照延时再降低 **5.07%**。前两轮 MSDA 分别降低 18.05%、2.60%；各轮比例不能相加，详见[优化结果](#优化结果)。
 
+**GalaxeaVLA 最新结果：官方 G0.5 整模已在单张 Ascend 910B2 上跑通。** TorchNPU eager、固定合成输入，预热 5 次后测量 30 次，端到端 **p50 3.037 秒、p95 3.130 秒**，峰值分配显存 **15.93 GiB**。[实测数据与复现](docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md)
+
 ## 做了什么
 
 | 部分 | 已实现内容 |
@@ -13,10 +15,10 @@
 | 设备编译与 Runtime | Dispatch 划分、静态 Buffer 复用、设备代码生成；Runtime 负责分配、上传、启动、同步和下载 |
 | CUDA / Vortex | 共用前端和语义层，分别生成 PTX 或 VOLT 的 ELF/vxbin；已有矩阵分块、归约及 Vortex LMEM/DXA/TCU 实验模板 |
 | Triton / Vortex（适配基线） | C++ 将支持的 Linalg 子图送入 Triton；与原生 Vortex 内核链接到同一 vxbin，共用 Buffer 与 Runtime。[使用与边界](native/README.triton-vortex.md) |
-| GalaxeaVLA / Ascend 910B（第一阶段） | 已加入 G0.5 Action Expert SwiGLU MLP 的安全权重合同、固定 ONNX、标准 TTIR 和原子 Triton-Ascend `npubin` 编译交接；已在真实 910B2 上验证合成权重切片，尚无 GAC NPU Runtime 或整模型执行。[范围、许可证与验收](docs/galaxeavla-ascend910.md) |
+| GalaxeaVLA / Ascend 910B | 官方 G0.5 checkpoint 已通过 TorchNPU eager 运行完整双动作头模型并测量延迟；GAC 的 MLP 切片另已贯通 ONNX → TTIR → `npubin`。整模 GAC 编译与通用 NPU Runtime 尚未实现。[范围与实测](docs/galaxeavla-ascend910.md)；[源码补丁及运行环境](integrations/galaxeavla/README.md) |
 | TensorRT | 完整 Base 固定 ONNX 的插件适配、构建、推理、混合 INT8/FP16、逐层 profiling，以及自定义 MSDA / DCNv2 Kernel 优化 |
 
-**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已在真实 910B2 上完成合成权重 MLP 切片及若干 GAC TTIR dispatch 的 `npubin` 编译与执行验证，但没有加载官方 checkpoint，也没有 GAC 端的 Ascend buffer/launch Runtime 或整模型验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
+**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已完成官方 checkpoint 的 TorchNPU eager 整模合成输入测速与输出有限值检查，以及独立的 GAC MLP 切片编译执行验证；尚无整模 GAC 编译、跨 CUDA 数值对齐或机器人任务精度验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
 
 ## 编译链
 
@@ -34,6 +36,26 @@ Linalg（规则算子）＋ GAC 专用 Lowering（采样等不规则算子）
 ```
 
 TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → TensorRT Runtime`。本次约 18% 的收益来自其中的 **C++/CUDA 自定义插件**，没有计入原生 MLIR → PTX 路径。默认 Linalg 路线与旧专用模板的选择方式见[原生架构](native/README.md)。
+
+## GalaxeaVLA 整模推理（Ascend 910B2）
+
+2026-11-16，**单张 910B2 64 GB，CANN 9.0.0、PyTorch 2.7.1、torch_npu 2.7.1.post4**。加载官方 `OpenGalaxea/G05` 的 `g05-base`，使用 BF16 autocast 并保留 FP32 精度区域。完整路径为三相机预处理 → Vision/VLM prefill → CoT AR → **10 步 FM** → 离散动作 AR → ActionCodec → 动作后处理。
+
+输入为固定合成 R1 Lite 观测，batch 1、三路 720×1280 图像（模型处理为 256×256）和 14 维原始状态。一次推理返回 **32 步**双臂和夹爪动作。计时同步 NPU，预热 5 次、正式测量 30 次：
+
+| 范围 | p50 | p95 |
+|---|---:|---:|
+| 完整请求，包含预处理、H2D/D2H 和后处理 | **3036.79 ms** | **3130.30 ms** |
+| `policy.predict_action` 整模调用 | 2994.28 ms | 3087.88 ms |
+| CPU 原始观测整理与预处理 | 38.68 ms | 39.35 ms |
+
+完整请求 p50 对应 **0.329 次推理/秒**；同轮模型加载 81.95 秒、首次请求 4.381 秒，正式测量峰值 allocated **15.93 GiB**、reserved **17.03 GiB**。冷启动、预热和测量阶段的动作输出均有限，形状符合预期。
+
+该容器可见 256 个逻辑 CPU，但配额为 32 核。默认 PyTorch 256 线程时整条请求 p50 为 5401.08 ms；设置 `OMP_NUM_THREADS=1 MKL_NUM_THREADS=1` 后得到上表结果。两轮原始数据均保留，这项调整只改变 CPU 并行设置，整模仍为 **TorchNPU eager**，没有使用整模 GAC/Triton 编译。
+
+这组输入的 CoT 阶段返回 20 个原始 token，后续 action AR 返回 1 个终止 token，完整序列解析出 18 个动作 token；实际输入和生成长度会影响延迟。数据用于合成输入吞吐评估，不包含网络服务或机器人执行，也不代表任务准确率。
+
+[完整结果、分阶段耗时与原始 JSON](docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md) · [国内 PyPI 环境安装、官方权重准备与运行命令](integrations/galaxeavla/runtime-setup.md) · [固定版本的 Ascend 源码补丁](integrations/galaxeavla/README.md)
 
 ## 如何启动推理
 

@@ -1,0 +1,3796 @@
+{
+  "accuracy_scope": "none; synthetic observations are not a robot task accuracy evaluation",
+  "ascend_adaptation": {
+    "linear_attention_backend": "torch fallback",
+    "overrides": [
+      "eval_embodiment=galaxea_r1lite",
+      "model.use_torch_compile=false",
+      "model.model_arch.vlm.linear_attn_backend=torch",
+      "model.model_arch.action_expert.linear_attn_backend=torch",
+      "model.model_arch.fm.use_correlated_noise=false",
+      "model.model_arch.hf_processor_path=/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+      "model.processor.tokenizer_params.pretrained_model_name_or_path=/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+      "tokenizer.vq_config.ckpt_dir=/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+      "model.tokenizer.vq_config.ckpt_dir=/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+      "model.model_arch.AT_CONFIG.ckpt_dir=/root/work/models/galaxeavla-g05/action_tokenizer.pt"
+    ],
+    "torch_compile": false,
+    "vision_attention": "SDPA fallback when CUDA FlashAttention is absent"
+  },
+  "benchmark": "galaxeavla-g05-base-r1lite-full-model",
+  "checkpoint": {
+    "expected_sha256": "072211e5b2f5ef036729bae673f3f44da40adbea5c0044af55fe2fb8af654327",
+    "hash_verification_skipped": false,
+    "path": "/root/work/models/galaxeavla-g05/g05-base/checkpoints/model_state_dict.pt",
+    "sha256": "072211e5b2f5ef036729bae673f3f44da40adbea5c0044af55fe2fb8af654327",
+    "size_bytes": 11440519964
+  },
+  "cold_request": {
+    "memory": {
+      "max_memory_allocated_bytes": 17100135424,
+      "max_memory_reserved_bytes": 18251513856,
+      "memory_allocated_bytes": 11632155136,
+      "memory_reserved_bytes": 18251513856
+    },
+    "timing_ms": {
+      "action_ar_raw_generated_tokens": 1,
+      "action_text_tokenizer_encode_ms": 0.22660009562969208,
+      "action_tokenizer_decode_ms": 99.76228000596166,
+      "action_tokenizer_encode_ms": 0.0,
+      "ar_decode_ms": 2.4242899380624294,
+      "ar_decoded_action_tokens": 18,
+      "ar_generation_calls": [
+        {
+          "generated_token_lengths": [
+            20
+          ],
+          "generated_tokens": 20,
+          "stage": "cot"
+        },
+        {
+          "generated_token_lengths": [
+            1
+          ],
+          "generated_tokens": 1,
+          "stage": "action"
+        }
+      ],
+      "cot_generate_text_ms": 1823.8646499812603,
+      "cot_raw_generated_tokens": 20,
+      "cpu_preprocess_total_ms": 41.226849891245365,
+      "d2h_ms": 1.1161696165800095,
+      "decode_ar_processor_total_ms": 100.46477988362312,
+      "decode_ar_string_decode_ms": 0.22495025768876076,
+      "decode_ar_total_ms": 100.65581975504756,
+      "fm_action_ms": 985.7693300582469,
+      "forward_inference_total_ms": 4321.992940269411,
+      "generate_action_total_ms": 1089.622019790113,
+      "h2d_ms": 1.284480094909668,
+      "infer_ms": 4337.849820032716,
+      "model_predict_action_ms": 4335.327910259366,
+      "non_core_infer_ms": 15.856879763305187,
+      "output_validation": {
+        "core.action": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            27
+          ]
+        },
+        "core.ar_action": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            27
+          ]
+        },
+        "served.left_arm": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            6
+          ]
+        },
+        "served.left_gripper": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            1
+          ]
+        },
+        "served.right_arm": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            6
+          ]
+        },
+        "served.right_gripper": {
+          "all_finite": true,
+          "shape": [
+            1,
+            32,
+            1
+          ]
+        }
+      },
+      "postprocess_ms": 1.517259981483221,
+      "prefill_ms": 1408.4436898119748,
+      "preprocess_ms": 38.573219906538725,
+      "raw_build_obs_ms": 2.6536299847066402,
+      "request_total_ms": 4380.9021897614
+    }
+  },
+  "configuration_compatibility": {
+    "checkpoint_config": "/root/work/models/galaxeavla-g05/g05-base/.hydra/config.yaml",
+    "checkpoint_config_sha256": "c7057c8b1f2dacb851a0756651ff88edf3e02ec4a9826f2d0dcf495134b7b6d3",
+    "mode": "checkpoint-model-plus-public-r1lite-deployment-config",
+    "reason": "checkpoint data node references legacy oc.load files absent from the pinned public source; model execution settings remain checkpoint-authored",
+    "replacement_data_config": "/root/work/GalaxeaVLA-upstream/configs/data/r1lite.yaml",
+    "replacement_data_config_sha256": "ce90a2564e9d1a9e050c23121f3a64f9c6a8e3dfc760a1356387ccd98b683b49",
+    "replacement_task_config": "/root/work/GalaxeaVLA-upstream/configs/task/r1lite.yaml",
+    "replacement_task_config_sha256": "d16cf911715aaf27fdbef0da1aaecd2b2fcba30eeec1eef548f597bc48e7226c"
+  },
+  "configuration_contract": {
+    "data.action_size": 32,
+    "data.obs_size": 1,
+    "model.model_arch.action_dim": 27,
+    "model.model_arch.ar.do_sample": false,
+    "model.model_arch.ar.max_new_tokens": 300,
+    "model.model_arch.attn_implementation": "eager",
+    "model.model_arch.cond_steps": 1,
+    "model.model_arch.continuous_action": true,
+    "model.model_arch.discrete_action": true,
+    "model.model_arch.fm.num_inference_steps": 10,
+    "model.model_arch.fm.use_correlated_noise": false,
+    "model.model_arch.input_preprocessor.pred_eov": true,
+    "model.model_arch.max_text_tokens": 160,
+    "model.model_arch.predict_cot": true,
+    "model.model_arch.return_continuous_action": true,
+    "model.processor.num_output_cameras": 3,
+    "model.use_torch_compile": false
+  },
+  "environment": {
+    "cpu_threads": {
+      "mkl_num_threads": "1",
+      "omp_num_threads": "1",
+      "torch_interop": 256,
+      "torch_intraop": 1
+    },
+    "device": {
+      "device": "npu:0",
+      "device_name": "Ascend910B2",
+      "device_type": "npu"
+    },
+    "platform": "Linux-5.10.0-216.0.0.115.oe2203sp4.aarch64-aarch64-with-glibc2.35",
+    "python": "3.11.15 (main, Jun 12 2026, 03:44:02) [GCC 11.4.0]",
+    "torch": "2.7.1+cpu"
+  },
+  "input": {
+    "batch_size": 1,
+    "cameras": {
+      "head_rgb": [
+        3,
+        720,
+        1280
+      ],
+      "left_wrist_rgb": [
+        3,
+        720,
+        1280
+      ],
+      "right_wrist_rgb": [
+        3,
+        720,
+        1280
+      ]
+    },
+    "kind": "deterministic synthetic R1 Lite raw observation",
+    "model_camera_shape": [
+      3,
+      256,
+      256
+    ],
+    "model_state_dim": 27,
+    "raw_state_dim": 14,
+    "seed": 20261113,
+    "sha256": "771f9a42991d0ee8a577b611bfdafba6f8ad19b7838c2209c0bb278bdded304b",
+    "state_parts": {
+      "left_arm": 6,
+      "left_gripper": 1,
+      "right_arm": 6,
+      "right_gripper": 1
+    },
+    "task": "Pick up the object and place it in the target area."
+  },
+  "load_ms": 81945.77993964776,
+  "measurement": {
+    "iterations": 30,
+    "memory": {
+      "max_memory_allocated_bytes": 17105910272,
+      "max_memory_reserved_bytes": 18289262592,
+      "memory_allocated_bytes": 11632155136,
+      "memory_reserved_bytes": 18289262592
+    },
+    "recomputes_per_second_at_p50": 0.32929461226502493,
+    "samples": [
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2006799913942814,
+        "action_tokenizer_decode_ms": 11.717630084604025,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7286203801631927,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1700.504720211029,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.39475056156516,
+        "d2h_ms": 0.9373603388667107,
+        "decode_ar_processor_total_ms": 12.292750179767609,
+        "decode_ar_string_decode_ms": 0.2183699980378151,
+        "decode_ar_total_ms": 12.447450309991837,
+        "fm_action_ms": 787.6717001199722,
+        "forward_inference_total_ms": 2859.276060014963,
+        "generate_action_total_ms": 802.4297100491822,
+        "h2d_ms": 0.9568301029503345,
+        "infer_ms": 2874.218499753624,
+        "model_predict_action_ms": 2872.2127196379006,
+        "non_core_infer_ms": 14.94243973866105,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3030702248215675,
+        "prefill_ms": 356.28372989594936,
+        "preprocess_ms": 36.877090111374855,
+        "raw_build_obs_ms": 1.5176604501903057,
+        "request_total_ms": 2914.0906403772533
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.21841004490852356,
+        "action_tokenizer_decode_ms": 12.872559949755669,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8199202604591846,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1843.354790005833,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.42622973024845,
+        "d2h_ms": 1.0864902287721634,
+        "decode_ar_processor_total_ms": 13.509599957615137,
+        "decode_ar_string_decode_ms": 0.23172004148364067,
+        "decode_ar_total_ms": 13.679089955985546,
+        "fm_action_ms": 863.8865598477423,
+        "forward_inference_total_ms": 3076.19235990569,
+        "generate_action_total_ms": 880.0349999219179,
+        "h2d_ms": 1.0313601233065128,
+        "infer_ms": 3091.482900083065,
+        "model_predict_action_ms": 3089.237879961729,
+        "non_core_infer_ms": 15.290540177375078,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.4948300085961819,
+        "prefill_ms": 352.7404102496803,
+        "preprocess_ms": 36.900019738823175,
+        "raw_build_obs_ms": 1.5262099914252758,
+        "request_total_ms": 3131.582979578525
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20036008208990097,
+        "action_tokenizer_decode_ms": 11.85481995344162,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.6860496252775192,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1753.5196403041482,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.17151968926191,
+        "d2h_ms": 0.9782700799405575,
+        "decode_ar_processor_total_ms": 12.432879768311977,
+        "decode_ar_string_decode_ms": 0.22131018340587616,
+        "decode_ar_total_ms": 12.586710043251514,
+        "fm_action_ms": 799.9347201548517,
+        "forward_inference_total_ms": 2932.385589927435,
+        "generate_action_total_ms": 814.7874800488353,
+        "h2d_ms": 1.031579915434122,
+        "infer_ms": 2947.328660171479,
+        "model_predict_action_ms": 2945.20759023726,
+        "non_core_infer_ms": 14.943070244044065,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3413899578154087,
+        "prefill_ms": 364.02354994788766,
+        "preprocess_ms": 37.70317975431681,
+        "raw_build_obs_ms": 1.4683399349451065,
+        "request_total_ms": 2988.0165802314878
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.21674996241927147,
+        "action_tokenizer_decode_ms": 12.14794022962451,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.928169745951891,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1750.3710500895977,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.15142950043082,
+        "d2h_ms": 1.0155700147151947,
+        "decode_ar_processor_total_ms": 12.75967014953494,
+        "decode_ar_string_decode_ms": 0.22529996931552887,
+        "decode_ar_total_ms": 12.916049920022488,
+        "fm_action_ms": 814.0640598721802,
+        "forward_inference_total_ms": 2936.516529880464,
+        "generate_action_total_ms": 829.4920600019395,
+        "h2d_ms": 1.0294499807059765,
+        "infer_ms": 2951.6102499328554,
+        "model_predict_action_ms": 2949.4519704021513,
+        "non_core_infer_ms": 15.09372005239129,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3582799583673477,
+        "prefill_ms": 356.59901006147265,
+        "preprocess_ms": 36.649069748818874,
+        "raw_build_obs_ms": 1.502359751611948,
+        "request_total_ms": 2991.2934596650302
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20305998623371124,
+        "action_tokenizer_decode_ms": 11.906269937753677,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.9600600935518742,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1702.5418896228075,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.5239296592772,
+        "d2h_ms": 1.0012099519371986,
+        "decode_ar_processor_total_ms": 12.497130315750837,
+        "decode_ar_string_decode_ms": 0.22209994494915009,
+        "decode_ar_total_ms": 12.664549984037876,
+        "fm_action_ms": 798.3234701678157,
+        "forward_inference_total_ms": 2872.555880341679,
+        "generate_action_total_ms": 813.5373401455581,
+        "h2d_ms": 1.0218201205134392,
+        "infer_ms": 2887.635949999094,
+        "model_predict_action_ms": 2885.4959001764655,
+        "non_core_infer_ms": 15.080069657415152,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3525201939046383,
+        "prefill_ms": 356.4226496964693,
+        "preprocess_ms": 36.98262991383672,
+        "raw_build_obs_ms": 1.541299745440483,
+        "request_total_ms": 2927.6918596588075
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.21818000823259354,
+        "action_tokenizer_decode_ms": 12.713900301605463,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7582201398909092,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1798.949430231005,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.66729000583291,
+        "d2h_ms": 1.0260902345180511,
+        "decode_ar_processor_total_ms": 13.332500122487545,
+        "decode_ar_string_decode_ms": 0.22974004969000816,
+        "decode_ar_total_ms": 13.489949982613325,
+        "fm_action_ms": 869.1156897693872,
+        "forward_inference_total_ms": 3042.4494897015393,
+        "generate_action_total_ms": 885.0041502155364,
+        "h2d_ms": 1.019239891320467,
+        "infer_ms": 3057.5202400796115,
+        "model_predict_action_ms": 3055.3622599691153,
+        "non_core_infer_ms": 15.070750378072262,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3415897265076637,
+        "prefill_ms": 358.44032000750303,
+        "preprocess_ms": 37.19970025122166,
+        "raw_build_obs_ms": 1.4675897546112537,
+        "request_total_ms": 3097.7020100690424
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.235110055655241,
+        "action_tokenizer_decode_ms": 12.325929943472147,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.771789975464344,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1793.6059501953423,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.897519931197166,
+        "d2h_ms": 1.0454696603119373,
+        "decode_ar_processor_total_ms": 12.97914981842041,
+        "decode_ar_string_decode_ms": 0.24184957146644592,
+        "decode_ar_total_ms": 13.13780015334487,
+        "fm_action_ms": 833.7973901070654,
+        "forward_inference_total_ms": 3007.154199760407,
+        "generate_action_total_ms": 849.314829800278,
+        "h2d_ms": 1.0694200173020363,
+        "infer_ms": 3022.675289772451,
+        "model_predict_action_ms": 3020.4446902498603,
+        "non_core_infer_ms": 15.521090012043715,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3841302134096622,
+        "prefill_ms": 364.1803399659693,
+        "preprocess_ms": 37.38596010953188,
+        "raw_build_obs_ms": 1.511559821665287,
+        "request_total_ms": 3063.130230177194
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.1996699720621109,
+        "action_tokenizer_decode_ms": 11.682149954140186,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7547998577356339,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1738.2183098234236,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.488029666244984,
+        "d2h_ms": 1.0102097876369953,
+        "decode_ar_processor_total_ms": 12.261299882084131,
+        "decode_ar_string_decode_ms": 0.224230345338583,
+        "decode_ar_total_ms": 12.415369972586632,
+        "fm_action_ms": 791.5303399786353,
+        "forward_inference_total_ms": 2906.092590186745,
+        "generate_action_total_ms": 806.2721202149987,
+        "h2d_ms": 1.0981401428580284,
+        "infer_ms": 2921.362429857254,
+        "model_predict_action_ms": 2919.140819925815,
+        "non_core_infer_ms": 15.2698396705091,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3085203245282173,
+        "prefill_ms": 361.54787009581923,
+        "preprocess_ms": 36.86928981915116,
+        "raw_build_obs_ms": 2.6187398470938206,
+        "request_total_ms": 2962.333019822836
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2087200991809368,
+        "action_tokenizer_decode_ms": 12.439609970897436,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7239400185644627,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1795.7093198783696,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.30918949097395,
+        "d2h_ms": 1.146059948951006,
+        "decode_ar_processor_total_ms": 13.03634000942111,
+        "decode_ar_string_decode_ms": 0.2153199166059494,
+        "decode_ar_total_ms": 13.192439917474985,
+        "fm_action_ms": 850.2982603386045,
+        "forward_inference_total_ms": 3021.222440060228,
+        "generate_action_total_ms": 865.8260498195887,
+        "h2d_ms": 1.068150158971548,
+        "infer_ms": 3036.492850165814,
+        "model_predict_action_ms": 3034.165760036558,
+        "non_core_infer_ms": 15.270410105586052,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3262797147035599,
+        "prefill_ms": 359.6330499276519,
+        "preprocess_ms": 36.79595980793238,
+        "raw_build_obs_ms": 1.5132296830415726,
+        "request_total_ms": 3076.3050098903477
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2046697773039341,
+        "action_tokenizer_decode_ms": 12.32462003827095,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8486897461116314,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1843.5942698270082,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.76567957922816,
+        "d2h_ms": 1.0890699923038483,
+        "decode_ar_processor_total_ms": 12.916039675474167,
+        "decode_ar_string_decode_ms": 0.2251998521387577,
+        "decode_ar_total_ms": 13.068180065602064,
+        "fm_action_ms": 848.6387901939452,
+        "forward_inference_total_ms": 3073.330270126462,
+        "generate_action_total_ms": 864.1597400419414,
+        "h2d_ms": 1.0385997593402863,
+        "infer_ms": 3088.4633399546146,
+        "model_predict_action_ms": 3086.225990206003,
+        "non_core_infer_ms": 15.133069828152657,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.319310162216425,
+        "prefill_ms": 365.5215799808502,
+        "preprocess_ms": 37.24627988412976,
+        "raw_build_obs_ms": 1.5193996950984001,
+        "request_total_ms": 3128.722889814526
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.21980982273817062,
+        "action_tokenizer_decode_ms": 12.36622966825962,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 2.0807096734642982,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1777.3514497093856,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.58323022723198,
+        "d2h_ms": 1.0686498135328293,
+        "decode_ar_processor_total_ms": 12.997029814869165,
+        "decode_ar_string_decode_ms": 0.2411799505352974,
+        "decode_ar_total_ms": 13.14904959872365,
+        "fm_action_ms": 820.3321699984372,
+        "forward_inference_total_ms": 2980.824879836291,
+        "generate_action_total_ms": 836.1737499944866,
+        "h2d_ms": 1.1428799480199814,
+        "infer_ms": 2996.4195797219872,
+        "model_predict_action_ms": 2994.0910199657083,
+        "non_core_infer_ms": 15.594699885696173,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3994602486491203,
+        "prefill_ms": 367.2457397915423,
+        "preprocess_ms": 37.09476022049785,
+        "raw_build_obs_ms": 1.4884700067341328,
+        "request_total_ms": 3036.5768102928996
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22418983280658722,
+        "action_tokenizer_decode_ms": 12.565620243549347,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.9252696074545383,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1799.5848897844553,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.84504968300462,
+        "d2h_ms": 1.0657496750354767,
+        "decode_ar_processor_total_ms": 13.189610093832016,
+        "decode_ar_string_decode_ms": 0.23058010265231133,
+        "decode_ar_total_ms": 13.345669955015182,
+        "fm_action_ms": 858.0311802215874,
+        "forward_inference_total_ms": 3035.203529987484,
+        "generate_action_total_ms": 873.9171400666237,
+        "h2d_ms": 1.0933498851954937,
+        "infer_ms": 3050.3885401412845,
+        "model_predict_action_ms": 3048.1172702275217,
+        "non_core_infer_ms": 15.185010153800249,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3586296699941158,
+        "prefill_ms": 361.64621030911803,
+        "preprocess_ms": 37.30065003037453,
+        "raw_build_obs_ms": 1.5443996526300907,
+        "request_total_ms": 3090.7733398489654
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2081301063299179,
+        "action_tokenizer_decode_ms": 11.831010226160288,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8714000470936298,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1753.4516002051532,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.68719981983304,
+        "d2h_ms": 1.1430499143898487,
+        "decode_ar_processor_total_ms": 12.413130141794682,
+        "decode_ar_string_decode_ms": 0.21573016420006752,
+        "decode_ar_total_ms": 12.569259852170944,
+        "fm_action_ms": 806.1445797793567,
+        "forward_inference_total_ms": 2934.1851701028645,
+        "generate_action_total_ms": 821.1853997781873,
+        "h2d_ms": 1.1008097790181637,
+        "infer_ms": 2949.47357987985,
+        "model_predict_action_ms": 2947.1145402640104,
+        "non_core_infer_ms": 15.288409776985645,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.314300112426281,
+        "prefill_ms": 359.49261020869017,
+        "preprocess_ms": 37.19956986606121,
+        "raw_build_obs_ms": 1.4876299537718296,
+        "request_total_ms": 2989.646629896015
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2188696525990963,
+        "action_tokenizer_decode_ms": 12.65542022883892,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.9519398920238018,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1810.8625900931656,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.67591032758355,
+        "d2h_ms": 1.0849903337657452,
+        "decode_ar_processor_total_ms": 13.27019976451993,
+        "decode_ar_string_decode_ms": 0.2228701487183571,
+        "decode_ar_total_ms": 13.428180012851954,
+        "fm_action_ms": 862.9165501333773,
+        "forward_inference_total_ms": 3046.8619600869715,
+        "generate_action_total_ms": 878.9184200577438,
+        "h2d_ms": 1.0689301416277885,
+        "infer_ms": 3062.118989881128,
+        "model_predict_action_ms": 3059.853349812329,
+        "non_core_infer_ms": 15.257029794156551,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3682302087545395,
+        "prefill_ms": 357.02493973076344,
+        "preprocess_ms": 37.20070002600551,
+        "raw_build_obs_ms": 1.475210301578045,
+        "request_total_ms": 3102.3329300805926
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22228993475437164,
+        "action_tokenizer_decode_ms": 12.380789965391159,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 2.010480035096407,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1775.508999824524,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.66151021793485,
+        "d2h_ms": 1.0066800750792027,
+        "decode_ar_processor_total_ms": 13.009659945964813,
+        "decode_ar_string_decode_ms": 0.23736990988254547,
+        "decode_ar_total_ms": 13.162190094590187,
+        "fm_action_ms": 832.487310282886,
+        "forward_inference_total_ms": 2987.33614012599,
+        "generate_action_total_ms": 848.261650186032,
+        "h2d_ms": 1.1026998981833458,
+        "infer_ms": 3002.7017202228308,
+        "model_predict_action_ms": 3000.4815799184144,
+        "non_core_infer_ms": 15.365580096840858,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.356939785182476,
+        "prefill_ms": 363.5086100548506,
+        "preprocess_ms": 37.16586995869875,
+        "raw_build_obs_ms": 1.4956402592360973,
+        "request_total_ms": 3042.8953603841364
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2147601917386055,
+        "action_tokenizer_decode_ms": 12.63820007443428,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7549102194607258,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1842.6932697184384,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.50025963038206,
+        "d2h_ms": 1.1200797744095325,
+        "decode_ar_processor_total_ms": 13.251540251076221,
+        "decode_ar_string_decode_ms": 0.22896984592080116,
+        "decode_ar_total_ms": 13.409129809588194,
+        "fm_action_ms": 859.5203999429941,
+        "forward_inference_total_ms": 3092.7259800955653,
+        "generate_action_total_ms": 875.2978499978781,
+        "h2d_ms": 0.9781699627637863,
+        "infer_ms": 3107.94621007517,
+        "model_predict_action_ms": 3105.7386402972043,
+        "non_core_infer_ms": 15.220229979604483,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3576000928878784,
+        "prefill_ms": 374.6815798804164,
+        "preprocess_ms": 36.9982598349452,
+        "raw_build_obs_ms": 1.5019997954368591,
+        "request_total_ms": 3147.989079821855
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20420970395207405,
+        "action_tokenizer_decode_ms": 11.912950314581394,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.9482499919831753,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1719.832549802959,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.891919888556004,
+        "d2h_ms": 0.9776102378964424,
+        "decode_ar_processor_total_ms": 12.500610202550888,
+        "decode_ar_string_decode_ms": 0.22226013243198395,
+        "decode_ar_total_ms": 12.654240243136883,
+        "fm_action_ms": 798.8357399590313,
+        "forward_inference_total_ms": 2895.6649000756443,
+        "generate_action_total_ms": 814.0266099944711,
+        "h2d_ms": 1.0101799853146076,
+        "infer_ms": 2910.7834501191974,
+        "model_predict_action_ms": 2908.6857698857784,
+        "non_core_infer_ms": 15.118550043553114,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3361601158976555,
+        "prefill_ms": 361.7527103051543,
+        "preprocess_ms": 37.39895997568965,
+        "raw_build_obs_ms": 1.492959912866354,
+        "request_total_ms": 2951.1846699751914
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20778970792889595,
+        "action_tokenizer_decode_ms": 11.923700105398893,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7474000342190266,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1734.3039303086698,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.975759875029325,
+        "d2h_ms": 0.996139831840992,
+        "decode_ar_processor_total_ms": 12.518750037997961,
+        "decode_ar_string_decode_ms": 0.22382987663149834,
+        "decode_ar_total_ms": 12.673820368945599,
+        "fm_action_ms": 807.0038100704551,
+        "forward_inference_total_ms": 2909.5853501930833,
+        "generate_action_total_ms": 822.0269503071904,
+        "h2d_ms": 1.0505300015211105,
+        "infer_ms": 2924.547180067748,
+        "model_predict_action_ms": 2922.3890700377524,
+        "non_core_infer_ms": 14.961829874664545,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.311739906668663,
+        "prefill_ms": 353.2017897814512,
+        "preprocess_ms": 37.5277497805655,
+        "raw_build_obs_ms": 1.4480100944638252,
+        "request_total_ms": 2965.0086499750614
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22009015083312988,
+        "action_tokenizer_decode_ms": 12.454249896109104,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8046600744128227,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1814.4867001101375,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.61543023958802,
+        "d2h_ms": 1.0286001488566399,
+        "decode_ar_processor_total_ms": 13.072730042040348,
+        "decode_ar_string_decode_ms": 0.22540008649230003,
+        "decode_ar_total_ms": 13.223649933934212,
+        "fm_action_ms": 853.0442798510194,
+        "forward_inference_total_ms": 3041.3449802435935,
+        "generate_action_total_ms": 868.6788403429091,
+        "h2d_ms": 1.0445397347211838,
+        "infer_ms": 3056.4249102026224,
+        "model_predict_action_ms": 3054.241550154984,
+        "non_core_infer_ms": 15.07992995902896,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3348800130188465,
+        "prefill_ms": 358.1256200559437,
+        "preprocess_ms": 37.08202997222543,
+        "raw_build_obs_ms": 1.5334002673625946,
+        "request_total_ms": 3096.554399933666
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2060001716017723,
+        "action_tokenizer_decode_ms": 12.050889898091555,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8715201877057552,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1747.4882500246167,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.402540143579245,
+        "d2h_ms": 0.9705498814582825,
+        "decode_ar_processor_total_ms": 12.639259919524193,
+        "decode_ar_string_decode_ms": 0.22468017414212227,
+        "decode_ar_total_ms": 12.793529778718948,
+        "fm_action_ms": 801.4713800512254,
+        "forward_inference_total_ms": 2928.229770157486,
+        "generate_action_total_ms": 816.7161801829934,
+        "h2d_ms": 1.045809593051672,
+        "infer_ms": 2943.2595102116466,
+        "model_predict_action_ms": 2941.131640225649,
+        "non_core_infer_ms": 15.029740054160357,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3322900049388409,
+        "prefill_ms": 363.9710498973727,
+        "preprocess_ms": 36.88850998878479,
+        "raw_build_obs_ms": 1.5140301547944546,
+        "request_total_ms": 2983.1669800914824
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.23031001910567284,
+        "action_tokenizer_decode_ms": 12.223290279507637,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7852899618446827,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1746.7856099829078,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.5878998786211,
+        "d2h_ms": 1.1220998130738735,
+        "decode_ar_processor_total_ms": 12.88190996274352,
+        "decode_ar_string_decode_ms": 0.26017986238002777,
+        "decode_ar_total_ms": 13.050819747149944,
+        "fm_action_ms": 810.97057973966,
+        "forward_inference_total_ms": 2931.6876302473247,
+        "generate_action_total_ms": 826.4030702412128,
+        "h2d_ms": 1.0162703692913055,
+        "infer_ms": 2946.9780400395393,
+        "model_predict_action_ms": 2944.722469896078,
+        "non_core_infer_ms": 15.290409792214632,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3490300625562668,
+        "prefill_ms": 358.44597965478897,
+        "preprocess_ms": 37.12945990264416,
+        "raw_build_obs_ms": 1.458439975976944,
+        "request_total_ms": 2987.0916199870408
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.223460141569376,
+        "action_tokenizer_decode_ms": 12.869840022176504,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 2.0340802147984505,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1768.7317803502083,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.74289011582732,
+        "d2h_ms": 1.1083800345659256,
+        "decode_ar_processor_total_ms": 13.510520104318857,
+        "decode_ar_string_decode_ms": 0.238069798797369,
+        "decode_ar_total_ms": 13.663660269230604,
+        "fm_action_ms": 875.5622901953757,
+        "forward_inference_total_ms": 3018.237750045955,
+        "generate_action_total_ms": 891.8849001638591,
+        "h2d_ms": 1.0168999433517456,
+        "infer_ms": 3033.5153401829302,
+        "model_predict_action_ms": 3031.278590206057,
+        "non_core_infer_ms": 15.27759013697505,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3669896870851517,
+        "prefill_ms": 357.5685201212764,
+        "preprocess_ms": 36.970910150557756,
+        "raw_build_obs_ms": 1.7719799652695656,
+        "request_total_ms": 3073.802249971777
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.23012980818748474,
+        "action_tokenizer_decode_ms": 12.410489842295647,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7913300544023514,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1780.4920701310039,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.688240107148886,
+        "d2h_ms": 1.0515497997403145,
+        "decode_ar_processor_total_ms": 13.049439992755651,
+        "decode_ar_string_decode_ms": 0.22837985306978226,
+        "decode_ar_total_ms": 13.209950178861618,
+        "fm_action_ms": 827.666450291872,
+        "forward_inference_total_ms": 2981.313419993967,
+        "generate_action_total_ms": 843.2631501927972,
+        "h2d_ms": 1.0811397805809975,
+        "infer_ms": 2996.7116699554026,
+        "model_predict_action_ms": 2994.465830270201,
+        "non_core_infer_ms": 15.398249961435795,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.42329977825284,
+        "prefill_ms": 357.49893030151725,
+        "preprocess_ms": 37.15076996013522,
+        "raw_build_obs_ms": 1.5374701470136642,
+        "request_total_ms": 3037.011780310422
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2106199972331524,
+        "action_tokenizer_decode_ms": 11.990349739789963,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.807820051908493,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1716.706349980086,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.77886012196541,
+        "d2h_ms": 0.932010356336832,
+        "decode_ar_processor_total_ms": 12.585720047354698,
+        "decode_ar_string_decode_ms": 0.2208198420703411,
+        "decode_ar_total_ms": 12.755889911204576,
+        "fm_action_ms": 787.4984201043844,
+        "forward_inference_total_ms": 2882.6185199432075,
+        "generate_action_total_ms": 802.6605299673975,
+        "h2d_ms": 1.013010274618864,
+        "infer_ms": 2897.710000164807,
+        "model_predict_action_ms": 2895.650829654187,
+        "non_core_infer_ms": 15.09148022159934,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.377409789711237,
+        "prefill_ms": 363.19757997989655,
+        "preprocess_ms": 37.19568019732833,
+        "raw_build_obs_ms": 1.5831799246370792,
+        "request_total_ms": 2938.0482099950314
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2185502089560032,
+        "action_tokenizer_decode_ms": 12.75260979309678,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7572096548974514,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1825.855310074985,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.78149965405464,
+        "d2h_ms": 1.0365699417889118,
+        "decode_ar_processor_total_ms": 13.371800072491169,
+        "decode_ar_string_decode_ms": 0.22919988259673119,
+        "decode_ar_total_ms": 13.529680203646421,
+        "fm_action_ms": 861.572649795562,
+        "forward_inference_total_ms": 3061.924669891596,
+        "generate_action_total_ms": 877.4756002239883,
+        "h2d_ms": 1.0664397850632668,
+        "infer_ms": 3077.438590116799,
+        "model_predict_action_ms": 3075.222520157695,
+        "non_core_infer_ms": 15.513920225203037,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3698101975023746,
+        "prefill_ms": 358.53960970416665,
+        "preprocess_ms": 37.217709701508284,
+        "raw_build_obs_ms": 2.563789952546358,
+        "request_total_ms": 3118.767379783094
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22024987265467644,
+        "action_tokenizer_decode_ms": 12.3881702311337,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8018102273344994,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1715.2275196276605,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.05057953670621,
+        "d2h_ms": 0.961880199611187,
+        "decode_ar_processor_total_ms": 13.015069998800755,
+        "decode_ar_string_decode_ms": 0.2375999465584755,
+        "decode_ar_total_ms": 13.170219957828522,
+        "fm_action_ms": 832.8265598975122,
+        "forward_inference_total_ms": 2926.72376986593,
+        "generate_action_total_ms": 848.403699696064,
+        "h2d_ms": 1.0014502331614494,
+        "infer_ms": 2942.036080174148,
+        "model_predict_action_ms": 2939.9610296823084,
+        "non_core_infer_ms": 15.312310308218002,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3590501621365547,
+        "prefill_ms": 363.0387601442635,
+        "preprocess_ms": 37.55930997431278,
+        "raw_build_obs_ms": 1.491269562393427,
+        "request_total_ms": 2982.625419739634
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22001983597874641,
+        "action_tokenizer_decode_ms": 12.6201999373734,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.94512028247118,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1779.506969731301,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.03298964723945,
+        "d2h_ms": 1.0300101712346077,
+        "decode_ar_processor_total_ms": 13.245849870145321,
+        "decode_ar_string_decode_ms": 0.2341698855161667,
+        "decode_ar_total_ms": 13.401320204138756,
+        "fm_action_ms": 863.4218396618962,
+        "forward_inference_total_ms": 3023.62303994596,
+        "generate_action_total_ms": 879.3870597146451,
+        "h2d_ms": 1.0727201588451862,
+        "infer_ms": 3039.0631100162864,
+        "model_predict_action_ms": 3036.849969998002,
+        "non_core_infer_ms": 15.440070070326328,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3615903444588184,
+        "prefill_ms": 364.6736298687756,
+        "preprocess_ms": 37.44684997946024,
+        "raw_build_obs_ms": 1.5861396677792072,
+        "request_total_ms": 3079.640839714557
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2009700983762741,
+        "action_tokenizer_decode_ms": 12.02993979677558,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.875740010291338,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1739.8085002787411,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.75279985368252,
+        "d2h_ms": 1.1239396408200264,
+        "decode_ar_processor_total_ms": 12.623840011656284,
+        "decode_ar_string_decode_ms": 0.231180340051651,
+        "decode_ar_total_ms": 12.779419776052237,
+        "fm_action_ms": 815.6823399476707,
+        "forward_inference_total_ms": 2934.3075999058783,
+        "generate_action_total_ms": 830.9227400459349,
+        "h2d_ms": 1.080780290067196,
+        "infer_ms": 2949.721380136907,
+        "model_predict_action_ms": 2947.4055799655616,
+        "non_core_infer_ms": 15.413780231028795,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3499800115823746,
+        "prefill_ms": 363.52200992405415,
+        "preprocess_ms": 37.28224989026785,
+        "raw_build_obs_ms": 1.470549963414669,
+        "request_total_ms": 2989.9995801970363
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20540039986371994,
+        "action_tokenizer_decode_ms": 11.899180244654417,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8514199182391167,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1725.5800403654575,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.679180201143026,
+        "d2h_ms": 1.0999501682817936,
+        "decode_ar_processor_total_ms": 12.48560007661581,
+        "decode_ar_string_decode_ms": 0.22273976355791092,
+        "decode_ar_total_ms": 12.64203991740942,
+        "fm_action_ms": 801.6550200991333,
+        "forward_inference_total_ms": 2904.6719102188945,
+        "generate_action_total_ms": 816.7323800735176,
+        "h2d_ms": 1.076660118997097,
+        "infer_ms": 2919.9824798852205,
+        "model_predict_action_ms": 2917.6902398467064,
+        "non_core_infer_ms": 15.310569666326046,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3461499474942684,
+        "prefill_ms": 362.30527982115746,
+        "preprocess_ms": 37.17104997485876,
+        "raw_build_obs_ms": 1.5081302262842655,
+        "request_total_ms": 2960.179750341922
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.23043015971779823,
+        "action_tokenizer_decode_ms": 12.46700994670391,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.954869832843542,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1821.6159800067544,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.645879831165075,
+        "d2h_ms": 1.0694097727537155,
+        "decode_ar_processor_total_ms": 13.097309973090887,
+        "decode_ar_string_decode_ms": 0.2301400527358055,
+        "decode_ar_total_ms": 13.250590302050114,
+        "fm_action_ms": 860.5217901058495,
+        "forward_inference_total_ms": 3056.892510037869,
+        "generate_action_total_ms": 876.3277102261782,
+        "h2d_ms": 1.0251300409436226,
+        "infer_ms": 3072.085269726813,
+        "model_predict_action_ms": 3069.8795998468995,
+        "non_core_infer_ms": 15.192759688943624,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3432502746582031,
+        "prefill_ms": 358.893440105021,
+        "preprocess_ms": 37.111460231244564,
+        "raw_build_obs_ms": 1.5344195999205112,
+        "request_total_ms": 3112.250469624996
+      }
+    ],
+    "summary": {
+      "action_ar_raw_generated_tokens": {
+        "count": 30,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "p50": 1.0,
+        "p95": 1.0
+      },
+      "action_text_tokenizer_encode_ms": {
+        "count": 30,
+        "max": 0.235110055655241,
+        "mean": 0.214729659880201,
+        "min": 0.1996699720621109,
+        "p50": 0.2174649853259325,
+        "p95": 0.2303760964423418
+      },
+      "action_tokenizer_decode_ms": {
+        "count": 30,
+        "max": 12.872559949755669,
+        "mean": 12.280519027262926,
+        "min": 11.682149954140186,
+        "p50": 12.346079805865884,
+        "p95": 12.817086419090629
+      },
+      "action_tokenizer_encode_ms": {
+        "count": 30,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "ar_decode_ms": {
+        "count": 30,
+        "max": 2.0807096734642982,
+        "mean": 1.851716327170531,
+        "min": 1.6860496252775192,
+        "p50": 1.834305003285408,
+        "p95": 2.023460133932531
+      },
+      "ar_decoded_action_tokens": {
+        "count": 30,
+        "max": 18.0,
+        "mean": 18.0,
+        "min": 18.0,
+        "p50": 18.0,
+        "p95": 18.0
+      },
+      "cot_generate_text_ms": {
+        "count": 30,
+        "max": 1843.5942698270082,
+        "mean": 1770.541457676639,
+        "min": 1700.504720211029,
+        "p50": 1772.120390087366,
+        "p95": 1843.0571058765054
+      },
+      "cot_raw_generated_tokens": {
+        "count": 30,
+        "max": 20.0,
+        "mean": 20.0,
+        "min": 20.0,
+        "p50": 20.0,
+        "p95": 20.0
+      },
+      "cpu_preprocess_total_ms": {
+        "count": 30,
+        "max": 39.78149965405464,
+        "mean": 38.7458398938179,
+        "min": 38.15142950043082,
+        "p50": 38.68319001048803,
+        "p95": 39.3456001766026
+      },
+      "d2h_ms": {
+        "count": 30,
+        "max": 1.146059948951006,
+        "mean": 1.044456660747528,
+        "min": 0.932010356336832,
+        "p50": 1.0410198010504246,
+        "p95": 1.1344502912834287
+      },
+      "decode_ar_processor_total_ms": {
+        "count": 30,
+        "max": 13.510520104318857,
+        "mean": 12.8915646734337,
+        "min": 12.261299882084131,
+        "p50": 12.988089816644788,
+        "p95": 13.447590009309351
+      },
+      "decode_ar_string_decode_ms": {
+        "count": 30,
+        "max": 0.26017986238002777,
+        "mean": 0.2286829830457767,
+        "min": 0.2153199166059494,
+        "p50": 0.22688996978104115,
+        "p95": 0.24154824204742908
+      },
+      "decode_ar_total_ms": {
+        "count": 30,
+        "max": 13.679089955985546,
+        "mean": 13.048663347338637,
+        "min": 12.415369972586632,
+        "p50": 13.14342487603426,
+        "p95": 13.603369239717722
+      },
+      "fm_action_ms": {
+        "count": 30,
+        "max": 875.5622901953757,
+        "mean": 829.8142106893162,
+        "min": 787.4984201043844,
+        "p50": 830.076880287379,
+        "p95": 866.762581304647
+      },
+      "forward_inference_total_ms": {
+        "count": 30,
+        "max": 3092.7259800955653,
+        "mean": 2976.7046296969056,
+        "min": 2859.276060014963,
+        "p50": 2981.069149915129,
+        "p95": 3074.9044195050374
+      },
+      "generate_action_total_ms": {
+        "count": 30,
+        "max": 891.8849001638591,
+        "mean": 845.3174037237962,
+        "min": 802.4297100491822,
+        "p50": 845.7624001894146,
+        "p95": 882.7680325834081
+      },
+      "h2d_ms": {
+        "count": 30,
+        "max": 1.1428799480199814,
+        "mean": 1.0484330045680206,
+        "min": 0.9568301029503345,
+        "p50": 1.0451746638864279,
+        "p95": 1.1018493445590138
+      },
+      "infer_ms": {
+        "count": 30,
+        "max": 3107.94621007517,
+        "mean": 2991.9365346897393,
+        "min": 2874.218499753624,
+        "p50": 2996.565624838695,
+        "p95": 3090.1240980252624
+      },
+      "model_predict_action_ms": {
+        "count": 30,
+        "max": 3105.7386402972043,
+        "mean": 2989.7305557038635,
+        "min": 2872.2127196379006,
+        "p50": 2994.2784251179546,
+        "p95": 3087.8825295716524
+      },
+      "non_core_infer_ms": {
+        "count": 30,
+        "max": 15.594699885696173,
+        "mean": 15.231904992833734,
+        "min": 14.94243973866105,
+        "p50": 15.263434732332826,
+        "p95": 15.51786360796541
+      },
+      "postprocess_ms": {
+        "count": 30,
+        "max": 1.4948300085961819,
+        "mean": 1.354890363290906,
+        "min": 1.3030702248215675,
+        "p50": 1.3512501027435064,
+        "p95": 1.4125719899311662
+      },
+      "prefill_ms": {
+        "count": 30,
+        "max": 374.6815798804164,
+        "mean": 360.79090364898246,
+        "min": 352.7404102496803,
+        "p50": 360.59046001173556,
+        "p95": 366.46986787673086
+      },
+      "preprocess_ms": {
+        "count": 30,
+        "max": 37.70317975431681,
+        "mean": 37.15672295851012,
+        "min": 36.649069748818874,
+        "p50": 37.168459966778755,
+        "p95": 37.545107887126505
+      },
+      "raw_build_obs_ms": {
+        "count": 30,
+        "max": 2.6187398470938206,
+        "mean": 1.589116935307781,
+        "min": 1.4480100944638252,
+        "p50": 1.5123947523534298,
+        "p95": 2.207475458271802
+      },
+      "request_total_ms": {
+        "count": 30,
+        "max": 3147.989079821855,
+        "mean": 3032.213827641681,
+        "min": 2914.0906403772533,
+        "p50": 3036.794295301661,
+        "p95": 3130.2959391847253
+      }
+    },
+    "theoretical_action_capacity_hz_at_p50": 5.268713796240399
+  },
+  "output_contract": {
+    "all_requests_actions_finite": true,
+    "cold_action_shapes": {
+      "left_arm": [
+        1,
+        32,
+        6
+      ],
+      "left_gripper": [
+        1,
+        32,
+        1
+      ],
+      "right_arm": [
+        1,
+        32,
+        6
+      ],
+      "right_gripper": [
+        1,
+        32,
+        1
+      ]
+    },
+    "last_action_shapes": {
+      "left_arm": [
+        1,
+        32,
+        6
+      ],
+      "left_gripper": [
+        1,
+        32,
+        1
+      ],
+      "right_arm": [
+        1,
+        32,
+        6
+      ],
+      "right_gripper": [
+        1,
+        32,
+        1
+      ]
+    },
+    "token_count_semantics": "Raw AR counts are returned generated_ids lengths including stop tokens; batch size is one. The first token uses the existing hidden state. Decoded action tokens may originate in CoT; their count is not action AR throughput.",
+    "validation_timing": "CPU validation after each measured request timer stops"
+  },
+  "released_default_path": {
+    "action_horizon": 32,
+    "chain_of_thought_autoregressive": true,
+    "configured_ar_max_new_tokens": 300,
+    "continuous_flow_matching": true,
+    "discrete_autoregressive": true,
+    "effective_action_ar_max_new_tokens": 300,
+    "flow_matching_steps": 10,
+    "predict_cot": true,
+    "prompt_max_text_tokens": 160,
+    "served_action_steps": 16
+  },
+  "result_scope": "synthetic-input full-model throughput",
+  "schema_version": 1,
+  "source": {
+    "expected_revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+    "path": "/root/work/GalaxeaVLA-upstream",
+    "revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+    "revision_override_used": false,
+    "tree_state": {
+      "dirty": true,
+      "status": [
+        " M scripts/serve_policy.py",
+        " M src/g05/models/g05/g05_model_qwen35.py",
+        " M src/g05/models/g05/g05_policy.py",
+        " M src/g05/models/g05/helpers/ar_helper.py",
+        " M src/g05/models/g05/inferencer.py",
+        " M src/g05/models/g05/model/modules.py",
+        " M src/g05/models/g05/model/utils.py",
+        " M src/g05/models/g05/qwen35/gated_deltanet.py",
+        " M src/g05/models/g05/qwen35/mixture_qwen35.py",
+        " M src/g05/models/g05/qwen35/modules.py",
+        " M src/g05/models/g05/qwen35/vision.py",
+        " M src/g05/tokenizer/interface/vq_base.py",
+        " M src/g05/utils/checkpoint/checkpoint_utils.py",
+        "?? src/g05/utils/common/device.py",
+        "?? tests/test_device_utils.py",
+        "?? tests/test_qwen35_device_fallbacks.py"
+      ],
+      "tracked_diff_bytes": 28785,
+      "tracked_diff_sha256": "cc8cf79feba546a0582bf270d09d752c8301ae353993e4e43cd9c45606e77134",
+      "untracked_files": [
+        {
+          "path": "src/g05/utils/common/device.py",
+          "sha256": "6a8871ed621bec452f31c6b8cbe7708fd4652497729811cb9a64f4edcc5276b3",
+          "size_bytes": 4369
+        },
+        {
+          "path": "tests/test_device_utils.py",
+          "sha256": "21b442eba4266219aa500cecfebca753d100985e9706a5b2add2bc1320825b69",
+          "size_bytes": 1725
+        },
+        {
+          "path": "tests/test_qwen35_device_fallbacks.py",
+          "sha256": "09ed47e1248d633212b746e09717f53c0a310efbf7e810b6daf35af746453c5c",
+          "size_bytes": 3352
+        }
+      ]
+    }
+  },
+  "warmup": {
+    "iterations": 5,
+    "samples": [
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2347901463508606,
+        "action_tokenizer_decode_ms": 12.613310012966394,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8986300565302372,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1721.9815696589649,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.63798966631293,
+        "d2h_ms": 1.0168198496103287,
+        "decode_ar_processor_total_ms": 13.355060014873743,
+        "decode_ar_string_decode_ms": 0.2500200644135475,
+        "decode_ar_total_ms": 13.514840044081211,
+        "fm_action_ms": 815.4580499976873,
+        "forward_inference_total_ms": 2914.9346500635147,
+        "generate_action_total_ms": 831.5017097629607,
+        "h2d_ms": 1.0415702126920223,
+        "infer_ms": 2930.3548499010503,
+        "model_predict_action_ms": 2928.168320097029,
+        "non_core_infer_ms": 15.42019983753562,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.4179502613842487,
+        "prefill_ms": 361.38916015625,
+        "preprocess_ms": 37.0831498876214,
+        "raw_build_obs_ms": 1.5548397786915302,
+        "request_total_ms": 2970.6040397286415
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.24523958563804626,
+        "action_tokenizer_decode_ms": 13.17739998921752,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8699201755225658,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1850.359289906919,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.181020110845566,
+        "d2h_ms": 1.211139839142561,
+        "decode_ar_processor_total_ms": 13.917210046201944,
+        "decode_ar_string_decode_ms": 0.24760980159044266,
+        "decode_ar_total_ms": 14.077119994908571,
+        "fm_action_ms": 873.2915199361742,
+        "forward_inference_total_ms": 3098.1755601242185,
+        "generate_action_total_ms": 889.8737500421703,
+        "h2d_ms": 1.0378598235547543,
+        "infer_ms": 3113.4227300062776,
+        "model_predict_action_ms": 3111.052510328591,
+        "non_core_infer_ms": 15.247169882059097,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.4087799936532974,
+        "prefill_ms": 357.88252018392086,
+        "preprocess_ms": 37.628100253641605,
+        "raw_build_obs_ms": 1.5529198572039604,
+        "request_total_ms": 3154.197639785707
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.22996030747890472,
+        "action_tokenizer_decode_ms": 13.288690242916346,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.7973599024116993,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1868.668300099671,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.63554976508021,
+        "d2h_ms": 1.092300284653902,
+        "decode_ar_processor_total_ms": 14.029060024768114,
+        "decode_ar_string_decode_ms": 0.2618599683046341,
+        "decode_ar_total_ms": 14.192299917340279,
+        "fm_action_ms": 882.2374800220132,
+        "forward_inference_total_ms": 3135.4355202056468,
+        "generate_action_total_ms": 898.8895402289927,
+        "h2d_ms": 1.0594199411571026,
+        "infer_ms": 3150.629370007664,
+        "model_predict_action_ms": 3148.3590099960566,
+        "non_core_infer_ms": 15.193849802017212,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.4362502843141556,
+        "prefill_ms": 367.8155499510467,
+        "preprocess_ms": 37.81633963808417,
+        "raw_build_obs_ms": 1.8192101269960403,
+        "request_total_ms": 3191.882810089737
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.20439038053154945,
+        "action_tokenizer_decode_ms": 11.905999854207039,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.8697497434914112,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1745.8222499117255,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 39.06923020258546,
+        "d2h_ms": 1.186130102723837,
+        "decode_ar_processor_total_ms": 12.531590182334185,
+        "decode_ar_string_decode_ms": 0.21237973123788834,
+        "decode_ar_total_ms": 12.69040023908019,
+        "fm_action_ms": 805.8960600756109,
+        "forward_inference_total_ms": 2937.4509397894144,
+        "generate_action_total_ms": 821.0506197065115,
+        "h2d_ms": 1.097280066460371,
+        "infer_ms": 2952.7530795894563,
+        "model_predict_action_ms": 2950.3479097038507,
+        "non_core_infer_ms": 15.302139800041914,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.325210090726614,
+        "prefill_ms": 370.52062014117837,
+        "preprocess_ms": 37.491020280867815,
+        "raw_build_obs_ms": 1.5782099217176437,
+        "request_total_ms": 2993.3266998268664
+      },
+      {
+        "action_ar_raw_generated_tokens": 1,
+        "action_text_tokenizer_encode_ms": 0.2116798423230648,
+        "action_tokenizer_decode_ms": 12.00288999825716,
+        "action_tokenizer_encode_ms": 0.0,
+        "ar_decode_ms": 1.9950401037931442,
+        "ar_decoded_action_tokens": 18,
+        "ar_generation_calls": [
+          {
+            "generated_token_lengths": [
+              20
+            ],
+            "generated_tokens": 20,
+            "stage": "cot"
+          },
+          {
+            "generated_token_lengths": [
+              1
+            ],
+            "generated_tokens": 1,
+            "stage": "action"
+          }
+        ],
+        "cot_generate_text_ms": 1731.0302099213004,
+        "cot_raw_generated_tokens": 20,
+        "cpu_preprocess_total_ms": 38.54867024347186,
+        "d2h_ms": 1.0339999571442604,
+        "decode_ar_processor_total_ms": 12.611150275915861,
+        "decode_ar_string_decode_ms": 0.23266999050974846,
+        "decode_ar_total_ms": 12.77509005740285,
+        "fm_action_ms": 808.1659101881087,
+        "forward_inference_total_ms": 2907.2486301884055,
+        "generate_action_total_ms": 823.5423499718308,
+        "h2d_ms": 1.0089497081935406,
+        "infer_ms": 2922.38144017756,
+        "model_predict_action_ms": 2920.224780216813,
+        "non_core_infer_ms": 15.132809989154339,
+        "output_validation": {
+          "core.action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "core.ar_action": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              27
+            ]
+          },
+          "served.left_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.left_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          },
+          "served.right_arm": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              6
+            ]
+          },
+          "served.right_gripper": {
+            "all_finite": true,
+            "shape": [
+              1,
+              32,
+              1
+            ]
+          }
+        },
+        "postprocess_ms": 1.3076900504529476,
+        "prefill_ms": 352.61818021535873,
+        "preprocess_ms": 37.011010106652975,
+        "raw_build_obs_ms": 1.5376601368188858,
+        "request_total_ms": 2962.4093300662935
+      }
+    ]
+  }
+}

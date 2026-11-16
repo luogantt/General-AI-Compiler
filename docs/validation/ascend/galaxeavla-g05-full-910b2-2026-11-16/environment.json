@@ -1,0 +1,39 @@
+{
+  "source_files": {
+    "scripts/serve_policy.py": "4d380351c621860ea9cb76a4f28f7e83e6d716d4f5371fd2f83541a0efcc248b",
+    "src/g05/models/g05/g05_model_qwen35.py": "80a6d192960747d121d2f937477ae98b28b82b11b8ccde46d08150f47de883cf",
+    "src/g05/models/g05/g05_policy.py": "13a12ed06aa8f89edadc32442bfb3204d77f79e51f99c6ae9e9b0ebedfb41039",
+    "src/g05/models/g05/helpers/ar_helper.py": "1e17705cdeaee745454e73ca0af1e95883ff7fae474aabf961c1ddb22c675fd3",
+    "src/g05/models/g05/inferencer.py": "40e29132932c6f4caa2e38181c514ebb6cfeef2e6436bbe260a2a465e030c3b1",
+    "src/g05/models/g05/model/modules.py": "06d048ec751981df606a33270d1478aa43c7b6b7fc3f3457df399fcb437bf1c4",
+    "src/g05/models/g05/model/utils.py": "966027a97833c04cb148b7cda885e33c8074b09ee979ed1e0870e8238bfbf118",
+    "src/g05/models/g05/qwen35/gated_deltanet.py": "59cd8ac8b25bee51e350940cead4164da149072944361bac4f05d20649d3ecd2",
+    "src/g05/models/g05/qwen35/mixture_qwen35.py": "02ede58afa32a6eea0eee3efc5c8972051e061e3c925223f13fcd240436271b5",
+    "src/g05/models/g05/qwen35/modules.py": "3679d6bbb20710da4418b48b4ab0c770071d135d6de9a069f3fab007610626d5",
+    "src/g05/models/g05/qwen35/vision.py": "2592389cf39c7c4ad89b06dbccc802322afa59bd672eb13b8b1fd5dbfaeb2d9f",
+    "src/g05/tokenizer/interface/vq_base.py": "b3ca9c38e6a371c19693992e65e5184cfb16082b6c70766ddee627c09e8df1f8",
+    "src/g05/utils/checkpoint/checkpoint_utils.py": "4e1a76e5333c9b55c140696ab54dcbdc096d0d4354efe2254066c95dd0b48d39",
+    "src/g05/utils/common/device.py": "6a8871ed621bec452f31c6b8cbe7708fd4652497729811cb9a64f4edcc5276b3",
+    "tests/test_device_utils.py": "21b442eba4266219aa500cecfebca753d100985e9706a5b2add2bc1320825b69",
+    "tests/test_qwen35_device_fallbacks.py": "09ed47e1248d633212b746e09717f53c0a310efbf7e810b6daf35af746453c5c"
+  },
+  "benchmark_sha256": "80ac9ada097a91c5b0665b0da6241934226c4a52456348f7e67e96382c5aaade",
+  "packages": {
+    "torch": "2.7.1",
+    "torch-npu": "2.7.1.post4",
+    "triton-ascend": "3.2.1",
+    "transformers": "4.57.1",
+    "accelerate": "1.8.1",
+    "numpy": "1.26.4",
+    "omegaconf": "2.3.1",
+    "hydra-core": "1.3.2",
+    "torchvision": "0.22.1",
+    "tokenizers": "0.22.2",
+    "huggingface-hub": "0.35.0",
+    "safetensors": "0.6.1",
+    "einops": "0.8.0"
+  },
+  "python": "3.11.15",
+  "os_release": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+  "npu_smi": "+------------------------------------------------------------------------------------------------------------------+\n| npu-smi 26.1.1                              Version: 26.1.1                                                      |\n+---------------------------+---------------+----------------------------------------------------------------------+\n| NPU   Name                | Health        | Power(W)             Temp(C)                 Hugepages-Usage(page)   |\n| Chip                      | Bus-Id        | AICore(%)            Memory-Usage(MB)        HBM-Usage(MB)           |\n+===========================+===============+======================================================================+\n| 2     910B2               | OK            | 109.1                43                      0    / 0                |\n| 0                         | 0000:81:00.0  | 10                   0    / 0                21100/ 65536            |\n+===========================+===============+======================================================================+\n+---------------------------+---------------+----------------------------------------------------------------------+\n| NPU     Chip              | Process id    | Process name       | Process memory(MB)    | Process id in container |\n+===========================+===============+======================================================================+\n| 2       0                 | 2202          | python             | 17736                 | 2202                    |\n+===========================+===============+======================================================================+\n"
+}

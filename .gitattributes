@@ -18,3 +18,8 @@ docs/validation/tensorrt/bevformer-base-2026-10-17/profiling/** -text -whitespac
 # Preserve Ascend compiler/launcher evidence byte-for-byte for recorded hashes.
 docs/validation/ascend/galaxeavla-g05-mlp-910b2-2026-11-13/** -text -whitespace
 
+# Preserve full-model measurement evidence and source-patch hash bytes.
+docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/** -text -whitespace
+# A unified diff represents a blank context line with one intentional space.
+integrations/galaxeavla/patches/*.patch -text -whitespace
+

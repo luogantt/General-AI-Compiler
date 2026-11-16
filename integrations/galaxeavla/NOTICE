@@ -1,0 +1,20 @@
+GalaxeaVLA G0.5 Ascend/TorchNPU integration notice
+
+This directory contains a modification patch against OpenGalaxea/GalaxeaVLA
+commit 89f2322b4ad016e192437adc1a2c253b05bab246.
+
+G0.5 is licensed under the G0.5 Community License Agreement
+(Non-Commercial + Limited Patent License), not sold.
+Copyright (c) 2026 Galaxea. All rights reserved by Galaxea.
+'Galaxea' and related marks are trademarks of Galaxea or its affiliates.
+
+The patch modifies device dispatch, accelerator synchronization, precision
+contexts, non-CUDA fallback selection, rank-eight image patchification, command
+help, and associated tests for an Ascend 910 / TorchNPU eager-inference baseline.
+Modified files carry General-AI-Compiler change notices and retain their upstream
+SPDX and copyright headers. This patch does not distribute model
+weights, datasets, credentials, or robot-control assets.
+
+Official license and notice for the pinned source:
+https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/LICENSE-G0.5
+https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/NOTICE

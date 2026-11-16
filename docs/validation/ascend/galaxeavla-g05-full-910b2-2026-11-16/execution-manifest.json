@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-16",
+  "source_overlay_sha256": "3cfeedaa69f7d965c5601369082e3314c5f95b11b8ecc849675b8c132b8e047d",
+  "benchmark_sha256": "bb54e804f8c32d810f70afcf7552dfe6602623b1038cea901fa5f7f3608aa684",
+  "baseline_benchmark_sha256": "80ac9ada097a91c5b0665b0da6241934226c4a52456348f7e67e96382c5aaade",
+  "benchmark_change_between_runs": "Only added CPU thread settings to the environment JSON; inference and timing code unchanged.",
+  "baseline_thread_diagnostic": {
+    "torch_intraop": 256,
+    "torch_interop": 256,
+    "logical_cpus": 256,
+    "affinity_cpus": 256,
+    "cgroup_cpu_quota_us": 3200000,
+    "cgroup_cpu_period_us": 100000,
+    "OMP_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null
+  },
+  "runs": [
+    {
+      "report": "result-default-threads.json",
+      "log": "run-default-threads.log",
+      "environment_overrides": {},
+      "argv": [
+        "python",
+        "tools/galaxeavla/benchmark_g05_full.py",
+        "--source-dir",
+        "/root/work/GalaxeaVLA-upstream",
+        "--checkpoint",
+        "/root/work/models/galaxeavla-g05/g05-base/checkpoints/model_state_dict.pt",
+        "--asset-root",
+        "/root/work/models/galaxeavla-g05",
+        "--device",
+        "npu:0",
+        "--warmup",
+        "5",
+        "--iterations",
+        "30",
+        "--output",
+        "/root/work/results/g05-full-910b2-20261116.json"
+      ]
+    },
+    {
+      "report": "result.json",
+      "log": "run.log",
+      "environment_overrides": {
+        "OMP_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1"
+      },
+      "argv": [
+        "python",
+        "tools/galaxeavla/benchmark_g05_full.py",
+        "--source-dir",
+        "/root/work/GalaxeaVLA-upstream",
+        "--checkpoint",
+        "/root/work/models/galaxeavla-g05/g05-base/checkpoints/model_state_dict.pt",
+        "--asset-root",
+        "/root/work/models/galaxeavla-g05",
+        "--device",
+        "npu:0",
+        "--warmup",
+        "5",
+        "--iterations",
+        "30",
+        "--output",
+        "/root/work/results/g05-full-910b2-threads1-20261116.json"
+      ]
+    }
+  ],
+  "validation": {
+    "local_unittest_passed": 15,
+    "powershell_pester_passed": 24,
+    "upstream_device_fallback_pytest_passed": 8,
+    "requests_checked_per_run": 36,
+    "independent_statistics_recomputed": true,
+    "cross_cuda_accuracy_tested": false,
+    "operator_cpu_fallback_profiled": false
+  },
+  "artifact_sha256": {
+    "result.json": "c2d9f005e986e3a5448f175d14fe946b032a7cdc0f8363701d1b32d8e438e6b7",
+    "run.log": "e06e4600a4b42a8b91643e2b67a0c4ebd96b6eda3bc94b7a6e8d95c08a37369e",
+    "result-default-threads.json": "02129dd12d9b41f3338873c22b0219a78e1fc1ca6f27a2e916203647653117b4",
+    "run-default-threads.log": "35edede2e084db05129839a6331174ec698a27db2fd9ffd756f6fdaba861f1f5",
+    "environment.json": "b8f394c7317a53250b7513d950ad0eeb89db05df30bcfb6111eb314b140a67cc"
+  }
+}
