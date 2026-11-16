@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "experiment": "gdn-triton-opaque-custom-op-replay",
+  "shape": [
+    80,
+    32,
+    32
+  ],
+  "atol": 5e-06,
+  "rtol": 5e-05,
+  "scope": "inverse+I only, not full GDN/model; synchronized wall clock after warmup",
+  "implementation_sha256": "a87b146fa7f2705de9e940b568e284fc35dd113fd42f76b6f9af9ab2c3a5f86e",
+  "eager_output_ownership": "fresh outputs; no input/other-live-output alias",
+  "compilation": {
+    "name": "torchair_aclgraph",
+    "scope": "opaque row_inverse32 custom op",
+    "fullgraph": true,
+    "dynamic": false,
+    "fallback_allowed": false,
+    "options": {},
+    "compilation_is_lazy": true,
+    "backend_module": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/__init__.py",
+    "mode": "npugraph_ex",
+    "compiler_config_options": {
+      "mode": "npugraph_ex"
+    },
+    "experimental": true,
+    "runtime_validation": "not performed by installer; NPU validation required",
+    "backend_entry_point": "torchair.get_npu_backend",
+    "concrete_graph": "torchair._acl_concrete_graph.AclConcreteGraph",
+    "independent_npugraph_ex_backend_requested": false,
+    "softplus_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.softplus.default",
+      "input_and_math_dtype": "float32",
+      "beta": 1,
+      "threshold": 20,
+      "formula": "where(x > 20, x, relu(x) + log1p(exp(-abs(x))))",
+      "rounding_order_changed": false,
+      "global_registration_modified": false
+    },
+    "eye_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.eye.default",
+      "scope": "square identity only",
+      "formula": "(arange(n)[:, None] == arange(n)[None, :]).to(requested_dtype)",
+      "values": "same exact zero/one identity entries",
+      "default_dtype": "torch.get_default_dtype()",
+      "layout": "strided; reject other layouts",
+      "pin_memory": "honor requested output pinning; propagate allocation errors",
+      "global_registration_modified": false
+    }
+  },
+  "replay_checks": [
+    {
+      "case": "A",
+      "ms_including_first_compile": 268.1080801412463,
+      "finite": true,
+      "max_abs_error": 5.960464477539063e-08,
+      "relative_l2": 1.959998343177303e-08,
+      "exact": false,
+      "passed": true
+    },
+    {
+      "case": "B",
+      "ms_including_first_compile": 0.6647501140832901,
+      "finite": true,
+      "max_abs_error": 0.0,
+      "relative_l2": 0.0,
+      "exact": true,
+      "passed": true
+    },
+    {
+      "case": "A",
+      "ms_including_first_compile": 0.6431103684008121,
+      "finite": true,
+      "max_abs_error": 5.960464477539063e-08,
+      "relative_l2": 1.959998343177303e-08,
+      "exact": false,
+      "passed": true
+    },
+    {
+      "case": "B",
+      "ms_including_first_compile": 0.6050500087440014,
+      "finite": true,
+      "max_abs_error": 0.0,
+      "relative_l2": 0.0,
+      "exact": true,
+      "passed": true
+    }
+  ],
+  "graph_return_buffer_reuse_observed": true,
+  "graph_output_lifetime": "each replay result copied before the next request; backend may reuse graph buffers",
+  "reference_contrast": {
+    "finite": true,
+    "max_abs_error": 1.4726089835166931,
+    "relative_l2": 0.9875164175201379,
+    "exact": false,
+    "passed": false
+  },
+  "inputs_unchanged": true,
+  "timing": {
+    "p50_ms": 0.49501494504511356,
+    "samples_ms": [
+      0.5034999921917915,
+      0.506330281496048,
+      0.4942002706229687,
+      0.49674976617097855,
+      0.49552973359823227,
+      0.4909001290798187,
+      0.5108602344989777,
+      0.49341004341840744,
+      0.4896000027656555,
+      0.5090800113976002,
+      0.5006897263228893,
+      0.4938901402056217,
+      0.5018999800086021,
+      0.4954398609697819,
+      0.492860097438097,
+      0.490809790790081,
+      0.49459002912044525,
+      0.5060401745140553,
+      0.49284007400274277,
+      0.4937401972711086,
+      0.4909401759505272,
+      0.50000986084342,
+      0.48842979595065117,
+      0.49054017290472984,
+      0.4960200749337673,
+      0.5034399218857288,
+      0.4982799291610718,
+      0.49048010259866714,
+      0.5033798515796661,
+      0.4935101605951786
+    ]
+  },
+  "status": "passed"
+}

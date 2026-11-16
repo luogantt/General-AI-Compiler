@@ -1,0 +1,213 @@
+{
+  "variant": {
+    "name": "bf16_compile_recheck",
+    "resident_weights": "bf16",
+    "fm_steps": 10,
+    "attn_implementation": "eager",
+    "compile_target": "action-expert",
+    "compile_backend": "inductor",
+    "compile_mode": "reduce-overhead"
+  },
+  "provenance": {
+    "checkpoint": "/root/autodl-tmp/GalaxeaVLA/checkpoints/g05-libero/model.pt",
+    "dataset_root": "/root/autodl-tmp/GalaxeaVLA/data/test_datasets/G05-LIBERO-Dataset/libero_goal_no_noops_lerobot",
+    "episode": 0,
+    "frame": 0,
+    "global_index": 0,
+    "episode_range": [
+      0,
+      138
+    ],
+    "task": "open the middle drawer of the cabinet",
+    "seed": 0,
+    "warmup": 5,
+    "repeats": 20
+  },
+  "environment": {
+    "platform": "Linux-5.15.0-135-generic-x86_64-with-glibc2.35",
+    "python": "3.10.16",
+    "torch": "2.7.1+cu128",
+    "torch_cuda": "12.8",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "setup": {
+    "model_load_seconds": 40.337726540863514,
+    "compile_wrapper_setup_seconds": 0.002426430583000183,
+    "warmup_wall_ms": [
+      16582.861468195915,
+      123.47785383462906,
+      121.51544541120529,
+      121.58990651369095,
+      123.26376885175705
+    ],
+    "first_warmup_wall_ms": 16582.861468195915,
+    "parameter_dtypes": {
+      "torch.bfloat16": {
+        "numel": 2669996032,
+        "bytes": 5339992064
+      },
+      "torch.float32": {
+        "numel": 189999956,
+        "bytes": 759999824
+      }
+    },
+    "captured_action_ms": null,
+    "inductor_metrics": {
+      "generated_kernel_count": 340,
+      "ir_nodes_pre_fusion": 895,
+      "num_bytes_accessed": 1752830784
+    }
+  },
+  "timing": {
+    "prefill": {
+      "mean_ms": 76.34149640798569,
+      "median_ms": 76.29745081067085,
+      "p95_ms": 77.70479954779148,
+      "min_ms": 75.09975880384445,
+      "max_ms": 78.98078113794327,
+      "std_ms": 0.9688515417523447
+    },
+    "action": {
+      "mean_ms": 45.489952713251114,
+      "median_ms": 45.46758159995079,
+      "p95_ms": 45.72454318404198,
+      "min_ms": 45.34564167261124,
+      "max_ms": 45.75403034687042,
+      "std_ms": 0.10672710333524119
+    },
+    "total": {
+      "mean_ms": 121.8314491212368,
+      "median_ms": 121.78793177008629,
+      "p95_ms": 123.21676164865494,
+      "min_ms": 120.53191661834717,
+      "max_ms": 124.43302571773529,
+      "std_ms": 1.0175441940769647
+    },
+    "deterministic_seed_run": {
+      "prefill_ms": 82.25689828395844,
+      "action_ms": 45.8754301071167,
+      "total_ms": 128.13232839107513
+    },
+    "records": [
+      {
+        "prefill_ms": 75.62614977359772,
+        "action_ms": 45.5111563205719,
+        "total_ms": 121.13730609416962
+      },
+      {
+        "prefill_ms": 77.14203745126724,
+        "action_ms": 45.63722014427185,
+        "total_ms": 122.7792575955391
+      },
+      {
+        "prefill_ms": 75.81432908773422,
+        "action_ms": 45.392826199531555,
+        "total_ms": 121.20715528726578
+      },
+      {
+        "prefill_ms": 77.63764262199402,
+        "action_ms": 45.51510512828827,
+        "total_ms": 123.15274775028229
+      },
+      {
+        "prefill_ms": 78.98078113794327,
+        "action_ms": 45.45224457979202,
+        "total_ms": 124.43302571773529
+      },
+      {
+        "prefill_ms": 75.23464411497116,
+        "action_ms": 45.37760466337204,
+        "total_ms": 120.6122487783432
+      },
+      {
+        "prefill_ms": 76.94707065820694,
+        "action_ms": 45.55382579565048,
+        "total_ms": 122.50089645385742
+      },
+      {
+        "prefill_ms": 75.38964599370956,
+        "action_ms": 45.34564167261124,
+        "total_ms": 120.7352876663208
+      },
+      {
+        "prefill_ms": 76.88996195793152,
+        "action_ms": 45.48110067844391,
+        "total_ms": 122.37106263637543
+      },
+      {
+        "prefill_ms": 77.19029486179352,
+        "action_ms": 45.75403034687042,
+        "total_ms": 122.94432520866394
+      },
+      {
+        "prefill_ms": 76.63775235414505,
+        "action_ms": 45.40029168128967,
+        "total_ms": 122.03804403543472
+      },
+      {
+        "prefill_ms": 76.07512176036835,
+        "action_ms": 45.51152139902115,
+        "total_ms": 121.5866431593895
+      },
+      {
+        "prefill_ms": 77.02086865901947,
+        "action_ms": 45.72299122810364,
+        "total_ms": 122.74385988712311
+      },
+      {
+        "prefill_ms": 76.61601901054382,
+        "action_ms": 45.38349062204361,
+        "total_ms": 121.99950963258743
+      },
+      {
+        "prefill_ms": 75.56366175413132,
+        "action_ms": 45.46239227056503,
+        "total_ms": 121.02605402469635
+      },
+      {
+        "prefill_ms": 75.09975880384445,
+        "action_ms": 45.432157814502716,
+        "total_ms": 120.53191661834717
+      },
+      {
+        "prefill_ms": 76.51977986097336,
+        "action_ms": 45.46944051980972,
+        "total_ms": 121.98922038078308
+      },
+      {
+        "prefill_ms": 75.33418387174606,
+        "action_ms": 45.52154242992401,
+        "total_ms": 120.85572630167007
+      },
+      {
+        "prefill_ms": 75.71664452552795,
+        "action_ms": 45.46572268009186,
+        "total_ms": 121.18236720561981
+      },
+      {
+        "prefill_ms": 75.39357990026474,
+        "action_ms": 45.40874809026718,
+        "total_ms": 120.80232799053192
+      }
+    ]
+  },
+  "memory": {
+    "allocated_bytes": 6430089728,
+    "reserved_bytes": 6673137664,
+    "peak_allocated_bytes_during_repeats": 6470128640,
+    "peak_reserved_bytes_during_repeats": 6673137664
+  },
+  "output": {
+    "action_path": "/root/autodl-tmp/GalaxeaVLA/out_put/g05_libero_case/episode_000_frame_000/bf16_compile_module_profile/benchmark/bf16_compile_recheck_action_seed_0.npy",
+    "shape": [
+      1,
+      32,
+      20
+    ],
+    "all_finite": true,
+    "min": -0.6000837683677673,
+    "max": 1.001307487487793,
+    "mean": 0.08047237992286682
+  },
+  "reference_comparison": null
+}

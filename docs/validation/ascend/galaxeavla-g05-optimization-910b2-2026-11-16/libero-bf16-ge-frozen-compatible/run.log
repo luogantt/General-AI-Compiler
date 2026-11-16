@@ -1,0 +1,62 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 58298.495 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 26.453 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Selected-backend numerical check cold_A
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+Warning: tiling offset out of range, index: 32
+....Warning: tiling offset out of range, index: 32
+Warning: tiling offset out of range, index: 32
+Warning: tiling offset out of range, index: 32
+Warning: tiling offset out of range, index: 32
+..Warning: tiling offset out of range, index: 32
+..Warning: tiling offset out of range, index: 32
+./usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+.[progress] Selected-backend numerical check first_B
+[progress] Selected-backend numerical check replay_A
+[progress] Selected-backend numerical check replay_B
+[warmup 1/5] 1597.460 ms
+[warmup 2/5] 1597.823 ms
+[warmup 3/5] 1598.382 ms
+[warmup 4/5] 1597.518 ms
+[warmup 5/5] 1596.253 ms
+[measure 1/20] 1595.720 ms
+[measure 2/20] 1594.743 ms
+[measure 3/20] 1595.814 ms
+[measure 4/20] 1597.439 ms
+[measure 5/20] 1597.166 ms
+[measure 6/20] 1597.128 ms
+[measure 7/20] 1598.118 ms
+[measure 8/20] 1591.678 ms
+[measure 9/20] 1588.328 ms
+[measure 10/20] 1590.522 ms
+[measure 11/20] 1587.905 ms
+[measure 12/20] 1588.353 ms
+[measure 13/20] 1587.784 ms
+[measure 14/20] 1587.176 ms
+[measure 15/20] 1588.564 ms
+[measure 16/20] 1588.052 ms
+[measure 17/20] 1588.994 ms
+[measure 18/20] 1590.631 ms
+[measure 19/20] 1594.612 ms
+[measure 20/20] 1591.168 ms
+[progress] Counting partial LIBERO workload in one restored-eager diagnostic request (outside timing)
+{"report": "/root/work/libero-bf16-ge-frozen-compatible/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 100.62366148922592, "p50": 100.54314485751092, "p95": 101.2029450153932, "min": 100.03405995666981, "max": 102.07247966900468}, "prefill_ms": {"count": 20, "mean": 1491.3712280336767, "p50": 1490.6200000550598, "p95": 1496.9460930675268, "min": 1486.4911502227187, "max": 1497.105940245092}, "total_ms": {"count": 20, "mean": 1591.9948895229027, "p50": 1590.8995950594544, "p95": 1597.4733692128211, "min": 1587.1764700859785, "max": 1598.1178302317858}}}

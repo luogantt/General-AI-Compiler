@@ -1,0 +1,139 @@
+[progress] Validate source/checkpoint
+[progress] Load fm-only / bf16
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+[shape_meta] Image 'head_rgb' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'left_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_left]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'right_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Loaded in 86274.827 ms
+[progress] Eager reference request (verification only)
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] First selected-backend request (includes compile if enabled)
+Traceback (most recent call last):
+  File "/root/work/benchmark_g05_optimize.py", line 359, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 350, in main
+    report = run(args)
+             ^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 236, in run
+    cold, cold_outputs = run_one(**arguments)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 156, in run_one
+    results, timings = inferencer.infer_with_timing([observation])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/inferencer.py", line 77, in infer_with_timing
+    batch = self.forward_batch(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_full.py", line 554, in forward_batch
+    batch = self.policy.predict_action(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 483, in predict_action
+    return self.forward(batch, inference_mode=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 579, in forward
+    generated = self.forward_inference(
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 1021, in forward_inference
+    state = self.prefill(samples, pixel_values)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 790, in prefill
+    vlm_hidden, vlm_kv, position_ids = self.model.vlm_prefill(
+                                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_model_qwen35.py", line 462, in vlm_prefill
+    vlm_hidden, vlm_cache = self.vlm(
+                            ^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/mixture_qwen35.py", line 663, in forward
+    hidden_states, _new_kv = layer(
+                             ^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/mixture_qwen35.py", line 325, in forward
+    hidden_states = self.linear_attn(
+                    ^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/gated_deltanet.py", line 449, in forward
+    core_attn_out, last_recurrent_state = chunk_gated_delta_rule(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/g05_npu_graphs.py", line 163, in dispatch
+    return compiled(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/gated_deltanet.py", line 58, in torch_chunk_gated_delta_rule
+    def torch_chunk_gated_delta_rule(
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 1209, in forward
+    return compiled_fn(full_args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 328, in runtime_wrapper
+    all_outs = call_func_at_runtime_with_args(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+                            ^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 689, in inner_fn
+    outs = compiled_fn(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 495, in wrapper
+    return compiled_fn(runtime_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/utils.py", line 100, in g
+    return f(*args)
+           ^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/npu_fx_compiler.py", line 507, in __call__
+    gm_result = self.run_kernel(*args, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1232, in kernel
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 826, in __call__
+    fn_key = self.compile(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1012, in compile
+    self.compile_for_graph_key(graph_key, *args, **kwargs)
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1115, in compile_for_graph_key
+    captured_outputs = self.capture(graph_key, *args, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1176, in capture
+    captured_outputs = self.fx_forward(*args_list, node_info=self._updated_node_infos, is_capturing=True,
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 614, in forward
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_ops.py", line 756, in __call__
+    return self._op(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: copy_between_host_and_device_opapi:../torch_npu/csrc/aten/ops/op_api/CopyKernelOpApi.cpp:55 NPU function error: aclrtMemcpy, error code is 107030
+[ERROR] 2026-11-16-09:41:42 (PID:6040, Device:0, RankID:-1) ERR00100 PTA call acl api failed.
+EE9999: Inner Error!
+EE9999[PID: 6040] 2026-11-16-09:41:42.646.408 (EE9999):  Not allow to synchronize captured-stream, stream_id=43.[FUNC:StreamSynchronize][FILE:api_error.cc][LINE:1016]
+        TraceBack (most recent call last):
+       rtStreamSynchronize execution failed, reason=stream is captured[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:65]
+       synchronize stream failed, runtime result = 107027[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:148]
+       rtMemcpy execution failed, reason=the current capture mode does not support this operation[FUNC:FuncErrorReason][FILE:error_message_manage.cc][LINE:65]
+       synchronized memcpy failed, kind = 1, runtime result = 107030[FUNC:ReportCallError][FILE:log_inner.cpp][LINE:148]
+

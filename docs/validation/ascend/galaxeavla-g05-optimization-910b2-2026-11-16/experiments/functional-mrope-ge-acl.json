@@ -1,0 +1,231 @@
+{
+  "scope": "real configuration and rotary modules only; no model weights",
+  "cases": [
+    {
+      "module": "vlm",
+      "backend": "eager",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "eager",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "eager",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "eager",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair_aclgraph",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair_aclgraph",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair_aclgraph",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "vlm",
+      "backend": "torchair_aclgraph",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "eager",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "eager",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "eager",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "eager",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair_aclgraph",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair_aclgraph",
+      "case": 1,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair_aclgraph",
+      "case": 0,
+      "max_abs": 0.0
+    },
+    {
+      "module": "action_expert",
+      "backend": "torchair_aclgraph",
+      "case": 1,
+      "max_abs": 0.0
+    }
+  ],
+  "status": "success",
+  "source_sha256": "c99c420128859d44fd3efccbd2b2bdf3f9c0f22cc8321ae66e2e30cbaa264218",
+  "helper_sha256": "1c3ebd8e24bedf49c9165252c456704fa3daaefd26836423afa0907fb2112e0d",
+  "original_section_types": {
+    "vlm": "ListConfig",
+    "action_expert": "ListConfig"
+  },
+  "original_sections": {
+    "vlm": [
+      11,
+      11,
+      10
+    ],
+    "action_expert": [
+      11,
+      11,
+      10
+    ]
+  },
+  "metadata": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "scope": "AE and VLM first full-attention rotary_emb instances only",
+    "operator": "two torch.where selections; no in-place slice writes",
+    "freqs_shape": "[3,B>0,S>0,32]",
+    "math_dtype": "torch.float32",
+    "mrope_section": [
+      11,
+      11,
+      10
+    ],
+    "cached": "two static Boolean index masks per selected rotary instance",
+    "section_normalization": "selected instance attribute only: validated Sequence to tuple; original config object untouched and restored by identity",
+    "height_indices": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31
+    ],
+    "width_indices": [
+      2,
+      5,
+      8,
+      11,
+      14,
+      17,
+      20,
+      23,
+      26,
+      29
+    ],
+    "cached_model_inputs_or_outputs": false,
+    "cached_positions_or_frequencies": false,
+    "selection_has_no_floating_point_arithmetic": true,
+    "alias_contract": "audited forward creates local freqs and consumes only the returned tensor",
+    "class_or_global_registry_modified": false,
+    "fallback_allowed": false,
+    "source_hash_canonicalization": "inspect.getsource; CRLF to LF; dedent outer class; one trailing LF; full body/decorators/comments retained",
+    "forward_source_sha256": "f9f027303e413ebb5ed673d334b47835f31ed1990eed61a9a452471cb188477e",
+    "interleave_source_sha256": "c7ba6085984cbc15273134a6aad378dea4ac5bdca9fe93479dab359720fa65d5",
+    "implementation_sha256": "1c3ebd8e24bedf49c9165252c456704fa3daaefd26836423afa0907fb2112e0d",
+    "targets": [
+      {
+        "mixture": "vlm",
+        "first_full_attention_layer": 0
+      },
+      {
+        "mixture": "action_expert",
+        "first_full_attention_layer": 0
+      }
+    ],
+    "runtime_validation": "not performed by installer; full-model A/B/C/D/E/F replay required"
+  },
+  "restored_exact": true
+}

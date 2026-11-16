@@ -1,0 +1,18 @@
+[
+  {
+    "log_path": "/root/work/libero-bf16-torchair-ae-vlm.log",
+    "size_bytes": 6744204,
+    "sha256": "1cefdbb9a7fc422e9345d20b3acd441026623d7575549f418a71ecc18df649a2",
+    "first_unimplemented": "torch.ops.aten.softplus.default ge_converter is not implemented!",
+    "status": "failed_before_measurement",
+    "full_log_retained_on_host": true
+  },
+  {
+    "log_path": "/root/work/libero-bf16-ge-frozen-ae-vlm.log",
+    "size_bytes": 6770584,
+    "sha256": "3793e839bf60da8500e96b5ce7fc75eb410c49046e81bab1fb2d6d1679c73079",
+    "first_unimplemented": "torch.ops.aten.eye.default ge_converter is not implemented!",
+    "status": "failed_before_measurement",
+    "full_log_retained_on_host": true
+  }
+]

@@ -1,0 +1,101 @@
+{
+  "baseline": "fp32resident_steps10",
+  "variants": [
+    {
+      "variant": "fp32resident_steps10",
+      "description": "Baseline: FP32 resident / BF16 autocast / 10 steps",
+      "prefill_p50_ms": 79.29796690586954,
+      "action_p50_ms": 331.46817155648023,
+      "total_p50_ms": 410.5182964121923,
+      "total_p95_ms": 442.7482877159491,
+      "speedup_vs_baseline": 1.0,
+      "peak_allocated_gib": 14.977737426757812,
+      "first_warmup_seconds": 11.029020183952525,
+      "mae_vs_baseline": 0.0,
+      "relative_l2_vs_baseline_percent": 0.0,
+      "cosine_vs_baseline": 1.0,
+      "gripper_sign_agreement": 1.0
+    },
+    {
+      "variant": "bf16resident_steps10",
+      "description": "BF16 resident / 10 steps",
+      "prefill_p50_ms": 76.90829993225634,
+      "action_p50_ms": 334.7470414591953,
+      "total_p50_ms": 412.0211899280548,
+      "total_p95_ms": 417.0220750849694,
+      "speedup_vs_baseline": 0.9963523878077122,
+      "peak_allocated_gib": 6.025775909423828,
+      "first_warmup_seconds": 11.178900507977232,
+      "mae_vs_baseline": 0.0007633879057331276,
+      "relative_l2_vs_baseline_percent": 0.2242913128290505,
+      "cosine_vs_baseline": 0.999997498546483,
+      "gripper_sign_agreement": 1.0
+    },
+    {
+      "variant": "bf16resident_steps5",
+      "description": "BF16 resident / 5 steps",
+      "prefill_p50_ms": 77.5951340328902,
+      "action_p50_ms": 179.73069788422436,
+      "total_p50_ms": 258.52790533099324,
+      "total_p95_ms": 261.6619242238812,
+      "speedup_vs_baseline": 1.587907099957375,
+      "peak_allocated_gib": 6.025775909423828,
+      "first_warmup_seconds": 10.979309235000983,
+      "mae_vs_baseline": 0.0020043534854526763,
+      "relative_l2_vs_baseline_percent": 0.5269287795180326,
+      "cosine_vs_baseline": 0.9999868936279928,
+      "gripper_sign_agreement": 1.0
+    },
+    {
+      "variant": "bf16resident_steps10_compileae",
+      "description": "BF16 resident / 10 steps / compiled AE",
+      "prefill_p50_ms": 75.41659742128104,
+      "action_p50_ms": 45.025037485174835,
+      "total_p50_ms": 120.4771650955081,
+      "total_p95_ms": 125.32903084065765,
+      "speedup_vs_baseline": 3.4074365551908072,
+      "peak_allocated_gib": 6.0257768630981445,
+      "first_warmup_seconds": 16.53646727395244,
+      "mae_vs_baseline": 0.0007206489556535546,
+      "relative_l2_vs_baseline_percent": 0.19213384533429817,
+      "cosine_vs_baseline": 0.9999981638716486,
+      "gripper_sign_agreement": 1.0
+    },
+    {
+      "variant": "bf16resident_steps5_compileae",
+      "description": "BF16 resident / 5 steps / compiled AE",
+      "prefill_p50_ms": 73.13393044751137,
+      "action_p50_ms": 23.03044404834509,
+      "total_p50_ms": 96.23213298618793,
+      "total_p95_ms": 100.01756707206368,
+      "speedup_vs_baseline": 4.265917045308695,
+      "peak_allocated_gib": 6.0257768630981445,
+      "first_warmup_seconds": 45.969119221903384,
+      "mae_vs_baseline": 0.0020208915375405923,
+      "relative_l2_vs_baseline_percent": 0.5350947736535984,
+      "cosine_vs_baseline": 0.9999863567562481,
+      "gripper_sign_agreement": 1.0
+    }
+  ],
+  "compiled_vs_eager_same_configuration": {
+    "10": {
+      "mae": 0.000514702929649502,
+      "rmse": 0.000715045688177153,
+      "max_abs_error": 0.0033869147300720215,
+      "relative_l2": 0.0013607329852875734,
+      "cosine_similarity": 0.9999990746323534
+    },
+    "5": {
+      "mae": 0.00045181003432454806,
+      "rmse": 0.0005837280988417339,
+      "max_abs_error": 0.0026189684867858887,
+      "relative_l2": 0.0011120478907661795,
+      "cosine_similarity": 0.9999993853715962
+    }
+  },
+  "interpretation": {
+    "safe_default": "bf16resident_steps10_compileae",
+    "fast_candidate": "bf16resident_steps5_compileae",
+    "note": "5-step numerical agreement is not a substitute for LIBERO closed-loop success rate."
+  }
+}

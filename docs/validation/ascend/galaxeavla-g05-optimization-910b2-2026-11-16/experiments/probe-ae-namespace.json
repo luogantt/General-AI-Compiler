@@ -1,0 +1,44 @@
+{
+  "status": "success",
+  "stage": "complete",
+  "torch_version": "2.7.1+cpu",
+  "device": "cpu",
+  "backend": "eager",
+  "fullgraph": true,
+  "dynamic": false,
+  "fallback_allowed": false,
+  "scope": "tiny CPU module dispatch/guard validation only; no NPU/checkpoint",
+  "helper": "/root/work/g05_ae_fused_attention.py",
+  "old_variant": {
+    "failed": true,
+    "error_type": "InternalTorchDynamoError",
+    "error": "AttributeError: 'AttentionInterface' object has no attribute 'attention'\n"
+  },
+  "private_module": "_g05_ae_attention_7bc5d814335f44488f1023f52baee6c5",
+  "compile_and_replay_ms": 47.69389005377889,
+  "cases": [
+    {
+      "case": "A",
+      "exact": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "B",
+      "exact": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "A",
+      "exact": true,
+      "max_abs": 0.0
+    },
+    {
+      "case": "B",
+      "exact": true,
+      "max_abs": 0.0
+    }
+  ],
+  "unique_graphs": 1,
+  "original_registry_unchanged": true,
+  "restore_exact": true
+}

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Stages the pinned G0.5 base Git-LFS objects directly on the Ascend host.
+Stages the pinned G0.5 base or LIBERO Git-LFS objects on the Ascend host.
 
 .DESCRIPTION
 The long-lived Hugging Face token stays on the local machine. The script asks
@@ -19,6 +19,13 @@ the formal checkpoint or its .part file.
 
 Resumably stages and verifies the three large LFS objects in g05-base.
 Replace ascend-910b-host with the verified target alias in your known_hosts file.
+
+.EXAMPLE
+.\stage_g05_base_remote.ps1 -HostKeyAlias ascend-910b-host -CheckpointVariant libero -Segments 8
+
+Stages the LIBERO checkpoint and shared codec/tokenizer. Configuration and
+dataset_stats.json are separate small files from the same pinned revision.
+Reads HUGGING_FACE_HUB_TOKEN when set, otherwise prompts securely.
 #>
 [CmdletBinding()]
 param(
@@ -56,13 +63,17 @@ param(
 
     [Parameter()]
     [ValidateRange(1, 16)]
-    [int] $Segments = 1
+    [int] $Segments = 1,
+
+    [Parameter()]
+    [ValidateSet('base', 'libero')]
+    [string] $CheckpointVariant = 'base'
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-# This helper stages only the three Git-LFS objects in the g05-base subset. The
+# This helper stages only the three Git-LFS objects in the selected subset. The
 # remaining small configuration/tokenizer files can use the regular pinned
 # downloader. Keeping the high-volume path LFS-only lets this script validate
 # every completed object against the official LFS SHA-256.
@@ -80,8 +91,16 @@ $Script:ExpectedLfsFiles = [ordered] @{
     'g05-base/checkpoints/model_state_dict.pt'         = [Int64] 11440519964
     'qwen3_5_2b_base_processor/tokenizer.json'         = [Int64] 12807196
 }
+if ($CheckpointVariant -eq 'libero') {
+    $Script:ExpectedLfsFiles.Remove('g05-base/checkpoints/model_state_dict.pt')
+    $Script:ExpectedLfsFiles['g05-libero/model.pt'] = [Int64] 11440381065
+}
 
 function Get-HuggingFaceTokenInteractive {
+    $environmentToken = [Environment]::GetEnvironmentVariable('HUGGING_FACE_HUB_TOKEN')
+    if (-not [String]::IsNullOrWhiteSpace($environmentToken)) {
+        return $environmentToken.Trim()
+    }
     $secureToken = Read-Host 'Hugging Face access token' -AsSecureString
     $tokenPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
     try {
@@ -997,7 +1016,7 @@ try {
                 -ProbeSize 0 `
                 -SegmentCount $Segments
         }
-        Write-Host 'All pinned g05-base LFS objects were staged and SHA-256 verified.'
+        Write-Host "All pinned g05-$CheckpointVariant LFS objects were staged and SHA-256 verified."
     }
 }
 finally {

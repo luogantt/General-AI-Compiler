@@ -1,0 +1,4256 @@
+{
+  "status": "success",
+  "experiment": "backend-local square eye decomposition",
+  "torch_version": "2.7.1+cpu",
+  "device": "cpu",
+  "cpu_threads": 1,
+  "helper": "/root/work/g05_npu_graphs.py",
+  "rows": [
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float32",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 0,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 1,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 2,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 7,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "None",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.float16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bfloat16"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bfloat16",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int32"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int32",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.int8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.uint8"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.uint8",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bool"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.bool",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex64"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex64",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex128"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 32,
+      "kwargs": {
+        "dtype": "torch.complex128",
+        "device": "cpu",
+        "layout": "torch.strided",
+        "pin_memory": "False"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 3,
+      "kwargs": {
+        "pin_memory": "None"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": null,
+      "decomposition_error": null,
+      "exact": true,
+      "dtype_equal": true,
+      "layout_equal": true,
+      "device_equal": true,
+      "strides_equal": true,
+      "pinning_equal": true,
+      "matched": true
+    },
+    {
+      "n": 3,
+      "kwargs": {
+        "pin_memory": "True"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": "RuntimeError",
+      "decomposition_error": "RuntimeError",
+      "matched": true
+    },
+    {
+      "n": -1,
+      "kwargs": {},
+      "default_dtype": "torch.float64",
+      "reference_error": "RuntimeError",
+      "decomposition_error": "RuntimeError",
+      "matched": true
+    },
+    {
+      "n": 3,
+      "kwargs": {
+        "layout": "torch.sparse_coo"
+      },
+      "default_dtype": "torch.float64",
+      "reference_error": "NotImplementedError",
+      "decomposition_error": "RuntimeError",
+      "matched": true
+    }
+  ],
+  "cases": 244,
+  "scope": "CPU square eye parity; NPU/GE compilation still requires its own test"
+}

@@ -1,0 +1,554 @@
+{
+  "status": "success",
+  "scope": "prepared device inputs -> Vision/VLM prefill -> FM10 -> normalized [1,32,20] action; no CoT/AR",
+  "excluded": [
+    "image loading",
+    "outer image preprocessing",
+    "outer batch H2D",
+    "output D2H",
+    "denormalization",
+    "network",
+    "warmup/compilation",
+    "shared-noise correctness requests"
+  ],
+  "included_prefill_work": "Official encode_inference/build_proprio_batch CPU work and internal device transfers, matching the original 3090 timer",
+  "noise_timing": {
+    "mode": "native",
+    "included": "original device torch.randn",
+    "correctness": "All verification and saved action.npy use shared noise regardless of timing mode"
+  },
+  "source_revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+  "asset_revision": "aca2916ba2adaba3ce05bfa279cdc6b98da35cad",
+  "assets": {
+    "g05-libero/.hydra/config.yaml": {
+      "size": 20644,
+      "sha256": "544c185b903f94d76617b419c4d3d395444d8d3b342409465645e7d7386a001a"
+    },
+    "g05-libero/dataset_stats.json": {
+      "size": 95006,
+      "sha256": "b3953f24d94d08e75134ce63fb77c69a09ef2ed46f2dffc0397d2f2b2bebc756"
+    },
+    "qwen3_5_2b_base_processor/config.json": {
+      "size": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "qwen3_5_2b_base_processor/configuration.json": {
+      "size": 51,
+      "sha256": "2d4464e2ead06bc9bc718c781309ad1e7baded626d66e8dcdc8b469ba185faf0"
+    },
+    "qwen3_5_2b_base_processor/merges.txt": {
+      "size": 3353259,
+      "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    "qwen3_5_2b_base_processor/preprocessor_config.json": {
+      "size": 390,
+      "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516"
+    },
+    "qwen3_5_2b_base_processor/tokenizer_config.json": {
+      "size": 16712,
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de"
+    },
+    "qwen3_5_2b_base_processor/video_preprocessor_config.json": {
+      "size": 386,
+      "sha256": "d039cd7d88b3502a99edd455496b75b44ecf7dd3b3669748bafac37e6cecc085"
+    },
+    "qwen3_5_2b_base_processor/vocab.json": {
+      "size": 6722759,
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    },
+    "action_tokenizer.pt": {
+      "size": 506886775,
+      "sha256": "5088f64a5452a60bbc8cac90ee7d79c156f1d14540bc3139aa7060f862dddace"
+    },
+    "qwen3_5_2b_base_processor/tokenizer.json": {
+      "size": 12807196,
+      "sha256": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927"
+    },
+    "g05-libero/model.pt": {
+      "size": 11440381065,
+      "sha256": "432f225c7647bdab77bfa2c2b397dc38cf8631bd70c92b85b261ff2817c1e795"
+    }
+  },
+  "benchmark_files_sha256": {
+    "benchmark_g05_libero.py": "a1f52fa00763946f76d667da14ce47326f08f44c01dd0c08ce380567a426a778",
+    "benchmark_g05_full.py": "bb54e804f8c32d810f70afcf7552dfe6602623b1038cea901fa5f7f3608aa684",
+    "g05_npu_graphs.py": "9aff01a658749eccc35e884699dfe7f6dc334ded238e1c2a03f6f6270bff168b"
+  },
+  "source": {
+    "path": "/root/work/GalaxeaVLA-upstream",
+    "revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+    "tree_state": {
+      "dirty": true,
+      "status": [
+        " M scripts/serve_policy.py",
+        " M src/g05/models/g05/g05_model_qwen35.py",
+        " M src/g05/models/g05/g05_policy.py",
+        " M src/g05/models/g05/helpers/ar_helper.py",
+        " M src/g05/models/g05/inferencer.py",
+        " M src/g05/models/g05/model/modules.py",
+        " M src/g05/models/g05/model/utils.py",
+        " M src/g05/models/g05/qwen35/gated_deltanet.py",
+        " M src/g05/models/g05/qwen35/mixture_qwen35.py",
+        " M src/g05/models/g05/qwen35/modules.py",
+        " M src/g05/models/g05/qwen35/vision.py",
+        " M src/g05/tokenizer/interface/vq_base.py",
+        " M src/g05/utils/checkpoint/checkpoint_utils.py",
+        "?? fusion_result.json",
+        "?? src/g05/utils/common/device.py",
+        "?? tests/test_device_utils.py",
+        "?? tests/test_qwen35_device_fallbacks.py"
+      ],
+      "tracked_diff_sha256": "bcbf8968073712c7214c47ae9322cf51534f84898a396598ceb8ce0906f4e24a",
+      "tracked_diff_bytes": 65245,
+      "untracked_files": [
+        {
+          "path": "fusion_result.json",
+          "size_bytes": 7606,
+          "sha256": "7251410a6516f2fd12eff34d5459b3f141b19003d990927d6ae7e3384e0fa734"
+        },
+        {
+          "path": "src/g05/utils/common/device.py",
+          "size_bytes": 4369,
+          "sha256": "6a8871ed621bec452f31c6b8cbe7708fd4652497729811cb9a64f4edcc5276b3"
+        },
+        {
+          "path": "tests/test_device_utils.py",
+          "size_bytes": 1725,
+          "sha256": "21b442eba4266219aa500cecfebca753d100985e9706a5b2add2bc1320825b69"
+        },
+        {
+          "path": "tests/test_qwen35_device_fallbacks.py",
+          "size_bytes": 3352,
+          "sha256": "09ed47e1248d633212b746e09717f53c0a310efbf7e810b6daf35af746453c5c"
+        }
+      ]
+    },
+    "key_files_sha256": {
+      "src/g05/models/g05/qwen35/gated_deltanet.py": "82af3c5d60abc7456766bf2a457f8be704b41c3722cd8442a5fb782bb6f4a7a5",
+      "src/g05/models/g05/g05_policy.py": "13a12ed06aa8f89edadc32442bfb3204d77f79e51f99c6ae9e9b0ebedfb41039",
+      "src/g05/models/g05/g05_policy_qwen35.py": "9761eedc73581e78ff26fffafde3ca085b160d93e1dc26b752ac2b21253b830e",
+      "src/g05/models/g05/helpers/fm_helper.py": "63ccf72d90581dc4c38126f4bd3c4699879a67f3701986201b7e616318c9a7f2",
+      "scripts/serve_policy.py": "4d380351c621860ea9cb76a4f28f7e83e6d716d4f5371fd2f83541a0efcc248b"
+    }
+  },
+  "config_patches": {
+    "eval_embodiment": "libero",
+    "model.use_torch_compile": false,
+    "model.model_weights_to_bf16": true,
+    "model.model_arch.pretrained_model_path": null,
+    "model.model_arch.hf_processor_path": "/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+    "model.processor.tokenizer_params.pretrained_model_name_or_path": "/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+    "tokenizer.vq_config.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.tokenizer.vq_config.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.model_arch.AT_CONFIG.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.model_arch.fm.use_correlated_noise": false,
+    "model.model_arch.vlm.linear_attn_backend": "torch",
+    "model.model_arch.action_expert.linear_attn_backend": "torch"
+  },
+  "contract": {
+    "model.use_torch_compile": false,
+    "model.model_arch.action_dim": 20,
+    "model.model_arch.proprio_dim": 20,
+    "model.model_arch.predict_cot": false,
+    "model.model_arch.discrete_action": false,
+    "model.model_arch.continuous_action": true,
+    "model.model_arch.return_continuous_action": true,
+    "model.model_arch.attn_implementation": "eager",
+    "model.model_arch.fm.num_inference_steps": 10,
+    "model.model_arch.fm.time_convention": "pi_convention",
+    "model.model_arch.fm.use_correlated_noise": false,
+    "model.processor.num_output_cameras": 2,
+    "model.processor.num_input_cameras": 2,
+    "model.processor.camera_size_config.exterior": [
+      256,
+      256
+    ],
+    "model.processor.camera_size_config.wrist_right": [
+      256,
+      256
+    ],
+    "data.action_size": 32,
+    "data.obs_size": 1
+  },
+  "input": {
+    "files_sha256": {
+      "case.json": "88125ba0258013aae556b18a179b6693288eb61dc388c6cf7ce97bb779740bd4",
+      "image.png": "0f6008542bd572e28d555d804b2c3c78bcef9a99cbe4092362bd6c8232cf5632",
+      "wrist_image.png": "341401f9ed834a8745678d432ed7dfc1be69437cf2e107bc1cb6cfc89516d62a"
+    },
+    "episode": 0,
+    "frame": 0,
+    "task": "open the middle drawer of the cabinet",
+    "frequency": 20.0
+  },
+  "noise": {
+    "path": "/root/work/libero-bf16-eager-native/noise.npy",
+    "sha256": "8020c1d3fdffba5f3bf74ad4a62c7c9b5dfcefb3df39409810f8b494c3d6ebc4",
+    "tensor_sha256": "e0d931ba64cc38117b2f722b6c19529c0bc49198303bb2e4115d0efdd8821e87",
+    "shape": [
+      1,
+      32,
+      20
+    ],
+    "origin": "NumPy PCG64 CPU Gaussian; not the historical CUDA seed-0 noise",
+    "seed": 0
+  },
+  "comparison_identity": {
+    "checkpoint_sha256": "432f225c7647bdab77bfa2c2b397dc38cf8631bd70c92b85b261ff2817c1e795",
+    "sidecars": {
+      "g05-libero/.hydra/config.yaml": "544c185b903f94d76617b419c4d3d395444d8d3b342409465645e7d7386a001a",
+      "g05-libero/dataset_stats.json": "b3953f24d94d08e75134ce63fb77c69a09ef2ed46f2dffc0397d2f2b2bebc756",
+      "qwen3_5_2b_base_processor/config.json": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+      "qwen3_5_2b_base_processor/configuration.json": "2d4464e2ead06bc9bc718c781309ad1e7baded626d66e8dcdc8b469ba185faf0",
+      "qwen3_5_2b_base_processor/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+      "qwen3_5_2b_base_processor/preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+      "qwen3_5_2b_base_processor/tokenizer_config.json": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+      "qwen3_5_2b_base_processor/video_preprocessor_config.json": "d039cd7d88b3502a99edd455496b75b44ecf7dd3b3669748bafac37e6cecc085",
+      "qwen3_5_2b_base_processor/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "action_tokenizer.pt": "5088f64a5452a60bbc8cac90ee7d79c156f1d14540bc3139aa7060f862dddace",
+      "qwen3_5_2b_base_processor/tokenizer.json": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927"
+    },
+    "input_files_sha256": {
+      "case.json": "88125ba0258013aae556b18a179b6693288eb61dc388c6cf7ce97bb779740bd4",
+      "image.png": "0f6008542bd572e28d555d804b2c3c78bcef9a99cbe4092362bd6c8232cf5632",
+      "wrist_image.png": "341401f9ed834a8745678d432ed7dfc1be69437cf2e107bc1cb6cfc89516d62a"
+    },
+    "noise_tensor_sha256": "e0d931ba64cc38117b2f722b6c19529c0bc49198303bb2e4115d0efdd8821e87",
+    "input_ids_sha256": "633ba146481625a8b4583047ad34bc968c9e67f696cd00416591a0105ec6680e",
+    "contract": {
+      "model.use_torch_compile": false,
+      "model.model_arch.action_dim": 20,
+      "model.model_arch.proprio_dim": 20,
+      "model.model_arch.predict_cot": false,
+      "model.model_arch.discrete_action": false,
+      "model.model_arch.continuous_action": true,
+      "model.model_arch.return_continuous_action": true,
+      "model.model_arch.attn_implementation": "eager",
+      "model.model_arch.fm.num_inference_steps": 10,
+      "model.model_arch.fm.time_convention": "pi_convention",
+      "model.model_arch.fm.use_correlated_noise": false,
+      "model.processor.num_output_cameras": 2,
+      "model.processor.num_input_cameras": 2,
+      "model.processor.camera_size_config.exterior": [
+        256,
+        256
+      ],
+      "model.processor.camera_size_config.wrist_right": [
+        256,
+        256
+      ],
+      "data.action_size": 32,
+      "data.obs_size": 1
+    },
+    "weights": "bf16",
+    "autocast": "bfloat16"
+  },
+  "compilation": {
+    "name": "eager",
+    "scope": "policy.model.action_expert.forward only",
+    "fullgraph": null,
+    "dynamic": null,
+    "fallback_allowed": false,
+    "options": {},
+    "compilation_is_lazy": false
+  },
+  "vlm_compilation": {
+    "name": "eager",
+    "scope": "policy.model.vlm.forward only",
+    "fullgraph": null,
+    "dynamic": null,
+    "fallback_allowed": false,
+    "options": {},
+    "compilation_is_lazy": false
+  },
+  "gdn_compilation": {
+    "name": "eager",
+    "scope": "NPU GatedDeltaNet tensor helpers; all layers in this process",
+    "module": "g05.models.g05.qwen35.gated_deltanet",
+    "selected_helpers": [
+      "chunk",
+      "recurrent"
+    ],
+    "options": {},
+    "helpers": {},
+    "equations_changed": false,
+    "recurrent_state_precision": "original FP32",
+    "chunk_size": "unchanged; upstream caller selects 32",
+    "source_files_modified": false,
+    "npu_only": true,
+    "fallback_allowed": false
+  },
+  "gdn_algorithm": {
+    "name": "original"
+  },
+  "context_optimization": {
+    "enabled": false
+  },
+  "context_verification": {
+    "cases": {},
+    "reference_contrasts_against_A": {},
+    "scope": "C changes proprio pose by +0.01; D changes task open -> close; each is compared to unmodified eager twice with identical noise; no closed-loop accuracy claim"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.7.1+cpu",
+    "device": "npu:0",
+    "device_type": "npu",
+    "device_name": "Ascend910B2"
+  },
+  "load_ms": 79599.22394994646,
+  "preparation_ms": 26.15366969257593,
+  "warmup": [
+    {
+      "prefill_ms": 996.334689669311,
+      "action_ms": 767.6936602219939,
+      "total_ms": 1764.028349891305
+    },
+    {
+      "prefill_ms": 267.8944398649037,
+      "action_ms": 757.2534000501037,
+      "total_ms": 1025.1478399150074
+    },
+    {
+      "prefill_ms": 264.68918984755874,
+      "action_ms": 761.314480099827,
+      "total_ms": 1026.0036699473858
+    },
+    {
+      "prefill_ms": 267.9392802529037,
+      "action_ms": 753.5034096799791,
+      "total_ms": 1021.4426899328828
+    },
+    {
+      "prefill_ms": 266.3128203712404,
+      "action_ms": 750.9020599536598,
+      "total_ms": 1017.2148803249002
+    }
+  ],
+  "summary_ms": {
+    "action_ms": {
+      "count": 20,
+      "mean": 747.0263350289315,
+      "p50": 746.7601199168712,
+      "p95": 756.1823695432395,
+      "min": 737.5349500216544,
+      "max": 758.0848303623497
+    },
+    "prefill_ms": {
+      "count": 20,
+      "mean": 265.2966074645519,
+      "p50": 265.2891150210053,
+      "p95": 267.6164061529562,
+      "min": 261.84355979785323,
+      "max": 268.1627799756825
+    },
+    "total_ms": {
+      "count": 20,
+      "mean": 1012.3229424934834,
+      "p50": 1011.5459698718041,
+      "p95": 1022.6976339006796,
+      "min": 1000.6377599202096,
+      "max": 1023.9041997119784
+    }
+  },
+  "samples": [
+    {
+      "prefill_ms": 266.1313400603831,
+      "action_ms": 755.1217800937593,
+      "total_ms": 1021.2531201541424
+    },
+    {
+      "prefill_ms": 268.1627799756825,
+      "action_ms": 755.7414197362959,
+      "total_ms": 1023.9041997119784
+    },
+    {
+      "prefill_ms": 266.06360962614417,
+      "action_ms": 756.0822400264442,
+      "total_ms": 1022.1458496525884
+    },
+    {
+      "prefill_ms": 267.5876496359706,
+      "action_ms": 754.3094004504383,
+      "total_ms": 1021.8970500864089
+    },
+    {
+      "prefill_ms": 264.54930007457733,
+      "action_ms": 758.0848303623497,
+      "total_ms": 1022.6341304369271
+    },
+    {
+      "prefill_ms": 267.529440112412,
+      "action_ms": 749.8095100745559,
+      "total_ms": 1017.3389501869678
+    },
+    {
+      "prefill_ms": 266.02621003985405,
+      "action_ms": 750.0162599608302,
+      "total_ms": 1016.0424700006843
+    },
+    {
+      "prefill_ms": 265.3437899425626,
+      "action_ms": 747.0143497921526,
+      "total_ms": 1012.3581397347152
+    },
+    {
+      "prefill_ms": 265.23444009944797,
+      "action_ms": 747.9880098253489,
+      "total_ms": 1013.2224499247968
+    },
+    {
+      "prefill_ms": 266.81267004460096,
+      "action_ms": 748.6359598115087,
+      "total_ms": 1015.4486298561096
+    },
+    {
+      "prefill_ms": 266.6404601186514,
+      "action_ms": 741.7629701085389,
+      "total_ms": 1008.4034302271903
+    },
+    {
+      "prefill_ms": 264.2279099673033,
+      "action_ms": 746.5058900415897,
+      "total_ms": 1010.733800008893
+    },
+    {
+      "prefill_ms": 264.57377010956407,
+      "action_ms": 745.8963599056005,
+      "total_ms": 1010.4701300151646
+    },
+    {
+      "prefill_ms": 263.66523979231715,
+      "action_ms": 739.7122401744127,
+      "total_ms": 1003.3774799667299
+    },
+    {
+      "prefill_ms": 261.84355979785323,
+      "action_ms": 743.1892300955951,
+      "total_ms": 1005.0327898934484
+    },
+    {
+      "prefill_ms": 265.62590012326837,
+      "action_ms": 745.0772300362587,
+      "total_ms": 1010.7031301595271
+    },
+    {
+      "prefill_ms": 264.34057019650936,
+      "action_ms": 741.6495196521282,
+      "total_ms": 1005.9900898486376
+    },
+    {
+      "prefill_ms": 264.32689977809787,
+      "action_ms": 738.0433701910079,
+      "total_ms": 1002.3702699691057
+    },
+    {
+      "prefill_ms": 264.1437998972833,
+      "action_ms": 738.3511802181602,
+      "total_ms": 1002.4949801154435
+    },
+    {
+      "prefill_ms": 263.1028098985553,
+      "action_ms": 737.5349500216544,
+      "total_ms": 1000.6377599202096
+    }
+  ],
+  "memory": {
+    "memory_allocated_bytes": 6638380544,
+    "memory_reserved_bytes": 13331595264,
+    "max_memory_allocated_bytes": 6744743936,
+    "max_memory_reserved_bytes": 13331595264
+  },
+  "module_profile": null,
+  "trace_profile": null,
+  "workload": null,
+  "parameter_dtypes": {
+    "torch.float32": {
+      "numel": 189999956,
+      "bytes": 759999824
+    },
+    "torch.bfloat16": {
+      "numel": 2669996032,
+      "bytes": 5339992064
+    }
+  },
+  "output_validation": {
+    "scope": "normalized action chunk, seven valid LIBERO dimensions",
+    "valid_action_dimensions": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19
+    ],
+    "sample_count": 224,
+    "all_finite": true,
+    "mae": 0.0,
+    "rmse": 0.0,
+    "max_abs_error": 0.0,
+    "p95_abs_error": 0.0,
+    "relative_l2": 0.0,
+    "cosine_similarity": 1.0,
+    "sign_agreement": 1.0,
+    "gripper_sign_agreement": 1.0,
+    "mae_per_valid_dimension": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "padded_dimensions_max_abs_candidate": 0.0
+  },
+  "last_timed_output_validation": {
+    "scope": "normalized action chunk, seven valid LIBERO dimensions",
+    "valid_action_dimensions": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19
+    ],
+    "sample_count": 224,
+    "all_finite": true,
+    "mae": 0.0,
+    "rmse": 0.0,
+    "max_abs_error": 0.0,
+    "p95_abs_error": 0.0,
+    "relative_l2": 0.0,
+    "cosine_similarity": 1.0000000000000002,
+    "sign_agreement": 1.0,
+    "gripper_sign_agreement": 1.0,
+    "mae_per_valid_dimension": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "padded_dimensions_max_abs_candidate": 0.0
+  },
+  "eager_comparison": null,
+  "external_comparison": null,
+  "replay_verification": {
+    "cases": {},
+    "timings_ms": {},
+    "reference_contrast": null,
+    "reference_inputs_distinguishable": true,
+    "scope": "A/B/A/B; A=real sample, B=horizontal image flip plus negated noise, verification only; formal timings use A",
+    "coverage": "changed image content, VLM KV and FM action buffers; unchanged token shape; no closed-loop task-accuracy claim"
+  },
+  "numerical_thresholds": {
+    "max_relative_l2": 0.01,
+    "max_abs_error": 0.05,
+    "meaning": "engineering regression gate, not closed-loop task success"
+  }
+}

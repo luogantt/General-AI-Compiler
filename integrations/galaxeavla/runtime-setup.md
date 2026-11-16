@@ -59,10 +59,13 @@ git clone https://github.com/OpenGalaxea/GalaxeaVLA.git "$G05_DIR"
 git -C "$G05_DIR" checkout --detach 89f2322b4ad016e192437adc1a2c253b05bab246
 python "$GAC_DIR/tools/galaxeavla/apply_ascend_overlay.py" "$G05_DIR"
 python "$GAC_DIR/tools/galaxeavla/apply_ascend_overlay.py" "$G05_DIR" --apply
-export PYTHONPATH="$G05_DIR/src:$G05_DIR"
+export PYTHONPATH="$G05_DIR/src:$G05_DIR:$PYTHONPATH"
 cd "$G05_DIR"
 python -m pytest -q tests/test_device_utils.py tests/test_qwen35_device_fallbacks.py
 ```
+
+Keep the existing `PYTHONPATH` from CANN's `set_env.sh`: TorchAir GE needs its
+`tbe` and `te` Python packages as well as the GalaxeaVLA source paths.
 
 ## Official model assets
 

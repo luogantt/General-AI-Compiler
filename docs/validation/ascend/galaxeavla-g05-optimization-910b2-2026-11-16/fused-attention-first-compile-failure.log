@@ -1,0 +1,113 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 57876.206 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 27.542 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Eager context reference state_C
+[progress] Eager context reference task_D
+[progress] Selected-backend numerical check cold_A
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1] Error while creating guard:
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1] Name: "G['__import_g05_dot_models_dot_g05_dot_qwen35_dot_mixture_qwen35'].ALL_ATTENTION_FUNCTIONS.attention"
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Source: global
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Create Function: CLOSURE_MATCH
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Guard Types: None
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Code List: None
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Object Weakref: None
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     Guarded Class Weakref: None
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1] Traceback (most recent call last):
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]   File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_guards.py", line 357, in create
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     return self.create_fn(builder, self)
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]   File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/guards.py", line 1722, in CLOSURE_MATCH
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     val = self.get(guard.name)
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]           ^^^^^^^^^^^^^^^^^^^^
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]   File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/guards.py", line 1334, in get
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]     return eval(name, self.scope, closure_vars)
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1]   File "<string>", line 1, in <module>
+E1116 11:19:51.743000 31172 site-packages/torch/_guards.py:359] [0/1] AttributeError: 'AttentionInterface' object has no attribute 'attention'
+Traceback (most recent call last):
+  File "/root/work/benchmark_g05_libero.py", line 769, in <module>
+    main()
+  File "/root/work/benchmark_g05_libero.py", line 760, in main
+    report = run(args)
+             ^^^^^^^^^
+  File "/root/work/benchmark_g05_libero.py", line 516, in run
+    candidate_state, candidate, probe_timing = inference(chosen_batch)
+                                               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_libero.py", line 414, in inference
+    generated = policy.generate_action(state, selected_batch["samples"], action_dim_is_pad=selected_batch["action_dim_is_pad"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 894, in generate_action
+    results["action"] = self.model.inference_fm(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_model.py", line 596, in inference_fm
+    return self.fm_helper.infer(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/helpers/fm_helper.py", line 451, in infer
+    action_hidden = model.action_expert(
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 1432, in __call__
+    return self._torchdynamo_orig_callable(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 598, in __call__
+    return _compile(
+           ^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 1110, in _compile
+    raise InternalTorchDynamoError(
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 1059, in _compile
+    guarded_code = compile_inner(code, one_graph, hooks, transform)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_utils_internal.py", line 97, in wrapper_function
+    return function(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 761, in compile_inner
+    return _compile_inner(code, one_graph, hooks, transform)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/convert_frame.py", line 906, in _compile_inner
+    check_fn = CheckFunctionManager(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/guards.py", line 2490, in __init__
+    guard.create(builder)
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_guards.py", line 357, in create
+    return self.create_fn(builder, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/guards.py", line 1722, in CLOSURE_MATCH
+    val = self.get(guard.name)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/guards.py", line 1334, in get
+    return eval(name, self.scope, closure_vars)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+torch._dynamo.exc.InternalTorchDynamoError: AttributeError: 'AttentionInterface' object has no attribute 'attention'
+
+[ERROR] 2026-11-16-11:19:52 (PID:31172, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception

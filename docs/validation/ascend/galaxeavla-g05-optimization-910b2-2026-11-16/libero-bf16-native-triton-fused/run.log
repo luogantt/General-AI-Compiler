@@ -1,0 +1,65 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 69051.582 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 29.708 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Eager context reference state_C
+[progress] Eager context reference task_D
+[progress] Selected-backend numerical check cold_A
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+.[progress] Selected-backend numerical check first_B
+[progress] Selected-backend numerical check replay_A
+[progress] Selected-backend numerical check replay_B
+[progress] Selected-backend context check state_C/1
+[progress] Selected-backend context check task_D/1
+[progress] Selected-backend context check state_C/2
+[progress] Selected-backend context check task_D/2
+[warmup 1/5] 199.275 ms
+[warmup 2/5] 201.698 ms
+[warmup 3/5] 200.788 ms
+[warmup 4/5] 200.492 ms
+[warmup 5/5] 200.249 ms
+[measure 1/20] 200.491 ms
+[measure 2/20] 200.330 ms
+[measure 3/20] 201.621 ms
+[measure 4/20] 200.323 ms
+[measure 5/20] 199.926 ms
+[measure 6/20] 199.802 ms
+[measure 7/20] 200.901 ms
+[measure 8/20] 200.874 ms
+[measure 9/20] 200.577 ms
+[measure 10/20] 200.319 ms
+[measure 11/20] 200.612 ms
+[measure 12/20] 200.649 ms
+[measure 13/20] 203.029 ms
+[measure 14/20] 201.601 ms
+[measure 15/20] 201.716 ms
+[measure 16/20] 201.393 ms
+[measure 17/20] 202.465 ms
+[measure 18/20] 204.403 ms
+[measure 19/20] 200.742 ms
+[measure 20/20] 200.339 ms
+[progress] Capturing one post-timing NPU request trace
+[2026-11-16 11:32:02] [WARNING] [33266] profiler.py: Profiler won't be using warmup, this can skew profiler results
+[2026-11-16 11:32:03] [INFO] [34101] profiler.py: Start parsing profiling data in sync mode at: /root/work/profile-libero-native-triton-fused/6fa3a25f106c_33266_20261116113202449_ascend_pt
+|/-\|/-\|[2026-11-16 11:32:11] [INFO] [34127] profiler.py: CANN profiling data parsed in a total time of 0:00:08.044660
+/[2026-11-16 11:32:13] [INFO] [34101] profiler.py: All profiling data parsed in a total time of 0:00:09.730079
+{"report": "/root/work/libero-bf16-native-triton-fused/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 97.73254692554474, "p50": 97.67170483246446, "p95": 98.03378090728074, "min": 97.46230021119118, "max": 98.51848985999823}, "prefill_ms": {"count": 20, "mean": 103.37320857215673, "p50": 103.0379650183022, "p95": 105.42081252206117, "min": 102.11808001622558, "max": 106.62754997611046}, "total_ms": {"count": 20, "mean": 201.10575549770147, "p50": 200.69559989497066, "p95": 203.09804542921484, "min": 199.80235025286674, "max": 204.40287981182337}}}

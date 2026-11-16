@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "experiment": "gdn-chunk-fp32-triangular-solve",
+  "mode": "benchmark",
+  "device": "npu:0",
+  "torch_version": "2.7.1+cpu",
+  "cpu_threads": 1,
+  "reference_source": {
+    "path": "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/gated_deltanet.py",
+    "sha256": "82af3c5d60abc7456766bf2a457f8be704b41c3722cd8442a5fb782bb6f4a7a5"
+  },
+  "accumulation_order_changed": true,
+  "results": {
+    "scope": "GDN chunk helper only; excludes projections, convolution, vision and model",
+    "shape": [
+      1,
+      159,
+      16,
+      128,
+      128
+    ],
+    "chunk_size": 32,
+    "backend": "eager",
+    "input_dtype": "bfloat16",
+    "autocast_bf16": true,
+    "profile": "random",
+    "has_initial_state": false,
+    "warmup": 3,
+    "repeats": 10,
+    "timing": {
+      "original_row_recurrence": {
+        "cold_ms": 316.97504967451096,
+        "samples_ms": [
+          9.801189880818129,
+          9.75842960178852,
+          9.809860028326511,
+          9.673030115664005,
+          9.726290125399828,
+          9.75687988102436,
+          9.714059997349977,
+          9.432990103960037,
+          9.247560054063797,
+          9.219219908118248
+        ],
+        "p50_ms": 9.720175061374903,
+        "p95_ms": 9.809860028326511
+      },
+      "fp32_triangular_solve": {
+        "cold_ms": 30.431899707764387,
+        "samples_ms": [
+          5.002249963581562,
+          4.92787966504693,
+          4.953960422426462,
+          4.912210162729025,
+          4.907249938696623,
+          4.914650227874517,
+          4.900659900158644,
+          4.959870129823685,
+          4.975310061126947,
+          4.912130068987608
+        ],
+        "p50_ms": 4.921264946460724,
+        "p95_ms": 5.002249963581562
+      }
+    },
+    "output": {
+      "dtype": "torch.bfloat16",
+      "shape": [
+        1,
+        159,
+        16,
+        128
+      ],
+      "finite": true,
+      "max_abs_error": 0.0,
+      "rmse": 0.0,
+      "relative_l2_error": 0.0,
+      "exact": true
+    },
+    "state": {
+      "dtype": "torch.float32",
+      "shape": [
+        1,
+        16,
+        128,
+        128
+      ],
+      "finite": true,
+      "max_abs_error": 0.0,
+      "rmse": 0.0,
+      "relative_l2_error": 0.0,
+      "exact": true
+    }
+  }
+}

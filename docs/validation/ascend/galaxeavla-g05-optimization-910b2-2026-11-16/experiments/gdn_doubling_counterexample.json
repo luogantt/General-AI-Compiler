@@ -1,0 +1,102 @@
+{
+  "scope": "CPU NumPy FP32 inverse counterexamples only; no torch/NPU/GE/model execution or performance measurement",
+  "numpy_version": "2.3.5",
+  "seed": 20261116,
+  "decision": "Reject default FP32 doubling: exact-arithmetic equivalence does not establish floating-point accuracy",
+  "c32_operations": {
+    "row_updates": 31,
+    "polynomial_factors": 5,
+    "updates_after_I_plus_L": 4,
+    "batched_matmuls": 8,
+    "dense_adds": 5,
+    "row_approx_flops_per_matrix": 21856,
+    "doubling_approx_flops_per_matrix": 529408,
+    "convention": "1 MAC=2 FLOPs; dense arithmetic includes structural zeros; not kernel latency"
+  },
+  "cases": {
+    "exact_minus_one_lower": {
+      "shape": [
+        32,
+        32
+      ],
+      "dtype": "float32",
+      "system_condition_2": 41.335985670746226,
+      "row_recurrence_vs_fp64": {
+        "max_abs": 0.0,
+        "relative_l2": 0.0,
+        "inverse_residual_max_abs": 0.0
+      },
+      "doubling_vs_fp64": {
+        "max_abs": 8.0,
+        "relative_l2": 1.0079052613579391,
+        "inverse_residual_max_abs": 8.0
+      },
+      "doubling_intermediates": [
+        {
+          "power": 2,
+          "max_abs_power": 30.0,
+          "max_abs_partial_inverse": 406.0
+        },
+        {
+          "power": 4,
+          "max_abs_power": 4060.0,
+          "max_abs_partial_inverse": 475020.0
+        },
+        {
+          "power": 8,
+          "max_abs_power": 2035800.0,
+          "max_abs_partial_inverse": 77558768.0
+        },
+        {
+          "power": 16,
+          "max_abs_power": 155117520.0,
+          "max_abs_partial_inverse": 8.0
+        }
+      ]
+    },
+    "normalized_collinear_keys_beta_0.999_g_minus_1e-5": {
+      "shape": [
+        2,
+        32,
+        32
+      ],
+      "dtype": "float32",
+      "system_condition_2": [
+        41.249370243432615,
+        41.249394662564974
+      ],
+      "row_recurrence_vs_fp64": {
+        "max_abs": 6.165301154897549e-08,
+        "relative_l2": 9.103102208357455e-08,
+        "inverse_residual_max_abs": 4.0011094881720055e-08
+      },
+      "doubling_vs_fp64": {
+        "max_abs": 15.999999939898984,
+        "relative_l2": 1.713608534545399,
+        "inverse_residual_max_abs": 12.3586323999249
+      },
+      "doubling_intermediates": [
+        {
+          "power": 2,
+          "max_abs_power": 29.93069839477539,
+          "max_abs_partial_inverse": 404.6286926269531
+        },
+        {
+          "power": 4,
+          "max_abs_power": 4042.516357421875,
+          "max_abs_partial_inverse": 471457.9375
+        },
+        {
+          "power": 8,
+          "max_abs_power": 2018930.0,
+          "max_abs_partial_inverse": 76341824.0
+        },
+        {
+          "power": 16,
+          "max_abs_power": 152604608.0,
+          "max_abs_partial_inverse": 16.0
+        }
+      ]
+    }
+  }
+}

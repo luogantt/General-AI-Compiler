@@ -1,0 +1,699 @@
+{
+  "scope": "Independent post-timing Level1 traces; summed kernel duration is not wall time and may overlap",
+  "traces": {
+    "172ms": {
+      "path": "/root/work/profile-libero-final/6fa3a25f106c_34863_20261116113923952_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details.csv",
+      "bytes": 6728648,
+      "sha256": "5af00f5dc46f0d48e8da714f3cc5c7e7635a6840985ccee84892c4ca70b7a527",
+      "rows": 21713,
+      "by_type": {
+        "Add": {
+          "count": 543,
+          "duration_us": 3122.4410000000016
+        },
+        "ArgMaxWithValue": {
+          "count": 3,
+          "duration_us": 21.18
+        },
+        "AsStrided": {
+          "count": 66,
+          "duration_us": 565.1719999999999
+        },
+        "AutomaticBufferFusionOp": {
+          "count": 2420,
+          "duration_us": 14298.404999999948
+        },
+        "BatchMatMulV2": {
+          "count": 613,
+          "duration_us": 3306.1969999999983
+        },
+        "BroadcastTo": {
+          "count": 551,
+          "duration_us": 3060.6660000000074
+        },
+        "Cast": {
+          "count": 3476,
+          "duration_us": 15753.400999999953
+        },
+        "ClipByValueV2": {
+          "count": 2,
+          "duration_us": 9.18
+        },
+        "ConcatD": {
+          "count": 101,
+          "duration_us": 640.472
+        },
+        "ConcatV2D": {
+          "count": 1090,
+          "duration_us": 2465.2949999999905
+        },
+        "ConfusionTransposeD": {
+          "count": 20,
+          "duration_us": 43.981
+        },
+        "Conv2D": {
+          "count": 18,
+          "duration_us": 310.966
+        },
+        "Cos": {
+          "count": 1,
+          "duration_us": 4.02
+        },
+        "Cumsum": {
+          "count": 21,
+          "duration_us": 467.04699999999997
+        },
+        "Data": {
+          "count": 10,
+          "duration_us": 50.581
+        },
+        "Equal": {
+          "count": 9,
+          "duration_us": 19.681
+        },
+        "Exp": {
+          "count": 324,
+          "duration_us": 538.6700000000009
+        },
+        "Fill": {
+          "count": 53,
+          "duration_us": 78.31999999999996
+        },
+        "FlashAttentionScore": {
+          "count": 240,
+          "duration_us": 7273.810000000006
+        },
+        "Floor": {
+          "count": 1,
+          "duration_us": 1.24
+        },
+        "FloorMod": {
+          "count": 1,
+          "duration_us": 5.58
+        },
+        "ForeachCopy": {
+          "count": 5,
+          "duration_us": 77.18199999999999
+        },
+        "GatherElements": {
+          "count": 2,
+          "duration_us": 21.42
+        },
+        "GatherElementsV2": {
+          "count": 3,
+          "duration_us": 41.32
+        },
+        "GatherV2": {
+          "count": 52,
+          "duration_us": 270.525
+        },
+        "Gelu": {
+          "count": 26,
+          "duration_us": 395.4270000000001
+        },
+        "Greater": {
+          "count": 2,
+          "duration_us": 4.12
+        },
+        "Index": {
+          "count": 4,
+          "duration_us": 100.662
+        },
+        "IndexPut": {
+          "count": 1,
+          "duration_us": 134.263
+        },
+        "IndexPutV2": {
+          "count": 4,
+          "duration_us": 38.98
+        },
+        "IsNegInf": {
+          "count": 48,
+          "duration_us": 583.4150000000002
+        },
+        "LayerNormV3": {
+          "count": 50,
+          "duration_us": 1047.4800000000005
+        },
+        "LessEqual": {
+          "count": 1,
+          "duration_us": 17.501
+        },
+        "LogicalAnd": {
+          "count": 7,
+          "duration_us": 12.86
+        },
+        "LogicalNot": {
+          "count": 3,
+          "duration_us": 5.721
+        },
+        "LogicalOr": {
+          "count": 2,
+          "duration_us": 3.76
+        },
+        "MaskedFill": {
+          "count": 120,
+          "duration_us": 1618.467
+        },
+        "MatMul": {
+          "count": 1680,
+          "duration_us": 12530.843000000023
+        },
+        "MatMulV2": {
+          "count": 306,
+          "duration_us": 7328.579000000007
+        },
+        "MemSet": {
+          "count": 154,
+          "duration_us": 1247.4270000000001
+        },
+        "Mul": {
+          "count": 1000,
+          "duration_us": 10225.131999999996
+        },
+        "Muls": {
+          "count": 6,
+          "duration_us": 50.96000000000001
+        },
+        "Neg": {
+          "count": 576,
+          "duration_us": 1295.5629999999985
+        },
+        "NonZero": {
+          "count": 9,
+          "duration_us": 54.26
+        },
+        "NotEqual": {
+          "count": 247,
+          "duration_us": 398.56799999999987
+        },
+        "OnesLike": {
+          "count": 38,
+          "duration_us": 146.56300000000002
+        },
+        "PadV3": {
+          "count": 90,
+          "duration_us": 920.9009999999997
+        },
+        "Pows": {
+          "count": 79,
+          "duration_us": 1386.6909999999996
+        },
+        "Range": {
+          "count": 2,
+          "duration_us": 22.7
+        },
+        "ReduceAll": {
+          "count": 51,
+          "duration_us": 811.818
+        },
+        "ReduceAny": {
+          "count": 3,
+          "duration_us": 17.759999999999998
+        },
+        "ReduceMax": {
+          "count": 1,
+          "duration_us": 3.32
+        },
+        "ReduceMean": {
+          "count": 79,
+          "duration_us": 1089.037
+        },
+        "ReduceMeanD": {
+          "count": 10,
+          "duration_us": 59.181
+        },
+        "ReduceSum": {
+          "count": 36,
+          "duration_us": 671.3100000000002
+        },
+        "Rsqrt": {
+          "count": 115,
+          "duration_us": 171.70400000000006
+        },
+        "ScatterElements": {
+          "count": 40,
+          "duration_us": 5115.001999999999
+        },
+        "SelectV2": {
+          "count": 48,
+          "duration_us": 1270.227
+        },
+        "Sigmoid": {
+          "count": 24,
+          "duration_us": 96.744
+        },
+        "Sin": {
+          "count": 1,
+          "duration_us": 4.26
+        },
+        "Slice": {
+          "count": 1305,
+          "duration_us": 4091.0230000000015
+        },
+        "SoftmaxV2": {
+          "count": 54,
+          "duration_us": 1249.1190000000001
+        },
+        "SoftplusV2": {
+          "count": 18,
+          "duration_us": 48.20100000000001
+        },
+        "SplitVD": {
+          "count": 240,
+          "duration_us": 713.439
+        },
+        "Square": {
+          "count": 960,
+          "duration_us": 5249.934999999993
+        },
+        "StridedSlice": {
+          "count": 18,
+          "duration_us": 609.5930000000001
+        },
+        "StridedSliceD": {
+          "count": 2120,
+          "duration_us": 19103.589999999975
+        },
+        "Sub": {
+          "count": 220,
+          "duration_us": 1232.667
+        },
+        "Swish": {
+          "count": 60,
+          "duration_us": 628.792
+        },
+        "TensorMove": {
+          "count": 182,
+          "duration_us": 1196.0830000000003
+        },
+        "TransData": {
+          "count": 72,
+          "duration_us": 3380.3040000000005
+        },
+        "Transpose": {
+          "count": 1664,
+          "duration_us": 18436.92700000001
+        },
+        "Tril": {
+          "count": 36,
+          "duration_us": 689.137
+        },
+        "Triu": {
+          "count": 36,
+          "duration_us": 107.64200000000001
+        },
+        "ViewCopy": {
+          "count": 182,
+          "duration_us": 1858.7370000000008
+        },
+        "ZerosLike": {
+          "count": 40,
+          "duration_us": 218.18100000000004
+        },
+        "row_inverse_kernel_0": {
+          "count": 18,
+          "duration_us": 1755.134
+        }
+      },
+      "core_counts": {
+        "AI_VECTOR_CORE": 18541,
+        "AI_CORE": 2617,
+        "MIX_AIV": 269,
+        "AI_CPU": 46,
+        "MIX_AIC": 240
+      },
+      "selected_types": {
+        "ScatterElements": {
+          "count": 40,
+          "duration_us": 5115.001999999999
+        },
+        "StridedSliceD": {
+          "count": 2120,
+          "duration_us": 19103.589999999975
+        },
+        "Square": {
+          "count": 960,
+          "duration_us": 5249.934999999993
+        },
+        "RmsNorm": {
+          "count": 0,
+          "duration_us": 0.0
+        },
+        "RotaryPositionEmbedding": {
+          "count": 0,
+          "duration_us": 0.0
+        }
+      }
+    },
+    "155ms": {
+      "path": "/root/work/profile-libero-norm-mrope/6fa3a25f106c_42305_20261116122119889_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details.csv",
+      "bytes": 5954500,
+      "sha256": "0450c5834523d980ae33ff42cdd457c35a51ea2d22e07fb8c140b10533fdb4a9",
+      "rows": 19206,
+      "by_type": {
+        "Add": {
+          "count": 1023,
+          "duration_us": 3697.6579999999835
+        },
+        "ArgMaxWithValue": {
+          "count": 3,
+          "duration_us": 21.261
+        },
+        "AsStrided": {
+          "count": 66,
+          "duration_us": 566.9879999999998
+        },
+        "AutomaticBufferFusionOp": {
+          "count": 1000,
+          "duration_us": 6160.962999999999
+        },
+        "BatchMatMulV2": {
+          "count": 613,
+          "duration_us": 3330.758000000003
+        },
+        "BroadcastTo": {
+          "count": 511,
+          "duration_us": 2618.127999999994
+        },
+        "Cast": {
+          "count": 3476,
+          "duration_us": 16204.98099999994
+        },
+        "ClipByValueV2": {
+          "count": 2,
+          "duration_us": 9.42
+        },
+        "ConcatD": {
+          "count": 101,
+          "duration_us": 626.9080000000001
+        },
+        "ConcatV2D": {
+          "count": 610,
+          "duration_us": 1005.5340000000011
+        },
+        "ConfusionTransposeD": {
+          "count": 10,
+          "duration_us": 23.001
+        },
+        "Conv2D": {
+          "count": 18,
+          "duration_us": 306.24500000000006
+        },
+        "Cos": {
+          "count": 1,
+          "duration_us": 4.24
+        },
+        "Cumsum": {
+          "count": 21,
+          "duration_us": 438.006
+        },
+        "Data": {
+          "count": 10,
+          "duration_us": 49.760000000000005
+        },
+        "Equal": {
+          "count": 9,
+          "duration_us": 20.080000000000002
+        },
+        "Exp": {
+          "count": 324,
+          "duration_us": 547.0700000000005
+        },
+        "Fill": {
+          "count": 53,
+          "duration_us": 78.542
+        },
+        "FlashAttentionScore": {
+          "count": 240,
+          "duration_us": 7589.855000000004
+        },
+        "Floor": {
+          "count": 1,
+          "duration_us": 1.3
+        },
+        "FloorMod": {
+          "count": 1,
+          "duration_us": 4.86
+        },
+        "ForeachCopy": {
+          "count": 5,
+          "duration_us": 75.46100000000001
+        },
+        "GatherElements": {
+          "count": 2,
+          "duration_us": 20.380000000000003
+        },
+        "GatherElementsV2": {
+          "count": 3,
+          "duration_us": 43.04
+        },
+        "GatherV2": {
+          "count": 32,
+          "duration_us": 191.48599999999996
+        },
+        "Gelu": {
+          "count": 26,
+          "duration_us": 404.36600000000004
+        },
+        "Greater": {
+          "count": 2,
+          "duration_us": 3.8600000000000003
+        },
+        "Index": {
+          "count": 4,
+          "duration_us": 94.781
+        },
+        "IndexPut": {
+          "count": 1,
+          "duration_us": 146.022
+        },
+        "IndexPutV2": {
+          "count": 4,
+          "duration_us": 43.620000000000005
+        },
+        "InplaceAddRmsNorm": {
+          "count": 480,
+          "duration_us": 2742.053000000004
+        },
+        "IsNegInf": {
+          "count": 48,
+          "duration_us": 604.316
+        },
+        "LayerNormV3": {
+          "count": 50,
+          "duration_us": 1076.1180000000004
+        },
+        "LessEqual": {
+          "count": 1,
+          "duration_us": 15.34
+        },
+        "LogicalAnd": {
+          "count": 7,
+          "duration_us": 12.7
+        },
+        "LogicalNot": {
+          "count": 3,
+          "duration_us": 6.18
+        },
+        "LogicalOr": {
+          "count": 2,
+          "duration_us": 4.3
+        },
+        "MaskedFill": {
+          "count": 120,
+          "duration_us": 1652.7180000000003
+        },
+        "MatMul": {
+          "count": 1680,
+          "duration_us": 14557.289999999999
+        },
+        "MatMulV2": {
+          "count": 306,
+          "duration_us": 7335.721999999998
+        },
+        "MemSet": {
+          "count": 154,
+          "duration_us": 1372.2009999999996
+        },
+        "Mul": {
+          "count": 1470,
+          "duration_us": 12238.323000000006
+        },
+        "Muls": {
+          "count": 6,
+          "duration_us": 53.78
+        },
+        "Neg": {
+          "count": 96,
+          "duration_us": 521.2499999999998
+        },
+        "NonZero": {
+          "count": 9,
+          "duration_us": 56.980999999999995
+        },
+        "NotEqual": {
+          "count": 247,
+          "duration_us": 403.76999999999975
+        },
+        "OnesLike": {
+          "count": 48,
+          "duration_us": 158.584
+        },
+        "PadV3": {
+          "count": 90,
+          "duration_us": 922.1820000000001
+        },
+        "Pows": {
+          "count": 79,
+          "duration_us": 1436.0450000000005
+        },
+        "Range": {
+          "count": 2,
+          "duration_us": 21.439999999999998
+        },
+        "ReduceAll": {
+          "count": 51,
+          "duration_us": 880.274
+        },
+        "ReduceAny": {
+          "count": 3,
+          "duration_us": 17.84
+        },
+        "ReduceMax": {
+          "count": 1,
+          "duration_us": 3.22
+        },
+        "ReduceMean": {
+          "count": 79,
+          "duration_us": 1106.5819999999999
+        },
+        "ReduceSum": {
+          "count": 36,
+          "duration_us": 659.5759999999999
+        },
+        "RmsNorm": {
+          "count": 490,
+          "duration_us": 5364.925999999999
+        },
+        "RotaryPositionEmbedding": {
+          "count": 480,
+          "duration_us": 6065.6109999999935
+        },
+        "Rsqrt": {
+          "count": 115,
+          "duration_us": 170.48299999999995
+        },
+        "SelectV2": {
+          "count": 50,
+          "duration_us": 1324.2899999999997
+        },
+        "Sigmoid": {
+          "count": 24,
+          "duration_us": 93.102
+        },
+        "Sin": {
+          "count": 1,
+          "duration_us": 3.88
+        },
+        "Slice": {
+          "count": 1303,
+          "duration_us": 4170.100000000009
+        },
+        "SoftmaxV2": {
+          "count": 54,
+          "duration_us": 1306.0420000000001
+        },
+        "SoftplusV2": {
+          "count": 18,
+          "duration_us": 47.279999999999994
+        },
+        "SplitVD": {
+          "count": 240,
+          "duration_us": 716.8749999999999
+        },
+        "StridedSlice": {
+          "count": 18,
+          "duration_us": 616.071
+        },
+        "StridedSliceD": {
+          "count": 180,
+          "duration_us": 502.2879999999994
+        },
+        "Sub": {
+          "count": 220,
+          "duration_us": 1256.486
+        },
+        "Swish": {
+          "count": 60,
+          "duration_us": 615.7699999999999
+        },
+        "TensorMove": {
+          "count": 182,
+          "duration_us": 1207.2629999999997
+        },
+        "TileD": {
+          "count": 480,
+          "duration_us": 1086.564
+        },
+        "TransData": {
+          "count": 72,
+          "duration_us": 3411.0490000000004
+        },
+        "Transpose": {
+          "count": 1659,
+          "duration_us": 18734.58999999997
+        },
+        "Tril": {
+          "count": 36,
+          "duration_us": 683.4730000000001
+        },
+        "Triu": {
+          "count": 36,
+          "duration_us": 109.984
+        },
+        "ViewCopy": {
+          "count": 180,
+          "duration_us": 1706.7359999999996
+        },
+        "ZerosLike": {
+          "count": 50,
+          "duration_us": 221.66699999999997
+        },
+        "row_inverse_kernel_0": {
+          "count": 18,
+          "duration_us": 1758.233
+        }
+      },
+      "core_counts": {
+        "AI_VECTOR_CORE": 15596,
+        "AI_CORE": 2617,
+        "MIX_AIV": 269,
+        "AI_CPU": 4,
+        "MIX_AIC": 720
+      },
+      "selected_types": {
+        "ScatterElements": {
+          "count": 0,
+          "duration_us": 0.0
+        },
+        "StridedSliceD": {
+          "count": 180,
+          "duration_us": 502.2879999999994
+        },
+        "Square": {
+          "count": 0,
+          "duration_us": 0.0
+        },
+        "RmsNorm": {
+          "count": 490,
+          "duration_us": 5364.925999999999
+        },
+        "RotaryPositionEmbedding": {
+          "count": 480,
+          "duration_us": 6065.6109999999935
+        }
+      }
+    }
+  }
+}

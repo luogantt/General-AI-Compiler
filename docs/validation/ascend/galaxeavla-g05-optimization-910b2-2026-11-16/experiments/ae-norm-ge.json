@@ -1,0 +1,671 @@
+{
+  "status": "success",
+  "stage": "complete",
+  "torch": "2.7.1+cpu",
+  "torch_npu": "2.7.1.post4",
+  "device": "npu:0",
+  "backend": "torchair",
+  "fullgraph": true,
+  "dynamic": false,
+  "fallback_allowed": false,
+  "scope": "small isolated normalization shapes; no full-model accuracy/speed claim",
+  "timing_scope": "synchronized batch wall time divided by calls; includes Python dispatch",
+  "cases": [
+    {
+      "kind": "adaptive",
+      "shape": [
+        1,
+        32,
+        1024
+      ],
+      "input_dtype": "torch.bfloat16",
+      "input_stride": [
+        32768,
+        1024,
+        1
+      ],
+      "output_dtype_expected": "torch.float32",
+      "thresholds": {
+        "max_abs": 1e-05,
+        "relative_l2": 1e-06
+      },
+      "checks": [
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 2.1158234275731047e-08,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.271697934792428e-08,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 2.1158234275731047e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.271697934792428e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 2.1158234275731047e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.271697934792428e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        }
+      ],
+      "first_compile_and_call_ms": 19222.506150137633,
+      "mean_wall_ms_per_call": {
+        "original": 0.15534150879830122,
+        "npu_eager": 0.13716199900954962,
+        "torchair_compiled": 0.23727950174361467
+      }
+    },
+    {
+      "kind": "adaptive",
+      "shape": [
+        1,
+        32,
+        1024
+      ],
+      "input_dtype": "torch.float32",
+      "input_stride": [
+        32768,
+        1024,
+        1
+      ],
+      "output_dtype_expected": "torch.float32",
+      "thresholds": {
+        "max_abs": 1e-05,
+        "relative_l2": 1e-06
+      },
+      "checks": [
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.79257123483967e-08,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 4.621528404413766e-08,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.79257123483967e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 4.621528404413766e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.79257123483967e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 4.621528404413766e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        }
+      ],
+      "first_compile_and_call_ms": 13235.670790076256,
+      "mean_wall_ms_per_call": {
+        "original": 0.13685349840670824,
+        "npu_eager": 0.10386700741946697,
+        "torchair_compiled": 0.31249651219695807
+      }
+    },
+    {
+      "kind": "q",
+      "shape": [
+        1,
+        32,
+        8,
+        256
+      ],
+      "input_dtype": "torch.bfloat16",
+      "input_stride": [
+        131072,
+        4096,
+        512,
+        1
+      ],
+      "output_dtype_expected": "torch.bfloat16",
+      "thresholds": {
+        "max_abs": 0.03125,
+        "relative_l2": 0.001
+      },
+      "checks": [
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        }
+      ],
+      "first_compile_and_call_ms": 15587.71746000275,
+      "mean_wall_ms_per_call": {
+        "original": 0.24415000807493925,
+        "npu_eager": 0.2333089942112565,
+        "torchair_compiled": 0.28548750560730696
+      }
+    },
+    {
+      "kind": "q",
+      "shape": [
+        1,
+        32,
+        8,
+        256
+      ],
+      "input_dtype": "torch.float32",
+      "input_stride": [
+        131072,
+        4096,
+        512,
+        1
+      ],
+      "output_dtype_expected": "torch.float32",
+      "thresholds": {
+        "max_abs": 1e-05,
+        "relative_l2": 1e-06
+      },
+      "checks": [
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.422526972940432e-08,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 7.152557373046875e-07,
+          "relative_l2": 2.715696822974678e-08,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.422526972940432e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 7.152557373046875e-07,
+          "relative_l2": 2.715696822974678e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.422526972940432e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 7.152557373046875e-07,
+          "relative_l2": 2.715696822974678e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        }
+      ],
+      "first_compile_and_call_ms": 615.1933199726045,
+      "mean_wall_ms_per_call": {
+        "original": 0.19206800498068333,
+        "npu_eager": 0.20819748751819134,
+        "torchair_compiled": 0.3006804967299104
+      }
+    },
+    {
+      "kind": "k",
+      "shape": [
+        1,
+        32,
+        2,
+        256
+      ],
+      "input_dtype": "torch.bfloat16",
+      "input_stride": [
+        16384,
+        512,
+        256,
+        1
+      ],
+      "output_dtype_expected": "torch.bfloat16",
+      "thresholds": {
+        "max_abs": 0.03125,
+        "relative_l2": 0.001
+      },
+      "checks": [
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.bfloat16"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.bfloat16"
+        }
+      ],
+      "first_compile_and_call_ms": 14627.001500222832,
+      "mean_wall_ms_per_call": {
+        "original": 0.25006551295518875,
+        "npu_eager": 0.23942349944263697,
+        "torchair_compiled": 0.23664699401706457
+      }
+    },
+    {
+      "kind": "k",
+      "shape": [
+        1,
+        32,
+        2,
+        256
+      ],
+      "input_dtype": "torch.float32",
+      "input_stride": [
+        16384,
+        512,
+        256,
+        1
+      ],
+      "output_dtype_expected": "torch.float32",
+      "thresholds": {
+        "max_abs": 1e-05,
+        "relative_l2": 1e-06
+      },
+      "checks": [
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.262232795009368e-08,
+          "path": "npu_eager",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.9292441300631253e-08,
+          "path": "npu_eager",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "zeros",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "small",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": true,
+          "finite": true,
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "path": "npu_eager",
+          "input": "large",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.262232795009368e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.9292441300631253e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 9.5367431640625e-07,
+          "relative_l2": 3.262232795009368e-08,
+          "path": "torchair",
+          "input": "A",
+          "output_dtype": "torch.float32"
+        },
+        {
+          "exact": false,
+          "finite": true,
+          "max_abs": 4.76837158203125e-07,
+          "relative_l2": 3.9292441300631253e-08,
+          "path": "torchair",
+          "input": "B",
+          "output_dtype": "torch.float32"
+        }
+      ],
+      "first_compile_and_call_ms": 131.4192800782621,
+      "mean_wall_ms_per_call": {
+        "original": 0.19922598730772734,
+        "npu_eager": 0.17432449385523796,
+        "torchair_compiled": 0.2500089816749096
+      }
+    }
+  ]
+}

@@ -409,7 +409,7 @@ index 9a4bdb8..cc2330a 100644
              query.dtype
          )
 diff --git a/src/g05/models/g05/qwen35/gated_deltanet.py b/src/g05/models/g05/qwen35/gated_deltanet.py
-index 116a620..373d1d6 100644
+index 116a620..e1432cd 100644
 --- a/src/g05/models/g05/qwen35/gated_deltanet.py
 +++ b/src/g05/models/g05/qwen35/gated_deltanet.py
 @@ -1,3 +1,5 @@
@@ -418,7 +418,37 @@ index 116a620..373d1d6 100644
  """
  Qwen3.5 GatedDeltaNet — linear attention with gated delta rule.
  
-@@ -305,7 +307,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -108,7 +110,10 @@ def torch_chunk_gated_delta_rule(
+     value = attn @ v_beta
+     k_cumdecay = attn @ (k_beta * g.exp().unsqueeze(-1))
+     last_recurrent_state = (
+-        torch.zeros(batch_size, num_heads, k_head_dim, v_head_dim).to(value)
++        torch.zeros(
++            batch_size, num_heads, k_head_dim, v_head_dim,
++            device=value.device, dtype=value.dtype,
++        )
+         if initial_state is None
+         else initial_state.to(value)
+     )
+@@ -168,9 +173,15 @@ def torch_recurrent_gated_delta_rule(
+     scale = 1 / (query.shape[-1] ** 0.5)
+     query = query * scale
+ 
+-    core_attn_out = torch.zeros(batch_size, num_heads, sequence_length, v_head_dim).to(value)
++    core_attn_out = torch.zeros(
++        batch_size, num_heads, sequence_length, v_head_dim,
++        device=value.device, dtype=value.dtype,
++    )
+     last_recurrent_state = (
+-        torch.zeros(batch_size, num_heads, k_head_dim, v_head_dim).to(value)
++        torch.zeros(
++            batch_size, num_heads, k_head_dim, v_head_dim,
++            device=value.device, dtype=value.dtype,
++        )
+         if initial_state is None
+         else initial_state.to(value)
+     )
+@@ -305,7 +316,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
          self.A_log = nn.Parameter(torch.log(A))
  
          # Use FusedRMSNormGated when available, else fallback
@@ -427,7 +457,19 @@ index 116a620..373d1d6 100644
              self.norm = FusedRMSNormGated(
                  self.head_v_dim,
                  eps=config.rms_norm_eps,
-@@ -389,7 +391,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -376,8 +387,9 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+         )
+ 
+         if cache_params is not None:
+-            conv_state = cache_params.conv_states[self.layer_idx]
+-            recurrent_state = cache_params.recurrent_states[self.layer_idx]
++            # Match _DefaultNoneDict.__missing__ without a Dynamo KeyError on prefill.
++            conv_state = cache_params.conv_states.get(self.layer_idx)
++            recurrent_state = cache_params.recurrent_states.get(self.layer_idx)
+ 
+         mixed_qkv = self.in_proj_qkv(hidden_states)
+         mixed_qkv = mixed_qkv.transpose(1, 2)
+@@ -389,7 +401,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
          a = self.in_proj_a(hidden_states)
  
          if use_precomputed_states:
@@ -441,7 +483,7 @@ index 116a620..373d1d6 100644
                  mixed_qkv,
                  conv_state,
                  self.conv1d.weight.squeeze(1),
-@@ -400,7 +407,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -400,7 +417,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
              if cache_params is not None and return_kv_cache:
                  conv_state = F.pad(mixed_qkv, (self.conv_kernel_size - mixed_qkv.shape[-1], 0))
                  cache_params.conv_states[self.layer_idx] = conv_state
@@ -450,7 +492,7 @@ index 116a620..373d1d6 100644
                  mixed_qkv = self.causal_conv1d_fn(
                      x=mixed_qkv,
                      weight=self.conv1d.weight.squeeze(1),
-@@ -423,7 +430,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -423,7 +440,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
          value = value.reshape(batch_size, seq_len, -1, self.head_v_dim)
  
          beta = b.sigmoid()
@@ -459,7 +501,7 @@ index 116a620..373d1d6 100644
              A = -torch.exp(self.A_log.float())
              dt = F.softplus(a.float() + self.dt_bias.float())
              g = A * dt
-@@ -433,8 +440,13 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -433,8 +450,13 @@ class Qwen3_5GatedDeltaNet(nn.Module):
  
          if not use_precomputed_states:
              init_state = recurrent_state if cache_params is not None else None
@@ -474,7 +516,7 @@ index 116a620..373d1d6 100644
                  query,
                  key,
                  value,
-@@ -453,7 +465,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -453,7 +475,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
                  and cache_params is not None
                  and return_kv_cache
              ):
@@ -483,7 +525,7 @@ index 116a620..373d1d6 100644
                      query[:, :split_idx],
                      key[:, :split_idx],
                      value[:, :split_idx],
-@@ -466,7 +478,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -466,7 +488,12 @@ class Qwen3_5GatedDeltaNet(nn.Module):
                  )
                  cache_params.split_recurrent_states[self.layer_idx] = split_recurrent_state
          else:
@@ -497,7 +539,7 @@ index 116a620..373d1d6 100644
                  query,
                  key,
                  value,
-@@ -485,7 +502,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
+@@ -485,7 +512,7 @@ class Qwen3_5GatedDeltaNet(nn.Module):
          # FusedRMSNormGated (FLA fast path) outputs dtype == input dtype, so pass fp32
          # explicitly and disable autocast to guarantee fp32 norm regardless of which
          # implementation (FLA Triton kernel vs. fallback Qwen3_5RMSNormGated) is active.
@@ -873,10 +915,10 @@ index 0000000..a919e44
 +    backend.empty_cache.assert_called_once_with()
 diff --git a/tests/test_qwen35_device_fallbacks.py b/tests/test_qwen35_device_fallbacks.py
 new file mode 100644
-index 0000000..ae9497b
+index 0000000..2e626a0
 --- /dev/null
 +++ b/tests/test_qwen35_device_fallbacks.py
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,120 @@
 +# Added by General-AI-Compiler for Ascend/TorchNPU compatibility.
 +
 +# SPDX-License-Identifier: LicenseRef-G0.5-Community-1.0
@@ -889,6 +931,7 @@ index 0000000..ae9497b
 +from g05.models.g05.qwen35 import gated_deltanet as gated_deltanet_module
 +from g05.models.g05.qwen35 import vision as vision_module
 +from g05.models.g05.g05_model_qwen35 import _patchify_temporal_images
++from g05.models.kv_cache import SparseKVCache
 +
 +
 +def _gdn_config():
@@ -919,6 +962,21 @@ index 0000000..ae9497b
 +
 +    assert result.shape == (1, 4, 8)
 +    assert torch.isfinite(result).all()
++
++
++@torch.no_grad()
++def test_gated_delta_net_prefill_compiles_with_empty_sparse_cache():
++    layer = gated_deltanet_module.Qwen3_5GatedDeltaNet(_gdn_config(), layer_idx=0).eval()
++    hidden_states = torch.randn(1, 4, 8)
++    eager_cache = SparseKVCache(last_linear_layer=0)
++    compiled_cache = SparseKVCache(last_linear_layer=0)
++    expected = layer(hidden_states, cache_params=eager_cache, cache_position=0)
++    compiled = torch.compile(layer, backend="eager", fullgraph=True, dynamic=False)
++    actual = compiled(hidden_states, cache_params=compiled_cache, cache_position=0)
++
++    assert torch.equal(actual, expected)
++    assert torch.equal(compiled_cache.conv_states[0], eager_cache.conv_states[0])
++    assert torch.equal(compiled_cache.recurrent_states[0], eager_cache.recurrent_states[0])
 +
 +
 +def test_vision_attention_cpu_ignores_installed_flash_attention(monkeypatch):

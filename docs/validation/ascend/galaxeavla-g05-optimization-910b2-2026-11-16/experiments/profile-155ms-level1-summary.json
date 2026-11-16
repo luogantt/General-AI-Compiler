@@ -1,0 +1,3301 @@
+{
+  "scope": "Each CSV is independent; no cross-table duration sum",
+  "files": [
+    {
+      "path": "/root/work/profile-libero-norm-mrope/6fa3a25f106c_42305_20261116122119889_ascend_pt/ASCEND_PROFILER_OUTPUT/kernel_details.csv",
+      "table_kind": "details",
+      "duration_semantics": "kernel/operator reported duration",
+      "nested_total_columns_ignored": [],
+      "columns": {
+        "duration": "Duration(us)",
+        "duration_to_us": 1.0,
+        "duration_multiplied_by_count": false,
+        "count": null,
+        "op_type": "Type",
+        "task_type": "Accelerator Core",
+        "name": "Name",
+        "input_shape": "Input Shapes"
+      },
+      "source_rows": 19206,
+      "excluded_rows": 0,
+      "excluded_examples": [],
+      "grouping": "nonmissing operator Type, falling back to Name per row",
+      "name_fallback_rows": 0,
+      "operator_groups": 80,
+      "invocations": 19206,
+      "summed_duration_us": 143360.1219999999,
+      "top_by_summed_duration": [
+        {
+          "op_type": "Transpose",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1659,
+          "source_rows": 1659,
+          "summed_duration_us": 18734.58999999997,
+          "example_names": [
+            "aclnnInplaceCopy_TransposeAiCore_Transpose",
+            "aclnnMuls_TransposeAiCore_Transpose",
+            "aclnnGather_TransposeAiCore_Transpose"
+          ],
+          "example_input_shapes": [
+            "\"2,3,256,256;4\"",
+            "\"6,8,2,16,8,2,16;7\"",
+            "\"8,2,8,2,1024;5\""
+          ],
+          "average_duration_us": 11.29270042194091,
+          "share_of_summed_duration_percent": 13.068201769526944
+        },
+        {
+          "op_type": "Cast",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 3476,
+          "source_rows": 3476,
+          "summed_duration_us": 16204.98099999994,
+          "example_names": [
+            "aclnnMul_CastAiCore_Cast",
+            "aclnnMaxDim_CastAiCore_Cast",
+            "aclnnGather_CastAiCore_Cast"
+          ],
+          "example_input_shapes": [
+            "\"1,159\"",
+            "\"1\"",
+            "\"512,1024\""
+          ],
+          "average_duration_us": 4.661962313003435,
+          "share_of_summed_duration_percent": 11.303688064662747
+        },
+        {
+          "op_type": "MatMul",
+          "task_type": "AI_CORE",
+          "invocations": 1680,
+          "source_rows": 1680,
+          "summed_duration_us": 14557.289999999999,
+          "example_names": [
+            "MatMul_1",
+            "MatMul_2",
+            "MatMul"
+          ],
+          "example_input_shapes": [
+            "\"32,1024;512,1024\"",
+            "\"32,1024;4096,1024\"",
+            "\"32,2048;1024,2048\""
+          ],
+          "average_duration_us": 8.66505357142857,
+          "share_of_summed_duration_percent": 10.15435101261982
+        },
+        {
+          "op_type": "Mul",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1470,
+          "source_rows": 1470,
+          "summed_duration_us": 12238.323000000006,
+          "example_names": [
+            "aclnnMul_MulAiCore_Mul",
+            "aclnnMuls_MulAiCore_Mul",
+            "aclnnBatchMatMul_MulAiCore_Mul"
+          ],
+          "example_input_shapes": [
+            "\"1,159;159\"",
+            "\"4,512,1024;4,512,1\"",
+            "\"512,16,64;512,1,64\""
+          ],
+          "average_duration_us": 8.32538979591837,
+          "share_of_summed_duration_percent": 8.536769381376514
+        },
+        {
+          "op_type": "FlashAttentionScore",
+          "task_type": "MIX_AIC",
+          "invocations": 240,
+          "source_rows": 240,
+          "summed_duration_us": 7589.855000000004,
+          "example_names": [
+            "FlashAttentionScore",
+            "FlashAttentionScore_1",
+            "FlashAttentionScore_2"
+          ],
+          "example_input_shapes": [
+            "\"1,8,32,256;1,8,32,256;1,8,32,256;1,1,32,32;;\"",
+            "\"1,8,32,256;1,8,191,256;1,8,191,256;1,1,32,191;;\""
+          ],
+          "average_duration_us": 31.62439583333335,
+          "share_of_summed_duration_percent": 5.294258189875153
+        },
+        {
+          "op_type": "MatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 306,
+          "source_rows": 306,
+          "summed_duration_us": 7335.721999999998,
+          "example_names": [
+            "aclnnAddmm_MatMulCommon_MatMulV2",
+            "aclnnMm_MatMulCommon_MatMulV2"
+          ],
+          "example_input_shapes": [
+            "\"512,1024;3072,1024;3072\"",
+            "\"512,1024;1024,1024;1024\"",
+            "\"512,1024;4096,1024;4096\""
+          ],
+          "average_duration_us": 23.972947712418293,
+          "share_of_summed_duration_percent": 5.116989228008611
+        },
+        {
+          "op_type": "AutomaticBufferFusionOp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1000,
+          "source_rows": 1000,
+          "summed_duration_us": 6160.962999999999,
+          "example_names": [
+            "SelectV2SelectV2_1",
+            "Mul_2Add",
+            "CosMul"
+          ],
+          "example_input_shapes": [
+            "\"32;1,32,32;1,32,32;32;1,32,32\"",
+            "\"1,32,1024;1,1,1024;1,1,1024\"",
+            "\"1,32,64;\""
+          ],
+          "average_duration_us": 6.160962999999999,
+          "share_of_summed_duration_percent": 4.297543078262729
+        },
+        {
+          "op_type": "RotaryPositionEmbedding",
+          "task_type": "MIX_AIC",
+          "invocations": 480,
+          "source_rows": 480,
+          "summed_duration_us": 6065.6109999999935,
+          "example_names": [
+            "RotaryPositionEmbedding_1",
+            "RotaryPositionEmbedding",
+            "RotaryPositionEmbedding_3"
+          ],
+          "example_input_shapes": [
+            "\"1,2,32,256;1,1,32,256;1,1,32,256;256,256\"",
+            "\"1,8,32,256;1,1,32,256;1,1,32,256;256,256\""
+          ],
+          "average_duration_us": 12.63668958333332,
+          "share_of_summed_duration_percent": 4.231030858079207
+        },
+        {
+          "op_type": "RmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 490,
+          "source_rows": 490,
+          "summed_duration_us": 5364.925999999999,
+          "example_names": [
+            "RmsNorm",
+            "RmsNorm_2",
+            "RmsNorm_1"
+          ],
+          "example_input_shapes": [
+            "\"1,32,1024;1024\"",
+            "\"1,32,2,256;256\"",
+            "\"1,32,8,256;256\""
+          ],
+          "average_duration_us": 10.94882857142857,
+          "share_of_summed_duration_percent": 3.7422722059346483
+        },
+        {
+          "op_type": "Slice",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1303,
+          "source_rows": 1303,
+          "summed_duration_us": 4170.100000000009,
+          "example_names": [
+            "aclnnInplaceCopy_SliceAiCore_Slice",
+            "aclnnNeg_SliceAiCore_Slice",
+            "aclnnCat_SliceAiCore_Slice"
+          ],
+          "example_input_shapes": [
+            "\"512,48,64;3;3\"",
+            "\"512,16,64;3;3\"",
+            "\"6144,162;2;2\""
+          ],
+          "average_duration_us": 3.200383729854189,
+          "share_of_summed_duration_percent": 2.908828439752592
+        },
+        {
+          "op_type": "Add",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1023,
+          "source_rows": 1023,
+          "summed_duration_us": 3697.6579999999835,
+          "example_names": [
+            "aclnnAdds_AddAiCore_Add",
+            "aclnnAdd_AddAiCore_Add",
+            "Add_2"
+          ],
+          "example_input_shapes": [
+            "\"1;\"",
+            "\"1,159;1,1\"",
+            "\"512,1024;512,1024\""
+          ],
+          "average_duration_us": 3.614523949169094,
+          "share_of_summed_duration_percent": 2.57927933403962
+        },
+        {
+          "op_type": "TransData",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 72,
+          "source_rows": 72,
+          "summed_duration_us": 3411.0490000000004,
+          "example_names": [
+            "aclnnConvolution_TransData_TransData",
+            "aclnnConvolution_TransDataToFzWithoutGroup_TransData",
+            "aclnnConvolution_TransDataFzToDst_TransData"
+          ],
+          "example_input_shapes": [
+            "\"1,6144,1,159\"",
+            "\"6144,1,1,4\"",
+            "\"4,384,16,16\""
+          ],
+          "average_duration_us": 47.37568055555556,
+          "share_of_summed_duration_percent": 2.3793569316298457
+        },
+        {
+          "op_type": "BatchMatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 613,
+          "source_rows": 613,
+          "summed_duration_us": 3330.758000000003,
+          "example_names": [
+            "aclnnConvolution_BatchMatMulNd_BatchMatMulV2",
+            "aclnnBatchMatMul_BatchMatMulNd_BatchMatMulV2"
+          ],
+          "example_input_shapes": [
+            "\"1,512,1536;1,1024,1536;1024\"",
+            "\"16,256,64;16,64,256\"",
+            "\"16,256,256;16,256,64\""
+          ],
+          "average_duration_us": 5.4335367047308365,
+          "share_of_summed_duration_percent": 2.323350422371994
+        },
+        {
+          "op_type": "InplaceAddRmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 480,
+          "summed_duration_us": 2742.053000000004,
+          "example_names": [
+            "InplaceRmsNorm_3/AddRmsNorm",
+            "InplaceRmsNorm_4/AddRmsNorm",
+            "InplaceRmsNorm_7/AddRmsNorm"
+          ],
+          "example_input_shapes": [
+            "\"1,32,1024;1,32,1024;1024\""
+          ],
+          "average_duration_us": 5.712610416666675,
+          "share_of_summed_duration_percent": 1.91270275286178
+        },
+        {
+          "op_type": "BroadcastTo",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 511,
+          "source_rows": 511,
+          "summed_duration_us": 2618.127999999994,
+          "example_names": [
+            "aclnnRemainderTensorScalar_BroadcastToAiCore_BroadcastTo",
+            "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+            "aclnnGather_BroadcastToAiCore_BroadcastTo"
+          ],
+          "example_input_shapes": [
+            "\";2\"",
+            "\"1,3,1,256,256;5\"",
+            "\"1,159,1;3\""
+          ],
+          "average_duration_us": 5.123538160469655,
+          "share_of_summed_duration_percent": 1.8262596065592047
+        },
+        {
+          "op_type": "row_inverse_kernel_0",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 18,
+          "source_rows": 18,
+          "summed_duration_us": 1758.233,
+          "example_names": [
+            "row_inverse_kernel_0"
+          ],
+          "example_input_shapes": [
+            "N/A"
+          ],
+          "average_duration_us": 97.67961111111111,
+          "share_of_summed_duration_percent": 1.2264449663345023
+        },
+        {
+          "op_type": "ViewCopy",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 180,
+          "source_rows": 180,
+          "summed_duration_us": 1706.7359999999996,
+          "example_names": [
+            "aclnnInplaceCopy_ViewCopyAiCore_ViewCopy"
+          ],
+          "example_input_shapes": [
+            "\"327680;4;4;1;1,16,32,128;4;4;1\""
+          ],
+          "average_duration_us": 9.481866666666665,
+          "share_of_summed_duration_percent": 1.1905235404305814
+        },
+        {
+          "op_type": "MaskedFill",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 120,
+          "source_rows": 120,
+          "summed_duration_us": 1652.7180000000003,
+          "example_names": [
+            "aclnnInplaceMaskedFillScalar_MaskedFillAiCore_MaskedFill"
+          ],
+          "example_input_shapes": [
+            "\"1,1,20;1,1,20;\"",
+            "\"1,16,5,32,32;32,32;\"",
+            "\"1,16,32,32;32,32;\""
+          ],
+          "average_duration_us": 13.772650000000002,
+          "share_of_summed_duration_percent": 1.1528436059785172
+        },
+        {
+          "op_type": "Pows",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 79,
+          "source_rows": 79,
+          "summed_duration_us": 1436.0450000000005,
+          "example_names": [
+            "aclnnPowTensorScalar_PowsAiCore_Pows"
+          ],
+          "example_input_shapes": [
+            "\"1,159,2048;\"",
+            "\"2544,128;\"",
+            "\"1,159,8,256;\""
+          ],
+          "average_duration_us": 18.17778481012659,
+          "share_of_summed_duration_percent": 1.0017046441966628
+        },
+        {
+          "op_type": "MemSet",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 154,
+          "source_rows": 154,
+          "summed_duration_us": 1372.2009999999996,
+          "example_names": [
+            "aclnnNonzeroV2_NonzeroAiCore_MemSet",
+            "aclnnCumsum_CumsumAiCore_MemSet",
+            "aclnnConvolution_TransDataToFzWithoutGroup_MemSet"
+          ],
+          "example_input_shapes": [
+            "N/A"
+          ],
+          "average_duration_us": 8.910396103896101,
+          "share_of_summed_duration_percent": 0.9571706419167254
+        }
+      ],
+      "top_by_invocation_count": [
+        {
+          "op_type": "Cast",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 3476,
+          "source_rows": 3476,
+          "summed_duration_us": 16204.98099999994,
+          "example_names": [
+            "aclnnMul_CastAiCore_Cast",
+            "aclnnMaxDim_CastAiCore_Cast",
+            "aclnnGather_CastAiCore_Cast"
+          ],
+          "example_input_shapes": [
+            "\"1,159\"",
+            "\"1\"",
+            "\"512,1024\""
+          ],
+          "average_duration_us": 4.661962313003435,
+          "share_of_summed_duration_percent": 11.303688064662747
+        },
+        {
+          "op_type": "MatMul",
+          "task_type": "AI_CORE",
+          "invocations": 1680,
+          "source_rows": 1680,
+          "summed_duration_us": 14557.289999999999,
+          "example_names": [
+            "MatMul_1",
+            "MatMul_2",
+            "MatMul"
+          ],
+          "example_input_shapes": [
+            "\"32,1024;512,1024\"",
+            "\"32,1024;4096,1024\"",
+            "\"32,2048;1024,2048\""
+          ],
+          "average_duration_us": 8.66505357142857,
+          "share_of_summed_duration_percent": 10.15435101261982
+        },
+        {
+          "op_type": "Transpose",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1659,
+          "source_rows": 1659,
+          "summed_duration_us": 18734.58999999997,
+          "example_names": [
+            "aclnnInplaceCopy_TransposeAiCore_Transpose",
+            "aclnnMuls_TransposeAiCore_Transpose",
+            "aclnnGather_TransposeAiCore_Transpose"
+          ],
+          "example_input_shapes": [
+            "\"2,3,256,256;4\"",
+            "\"6,8,2,16,8,2,16;7\"",
+            "\"8,2,8,2,1024;5\""
+          ],
+          "average_duration_us": 11.29270042194091,
+          "share_of_summed_duration_percent": 13.068201769526944
+        },
+        {
+          "op_type": "Mul",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1470,
+          "source_rows": 1470,
+          "summed_duration_us": 12238.323000000006,
+          "example_names": [
+            "aclnnMul_MulAiCore_Mul",
+            "aclnnMuls_MulAiCore_Mul",
+            "aclnnBatchMatMul_MulAiCore_Mul"
+          ],
+          "example_input_shapes": [
+            "\"1,159;159\"",
+            "\"4,512,1024;4,512,1\"",
+            "\"512,16,64;512,1,64\""
+          ],
+          "average_duration_us": 8.32538979591837,
+          "share_of_summed_duration_percent": 8.536769381376514
+        },
+        {
+          "op_type": "Slice",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1303,
+          "source_rows": 1303,
+          "summed_duration_us": 4170.100000000009,
+          "example_names": [
+            "aclnnInplaceCopy_SliceAiCore_Slice",
+            "aclnnNeg_SliceAiCore_Slice",
+            "aclnnCat_SliceAiCore_Slice"
+          ],
+          "example_input_shapes": [
+            "\"512,48,64;3;3\"",
+            "\"512,16,64;3;3\"",
+            "\"6144,162;2;2\""
+          ],
+          "average_duration_us": 3.200383729854189,
+          "share_of_summed_duration_percent": 2.908828439752592
+        },
+        {
+          "op_type": "Add",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1023,
+          "source_rows": 1023,
+          "summed_duration_us": 3697.6579999999835,
+          "example_names": [
+            "aclnnAdds_AddAiCore_Add",
+            "aclnnAdd_AddAiCore_Add",
+            "Add_2"
+          ],
+          "example_input_shapes": [
+            "\"1;\"",
+            "\"1,159;1,1\"",
+            "\"512,1024;512,1024\""
+          ],
+          "average_duration_us": 3.614523949169094,
+          "share_of_summed_duration_percent": 2.57927933403962
+        },
+        {
+          "op_type": "AutomaticBufferFusionOp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1000,
+          "source_rows": 1000,
+          "summed_duration_us": 6160.962999999999,
+          "example_names": [
+            "SelectV2SelectV2_1",
+            "Mul_2Add",
+            "CosMul"
+          ],
+          "example_input_shapes": [
+            "\"32;1,32,32;1,32,32;32;1,32,32\"",
+            "\"1,32,1024;1,1,1024;1,1,1024\"",
+            "\"1,32,64;\""
+          ],
+          "average_duration_us": 6.160962999999999,
+          "share_of_summed_duration_percent": 4.297543078262729
+        },
+        {
+          "op_type": "BatchMatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 613,
+          "source_rows": 613,
+          "summed_duration_us": 3330.758000000003,
+          "example_names": [
+            "aclnnConvolution_BatchMatMulNd_BatchMatMulV2",
+            "aclnnBatchMatMul_BatchMatMulNd_BatchMatMulV2"
+          ],
+          "example_input_shapes": [
+            "\"1,512,1536;1,1024,1536;1024\"",
+            "\"16,256,64;16,64,256\"",
+            "\"16,256,256;16,256,64\""
+          ],
+          "average_duration_us": 5.4335367047308365,
+          "share_of_summed_duration_percent": 2.323350422371994
+        },
+        {
+          "op_type": "ConcatV2D",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 610,
+          "source_rows": 610,
+          "summed_duration_us": 1005.5340000000011,
+          "example_names": [
+            "ConcatV2",
+            "ConcatV2_1",
+            "ConcatV2_11"
+          ],
+          "example_input_shapes": [
+            "\"1,32,32;1,32,32\"",
+            "\"1,1,32,64;1,1,32,192\"",
+            "\"1,2,159,256;1,2,32,256\""
+          ],
+          "average_duration_us": 1.6484163934426248,
+          "share_of_summed_duration_percent": 0.7014042580125608
+        },
+        {
+          "op_type": "BroadcastTo",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 511,
+          "source_rows": 511,
+          "summed_duration_us": 2618.127999999994,
+          "example_names": [
+            "aclnnRemainderTensorScalar_BroadcastToAiCore_BroadcastTo",
+            "aclnnInplaceCopy_BroadcastToAiCore_BroadcastTo",
+            "aclnnGather_BroadcastToAiCore_BroadcastTo"
+          ],
+          "example_input_shapes": [
+            "\";2\"",
+            "\"1,3,1,256,256;5\"",
+            "\"1,159,1;3\""
+          ],
+          "average_duration_us": 5.123538160469655,
+          "share_of_summed_duration_percent": 1.8262596065592047
+        },
+        {
+          "op_type": "RmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 490,
+          "source_rows": 490,
+          "summed_duration_us": 5364.925999999999,
+          "example_names": [
+            "RmsNorm",
+            "RmsNorm_2",
+            "RmsNorm_1"
+          ],
+          "example_input_shapes": [
+            "\"1,32,1024;1024\"",
+            "\"1,32,2,256;256\"",
+            "\"1,32,8,256;256\""
+          ],
+          "average_duration_us": 10.94882857142857,
+          "share_of_summed_duration_percent": 3.7422722059346483
+        },
+        {
+          "op_type": "TileD",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 480,
+          "summed_duration_us": 1086.564,
+          "example_names": [
+            "Tile",
+            "Tile_10",
+            "Tile_12"
+          ],
+          "example_input_shapes": [
+            "\"1,1,32,64\""
+          ],
+          "average_duration_us": 2.263675,
+          "share_of_summed_duration_percent": 0.757926252322805
+        },
+        {
+          "op_type": "RotaryPositionEmbedding",
+          "task_type": "MIX_AIC",
+          "invocations": 480,
+          "source_rows": 480,
+          "summed_duration_us": 6065.6109999999935,
+          "example_names": [
+            "RotaryPositionEmbedding_1",
+            "RotaryPositionEmbedding",
+            "RotaryPositionEmbedding_3"
+          ],
+          "example_input_shapes": [
+            "\"1,2,32,256;1,1,32,256;1,1,32,256;256,256\"",
+            "\"1,8,32,256;1,1,32,256;1,1,32,256;256,256\""
+          ],
+          "average_duration_us": 12.63668958333332,
+          "share_of_summed_duration_percent": 4.231030858079207
+        },
+        {
+          "op_type": "InplaceAddRmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 480,
+          "summed_duration_us": 2742.053000000004,
+          "example_names": [
+            "InplaceRmsNorm_3/AddRmsNorm",
+            "InplaceRmsNorm_4/AddRmsNorm",
+            "InplaceRmsNorm_7/AddRmsNorm"
+          ],
+          "example_input_shapes": [
+            "\"1,32,1024;1,32,1024;1024\""
+          ],
+          "average_duration_us": 5.712610416666675,
+          "share_of_summed_duration_percent": 1.91270275286178
+        },
+        {
+          "op_type": "Exp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 324,
+          "source_rows": 324,
+          "summed_duration_us": 547.0700000000005,
+          "example_names": [
+            "aclnnExp_ExpAiCore_Exp"
+          ],
+          "example_input_shapes": [
+            "\"16\"",
+            "\"1,16,5,32,32\"",
+            "\"1,16,5,32\""
+          ],
+          "average_duration_us": 1.6884876543209892,
+          "share_of_summed_duration_percent": 0.3816054230199392
+        },
+        {
+          "op_type": "MatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 306,
+          "source_rows": 306,
+          "summed_duration_us": 7335.721999999998,
+          "example_names": [
+            "aclnnAddmm_MatMulCommon_MatMulV2",
+            "aclnnMm_MatMulCommon_MatMulV2"
+          ],
+          "example_input_shapes": [
+            "\"512,1024;3072,1024;3072\"",
+            "\"512,1024;1024,1024;1024\"",
+            "\"512,1024;4096,1024;4096\""
+          ],
+          "average_duration_us": 23.972947712418293,
+          "share_of_summed_duration_percent": 5.116989228008611
+        },
+        {
+          "op_type": "NotEqual",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 247,
+          "source_rows": 247,
+          "summed_duration_us": 403.76999999999975,
+          "example_names": [
+            "aclnnNeScalar_NotEqualAiCore_NotEqual",
+            "aclnnNeTensor_NotEqualAiCore_NotEqual",
+            "NotEqual"
+          ],
+          "example_input_shapes": [
+            "\"1,159;\"",
+            "\"1,158;1,158\"",
+            "\"159;\""
+          ],
+          "average_duration_us": 1.6346963562753027,
+          "share_of_summed_duration_percent": 0.2816473607632673
+        },
+        {
+          "op_type": "SplitVD",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 240,
+          "source_rows": 240,
+          "summed_duration_us": 716.8749999999999,
+          "example_names": [
+            "SplitV",
+            "SplitV_1",
+            "SplitV_2"
+          ],
+          "example_input_shapes": [
+            "\"1,32,8,512\""
+          ],
+          "average_duration_us": 2.986979166666666,
+          "share_of_summed_duration_percent": 0.5000518903018235
+        },
+        {
+          "op_type": "FlashAttentionScore",
+          "task_type": "MIX_AIC",
+          "invocations": 240,
+          "source_rows": 240,
+          "summed_duration_us": 7589.855000000004,
+          "example_names": [
+            "FlashAttentionScore",
+            "FlashAttentionScore_1",
+            "FlashAttentionScore_2"
+          ],
+          "example_input_shapes": [
+            "\"1,8,32,256;1,8,32,256;1,8,32,256;1,1,32,32;;\"",
+            "\"1,8,32,256;1,8,191,256;1,8,191,256;1,1,32,191;;\""
+          ],
+          "average_duration_us": 31.62439583333335,
+          "share_of_summed_duration_percent": 5.294258189875153
+        },
+        {
+          "op_type": "Sub",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 220,
+          "source_rows": 220,
+          "summed_duration_us": 1256.486,
+          "example_names": [
+            "aclnnSubs_SubAiCore_Sub",
+            "aclnnSub_SubAiCore_Sub"
+          ],
+          "example_input_shapes": [
+            "\"1,159;\"",
+            "\"1,16,5,32,1;1,16,5,1,32\"",
+            "\"1,16,32,128;1,16,32,128\""
+          ],
+          "average_duration_us": 5.7113000000000005,
+          "share_of_summed_duration_percent": 0.8764543322584513
+        }
+      ],
+      "name_family_view": {
+        "heuristic": "Strip only one trailing underscore+decimal integer, e.g. MatMul_123 -> MatMul; not a verified operator/stage mapping",
+        "top_by_summed_duration": [
+          {
+            "name_family": "Transpose",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1659,
+            "summed_duration_us": 18734.58999999997,
+            "example_exact_names": [
+              "Transpose"
+            ],
+            "average_duration_us": 11.29270042194091,
+            "share_of_summed_duration_percent": 13.068201769526944
+          },
+          {
+            "name_family": "Cast",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 3476,
+            "summed_duration_us": 16204.98099999994,
+            "example_exact_names": [
+              "Cast"
+            ],
+            "average_duration_us": 4.661962313003435,
+            "share_of_summed_duration_percent": 11.303688064662747
+          },
+          {
+            "name_family": "MatMul",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 1680,
+            "summed_duration_us": 14557.289999999999,
+            "example_exact_names": [
+              "MatMul"
+            ],
+            "average_duration_us": 8.66505357142857,
+            "share_of_summed_duration_percent": 10.15435101261982
+          },
+          {
+            "name_family": "Mul",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1470,
+            "summed_duration_us": 12238.323000000006,
+            "example_exact_names": [
+              "Mul"
+            ],
+            "average_duration_us": 8.32538979591837,
+            "share_of_summed_duration_percent": 8.536769381376514
+          },
+          {
+            "name_family": "FlashAttentionScore",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 7589.855000000004,
+            "example_exact_names": [
+              "FlashAttentionScore"
+            ],
+            "average_duration_us": 31.62439583333335,
+            "share_of_summed_duration_percent": 5.294258189875153
+          },
+          {
+            "name_family": "MatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 306,
+            "summed_duration_us": 7335.721999999998,
+            "example_exact_names": [
+              "MatMulV2"
+            ],
+            "average_duration_us": 23.972947712418293,
+            "share_of_summed_duration_percent": 5.116989228008611
+          },
+          {
+            "name_family": "AutomaticBufferFusionOp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1000,
+            "summed_duration_us": 6160.962999999999,
+            "example_exact_names": [
+              "AutomaticBufferFusionOp"
+            ],
+            "average_duration_us": 6.160962999999999,
+            "share_of_summed_duration_percent": 4.297543078262729
+          },
+          {
+            "name_family": "RotaryPositionEmbedding",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 6065.6109999999935,
+            "example_exact_names": [
+              "RotaryPositionEmbedding"
+            ],
+            "average_duration_us": 12.63668958333332,
+            "share_of_summed_duration_percent": 4.231030858079207
+          },
+          {
+            "name_family": "RmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 490,
+            "summed_duration_us": 5364.925999999999,
+            "example_exact_names": [
+              "RmsNorm"
+            ],
+            "average_duration_us": 10.94882857142857,
+            "share_of_summed_duration_percent": 3.7422722059346483
+          },
+          {
+            "name_family": "Slice",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1303,
+            "summed_duration_us": 4170.100000000009,
+            "example_exact_names": [
+              "Slice"
+            ],
+            "average_duration_us": 3.200383729854189,
+            "share_of_summed_duration_percent": 2.908828439752592
+          },
+          {
+            "name_family": "Add",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1023,
+            "summed_duration_us": 3697.6579999999835,
+            "example_exact_names": [
+              "Add"
+            ],
+            "average_duration_us": 3.614523949169094,
+            "share_of_summed_duration_percent": 2.57927933403962
+          },
+          {
+            "name_family": "TransData",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 72,
+            "summed_duration_us": 3411.0490000000004,
+            "example_exact_names": [
+              "TransData"
+            ],
+            "average_duration_us": 47.37568055555556,
+            "share_of_summed_duration_percent": 2.3793569316298457
+          },
+          {
+            "name_family": "BatchMatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 613,
+            "summed_duration_us": 3330.758000000003,
+            "example_exact_names": [
+              "BatchMatMulV2"
+            ],
+            "average_duration_us": 5.4335367047308365,
+            "share_of_summed_duration_percent": 2.323350422371994
+          },
+          {
+            "name_family": "InplaceAddRmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 2742.053000000004,
+            "example_exact_names": [
+              "InplaceAddRmsNorm"
+            ],
+            "average_duration_us": 5.712610416666675,
+            "share_of_summed_duration_percent": 1.91270275286178
+          },
+          {
+            "name_family": "BroadcastTo",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 511,
+            "summed_duration_us": 2618.127999999994,
+            "example_exact_names": [
+              "BroadcastTo"
+            ],
+            "average_duration_us": 5.123538160469655,
+            "share_of_summed_duration_percent": 1.8262596065592047
+          },
+          {
+            "name_family": "row_inverse_kernel",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 18,
+            "summed_duration_us": 1758.233,
+            "example_exact_names": [
+              "row_inverse_kernel_0"
+            ],
+            "average_duration_us": 97.67961111111111,
+            "share_of_summed_duration_percent": 1.2264449663345023
+          },
+          {
+            "name_family": "ViewCopy",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 180,
+            "summed_duration_us": 1706.7359999999996,
+            "example_exact_names": [
+              "ViewCopy"
+            ],
+            "average_duration_us": 9.481866666666665,
+            "share_of_summed_duration_percent": 1.1905235404305814
+          },
+          {
+            "name_family": "MaskedFill",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 120,
+            "summed_duration_us": 1652.7180000000003,
+            "example_exact_names": [
+              "MaskedFill"
+            ],
+            "average_duration_us": 13.772650000000002,
+            "share_of_summed_duration_percent": 1.1528436059785172
+          },
+          {
+            "name_family": "Pows",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 79,
+            "summed_duration_us": 1436.0450000000005,
+            "example_exact_names": [
+              "Pows"
+            ],
+            "average_duration_us": 18.17778481012659,
+            "share_of_summed_duration_percent": 1.0017046441966628
+          },
+          {
+            "name_family": "MemSet",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 154,
+            "summed_duration_us": 1372.2009999999996,
+            "example_exact_names": [
+              "MemSet"
+            ],
+            "average_duration_us": 8.910396103896101,
+            "share_of_summed_duration_percent": 0.9571706419167254
+          }
+        ],
+        "top_by_invocation_count": [
+          {
+            "name_family": "Cast",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 3476,
+            "summed_duration_us": 16204.98099999994,
+            "example_exact_names": [
+              "Cast"
+            ],
+            "average_duration_us": 4.661962313003435,
+            "share_of_summed_duration_percent": 11.303688064662747
+          },
+          {
+            "name_family": "MatMul",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 1680,
+            "summed_duration_us": 14557.289999999999,
+            "example_exact_names": [
+              "MatMul"
+            ],
+            "average_duration_us": 8.66505357142857,
+            "share_of_summed_duration_percent": 10.15435101261982
+          },
+          {
+            "name_family": "Transpose",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1659,
+            "summed_duration_us": 18734.58999999997,
+            "example_exact_names": [
+              "Transpose"
+            ],
+            "average_duration_us": 11.29270042194091,
+            "share_of_summed_duration_percent": 13.068201769526944
+          },
+          {
+            "name_family": "Mul",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1470,
+            "summed_duration_us": 12238.323000000006,
+            "example_exact_names": [
+              "Mul"
+            ],
+            "average_duration_us": 8.32538979591837,
+            "share_of_summed_duration_percent": 8.536769381376514
+          },
+          {
+            "name_family": "Slice",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1303,
+            "summed_duration_us": 4170.100000000009,
+            "example_exact_names": [
+              "Slice"
+            ],
+            "average_duration_us": 3.200383729854189,
+            "share_of_summed_duration_percent": 2.908828439752592
+          },
+          {
+            "name_family": "Add",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1023,
+            "summed_duration_us": 3697.6579999999835,
+            "example_exact_names": [
+              "Add"
+            ],
+            "average_duration_us": 3.614523949169094,
+            "share_of_summed_duration_percent": 2.57927933403962
+          },
+          {
+            "name_family": "AutomaticBufferFusionOp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1000,
+            "summed_duration_us": 6160.962999999999,
+            "example_exact_names": [
+              "AutomaticBufferFusionOp"
+            ],
+            "average_duration_us": 6.160962999999999,
+            "share_of_summed_duration_percent": 4.297543078262729
+          },
+          {
+            "name_family": "BatchMatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 613,
+            "summed_duration_us": 3330.758000000003,
+            "example_exact_names": [
+              "BatchMatMulV2"
+            ],
+            "average_duration_us": 5.4335367047308365,
+            "share_of_summed_duration_percent": 2.323350422371994
+          },
+          {
+            "name_family": "ConcatV2D",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 610,
+            "summed_duration_us": 1005.5340000000011,
+            "example_exact_names": [
+              "ConcatV2D"
+            ],
+            "average_duration_us": 1.6484163934426248,
+            "share_of_summed_duration_percent": 0.7014042580125608
+          },
+          {
+            "name_family": "BroadcastTo",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 511,
+            "summed_duration_us": 2618.127999999994,
+            "example_exact_names": [
+              "BroadcastTo"
+            ],
+            "average_duration_us": 5.123538160469655,
+            "share_of_summed_duration_percent": 1.8262596065592047
+          },
+          {
+            "name_family": "RmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 490,
+            "summed_duration_us": 5364.925999999999,
+            "example_exact_names": [
+              "RmsNorm"
+            ],
+            "average_duration_us": 10.94882857142857,
+            "share_of_summed_duration_percent": 3.7422722059346483
+          },
+          {
+            "name_family": "TileD",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 1086.564,
+            "example_exact_names": [
+              "TileD"
+            ],
+            "average_duration_us": 2.263675,
+            "share_of_summed_duration_percent": 0.757926252322805
+          },
+          {
+            "name_family": "RotaryPositionEmbedding",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 6065.6109999999935,
+            "example_exact_names": [
+              "RotaryPositionEmbedding"
+            ],
+            "average_duration_us": 12.63668958333332,
+            "share_of_summed_duration_percent": 4.231030858079207
+          },
+          {
+            "name_family": "InplaceAddRmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 2742.053000000004,
+            "example_exact_names": [
+              "InplaceAddRmsNorm"
+            ],
+            "average_duration_us": 5.712610416666675,
+            "share_of_summed_duration_percent": 1.91270275286178
+          },
+          {
+            "name_family": "Exp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 324,
+            "summed_duration_us": 547.0700000000005,
+            "example_exact_names": [
+              "Exp"
+            ],
+            "average_duration_us": 1.6884876543209892,
+            "share_of_summed_duration_percent": 0.3816054230199392
+          },
+          {
+            "name_family": "MatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 306,
+            "summed_duration_us": 7335.721999999998,
+            "example_exact_names": [
+              "MatMulV2"
+            ],
+            "average_duration_us": 23.972947712418293,
+            "share_of_summed_duration_percent": 5.116989228008611
+          },
+          {
+            "name_family": "NotEqual",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 247,
+            "summed_duration_us": 403.76999999999975,
+            "example_exact_names": [
+              "NotEqual"
+            ],
+            "average_duration_us": 1.6346963562753027,
+            "share_of_summed_duration_percent": 0.2816473607632673
+          },
+          {
+            "name_family": "SplitVD",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 716.8749999999999,
+            "example_exact_names": [
+              "SplitVD"
+            ],
+            "average_duration_us": 2.986979166666666,
+            "share_of_summed_duration_percent": 0.5000518903018235
+          },
+          {
+            "name_family": "FlashAttentionScore",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 7589.855000000004,
+            "example_exact_names": [
+              "FlashAttentionScore"
+            ],
+            "average_duration_us": 31.62439583333335,
+            "share_of_summed_duration_percent": 5.294258189875153
+          },
+          {
+            "name_family": "Sub",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 220,
+            "summed_duration_us": 1256.486,
+            "example_exact_names": [
+              "Sub"
+            ],
+            "average_duration_us": 5.7113000000000005,
+            "share_of_summed_duration_percent": 0.8764543322584513
+          }
+        ]
+      },
+      "warning": "Durations may overlap. Nested Host/Device Total columns are never summed. Do not equate sums to request wall time, add different CSV tables, or infer model stages without trace ranges."
+    },
+    {
+      "path": "/root/work/profile-libero-norm-mrope/6fa3a25f106c_42305_20261116122119889_ascend_pt/ASCEND_PROFILER_OUTPUT/op_statistic.csv",
+      "table_kind": "statistic",
+      "duration_semantics": "kernel/operator reported duration",
+      "nested_total_columns_ignored": [],
+      "columns": {
+        "duration": "Total Time(us)",
+        "duration_to_us": 1.0,
+        "duration_multiplied_by_count": false,
+        "count": "Count",
+        "op_type": "OP Type",
+        "task_type": "Core Type",
+        "name": null,
+        "input_shape": null
+      },
+      "source_rows": 80,
+      "excluded_rows": 0,
+      "excluded_examples": [],
+      "grouping": "nonmissing operator Type, falling back to Name per row",
+      "name_fallback_rows": 0,
+      "operator_groups": 80,
+      "invocations": 19206,
+      "summed_duration_us": 143360.13799999992,
+      "top_by_summed_duration": [
+        {
+          "op_type": "Transpose",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1659,
+          "source_rows": 1,
+          "summed_duration_us": 18734.595,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 11.292703435804702,
+          "share_of_summed_duration_percent": 13.06820379874356
+        },
+        {
+          "op_type": "Cast",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 3476,
+          "source_rows": 1,
+          "summed_duration_us": 16204.973,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 4.66196001150748,
+          "share_of_summed_duration_percent": 11.3036812227399
+        },
+        {
+          "op_type": "MatMul",
+          "task_type": "AI_CORE",
+          "invocations": 1680,
+          "source_rows": 1,
+          "summed_duration_us": 14557.28,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 8.66504761904762,
+          "share_of_summed_duration_percent": 10.154342903883093
+        },
+        {
+          "op_type": "Mul",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1470,
+          "source_rows": 1,
+          "summed_duration_us": 12238.317,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 8.325385714285714,
+          "share_of_summed_duration_percent": 8.536764243349156
+        },
+        {
+          "op_type": "FlashAttentionScore",
+          "task_type": "MIX_AIC",
+          "invocations": 240,
+          "source_rows": 1,
+          "summed_duration_us": 7589.846,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 31.62435833333333,
+          "share_of_summed_duration_percent": 5.294251321102944
+        },
+        {
+          "op_type": "MatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 306,
+          "source_rows": 1,
+          "summed_duration_us": 7335.722,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 23.9729477124183,
+          "share_of_summed_duration_percent": 5.116988656916614
+        },
+        {
+          "op_type": "AutomaticBufferFusionOp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1000,
+          "source_rows": 1,
+          "summed_duration_us": 6160.961,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 6.160961,
+          "share_of_summed_duration_percent": 4.297541203538743
+        },
+        {
+          "op_type": "RotaryPositionEmbedding",
+          "task_type": "MIX_AIC",
+          "invocations": 480,
+          "source_rows": 1,
+          "summed_duration_us": 6065.61,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 12.636687499999999,
+          "share_of_summed_duration_percent": 4.231029688322428
+        },
+        {
+          "op_type": "RmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 490,
+          "source_rows": 1,
+          "summed_duration_us": 5364.93,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 10.948836734693877,
+          "share_of_summed_duration_percent": 3.7422745784466276
+        },
+        {
+          "op_type": "Slice",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1303,
+          "source_rows": 1,
+          "summed_duration_us": 4170.103,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 3.200386032233308,
+          "share_of_summed_duration_percent": 2.9088302077387804
+        },
+        {
+          "op_type": "Add",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1023,
+          "source_rows": 1,
+          "summed_duration_us": 3697.655,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 3.614521016617791,
+          "share_of_summed_duration_percent": 2.5792769535419966
+        },
+        {
+          "op_type": "TransData",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 72,
+          "source_rows": 1,
+          "summed_duration_us": 3411.05,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 47.37569444444445,
+          "share_of_summed_duration_percent": 2.379357363620843
+        },
+        {
+          "op_type": "BatchMatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 613,
+          "source_rows": 1,
+          "summed_duration_us": 3330.765,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.433548123980424,
+          "share_of_summed_duration_percent": 2.323355045877538
+        },
+        {
+          "op_type": "InplaceAddRmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 1,
+          "summed_duration_us": 2742.053,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.712610416666666,
+          "share_of_summed_duration_percent": 1.9127025393906927
+        },
+        {
+          "op_type": "BroadcastTo",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 511,
+          "source_rows": 1,
+          "summed_duration_us": 2618.133,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.1235479452054795,
+          "share_of_summed_duration_percent": 1.826262890455645
+        },
+        {
+          "op_type": "row_inverse_kernel_0",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 18,
+          "source_rows": 1,
+          "summed_duration_us": 1758.235,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 97.67972222222221,
+          "share_of_summed_duration_percent": 1.226446224542558
+        },
+        {
+          "op_type": "ViewCopy",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 180,
+          "source_rows": 1,
+          "summed_duration_us": 1706.739,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 9.481883333333334,
+          "share_of_summed_duration_percent": 1.1905255001916926
+        },
+        {
+          "op_type": "MaskedFill",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 120,
+          "source_rows": 1,
+          "summed_duration_us": 1652.715,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 13.772625,
+          "share_of_summed_duration_percent": 1.1528413846811454
+        },
+        {
+          "op_type": "Pows",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 79,
+          "source_rows": 1,
+          "summed_duration_us": 1436.051,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 18.17786075949367,
+          "share_of_summed_duration_percent": 1.001708717663205
+        },
+        {
+          "op_type": "MemSet",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 154,
+          "source_rows": 1,
+          "summed_duration_us": 1372.205,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 8.910422077922078,
+          "share_of_summed_duration_percent": 0.9571733252656333
+        }
+      ],
+      "top_by_invocation_count": [
+        {
+          "op_type": "Cast",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 3476,
+          "source_rows": 1,
+          "summed_duration_us": 16204.973,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 4.66196001150748,
+          "share_of_summed_duration_percent": 11.3036812227399
+        },
+        {
+          "op_type": "MatMul",
+          "task_type": "AI_CORE",
+          "invocations": 1680,
+          "source_rows": 1,
+          "summed_duration_us": 14557.28,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 8.66504761904762,
+          "share_of_summed_duration_percent": 10.154342903883093
+        },
+        {
+          "op_type": "Transpose",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1659,
+          "source_rows": 1,
+          "summed_duration_us": 18734.595,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 11.292703435804702,
+          "share_of_summed_duration_percent": 13.06820379874356
+        },
+        {
+          "op_type": "Mul",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1470,
+          "source_rows": 1,
+          "summed_duration_us": 12238.317,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 8.325385714285714,
+          "share_of_summed_duration_percent": 8.536764243349156
+        },
+        {
+          "op_type": "Slice",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1303,
+          "source_rows": 1,
+          "summed_duration_us": 4170.103,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 3.200386032233308,
+          "share_of_summed_duration_percent": 2.9088302077387804
+        },
+        {
+          "op_type": "Add",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1023,
+          "source_rows": 1,
+          "summed_duration_us": 3697.655,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 3.614521016617791,
+          "share_of_summed_duration_percent": 2.5792769535419966
+        },
+        {
+          "op_type": "AutomaticBufferFusionOp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 1000,
+          "source_rows": 1,
+          "summed_duration_us": 6160.961,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 6.160961,
+          "share_of_summed_duration_percent": 4.297541203538743
+        },
+        {
+          "op_type": "BatchMatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 613,
+          "source_rows": 1,
+          "summed_duration_us": 3330.765,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.433548123980424,
+          "share_of_summed_duration_percent": 2.323355045877538
+        },
+        {
+          "op_type": "ConcatV2D",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 610,
+          "source_rows": 1,
+          "summed_duration_us": 1005.535,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 1.6484180327868851,
+          "share_of_summed_duration_percent": 0.7014048772748814
+        },
+        {
+          "op_type": "BroadcastTo",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 511,
+          "source_rows": 1,
+          "summed_duration_us": 2618.133,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.1235479452054795,
+          "share_of_summed_duration_percent": 1.826262890455645
+        },
+        {
+          "op_type": "RmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 490,
+          "source_rows": 1,
+          "summed_duration_us": 5364.93,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 10.948836734693877,
+          "share_of_summed_duration_percent": 3.7422745784466276
+        },
+        {
+          "op_type": "RotaryPositionEmbedding",
+          "task_type": "MIX_AIC",
+          "invocations": 480,
+          "source_rows": 1,
+          "summed_duration_us": 6065.61,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 12.636687499999999,
+          "share_of_summed_duration_percent": 4.231029688322428
+        },
+        {
+          "op_type": "InplaceAddRmsNorm",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 1,
+          "summed_duration_us": 2742.053,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.712610416666666,
+          "share_of_summed_duration_percent": 1.9127025393906927
+        },
+        {
+          "op_type": "TileD",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 480,
+          "source_rows": 1,
+          "summed_duration_us": 1086.562,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 2.2636708333333333,
+          "share_of_summed_duration_percent": 0.7579247726449597
+        },
+        {
+          "op_type": "Exp",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 324,
+          "source_rows": 1,
+          "summed_duration_us": 547.07,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 1.688487654320988,
+          "share_of_summed_duration_percent": 0.38160538043008885
+        },
+        {
+          "op_type": "MatMulV2",
+          "task_type": "AI_CORE",
+          "invocations": 306,
+          "source_rows": 1,
+          "summed_duration_us": 7335.722,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 23.9729477124183,
+          "share_of_summed_duration_percent": 5.116988656916614
+        },
+        {
+          "op_type": "NotEqual",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 247,
+          "source_rows": 1,
+          "summed_duration_us": 403.772,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 1.6347044534412956,
+          "share_of_summed_duration_percent": 0.28164872441738315
+        },
+        {
+          "op_type": "FlashAttentionScore",
+          "task_type": "MIX_AIC",
+          "invocations": 240,
+          "source_rows": 1,
+          "summed_duration_us": 7589.846,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 31.62435833333333,
+          "share_of_summed_duration_percent": 5.294251321102944
+        },
+        {
+          "op_type": "SplitVD",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 240,
+          "source_rows": 1,
+          "summed_duration_us": 716.875,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 2.9869791666666665,
+          "share_of_summed_duration_percent": 0.5000518344925146
+        },
+        {
+          "op_type": "Sub",
+          "task_type": "AI_VECTOR_CORE",
+          "invocations": 220,
+          "source_rows": 1,
+          "summed_duration_us": 1256.483,
+          "example_names": [],
+          "example_input_shapes": [],
+          "average_duration_us": 5.711286363636363,
+          "share_of_summed_duration_percent": 0.8764521418080672
+        }
+      ],
+      "name_family_view": {
+        "heuristic": "Strip only one trailing underscore+decimal integer, e.g. MatMul_123 -> MatMul; not a verified operator/stage mapping",
+        "top_by_summed_duration": [
+          {
+            "name_family": "Transpose",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1659,
+            "summed_duration_us": 18734.595,
+            "example_exact_names": [
+              "Transpose"
+            ],
+            "average_duration_us": 11.292703435804702,
+            "share_of_summed_duration_percent": 13.06820379874356
+          },
+          {
+            "name_family": "Cast",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 3476,
+            "summed_duration_us": 16204.973,
+            "example_exact_names": [
+              "Cast"
+            ],
+            "average_duration_us": 4.66196001150748,
+            "share_of_summed_duration_percent": 11.3036812227399
+          },
+          {
+            "name_family": "MatMul",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 1680,
+            "summed_duration_us": 14557.28,
+            "example_exact_names": [
+              "MatMul"
+            ],
+            "average_duration_us": 8.66504761904762,
+            "share_of_summed_duration_percent": 10.154342903883093
+          },
+          {
+            "name_family": "Mul",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1470,
+            "summed_duration_us": 12238.317,
+            "example_exact_names": [
+              "Mul"
+            ],
+            "average_duration_us": 8.325385714285714,
+            "share_of_summed_duration_percent": 8.536764243349156
+          },
+          {
+            "name_family": "FlashAttentionScore",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 7589.846,
+            "example_exact_names": [
+              "FlashAttentionScore"
+            ],
+            "average_duration_us": 31.62435833333333,
+            "share_of_summed_duration_percent": 5.294251321102944
+          },
+          {
+            "name_family": "MatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 306,
+            "summed_duration_us": 7335.722,
+            "example_exact_names": [
+              "MatMulV2"
+            ],
+            "average_duration_us": 23.9729477124183,
+            "share_of_summed_duration_percent": 5.116988656916614
+          },
+          {
+            "name_family": "AutomaticBufferFusionOp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1000,
+            "summed_duration_us": 6160.961,
+            "example_exact_names": [
+              "AutomaticBufferFusionOp"
+            ],
+            "average_duration_us": 6.160961,
+            "share_of_summed_duration_percent": 4.297541203538743
+          },
+          {
+            "name_family": "RotaryPositionEmbedding",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 6065.61,
+            "example_exact_names": [
+              "RotaryPositionEmbedding"
+            ],
+            "average_duration_us": 12.636687499999999,
+            "share_of_summed_duration_percent": 4.231029688322428
+          },
+          {
+            "name_family": "RmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 490,
+            "summed_duration_us": 5364.93,
+            "example_exact_names": [
+              "RmsNorm"
+            ],
+            "average_duration_us": 10.948836734693877,
+            "share_of_summed_duration_percent": 3.7422745784466276
+          },
+          {
+            "name_family": "Slice",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1303,
+            "summed_duration_us": 4170.103,
+            "example_exact_names": [
+              "Slice"
+            ],
+            "average_duration_us": 3.200386032233308,
+            "share_of_summed_duration_percent": 2.9088302077387804
+          },
+          {
+            "name_family": "Add",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1023,
+            "summed_duration_us": 3697.655,
+            "example_exact_names": [
+              "Add"
+            ],
+            "average_duration_us": 3.614521016617791,
+            "share_of_summed_duration_percent": 2.5792769535419966
+          },
+          {
+            "name_family": "TransData",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 72,
+            "summed_duration_us": 3411.05,
+            "example_exact_names": [
+              "TransData"
+            ],
+            "average_duration_us": 47.37569444444445,
+            "share_of_summed_duration_percent": 2.379357363620843
+          },
+          {
+            "name_family": "BatchMatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 613,
+            "summed_duration_us": 3330.765,
+            "example_exact_names": [
+              "BatchMatMulV2"
+            ],
+            "average_duration_us": 5.433548123980424,
+            "share_of_summed_duration_percent": 2.323355045877538
+          },
+          {
+            "name_family": "InplaceAddRmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 2742.053,
+            "example_exact_names": [
+              "InplaceAddRmsNorm"
+            ],
+            "average_duration_us": 5.712610416666666,
+            "share_of_summed_duration_percent": 1.9127025393906927
+          },
+          {
+            "name_family": "BroadcastTo",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 511,
+            "summed_duration_us": 2618.133,
+            "example_exact_names": [
+              "BroadcastTo"
+            ],
+            "average_duration_us": 5.1235479452054795,
+            "share_of_summed_duration_percent": 1.826262890455645
+          },
+          {
+            "name_family": "row_inverse_kernel",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 18,
+            "summed_duration_us": 1758.235,
+            "example_exact_names": [
+              "row_inverse_kernel_0"
+            ],
+            "average_duration_us": 97.67972222222221,
+            "share_of_summed_duration_percent": 1.226446224542558
+          },
+          {
+            "name_family": "ViewCopy",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 180,
+            "summed_duration_us": 1706.739,
+            "example_exact_names": [
+              "ViewCopy"
+            ],
+            "average_duration_us": 9.481883333333334,
+            "share_of_summed_duration_percent": 1.1905255001916926
+          },
+          {
+            "name_family": "MaskedFill",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 120,
+            "summed_duration_us": 1652.715,
+            "example_exact_names": [
+              "MaskedFill"
+            ],
+            "average_duration_us": 13.772625,
+            "share_of_summed_duration_percent": 1.1528413846811454
+          },
+          {
+            "name_family": "Pows",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 79,
+            "summed_duration_us": 1436.051,
+            "example_exact_names": [
+              "Pows"
+            ],
+            "average_duration_us": 18.17786075949367,
+            "share_of_summed_duration_percent": 1.001708717663205
+          },
+          {
+            "name_family": "MemSet",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 154,
+            "summed_duration_us": 1372.205,
+            "example_exact_names": [
+              "MemSet"
+            ],
+            "average_duration_us": 8.910422077922078,
+            "share_of_summed_duration_percent": 0.9571733252656333
+          }
+        ],
+        "top_by_invocation_count": [
+          {
+            "name_family": "Cast",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 3476,
+            "summed_duration_us": 16204.973,
+            "example_exact_names": [
+              "Cast"
+            ],
+            "average_duration_us": 4.66196001150748,
+            "share_of_summed_duration_percent": 11.3036812227399
+          },
+          {
+            "name_family": "MatMul",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 1680,
+            "summed_duration_us": 14557.28,
+            "example_exact_names": [
+              "MatMul"
+            ],
+            "average_duration_us": 8.66504761904762,
+            "share_of_summed_duration_percent": 10.154342903883093
+          },
+          {
+            "name_family": "Transpose",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1659,
+            "summed_duration_us": 18734.595,
+            "example_exact_names": [
+              "Transpose"
+            ],
+            "average_duration_us": 11.292703435804702,
+            "share_of_summed_duration_percent": 13.06820379874356
+          },
+          {
+            "name_family": "Mul",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1470,
+            "summed_duration_us": 12238.317,
+            "example_exact_names": [
+              "Mul"
+            ],
+            "average_duration_us": 8.325385714285714,
+            "share_of_summed_duration_percent": 8.536764243349156
+          },
+          {
+            "name_family": "Slice",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1303,
+            "summed_duration_us": 4170.103,
+            "example_exact_names": [
+              "Slice"
+            ],
+            "average_duration_us": 3.200386032233308,
+            "share_of_summed_duration_percent": 2.9088302077387804
+          },
+          {
+            "name_family": "Add",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1023,
+            "summed_duration_us": 3697.655,
+            "example_exact_names": [
+              "Add"
+            ],
+            "average_duration_us": 3.614521016617791,
+            "share_of_summed_duration_percent": 2.5792769535419966
+          },
+          {
+            "name_family": "AutomaticBufferFusionOp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 1000,
+            "summed_duration_us": 6160.961,
+            "example_exact_names": [
+              "AutomaticBufferFusionOp"
+            ],
+            "average_duration_us": 6.160961,
+            "share_of_summed_duration_percent": 4.297541203538743
+          },
+          {
+            "name_family": "BatchMatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 613,
+            "summed_duration_us": 3330.765,
+            "example_exact_names": [
+              "BatchMatMulV2"
+            ],
+            "average_duration_us": 5.433548123980424,
+            "share_of_summed_duration_percent": 2.323355045877538
+          },
+          {
+            "name_family": "ConcatV2D",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 610,
+            "summed_duration_us": 1005.535,
+            "example_exact_names": [
+              "ConcatV2D"
+            ],
+            "average_duration_us": 1.6484180327868851,
+            "share_of_summed_duration_percent": 0.7014048772748814
+          },
+          {
+            "name_family": "BroadcastTo",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 511,
+            "summed_duration_us": 2618.133,
+            "example_exact_names": [
+              "BroadcastTo"
+            ],
+            "average_duration_us": 5.1235479452054795,
+            "share_of_summed_duration_percent": 1.826262890455645
+          },
+          {
+            "name_family": "RmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 490,
+            "summed_duration_us": 5364.93,
+            "example_exact_names": [
+              "RmsNorm"
+            ],
+            "average_duration_us": 10.948836734693877,
+            "share_of_summed_duration_percent": 3.7422745784466276
+          },
+          {
+            "name_family": "RotaryPositionEmbedding",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 6065.61,
+            "example_exact_names": [
+              "RotaryPositionEmbedding"
+            ],
+            "average_duration_us": 12.636687499999999,
+            "share_of_summed_duration_percent": 4.231029688322428
+          },
+          {
+            "name_family": "InplaceAddRmsNorm",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 2742.053,
+            "example_exact_names": [
+              "InplaceAddRmsNorm"
+            ],
+            "average_duration_us": 5.712610416666666,
+            "share_of_summed_duration_percent": 1.9127025393906927
+          },
+          {
+            "name_family": "TileD",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 480,
+            "summed_duration_us": 1086.562,
+            "example_exact_names": [
+              "TileD"
+            ],
+            "average_duration_us": 2.2636708333333333,
+            "share_of_summed_duration_percent": 0.7579247726449597
+          },
+          {
+            "name_family": "Exp",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 324,
+            "summed_duration_us": 547.07,
+            "example_exact_names": [
+              "Exp"
+            ],
+            "average_duration_us": 1.688487654320988,
+            "share_of_summed_duration_percent": 0.38160538043008885
+          },
+          {
+            "name_family": "MatMulV2",
+            "task_type": "AI_CORE",
+            "exact_groups": 1,
+            "invocations": 306,
+            "summed_duration_us": 7335.722,
+            "example_exact_names": [
+              "MatMulV2"
+            ],
+            "average_duration_us": 23.9729477124183,
+            "share_of_summed_duration_percent": 5.116988656916614
+          },
+          {
+            "name_family": "NotEqual",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 247,
+            "summed_duration_us": 403.772,
+            "example_exact_names": [
+              "NotEqual"
+            ],
+            "average_duration_us": 1.6347044534412956,
+            "share_of_summed_duration_percent": 0.28164872441738315
+          },
+          {
+            "name_family": "FlashAttentionScore",
+            "task_type": "MIX_AIC",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 7589.846,
+            "example_exact_names": [
+              "FlashAttentionScore"
+            ],
+            "average_duration_us": 31.62435833333333,
+            "share_of_summed_duration_percent": 5.294251321102944
+          },
+          {
+            "name_family": "SplitVD",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 240,
+            "summed_duration_us": 716.875,
+            "example_exact_names": [
+              "SplitVD"
+            ],
+            "average_duration_us": 2.9869791666666665,
+            "share_of_summed_duration_percent": 0.5000518344925146
+          },
+          {
+            "name_family": "Sub",
+            "task_type": "AI_VECTOR_CORE",
+            "exact_groups": 1,
+            "invocations": 220,
+            "summed_duration_us": 1256.483,
+            "example_exact_names": [
+              "Sub"
+            ],
+            "average_duration_us": 5.711286363636363,
+            "share_of_summed_duration_percent": 0.8764521418080672
+          }
+        ]
+      },
+      "warning": "Durations may overlap. Nested Host/Device Total columns are never summed. Do not equate sums to request wall time, add different CSV tables, or infer model stages without trace ranges."
+    },
+    {
+      "path": "/root/work/profile-libero-norm-mrope/6fa3a25f106c_42305_20261116122119889_ascend_pt/ASCEND_PROFILER_OUTPUT/operator_details.csv",
+      "table_kind": "details",
+      "duration_semantics": "operator attributed device self time",
+      "nested_total_columns_ignored": [
+        "Host Total Duration(us)",
+        "Device Total Duration(us)",
+        "Device Total Duration With AICore(us)"
+      ],
+      "columns": {
+        "duration": "Device Self Duration(us)",
+        "duration_to_us": 1.0,
+        "duration_multiplied_by_count": false,
+        "count": null,
+        "op_type": "Name",
+        "task_type": null,
+        "name": "Name",
+        "input_shape": "Input Shapes"
+      },
+      "source_rows": 1657,
+      "excluded_rows": 0,
+      "excluded_examples": [],
+      "grouping": "nonmissing operator Type, falling back to Name per row",
+      "name_fallback_rows": 0,
+      "operator_groups": 128,
+      "invocations": 1657,
+      "summed_duration_us": 2541.1725,
+      "top_by_summed_duration": [
+        {
+          "op_type": "aclnnInplaceCopy",
+          "task_type": "<unspecified>",
+          "invocations": 78,
+          "source_rows": 78,
+          "summed_duration_us": 826.1585,
+          "example_names": [
+            "aclnnInplaceCopy"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 10.591775641025642,
+          "share_of_summed_duration_percent": 32.51091769645705
+        },
+        {
+          "op_type": "aclnnGather",
+          "task_type": "<unspecified>",
+          "invocations": 5,
+          "source_rows": 5,
+          "summed_duration_us": 302.4065,
+          "example_names": [
+            "aclnnGather"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 60.4813,
+          "share_of_summed_duration_percent": 11.900274381215757
+        },
+        {
+          "op_type": "aclnnAddmm",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 215.706,
+          "example_names": [
+            "aclnnAddmm"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 9.804818181818181,
+          "share_of_summed_duration_percent": 8.48844381874902
+        },
+        {
+          "op_type": "aclnnIndexPutImpl",
+          "task_type": "<unspecified>",
+          "invocations": 5,
+          "source_rows": 5,
+          "summed_duration_us": 192.5035,
+          "example_names": [
+            "aclnnIndexPutImpl"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 38.5007,
+          "share_of_summed_duration_percent": 7.575381049495852
+        },
+        {
+          "op_type": "aclnnNonzeroV2",
+          "task_type": "<unspecified>",
+          "invocations": 9,
+          "source_rows": 9,
+          "summed_duration_us": 144.524,
+          "example_names": [
+            "aclnnNonzeroV2"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 16.058222222222224,
+          "share_of_summed_duration_percent": 5.687295923436917
+        },
+        {
+          "op_type": "aclnnInplaceMaskedFillScalar",
+          "task_type": "<unspecified>",
+          "invocations": 12,
+          "source_rows": 12,
+          "summed_duration_us": 126.06249999999999,
+          "example_names": [
+            "aclnnInplaceMaskedFillScalar"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 10.505208333333332,
+          "share_of_summed_duration_percent": 4.960800575324972
+        },
+        {
+          "op_type": "aclnnCumsum",
+          "task_type": "<unspecified>",
+          "invocations": 3,
+          "source_rows": 3,
+          "summed_duration_us": 100.00150000000001,
+          "example_names": [
+            "aclnnCumsum"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 33.33383333333334,
+          "share_of_summed_duration_percent": 3.9352503617916534
+        },
+        {
+          "op_type": "aclnnInplaceOne",
+          "task_type": "<unspecified>",
+          "invocations": 2,
+          "source_rows": 2,
+          "summed_duration_us": 96.22200000000001,
+          "example_names": [
+            "aclnnInplaceOne"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 48.111000000000004,
+          "share_of_summed_duration_percent": 3.786519805326085
+        },
+        {
+          "op_type": "aclnnIndex",
+          "task_type": "<unspecified>",
+          "invocations": 4,
+          "source_rows": 4,
+          "summed_duration_us": 94.78150000000001,
+          "example_names": [
+            "aclnnIndex"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 23.695375000000002,
+          "share_of_summed_duration_percent": 3.7298333741609437
+        },
+        {
+          "op_type": "aclnnForeachCopy",
+          "task_type": "<unspecified>",
+          "invocations": 5,
+          "source_rows": 5,
+          "summed_duration_us": 75.4605,
+          "example_names": [
+            "aclnnForeachCopy"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 15.092099999999999,
+          "share_of_summed_duration_percent": 2.9695150565339423
+        },
+        {
+          "op_type": "aclnnCat",
+          "task_type": "<unspecified>",
+          "invocations": 4,
+          "source_rows": 4,
+          "summed_duration_us": 47.84,
+          "example_names": [
+            "aclnnCat"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 11.96,
+          "share_of_summed_duration_percent": 1.8825955341481146
+        },
+        {
+          "op_type": "aclnnMuls",
+          "task_type": "<unspecified>",
+          "invocations": 12,
+          "source_rows": 12,
+          "summed_duration_us": 32.0005,
+          "example_names": [
+            "aclnnMuls"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 2.6667083333333337,
+          "share_of_summed_duration_percent": 1.2592809028115959
+        },
+        {
+          "op_type": "aclnnEqScalar",
+          "task_type": "<unspecified>",
+          "invocations": 9,
+          "source_rows": 9,
+          "summed_duration_us": 26.82,
+          "example_names": [
+            "aclnnEqScalar"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 2.98,
+          "share_of_summed_duration_percent": 1.055418315757785
+        },
+        {
+          "op_type": "aclnnMaxDim",
+          "task_type": "<unspecified>",
+          "invocations": 3,
+          "source_rows": 3,
+          "summed_duration_us": 25.261000000000003,
+          "example_names": [
+            "aclnnMaxDim"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 8.420333333333334,
+          "share_of_summed_duration_percent": 0.9940686828619467
+        },
+        {
+          "op_type": "aclnnArange",
+          "task_type": "<unspecified>",
+          "invocations": 2,
+          "source_rows": 2,
+          "summed_duration_us": 21.4405,
+          "example_names": [
+            "aclnnArange"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 10.72025,
+          "share_of_summed_duration_percent": 0.8437246979494701
+        },
+        {
+          "op_type": "aclnnMul",
+          "task_type": "<unspecified>",
+          "invocations": 2,
+          "source_rows": 2,
+          "summed_duration_us": 18.560000000000002,
+          "example_names": [
+            "aclnnMul"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 9.280000000000001,
+          "share_of_summed_duration_percent": 0.7303715115758572
+        },
+        {
+          "op_type": "aclnnAny",
+          "task_type": "<unspecified>",
+          "invocations": 3,
+          "source_rows": 3,
+          "summed_duration_us": 17.8405,
+          "example_names": [
+            "aclnnAny"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 5.946833333333333,
+          "share_of_summed_duration_percent": 0.7020578099282909
+        },
+        {
+          "op_type": "aclnnInplaceSub",
+          "task_type": "<unspecified>",
+          "invocations": 10,
+          "source_rows": 10,
+          "summed_duration_us": 17.24,
+          "example_names": [
+            "aclnnInplaceSub"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 1.7239999999999998,
+          "share_of_summed_duration_percent": 0.6784269859680914
+        },
+        {
+          "op_type": "aclnnInplaceSubs",
+          "task_type": "<unspecified>",
+          "invocations": 10,
+          "source_rows": 10,
+          "summed_duration_us": 15.94,
+          "example_names": [
+            "aclnnInplaceSubs"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 1.5939999999999999,
+          "share_of_summed_duration_percent": 0.6272694986271101
+        },
+        {
+          "op_type": "aclnnInplaceFillScalar",
+          "task_type": "<unspecified>",
+          "invocations": 5,
+          "source_rows": 5,
+          "summed_duration_us": 15.900500000000001,
+          "example_names": [
+            "aclnnInplaceFillScalar"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 3.1801000000000004,
+          "share_of_summed_duration_percent": 0.6257150980502111
+        }
+      ],
+      "top_by_invocation_count": [
+        {
+          "op_type": "empty_tensor",
+          "task_type": "<unspecified>",
+          "invocations": 235,
+          "source_rows": 235,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "empty_tensor"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::as_strided",
+          "task_type": "<unspecified>",
+          "invocations": 131,
+          "source_rows": 131,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::as_strided"
+          ],
+          "example_input_shapes": [
+            "1,159;\r\n;\r\n;\r\n",
+            "159;\r\n;\r\n;\r\n",
+            "1;\r\n;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::copy_",
+          "task_type": "<unspecified>",
+          "invocations": 93,
+          "source_rows": 93,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::copy_"
+          ],
+          "example_input_shapes": [
+            "80;\r\n80;\r\n",
+            "20;\r\n20;\r\n",
+            "159;\r\n159;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aclnnInplaceCopy",
+          "task_type": "<unspecified>",
+          "invocations": 78,
+          "source_rows": 78,
+          "summed_duration_us": 826.1585,
+          "example_names": [
+            "aclnnInplaceCopy"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 10.591775641025642,
+          "share_of_summed_duration_percent": 32.51091769645705
+        },
+        {
+          "op_type": "aten::clone",
+          "task_type": "<unspecified>",
+          "invocations": 68,
+          "source_rows": 68,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::clone"
+          ],
+          "example_input_shapes": [
+            "1,1,20;\r\n",
+            "1,3,2,256,256;\r\n",
+            "1,8,8,2,2,6,16,16;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::view",
+          "task_type": "<unspecified>",
+          "invocations": 64,
+          "source_rows": 64,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::view"
+          ],
+          "example_input_shapes": [
+            "1,20;\r\n",
+            "20;\r\n",
+            "1,1,3,256,256;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::contiguous",
+          "task_type": "<unspecified>",
+          "invocations": 62,
+          "source_rows": 62,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::contiguous"
+          ],
+          "example_input_shapes": [
+            "1,3,2,256,256;\r\n",
+            "1,2,159,256;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::to",
+          "task_type": "<unspecified>",
+          "invocations": 61,
+          "source_rows": 61,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::to"
+          ],
+          "example_input_shapes": [
+            "1,20;\r\n;\r\n;\r\n;\r\n;\r\n",
+            "159;\r\n;\r\n;\r\n;\r\n;\r\n",
+            "159;\r\n;\r\n;\r\n;\r\n;\r\n;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::reshape",
+          "task_type": "<unspecified>",
+          "invocations": 43,
+          "source_rows": 43,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::reshape"
+          ],
+          "example_input_shapes": [
+            "1,1,3,256,256;\r\n",
+            "1,3,2,256,256;\r\n",
+            "1,6,256,256;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::select",
+          "task_type": "<unspecified>",
+          "invocations": 38,
+          "source_rows": 38,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::select"
+          ],
+          "example_input_shapes": [
+            "1,159;\r\n;\r\n",
+            "2,30;\r\n;\r\n",
+            "2,128;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::slice",
+          "task_type": "<unspecified>",
+          "invocations": 38,
+          "source_rows": 38,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::slice"
+          ],
+          "example_input_shapes": [
+            "159;\r\n;\r\n;\r\n;\r\n",
+            "1,20;\r\n;\r\n;\r\n;\r\n",
+            "1,1,20;\r\n;\r\n;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::empty",
+          "task_type": "<unspecified>",
+          "invocations": 35,
+          "source_rows": 35,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::empty"
+          ],
+          "example_input_shapes": [
+            ";\r\n;\r\n;\r\n;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::item",
+          "task_type": "<unspecified>",
+          "invocations": 35,
+          "source_rows": 35,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::item"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::_local_scalar_dense",
+          "task_type": "<unspecified>",
+          "invocations": 35,
+          "source_rows": 35,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::_local_scalar_dense"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::linear",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::linear"
+          ],
+          "example_input_shapes": [
+            "1,1,20;\r\n2048,20;\r\n2048",
+            "1,1,2048;\r\n2048,2048;\r\n2048",
+            "1,32,20;\r\n1024,20;\r\n1024"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::t",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::t"
+          ],
+          "example_input_shapes": [
+            "2048,20",
+            "2048,2048",
+            "1024,20"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::transpose",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::transpose"
+          ],
+          "example_input_shapes": [
+            "2048,20;\r\n;\r\n",
+            "2048,2048;\r\n;\r\n",
+            "1024,20;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aten::addmm",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::addmm"
+          ],
+          "example_input_shapes": [
+            "2048;\r\n1,20;\r\n20,2048;\r\n;\r\n",
+            "2048;\r\n1,2048;\r\n2048,2048;\r\n;\r\n",
+            "1024;\r\n32,20;\r\n20,1024;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        },
+        {
+          "op_type": "aclnnAddmm",
+          "task_type": "<unspecified>",
+          "invocations": 22,
+          "source_rows": 22,
+          "summed_duration_us": 215.706,
+          "example_names": [
+            "aclnnAddmm"
+          ],
+          "example_input_shapes": [],
+          "average_duration_us": 9.804818181818181,
+          "share_of_summed_duration_percent": 8.48844381874902
+        },
+        {
+          "op_type": "aten::set_",
+          "task_type": "<unspecified>",
+          "invocations": 20,
+          "source_rows": 20,
+          "summed_duration_us": 0.0,
+          "example_names": [
+            "aten::set_"
+          ],
+          "example_input_shapes": [
+            "0;\r\n",
+            "0;\r\n;\r\n;\r\n;\r\n",
+            ";\r\n;\r\n;\r\n;\r\n"
+          ],
+          "average_duration_us": 0.0,
+          "share_of_summed_duration_percent": 0.0
+        }
+      ],
+      "name_family_view": {
+        "heuristic": "Strip only one trailing underscore+decimal integer, e.g. MatMul_123 -> MatMul; not a verified operator/stage mapping",
+        "top_by_summed_duration": [
+          {
+            "name_family": "aclnnInplaceCopy",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 78,
+            "summed_duration_us": 826.1585,
+            "example_exact_names": [
+              "aclnnInplaceCopy"
+            ],
+            "average_duration_us": 10.591775641025642,
+            "share_of_summed_duration_percent": 32.51091769645705
+          },
+          {
+            "name_family": "aclnnGather",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 5,
+            "summed_duration_us": 302.4065,
+            "example_exact_names": [
+              "aclnnGather"
+            ],
+            "average_duration_us": 60.4813,
+            "share_of_summed_duration_percent": 11.900274381215757
+          },
+          {
+            "name_family": "aclnnAddmm",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 215.706,
+            "example_exact_names": [
+              "aclnnAddmm"
+            ],
+            "average_duration_us": 9.804818181818181,
+            "share_of_summed_duration_percent": 8.48844381874902
+          },
+          {
+            "name_family": "aclnnIndexPutImpl",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 5,
+            "summed_duration_us": 192.5035,
+            "example_exact_names": [
+              "aclnnIndexPutImpl"
+            ],
+            "average_duration_us": 38.5007,
+            "share_of_summed_duration_percent": 7.575381049495852
+          },
+          {
+            "name_family": "aclnnNonzeroV2",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 9,
+            "summed_duration_us": 144.524,
+            "example_exact_names": [
+              "aclnnNonzeroV2"
+            ],
+            "average_duration_us": 16.058222222222224,
+            "share_of_summed_duration_percent": 5.687295923436917
+          },
+          {
+            "name_family": "aclnnInplaceMaskedFillScalar",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 12,
+            "summed_duration_us": 126.06249999999999,
+            "example_exact_names": [
+              "aclnnInplaceMaskedFillScalar"
+            ],
+            "average_duration_us": 10.505208333333332,
+            "share_of_summed_duration_percent": 4.960800575324972
+          },
+          {
+            "name_family": "aclnnCumsum",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 3,
+            "summed_duration_us": 100.00150000000001,
+            "example_exact_names": [
+              "aclnnCumsum"
+            ],
+            "average_duration_us": 33.33383333333334,
+            "share_of_summed_duration_percent": 3.9352503617916534
+          },
+          {
+            "name_family": "aclnnInplaceOne",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 2,
+            "summed_duration_us": 96.22200000000001,
+            "example_exact_names": [
+              "aclnnInplaceOne"
+            ],
+            "average_duration_us": 48.111000000000004,
+            "share_of_summed_duration_percent": 3.786519805326085
+          },
+          {
+            "name_family": "aclnnIndex",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 4,
+            "summed_duration_us": 94.78150000000001,
+            "example_exact_names": [
+              "aclnnIndex"
+            ],
+            "average_duration_us": 23.695375000000002,
+            "share_of_summed_duration_percent": 3.7298333741609437
+          },
+          {
+            "name_family": "aclnnForeachCopy",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 5,
+            "summed_duration_us": 75.4605,
+            "example_exact_names": [
+              "aclnnForeachCopy"
+            ],
+            "average_duration_us": 15.092099999999999,
+            "share_of_summed_duration_percent": 2.9695150565339423
+          },
+          {
+            "name_family": "aclnnCat",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 4,
+            "summed_duration_us": 47.84,
+            "example_exact_names": [
+              "aclnnCat"
+            ],
+            "average_duration_us": 11.96,
+            "share_of_summed_duration_percent": 1.8825955341481146
+          },
+          {
+            "name_family": "aclnnMuls",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 12,
+            "summed_duration_us": 32.0005,
+            "example_exact_names": [
+              "aclnnMuls"
+            ],
+            "average_duration_us": 2.6667083333333337,
+            "share_of_summed_duration_percent": 1.2592809028115959
+          },
+          {
+            "name_family": "aclnnEqScalar",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 9,
+            "summed_duration_us": 26.82,
+            "example_exact_names": [
+              "aclnnEqScalar"
+            ],
+            "average_duration_us": 2.98,
+            "share_of_summed_duration_percent": 1.055418315757785
+          },
+          {
+            "name_family": "aclnnMaxDim",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 3,
+            "summed_duration_us": 25.261000000000003,
+            "example_exact_names": [
+              "aclnnMaxDim"
+            ],
+            "average_duration_us": 8.420333333333334,
+            "share_of_summed_duration_percent": 0.9940686828619467
+          },
+          {
+            "name_family": "aclnnArange",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 2,
+            "summed_duration_us": 21.4405,
+            "example_exact_names": [
+              "aclnnArange"
+            ],
+            "average_duration_us": 10.72025,
+            "share_of_summed_duration_percent": 0.8437246979494701
+          },
+          {
+            "name_family": "aclnnMul",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 2,
+            "summed_duration_us": 18.560000000000002,
+            "example_exact_names": [
+              "aclnnMul"
+            ],
+            "average_duration_us": 9.280000000000001,
+            "share_of_summed_duration_percent": 0.7303715115758572
+          },
+          {
+            "name_family": "aclnnAny",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 3,
+            "summed_duration_us": 17.8405,
+            "example_exact_names": [
+              "aclnnAny"
+            ],
+            "average_duration_us": 5.946833333333333,
+            "share_of_summed_duration_percent": 0.7020578099282909
+          },
+          {
+            "name_family": "aclnnInplaceSub",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 10,
+            "summed_duration_us": 17.24,
+            "example_exact_names": [
+              "aclnnInplaceSub"
+            ],
+            "average_duration_us": 1.7239999999999998,
+            "share_of_summed_duration_percent": 0.6784269859680914
+          },
+          {
+            "name_family": "aclnnInplaceSubs",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 10,
+            "summed_duration_us": 15.94,
+            "example_exact_names": [
+              "aclnnInplaceSubs"
+            ],
+            "average_duration_us": 1.5939999999999999,
+            "share_of_summed_duration_percent": 0.6272694986271101
+          },
+          {
+            "name_family": "aclnnInplaceFillScalar",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 5,
+            "summed_duration_us": 15.900500000000001,
+            "example_exact_names": [
+              "aclnnInplaceFillScalar"
+            ],
+            "average_duration_us": 3.1801000000000004,
+            "share_of_summed_duration_percent": 0.6257150980502111
+          }
+        ],
+        "top_by_invocation_count": [
+          {
+            "name_family": "empty_tensor",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 235,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "empty_tensor"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::as_strided",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 131,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::as_strided"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::copy_",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 93,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::copy_"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aclnnInplaceCopy",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 78,
+            "summed_duration_us": 826.1585,
+            "example_exact_names": [
+              "aclnnInplaceCopy"
+            ],
+            "average_duration_us": 10.591775641025642,
+            "share_of_summed_duration_percent": 32.51091769645705
+          },
+          {
+            "name_family": "aten::clone",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 68,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::clone"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::view",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 64,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::view"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::contiguous",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 62,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::contiguous"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::to",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 61,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::to"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::reshape",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 43,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::reshape"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::select",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 38,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::select"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::slice",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 38,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::slice"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::empty",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 35,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::empty"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::item",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 35,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::item"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::_local_scalar_dense",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 35,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::_local_scalar_dense"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::linear",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::linear"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::t",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::t"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::transpose",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::transpose"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aten::addmm",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::addmm"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          },
+          {
+            "name_family": "aclnnAddmm",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 22,
+            "summed_duration_us": 215.706,
+            "example_exact_names": [
+              "aclnnAddmm"
+            ],
+            "average_duration_us": 9.804818181818181,
+            "share_of_summed_duration_percent": 8.48844381874902
+          },
+          {
+            "name_family": "aten::set_",
+            "task_type": "<unspecified>",
+            "exact_groups": 1,
+            "invocations": 20,
+            "summed_duration_us": 0.0,
+            "example_exact_names": [
+              "aten::set_"
+            ],
+            "average_duration_us": 0.0,
+            "share_of_summed_duration_percent": 0.0
+          }
+        ]
+      },
+      "warning": "Durations may overlap. Nested Host/Device Total columns are never summed. Do not equate sums to request wall time, add different CSV tables, or infer model stages without trace ranges."
+    }
+  ]
+}

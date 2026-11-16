@@ -10,7 +10,7 @@ This directory carries a reviewable source patch for
 The patch SHA-256 is:
 
 ```text
-3cfeedaa69f7d965c5601369082e3314c5f95b11b8ecc849675b8c132b8e047d
+8995a976bfbf8493d0fb8dc356a4c993aa67e78c7ce0ecb94b71f215cd8cbb6f
 ```
 
 It is a source overlay, not a fork or a model distribution. No checkpoint,
@@ -44,8 +44,8 @@ overlap with user work.
 
 ## Patch scope
 
-`patches/0001-ascend-torchnpu-runtime.patch` makes the minimum runtime changes needed
-for an eager TorchNPU baseline:
+`patches/0001-ascend-torchnpu-runtime.patch` contains runtime compatibility changes
+for TorchNPU eager execution and opt-in graph experiments:
 
 - resolves autocast from the executing tensor/device instead of hard-coding CUDA;
 - synchronizes CUDA or NPU correctly for reported phase timings;
@@ -58,12 +58,19 @@ for an eager TorchNPU baseline:
   pure-PyTorch and SDPA fallbacks;
 - rewrites Qwen3.5 temporal image patchification into rank-eight intermediate
   tensors while preserving the original rank-nine expression element-for-element;
+- reads missing GatedDeltaNet cache states with `.get()`, preserving
+  `_DefaultNoneDict.__missing__`'s `None` result while avoiding a Dynamo tracing
+  exception during empty-cache prefill;
+- creates GatedDeltaNet zero tensors directly on the execution device with the
+  final dtype, avoiding synchronous CPU-to-NPU copies inside graph capture;
 - adds CPU dispatch/fallback tests.
 
 The overlay does not change model dimensions, checkpoint keys, action routing,
 flow-matching steps, autoregressive limits, or output contracts. It also does
 not claim that the fallback kernels are performant. They establish a truthful
-full-model eager baseline before Triton-Ascend/GAC optimization.
+full-model eager baseline before Triton-Ascend/GAC optimization. The earlier
+validation report records its original overlay digest; it is not retroactively
+claimed as validation of this graph-compatible revision.
 
 ## Validation
 

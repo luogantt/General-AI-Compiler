@@ -1,0 +1,35 @@
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[warmup 1/5] 1746.740 ms
+[warmup 2/5] 1007.156 ms
+[warmup 3/5] 1011.045 ms
+[warmup 4/5] 1007.191 ms
+[warmup 5/5] 1010.163 ms
+[measure 1/20] 1017.545 ms
+[measure 2/20] 1029.561 ms
+[measure 3/20] 1023.097 ms
+[measure 4/20] 1026.071 ms
+[measure 5/20] 1008.897 ms
+[measure 6/20] 1007.192 ms
+[measure 7/20] 1007.416 ms
+[measure 8/20] 1006.592 ms
+[measure 9/20] 1015.606 ms
+[measure 10/20] 1019.103 ms
+[measure 11/20] 1014.539 ms
+[measure 12/20] 1015.512 ms
+[measure 13/20] 1015.852 ms
+[measure 14/20] 1010.508 ms
+[measure 15/20] 1011.317 ms
+[measure 16/20] 1016.403 ms
+[measure 17/20] 1013.200 ms
+[measure 18/20] 1010.243 ms
+[measure 19/20] 1011.525 ms
+[measure 20/20] 1009.294 ms
+{"report": "/root/work/libero-bf16-eager/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 748.0796320131049, "p50": 747.0694750081748, "p95": 757.7045000623912, "min": 742.1317202970386, "max": 759.3890400603414}, "prefill_ms": {"count": 20, "mean": 266.3940040860325, "p50": 266.32457529194653, "p95": 268.54054850991815, "min": 263.8663500547409, "max": 270.17186023294926}, "total_ms": {"count": 20, "mean": 1014.4736360991374, "p50": 1013.8697698712349, "p95": 1026.2450485723093, "min": 1006.5921600908041, "max": 1029.5609002932906}}}

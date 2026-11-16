@@ -1,0 +1,77 @@
+[progress] Validate source/checkpoint
+[progress] Load fm-only / bf16
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+[shape_meta] Image 'head_rgb' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'left_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_left]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'right_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Loaded in 60622.235 ms
+[progress] Eager reference request (verification only)
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] First selected-backend request (includes compile if enabled)
+Traceback (most recent call last):
+  File "/root/work/benchmark_g05_optimize.py", line 333, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 324, in main
+    report = run(args)
+             ^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 245, in run
+    cold, cold_outputs = run_one(**arguments)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 170, in run_one
+    results, timings = inferencer.infer_with_timing([observation])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/inferencer.py", line 77, in infer_with_timing
+    batch = self.forward_batch(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_full.py", line 554, in forward_batch
+    batch = self.policy.predict_action(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 483, in predict_action
+    return self.forward(batch, inference_mode=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 579, in forward
+    generated = self.forward_inference(
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 1021, in forward_inference
+    state = self.prefill(samples, pixel_values)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 790, in prefill
+    vlm_hidden, vlm_kv, position_ids = self.model.vlm_prefill(
+                                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_model_qwen35.py", line 462, in vlm_prefill
+    vlm_hidden, vlm_cache = self.vlm(
+                            ^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 659, in _fn
+    raise e.with_traceback(None) from None
+torch._dynamo.exc.Unsupported: Observed exception
+  Explanation: Dynamo found no exception handler at the top-level compiled function when encountering an exception. Exception will propagate outside the compiled region.
+  Hint: Dynamo has detected that tracing the code will result in an error when running in eager. Please double check that your code doesn't contain a similar error when actually running eager/uncompiled.
+  Hint: It may be possible to write Dynamo tracing rules for this code. Please report an issue to PyTorch if you encounter this graph break often and it is causing performance issues.
+
+  Developer debug context: 
+
+
+from user code:
+   File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/mixture_qwen35.py", line 663, in forward
+    hidden_states, _new_kv = layer(
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+[ERROR] 2026-11-16-09:39:01 (PID:5724, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception

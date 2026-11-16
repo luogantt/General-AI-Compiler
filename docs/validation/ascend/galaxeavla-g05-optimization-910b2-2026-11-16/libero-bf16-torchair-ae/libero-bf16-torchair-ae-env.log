@@ -1,0 +1,48 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 136568.170 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 26.730 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Selected-backend numerical check cold_A
+.Warning: tiling offset out of range, index: 32
+.Warning: tiling offset out of range, index: 32
+[progress] Selected-backend numerical check first_B
+[progress] Selected-backend numerical check replay_A
+[progress] Selected-backend numerical check replay_B
+[warmup 1/5] 369.437 ms
+[warmup 2/5] 369.587 ms
+[warmup 3/5] 368.720 ms
+[warmup 4/5] 371.340 ms
+[warmup 5/5] 367.848 ms
+[measure 1/20] 367.480 ms
+[measure 2/20] 366.839 ms
+[measure 3/20] 371.692 ms
+[measure 4/20] 369.465 ms
+[measure 5/20] 367.216 ms
+[measure 6/20] 365.633 ms
+[measure 7/20] 364.894 ms
+[measure 8/20] 365.146 ms
+[measure 9/20] 368.522 ms
+[measure 10/20] 368.892 ms
+[measure 11/20] 367.258 ms
+[measure 12/20] 368.437 ms
+[measure 13/20] 364.163 ms
+[measure 14/20] 364.805 ms
+[measure 15/20] 363.955 ms
+[measure 16/20] 365.002 ms
+[measure 17/20] 363.944 ms
+[measure 18/20] 364.178 ms
+[measure 19/20] 362.594 ms
+[measure 20/20] 363.628 ms
+{"report": "/root/work/libero-bf16-torchair-ae-env/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 108.04834449663758, "p50": 108.02561999298632, "p95": 108.30383754801005, "min": 107.79513977468014, "max": 108.32240991294384}, "prefill_ms": {"count": 20, "mean": 258.13876350875944, "p50": 257.38709489814937, "p95": 261.2782542826608, "min": 254.66896034777164, "max": 263.47987027838826}, "total_ms": {"count": 20, "mean": 366.187108005397, "p50": 365.38909492082894, "p95": 369.5766023360193, "min": 362.5944401137531, "max": 371.692490298301}}}

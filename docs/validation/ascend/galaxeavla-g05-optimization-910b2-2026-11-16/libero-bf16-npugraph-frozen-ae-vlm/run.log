@@ -1,0 +1,54 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 58104.847 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 27.020 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Selected-backend numerical check cold_A
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+[progress] Selected-backend numerical check first_B
+[progress] Selected-backend numerical check replay_A
+[progress] Selected-backend numerical check replay_B
+[warmup 1/5] 296.514 ms
+[warmup 2/5] 297.186 ms
+[warmup 3/5] 299.127 ms
+[warmup 4/5] 299.162 ms
+[warmup 5/5] 297.462 ms
+[measure 1/20] 296.432 ms
+[measure 2/20] 296.220 ms
+[measure 3/20] 296.920 ms
+[measure 4/20] 297.563 ms
+[measure 5/20] 297.279 ms
+[measure 6/20] 296.965 ms
+[measure 7/20] 298.222 ms
+[measure 8/20] 297.010 ms
+[measure 9/20] 297.086 ms
+[measure 10/20] 297.277 ms
+[measure 11/20] 300.556 ms
+[measure 12/20] 301.748 ms
+[measure 13/20] 299.840 ms
+[measure 14/20] 299.575 ms
+[measure 15/20] 299.318 ms
+[measure 16/20] 300.191 ms
+[measure 17/20] 299.210 ms
+[measure 18/20] 298.948 ms
+[measure 19/20] 299.556 ms
+[measure 20/20] 297.318 ms
+{"report": "/root/work/libero-bf16-npugraph-frozen-ae-vlm/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 142.85222853068262, "p50": 142.82340975478292, "p95": 143.16605071071535, "min": 142.59222010150552, "max": 143.21279991418123}, "prefill_ms": {"count": 20, "mean": 155.50933750346303, "p50": 155.04034981131554, "p95": 157.66017325222492, "min": 153.28527987003326, "max": 158.5355601273477}, "total_ms": {"count": 20, "mean": 298.36156603414565, "p50": 297.8925099596381, "p95": 300.61552319675684, "min": 296.2196902371943, "max": 301.74836004152894}}}

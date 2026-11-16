@@ -1,0 +1,1845 @@
+{
+  "status": "success",
+  "scope": "prepared device inputs -> Vision/VLM prefill -> FM10 -> normalized [1,32,20] action; no CoT/AR",
+  "excluded": [
+    "image loading",
+    "outer image preprocessing",
+    "outer batch H2D",
+    "output D2H",
+    "denormalization",
+    "network",
+    "warmup/compilation",
+    "shared-noise correctness requests"
+  ],
+  "included_prefill_work": "Official encode_inference/build_proprio_batch CPU work and internal device transfers, matching the original 3090 timer",
+  "noise_timing": {
+    "mode": "native",
+    "included": "original device torch.randn",
+    "correctness": "All verification and saved action.npy use shared noise regardless of timing mode"
+  },
+  "source_revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+  "asset_revision": "aca2916ba2adaba3ce05bfa279cdc6b98da35cad",
+  "assets": {
+    "g05-libero/.hydra/config.yaml": {
+      "size": 20644,
+      "sha256": "544c185b903f94d76617b419c4d3d395444d8d3b342409465645e7d7386a001a"
+    },
+    "g05-libero/dataset_stats.json": {
+      "size": 95006,
+      "sha256": "b3953f24d94d08e75134ce63fb77c69a09ef2ed46f2dffc0397d2f2b2bebc756"
+    },
+    "qwen3_5_2b_base_processor/config.json": {
+      "size": 2908,
+      "sha256": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4"
+    },
+    "qwen3_5_2b_base_processor/configuration.json": {
+      "size": 51,
+      "sha256": "2d4464e2ead06bc9bc718c781309ad1e7baded626d66e8dcdc8b469ba185faf0"
+    },
+    "qwen3_5_2b_base_processor/merges.txt": {
+      "size": 3353259,
+      "sha256": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d"
+    },
+    "qwen3_5_2b_base_processor/preprocessor_config.json": {
+      "size": 390,
+      "sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516"
+    },
+    "qwen3_5_2b_base_processor/tokenizer_config.json": {
+      "size": 16712,
+      "sha256": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de"
+    },
+    "qwen3_5_2b_base_processor/video_preprocessor_config.json": {
+      "size": 386,
+      "sha256": "d039cd7d88b3502a99edd455496b75b44ecf7dd3b3669748bafac37e6cecc085"
+    },
+    "qwen3_5_2b_base_processor/vocab.json": {
+      "size": 6722759,
+      "sha256": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+    },
+    "action_tokenizer.pt": {
+      "size": 506886775,
+      "sha256": "5088f64a5452a60bbc8cac90ee7d79c156f1d14540bc3139aa7060f862dddace"
+    },
+    "qwen3_5_2b_base_processor/tokenizer.json": {
+      "size": 12807196,
+      "sha256": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927"
+    },
+    "g05-libero/model.pt": {
+      "size": 11440381065,
+      "sha256": "432f225c7647bdab77bfa2c2b397dc38cf8631bd70c92b85b261ff2817c1e795"
+    }
+  },
+  "benchmark_files_sha256": {
+    "benchmark_g05_libero.py": "d0edfa6ec00496f6a7104e0509965b836d2a1810b1a99b12f405b1c28d96c3f2",
+    "benchmark_g05_full.py": "bb54e804f8c32d810f70afcf7552dfe6602623b1038cea901fa5f7f3608aa684",
+    "g05_npu_graphs.py": "9aff01a658749eccc35e884699dfe7f6dc334ded238e1c2a03f6f6270bff168b"
+  },
+  "source": {
+    "path": "/root/work/GalaxeaVLA-upstream",
+    "revision": "89f2322b4ad016e192437adc1a2c253b05bab246",
+    "tree_state": {
+      "dirty": true,
+      "status": [
+        " M scripts/serve_policy.py",
+        " M src/g05/models/g05/g05_model_qwen35.py",
+        " M src/g05/models/g05/g05_policy.py",
+        " M src/g05/models/g05/helpers/ar_helper.py",
+        " M src/g05/models/g05/inferencer.py",
+        " M src/g05/models/g05/model/modules.py",
+        " M src/g05/models/g05/model/utils.py",
+        " M src/g05/models/g05/qwen35/gated_deltanet.py",
+        " M src/g05/models/g05/qwen35/mixture_qwen35.py",
+        " M src/g05/models/g05/qwen35/modules.py",
+        " M src/g05/models/g05/qwen35/vision.py",
+        " M src/g05/tokenizer/interface/vq_base.py",
+        " M src/g05/utils/checkpoint/checkpoint_utils.py",
+        "?? fusion_result.json",
+        "?? kernel_meta/",
+        "?? src/g05/utils/common/device.py",
+        "?? tests/test_device_utils.py",
+        "?? tests/test_qwen35_device_fallbacks.py"
+      ],
+      "tracked_diff_sha256": "bcbf8968073712c7214c47ae9322cf51534f84898a396598ceb8ce0906f4e24a",
+      "tracked_diff_bytes": 65245,
+      "untracked_files": [
+        {
+          "path": "fusion_result.json",
+          "size_bytes": 6046,
+          "sha256": "848c6732f41e30af769e00619721803fb4f08c5e744142e55cce8e201ad58524"
+        },
+        {
+          "path": "kernel_meta/buildPidInfo.json",
+          "size_bytes": 115,
+          "sha256": "b064c879bcbbce4c5d50cc94b7df34995677d9e0ee5ced11cdd0555b594853ff"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/InplaceAddRmsNorm_isolate_tiling_42502.json",
+          "size_bytes": 6751,
+          "sha256": "829e0721f39ce25e9aad6278845bc69c24b613bff702386db533d45fca79cf2e"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/InplaceAddRmsNorm_isolate_tiling_42506.json",
+          "size_bytes": 6751,
+          "sha256": "829e0721f39ce25e9aad6278845bc69c24b613bff702386db533d45fca79cf2e"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/RmsNorm_isolate_tiling_42503.json",
+          "size_bytes": 8084,
+          "sha256": "db55e6ee51b64a518a11889ef92a3a5832c228bc81267bfdb0c4e101637d731f"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/RmsNorm_isolate_tiling_42505.json",
+          "size_bytes": 8088,
+          "sha256": "df938ce0615819e74ec2fe798da5d3facfc082ac18823a62ce223182d50dbfb8"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_add_204578bd0ca911db0700e02c82ceb3a334ebe9fbb07b1f98c9c2c8e0850912f9.json",
+          "size_bytes": 579,
+          "sha256": "d9764649202b457052657f1b61cf1b5983e223247af608fcdbb8ea597746f858"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_add_204578bd0ca911db0700e02c82ceb3a334ebe9fbb07b1f98c9c2c8e0850912f9.o",
+          "size_bytes": 1992,
+          "sha256": "7b89d1170be491046ea7c06e9907b1979e51c61e85eba4615d5963c963d0265d"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_fused_op_mul_add_53dbe59e6aaabd15a29e78c2d7224e86a05973966aa21f315694d56e3db3f026.json",
+          "size_bytes": 620,
+          "sha256": "4c152918505bd0bc13a63ba4c9ac5582869b623781cd3d4ddbba601a2f7bef22"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_fused_op_mul_add_53dbe59e6aaabd15a29e78c2d7224e86a05973966aa21f315694d56e3db3f026.o",
+          "size_bytes": 2144,
+          "sha256": "1af1d0853c0f10aa2a126b306215afba47457e72865ca74d9fa47db9bd3e9970"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_fused_op_select_v2_select_v2_d8a97362d1ce12b183b75dbca23e547887d90be547d436cdf5d37638de3357c1.json",
+          "size_bytes": 671,
+          "sha256": "e9bddcedfcb7659d0d33402266a20a068f8ed5cd2c60d1ca08aae95a9ab5c217"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_fused_op_select_v2_select_v2_d8a97362d1ce12b183b75dbca23e547887d90be547d436cdf5d37638de3357c1.o",
+          "size_bytes": 2656,
+          "sha256": "49c8a9a1b56cd1216b40352c1c1a0dbb8d4df0366e7cfd88202f3ff7380a9335"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_35e50cc5f23133e2922e2d74e97cadc90e20f0e9cb077b0c7536b150c250352c.json",
+          "size_bytes": 748,
+          "sha256": "9bb860728f1573915bacea6ea8075ba9cb57064cc067810ec21a633d862c0e10"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_35e50cc5f23133e2922e2d74e97cadc90e20f0e9cb077b0c7536b150c250352c.o",
+          "size_bytes": 7176,
+          "sha256": "c86f21d339cfd41319a05d05100df58bfffc9bc9114ece7ad381c86aeca4d106"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_35e50cc5f23133e2922e2d74e97cadc90e20f0e9cb077b0c7536b150c250352c_cube.i",
+          "size_bytes": 3590616,
+          "sha256": "d2f67342f7fbcdaec79c8adceaebfb411eabe8cc8c6c51d0da12a01dc637c9af"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_35e50cc5f23133e2922e2d74e97cadc90e20f0e9cb077b0c7536b150c250352c_vec.i",
+          "size_bytes": 3591540,
+          "sha256": "8b5c7eafd60b5a78df97a1c30d963f62b2e4dd638b8221f941d709be6d4fa02a"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_4cb07c9664ab9d9a3dc2df21b5567b239e303b9e32872f5793e397aefcaf5477.json",
+          "size_bytes": 748,
+          "sha256": "8f3f11dba090ace65bc408f7baaa10018f119c9749a51ea7984e0b1cf6ced360"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_4cb07c9664ab9d9a3dc2df21b5567b239e303b9e32872f5793e397aefcaf5477.o",
+          "size_bytes": 7176,
+          "sha256": "9698b8f5af1b3069ba9acba4d923efaf3e14d3587709ce29ffa2778eb17419db"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_4cb07c9664ab9d9a3dc2df21b5567b239e303b9e32872f5793e397aefcaf5477_cube.i",
+          "size_bytes": 3590616,
+          "sha256": "d2f67342f7fbcdaec79c8adceaebfb411eabe8cc8c6c51d0da12a01dc637c9af"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_inplaceaddrmsnorm_4cb07c9664ab9d9a3dc2df21b5567b239e303b9e32872f5793e397aefcaf5477_vec.i",
+          "size_bytes": 3591540,
+          "sha256": "8b5c7eafd60b5a78df97a1c30d963f62b2e4dd638b8221f941d709be6d4fa02a"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_mul_b92690587b5ae7d83742edad1c2fab8c990ef35053f904909a22f506c475fc57.json",
+          "size_bytes": 580,
+          "sha256": "9c388ca58fb88b485ced7a39f51078adc0be13c2ea8df05026a705a7f6eb4cd4"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_mul_b92690587b5ae7d83742edad1c2fab8c990ef35053f904909a22f506c475fc57.o",
+          "size_bytes": 2032,
+          "sha256": "e1bf0f5c86508e7f5be96f91640cf5f432947c192707d02dc75913a2b62e8b7b"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_57b630c680abdaafcafc3c7147a12dd8418dd2a8e76f1a88fee8e96bcc772455.json",
+          "size_bytes": 709,
+          "sha256": "9d1a5a992c57940cbfaecd1d2559537487a1b36c89ddfc5d0823743337140b85"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_57b630c680abdaafcafc3c7147a12dd8418dd2a8e76f1a88fee8e96bcc772455.o",
+          "size_bytes": 28056,
+          "sha256": "f40c96aeffe5f997933ff647d0eeeaa199e78a6db9ce03d7b265aad39fe9f5a6"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_57b630c680abdaafcafc3c7147a12dd8418dd2a8e76f1a88fee8e96bcc772455_cube.i",
+          "size_bytes": 3579918,
+          "sha256": "f92697ac5565453a21f60f535a40d33acc5d68f7f9fe0bead56f008e3b8a1ac7"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_57b630c680abdaafcafc3c7147a12dd8418dd2a8e76f1a88fee8e96bcc772455_vec.i",
+          "size_bytes": 3580842,
+          "sha256": "c408295edfb539c521eb7fedf5bb4f42b0557e846bb93da088bd0dc7c5c3a3b5"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_a69c526333b3e7bedf49ce1ad06ac886f1464af8bc947cb4a5100b17a65fec47.json",
+          "size_bytes": 709,
+          "sha256": "390f625e1fa1b20b8dd2b0e6d1f278527c3aaa9e774b51ad0e5309e9df7cbea9"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_a69c526333b3e7bedf49ce1ad06ac886f1464af8bc947cb4a5100b17a65fec47.o",
+          "size_bytes": 28056,
+          "sha256": "66aaa03159d69b35cc9bf0e7d79210cb0806f24ec0ad1c0b4c5fe1b2e016227c"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_a69c526333b3e7bedf49ce1ad06ac886f1464af8bc947cb4a5100b17a65fec47_cube.i",
+          "size_bytes": 3579918,
+          "sha256": "f92697ac5565453a21f60f535a40d33acc5d68f7f9fe0bead56f008e3b8a1ac7"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_8505652557661145761/kernel_meta/te_rmsnorm_a69c526333b3e7bedf49ce1ad06ac886f1464af8bc947cb4a5100b17a65fec47_vec.i",
+          "size_bytes": 3580842,
+          "sha256": "c408295edfb539c521eb7fedf5bb4f42b0557e846bb93da088bd0dc7c5c3a3b5"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42500.txt",
+          "size_bytes": 20,
+          "sha256": "ce286ac3fb510e0784d9f2cb36b733a9b32753cf92d7dcad87648fc6ba735985"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42501.txt",
+          "size_bytes": 20,
+          "sha256": "4b330fee977927d6ba0575673e023b4e30ceb108e0cfa8346efe2d785501d9c8"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42502.txt",
+          "size_bytes": 41,
+          "sha256": "f2f576a13814aa4873e7231ca63b8cd588d0b875552f3f873201d4a80b38d7a8"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42503.txt",
+          "size_bytes": 20,
+          "sha256": "011f1d0f5577b366e352eda1f8f3b1dcfac502350c3ffde00be70e0d73afbd2d"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42504.txt",
+          "size_bytes": 20,
+          "sha256": "df83cd71f735e95982b3e03e576b8c725933e10de1c1fbcd432e975ff25141ba"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42505.txt",
+          "size_bytes": 20,
+          "sha256": "41aa5418884c803cf002718b725f5610acc0460b2ea753d4770a034f8f4cb200"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42506.txt",
+          "size_bytes": 20,
+          "sha256": "aeb97b5bd4e02a1d652e5faf23186be54150c4a2270d23ef7cb7cd859fab8529"
+        },
+        {
+          "path": "kernel_meta/kernel_meta_temp_8505652557661145761/task_pid_42305_42507.txt",
+          "size_bytes": 19,
+          "sha256": "354e8ec8d9427195b74e26a8a90a4ea4ec9d65de61764204b914f722aa16545b"
+        },
+        {
+          "path": "src/g05/utils/common/device.py",
+          "size_bytes": 4369,
+          "sha256": "6a8871ed621bec452f31c6b8cbe7708fd4652497729811cb9a64f4edcc5276b3"
+        },
+        {
+          "path": "tests/test_device_utils.py",
+          "size_bytes": 1725,
+          "sha256": "21b442eba4266219aa500cecfebca753d100985e9706a5b2add2bc1320825b69"
+        },
+        {
+          "path": "tests/test_qwen35_device_fallbacks.py",
+          "size_bytes": 3352,
+          "sha256": "09ed47e1248d633212b746e09717f53c0a310efbf7e810b6daf35af746453c5c"
+        }
+      ]
+    },
+    "key_files_sha256": {
+      "src/g05/models/g05/qwen35/gated_deltanet.py": "82af3c5d60abc7456766bf2a457f8be704b41c3722cd8442a5fb782bb6f4a7a5",
+      "src/g05/models/g05/g05_policy.py": "13a12ed06aa8f89edadc32442bfb3204d77f79e51f99c6ae9e9b0ebedfb41039",
+      "src/g05/models/g05/g05_policy_qwen35.py": "9761eedc73581e78ff26fffafde3ca085b160d93e1dc26b752ac2b21253b830e",
+      "src/g05/models/g05/helpers/fm_helper.py": "63ccf72d90581dc4c38126f4bd3c4699879a67f3701986201b7e616318c9a7f2",
+      "scripts/serve_policy.py": "4d380351c621860ea9cb76a4f28f7e83e6d716d4f5371fd2f83541a0efcc248b"
+    }
+  },
+  "config_patches": {
+    "eval_embodiment": "libero",
+    "model.use_torch_compile": false,
+    "model.model_weights_to_bf16": true,
+    "model.model_arch.pretrained_model_path": null,
+    "model.model_arch.hf_processor_path": "/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+    "model.processor.tokenizer_params.pretrained_model_name_or_path": "/root/work/models/galaxeavla-g05/qwen3_5_2b_base_processor",
+    "tokenizer.vq_config.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.tokenizer.vq_config.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.model_arch.AT_CONFIG.ckpt_dir": "/root/work/models/galaxeavla-g05/action_tokenizer.pt",
+    "model.model_arch.fm.use_correlated_noise": false,
+    "model.model_arch.vlm.linear_attn_backend": "torch",
+    "model.model_arch.action_expert.linear_attn_backend": "torch"
+  },
+  "contract": {
+    "model.use_torch_compile": false,
+    "model.model_arch.action_dim": 20,
+    "model.model_arch.proprio_dim": 20,
+    "model.model_arch.predict_cot": false,
+    "model.model_arch.discrete_action": false,
+    "model.model_arch.continuous_action": true,
+    "model.model_arch.return_continuous_action": true,
+    "model.model_arch.attn_implementation": "eager",
+    "model.model_arch.fm.num_inference_steps": 10,
+    "model.model_arch.fm.time_convention": "pi_convention",
+    "model.model_arch.fm.use_correlated_noise": false,
+    "model.processor.num_output_cameras": 2,
+    "model.processor.num_input_cameras": 2,
+    "model.processor.camera_size_config.exterior": [
+      256,
+      256
+    ],
+    "model.processor.camera_size_config.wrist_right": [
+      256,
+      256
+    ],
+    "data.action_size": 32,
+    "data.obs_size": 1
+  },
+  "input": {
+    "files_sha256": {
+      "case.json": "88125ba0258013aae556b18a179b6693288eb61dc388c6cf7ce97bb779740bd4",
+      "image.png": "0f6008542bd572e28d555d804b2c3c78bcef9a99cbe4092362bd6c8232cf5632",
+      "wrist_image.png": "341401f9ed834a8745678d432ed7dfc1be69437cf2e107bc1cb6cfc89516d62a"
+    },
+    "episode": 0,
+    "frame": 0,
+    "task": "open the middle drawer of the cabinet",
+    "frequency": 20.0
+  },
+  "noise": {
+    "path": "/root/work/libero-bf16-native-vision-rope-norm-mrope/noise.npy",
+    "sha256": "8020c1d3fdffba5f3bf74ad4a62c7c9b5dfcefb3df39409810f8b494c3d6ebc4",
+    "tensor_sha256": "e0d931ba64cc38117b2f722b6c19529c0bc49198303bb2e4115d0efdd8821e87",
+    "shape": [
+      1,
+      32,
+      20
+    ],
+    "origin": "NumPy PCG64 CPU Gaussian; not the historical CUDA seed-0 noise",
+    "seed": 0
+  },
+  "comparison_identity": {
+    "checkpoint_sha256": "432f225c7647bdab77bfa2c2b397dc38cf8631bd70c92b85b261ff2817c1e795",
+    "sidecars": {
+      "g05-libero/.hydra/config.yaml": "544c185b903f94d76617b419c4d3d395444d8d3b342409465645e7d7386a001a",
+      "g05-libero/dataset_stats.json": "b3953f24d94d08e75134ce63fb77c69a09ef2ed46f2dffc0397d2f2b2bebc756",
+      "qwen3_5_2b_base_processor/config.json": "ed1c1723241f23f7f4e23430759cbd7dcfb4103cbdfe052bfe7626b57c2615b4",
+      "qwen3_5_2b_base_processor/configuration.json": "2d4464e2ead06bc9bc718c781309ad1e7baded626d66e8dcdc8b469ba185faf0",
+      "qwen3_5_2b_base_processor/merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+      "qwen3_5_2b_base_processor/preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+      "qwen3_5_2b_base_processor/tokenizer_config.json": "e611fbccc7c29ef3b1cafb1cb7ea548d189968632901d678fd62be68c47885de",
+      "qwen3_5_2b_base_processor/video_preprocessor_config.json": "d039cd7d88b3502a99edd455496b75b44ecf7dd3b3669748bafac37e6cecc085",
+      "qwen3_5_2b_base_processor/vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003",
+      "action_tokenizer.pt": "5088f64a5452a60bbc8cac90ee7d79c156f1d14540bc3139aa7060f862dddace",
+      "qwen3_5_2b_base_processor/tokenizer.json": "fe000e3ed39ed12b8d2481d527d44f93c65d37e87645d2dcc80d1bf9d50d2927"
+    },
+    "input_files_sha256": {
+      "case.json": "88125ba0258013aae556b18a179b6693288eb61dc388c6cf7ce97bb779740bd4",
+      "image.png": "0f6008542bd572e28d555d804b2c3c78bcef9a99cbe4092362bd6c8232cf5632",
+      "wrist_image.png": "341401f9ed834a8745678d432ed7dfc1be69437cf2e107bc1cb6cfc89516d62a"
+    },
+    "noise_tensor_sha256": "e0d931ba64cc38117b2f722b6c19529c0bc49198303bb2e4115d0efdd8821e87",
+    "input_ids_sha256": "633ba146481625a8b4583047ad34bc968c9e67f696cd00416591a0105ec6680e",
+    "contract": {
+      "model.use_torch_compile": false,
+      "model.model_arch.action_dim": 20,
+      "model.model_arch.proprio_dim": 20,
+      "model.model_arch.predict_cot": false,
+      "model.model_arch.discrete_action": false,
+      "model.model_arch.continuous_action": true,
+      "model.model_arch.return_continuous_action": true,
+      "model.model_arch.attn_implementation": "eager",
+      "model.model_arch.fm.num_inference_steps": 10,
+      "model.model_arch.fm.time_convention": "pi_convention",
+      "model.model_arch.fm.use_correlated_noise": false,
+      "model.processor.num_output_cameras": 2,
+      "model.processor.num_input_cameras": 2,
+      "model.processor.camera_size_config.exterior": [
+        256,
+        256
+      ],
+      "model.processor.camera_size_config.wrist_right": [
+        256,
+        256
+      ],
+      "data.action_size": 32,
+      "data.obs_size": 1
+    },
+    "weights": "bf16",
+    "autocast": "bfloat16"
+  },
+  "compilation": {
+    "name": "torchair",
+    "scope": "policy.model.action_expert.forward only",
+    "fullgraph": true,
+    "dynamic": false,
+    "fallback_allowed": false,
+    "options": {
+      "frozen_parameter": true
+    },
+    "compilation_is_lazy": true,
+    "backend_module": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/__init__.py",
+    "mode": "max-autotune",
+    "compiler_config_options": {
+      "experimental_config.frozen_parameter": true
+    },
+    "softplus_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.softplus.default",
+      "input_and_math_dtype": "float32",
+      "beta": 1,
+      "threshold": 20,
+      "formula": "where(x > 20, x, relu(x) + log1p(exp(-abs(x))))",
+      "rounding_order_changed": false,
+      "global_registration_modified": false
+    },
+    "eye_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.eye.default",
+      "scope": "square identity only",
+      "formula": "(arange(n)[:, None] == arange(n)[None, :]).to(requested_dtype)",
+      "values": "same exact zero/one identity entries",
+      "default_dtype": "torch.get_default_dtype()",
+      "layout": "strided; reject other layouts",
+      "pin_memory": "honor requested output pinning; propagate allocation errors",
+      "global_registration_modified": false
+    }
+  },
+  "vlm_compilation": {
+    "name": "torchair_aclgraph",
+    "scope": "policy.model.vlm.forward only",
+    "fullgraph": true,
+    "dynamic": false,
+    "fallback_allowed": false,
+    "options": {
+      "frozen_parameter": true
+    },
+    "compilation_is_lazy": true,
+    "backend_module": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/__init__.py",
+    "mode": "npugraph_ex",
+    "compiler_config_options": {
+      "mode": "npugraph_ex",
+      "experimental_config.frozen_parameter": true
+    },
+    "experimental": true,
+    "runtime_validation": "not performed by installer; NPU validation required",
+    "backend_entry_point": "torchair.get_npu_backend",
+    "concrete_graph": "torchair._acl_concrete_graph.AclConcreteGraph",
+    "independent_npugraph_ex_backend_requested": false,
+    "softplus_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.softplus.default",
+      "input_and_math_dtype": "float32",
+      "beta": 1,
+      "threshold": 20,
+      "formula": "where(x > 20, x, relu(x) + log1p(exp(-abs(x))))",
+      "rounding_order_changed": false,
+      "global_registration_modified": false
+    },
+    "eye_decomposition": {
+      "enabled": false,
+      "default_enabled": false,
+      "operator": "aten.eye.default",
+      "scope": "square identity only",
+      "formula": "(arange(n)[:, None] == arange(n)[None, :]).to(requested_dtype)",
+      "values": "same exact zero/one identity entries",
+      "default_dtype": "torch.get_default_dtype()",
+      "layout": "strided; reject other layouts",
+      "pin_memory": "honor requested output pinning; propagate allocation errors",
+      "global_registration_modified": false
+    }
+  },
+  "gdn_compilation": {
+    "name": "eager",
+    "scope": "NPU GatedDeltaNet tensor helpers; all layers in this process",
+    "module": "g05.models.g05.qwen35.gated_deltanet",
+    "selected_helpers": [
+      "chunk",
+      "recurrent"
+    ],
+    "options": {},
+    "helpers": {},
+    "equations_changed": false,
+    "recurrent_state_precision": "original FP32",
+    "chunk_size": "unchanged; upstream caller selects 32",
+    "source_files_modified": false,
+    "npu_only": true,
+    "fallback_allowed": false
+  },
+  "gdn_algorithm": {
+    "name": "gdn-chunk-fp32-triton-sequential-row-inverse",
+    "experimental": true,
+    "default_enabled": false,
+    "scope": "g05.models.g05.qwen35.gated_deltanet.torch_chunk_gated_delta_rule; NPU chunk_size=32 only",
+    "operator": "gac_g05::row_inverse32_fp32",
+    "operator_schema": "(Tensor value) -> Tensor",
+    "mutates_args": [],
+    "output_aliases_input": false,
+    "persistent_output_cache": false,
+    "row_update_order": "1..31 sequential, then +I",
+    "row_update_order_preserved": true,
+    "within_row_reduction": "FP32 tl.sum; masked length-32 reduction tree may differ from torch.sum",
+    "accumulation_order_changed": true,
+    "bitwise_equivalence_claimed": false,
+    "input_and_output_dtype": "torch.float32",
+    "accumulation_dtype": "torch.float32",
+    "enable_fp_fusion": false,
+    "dot_tf32_hf32_used": false,
+    "inverse_epsilon_added": false,
+    "qk_l2norm_epsilon": 1e-06,
+    "other_precision_policy_changed": false,
+    "chunk_size_changed": false,
+    "fallback_allowed": false,
+    "verification_requested": true,
+    "requires_independent_npu_and_full_model_validation": true,
+    "runtime_validation": "not performed by installer",
+    "implementation_sha256": "a87b146fa7f2705de9e940b568e284fc35dd113fd42f76b6f9af9ab2c3a5f86e",
+    "shared_chunk_sha256": "7f695924bf8710c3484ecb71ab41719d332735c969ca284a59bd55f0faf142ad",
+    "implementation_files_sha256": {
+      "g05_gdn_triton.py": "a87b146fa7f2705de9e940b568e284fc35dd113fd42f76b6f9af9ab2c3a5f86e",
+      "g05_gdn_triangular.py": "7f695924bf8710c3484ecb71ab41719d332735c969ca284a59bd55f0faf142ad"
+    }
+  },
+  "context_optimization": {
+    "enabled": true,
+    "default_enabled": false,
+    "scope": "FM-only InputPreprocessor.encode_inference(mode='ar') unused action field",
+    "source_module": "g05.models.g05.io.input_preprocessor",
+    "source_file": "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/io/input_preprocessor.py",
+    "optimization": "omit ActionCodec encoding only when retained context has no action consumer",
+    "cached_inputs": false,
+    "cached_model_outputs": false,
+    "images_state_task_recomputed": true,
+    "safe_processor_classes": [
+      "BuiltinTextProcessor",
+      "BuiltinImageProcessor",
+      "BuiltinQwen35ImageProcessor",
+      "BuiltinProprioMLPProcessor",
+      "BuiltinProprioNullProcessor"
+    ],
+    "unknown_processors_rejected": true,
+    "fallback_allowed": false,
+    "calls": 39,
+    "samples_with_action_removed": 39,
+    "samples_without_action": 0,
+    "omitted_side_effect": "unused ActionCodec _last_encode_state update; AR/CoT paths prohibited",
+    "implementation_sha256": "e57c2f15ebf0390fd857cd8283e4c5f8a037c06eaf512fb2af4b030795e42de8"
+  },
+  "ae_attention": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "backend": "npu",
+    "scope": "24 AE full-attention kernels only; VLM unchanged",
+    "operator": "torch_npu.npu_fusion_attention",
+    "input_layout": "BNSD",
+    "query_shape": "[B,8,32,256]",
+    "key_value_shape": "[B,8,K>=32,256]",
+    "scale": 0.0625,
+    "dropout": 0.0,
+    "softcap": null,
+    "causal": false,
+    "gqa": "original upstream 2-to-8 KV repeat retained",
+    "qk_norm_and_rope": "unchanged upstream FP32 paths",
+    "mask": "original layer slice; only 0, dtype minimum or -inf; True means blocked for NPU and allowed for SDPA",
+    "mask_validation": "original producer, once/request before FM10, device reduction and one scalar synchronization included in action timing",
+    "mask_validations": 39,
+    "rounding_order_changed": true,
+    "npu_inner_precise": 0,
+    "global_registry_modified": false,
+    "model_config_modified": false,
+    "cached_model_inputs_or_outputs": false,
+    "runtime_validation": "not performed by installer; full FM10 A/B/C/D verification required",
+    "sdpa_dispatch_verified": null,
+    "source_file": "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/mixture_qwen35.py",
+    "private_module": "_g05_ae_attention_547fbf5f32384033bc25cac149059aef",
+    "private_module_registered_for_dynamo_guards": true,
+    "implementation_sha256": "be92a6f96e1cff1bdebfea4be4258e60a4bb63700c27999245cc0ca515f6815b",
+    "private_namespace_retained_for_external_replacement": false
+  },
+  "ae_norm": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "name": "npu_rms_norm_fp32",
+    "operator": "torch_npu.npu_rms_norm",
+    "scope": "AE only: 49 AdaptiveRMSNorm._norm + 48 Q/K Qwen3_5RMSNorm.forward",
+    "adaptive_modules": 49,
+    "qk_modules": 48,
+    "math_dtype": "torch.float32",
+    "adaptive_output_dtype": "torch.float32",
+    "qk_output_dtype": "input dtype",
+    "autocast": "disabled around all fused normalization math",
+    "adaptive_gamma": "input-independent FP32 ones; no early cast before AdaLN modulation",
+    "qk_gamma": "1.0 + current module.weight.float(), recomputed each call",
+    "time_conditioning_compatibility": "install after time helper; its Adaptive forward remains untouched",
+    "unit_gamma_numel": 1024,
+    "unit_gamma_bytes": 4096,
+    "device": "npu:0",
+    "epsilons": [
+      1e-06
+    ],
+    "rounding_order_changed": true,
+    "verify_required": true,
+    "fallback_allowed": false,
+    "class_methods_modified": false,
+    "global_registry_modified": false,
+    "cached_model_inputs_or_outputs": false,
+    "runtime_validation": "not performed by installer; eager and full-FM10 comparisons required",
+    "implementation_sha256": "cb1caf804510a3fa7b0b6a07fa80aa701f92d7e59f614a7362501fb8ea19bcac"
+  },
+  "ae_rope": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "mode": "matrix",
+    "scope": "Only AE layer partial RoPE block; 24 layers, head256/rotary64",
+    "operator": "torch_npu.npu_rotary_mul",
+    "math_dtype": "torch.float32",
+    "output_dtype": "Original incoming Q/K dtype",
+    "cached_cos_sin": false,
+    "rotation": "constant FP32 256x256; R[i,i+32]=1, R[i+32,i]=-1 for i<32, all other entries zero",
+    "current_attention_dispatch_inherited": true,
+    "global_registry_modified": false,
+    "audited_rope_ast_sha256": "38b9ca006a5f47da3ad83672dec65d06a1102159ae5ff8b3ac9d5f424098063a",
+    "private_module": "_g05_ae_rope_60b91e8b4d374429b4c36ba3893b6a17",
+    "source_namespace": "_g05_ae_attention_547fbf5f32384033bc25cac149059aef",
+    "fallback_allowed": false,
+    "rounding_order_may_change": true,
+    "runtime_validation": "Not performed by installer; full-model replay required",
+    "implementation_sha256": "0fca4591673fc26032e9c88d45a7f7234040ded19c9768cb322063ff80d302e6",
+    "private_namespace_retained_for_external_replacement": false
+  },
+  "functional_mrope": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "scope": "AE and VLM first full-attention rotary_emb instances only",
+    "operator": "two torch.where selections; no in-place slice writes",
+    "freqs_shape": "[3,B>0,S>0,32]",
+    "math_dtype": "torch.float32",
+    "mrope_section": [
+      11,
+      11,
+      10
+    ],
+    "cached": "two static Boolean index masks per selected rotary instance",
+    "section_normalization": "selected instance attribute only: validated Sequence to tuple; original config object untouched and restored by identity",
+    "height_indices": [
+      1,
+      4,
+      7,
+      10,
+      13,
+      16,
+      19,
+      22,
+      25,
+      28,
+      31
+    ],
+    "width_indices": [
+      2,
+      5,
+      8,
+      11,
+      14,
+      17,
+      20,
+      23,
+      26,
+      29
+    ],
+    "cached_model_inputs_or_outputs": false,
+    "cached_positions_or_frequencies": false,
+    "selection_has_no_floating_point_arithmetic": true,
+    "alias_contract": "audited forward creates local freqs and consumes only the returned tensor",
+    "class_or_global_registry_modified": false,
+    "fallback_allowed": false,
+    "source_hash_canonicalization": "inspect.getsource; CRLF to LF; dedent outer class; one trailing LF; full body/decorators/comments retained",
+    "forward_source_sha256": "f9f027303e413ebb5ed673d334b47835f31ed1990eed61a9a452471cb188477e",
+    "interleave_source_sha256": "c7ba6085984cbc15273134a6aad378dea4ac5bdca9fe93479dab359720fa65d5",
+    "implementation_sha256": "1c3ebd8e24bedf49c9165252c456704fa3daaefd26836423afa0907fb2112e0d",
+    "targets": [
+      {
+        "mixture": "vlm",
+        "first_full_attention_layer": 3
+      },
+      {
+        "mixture": "action_expert",
+        "first_full_attention_layer": 0
+      }
+    ],
+    "runtime_validation": "not performed by installer; full-model A/B/C/D/E/F replay required"
+  },
+  "time_conditioning": {
+    "enabled": true,
+    "default_enabled": false,
+    "experimental": true,
+    "scope": "Fixed FM10 encode_time and 49 independent AdaLN conditioning projections",
+    "num_steps": 10,
+    "time_convention": "pi_convention",
+    "norms": 49,
+    "precision": "Original FP32 islands; dynamic RMS reduction, affine order and output casts retained",
+    "matmul_precision_settings": {
+      "float32_matmul_precision": "highest",
+      "backends.cuda.matmul.allow_tf32": false,
+      "npu.matmul.allow_hf32": false
+    },
+    "cached_actions": false,
+    "cached_kv": false,
+    "cached_observations": false,
+    "cached_model_outputs": false,
+    "training_supported": false,
+    "fallback_allowed": false,
+    "lookup_mode": "request",
+    "lookup": "Cursor only inside source-pinned original FMHelper.infer; one contract check/request; no per-step D2H",
+    "fm_infer_source_sha256": "ec047027ba31dbc7b5efd70147240e9bf5a6a89d36c9b74382b2290d032571e7",
+    "request_checks": 39,
+    "request_calls": 39,
+    "completed_requests": 39,
+    "failed_requests": 0,
+    "last_request_consumed": 10,
+    "weight_mutation_contract": "Immutable model; versions/storage checked, .data writes prohibited; restore/reinstall after edits",
+    "table_builds": 1,
+    "calls": 390,
+    "table_build_wall_ms": 118.31451999023557,
+    "table_bytes": 6021120,
+    "graph_validation": "Not validated by installer; full-model A/B/A/B and C/D replay required",
+    "implementation_sha256": "34bb3e9b0279f63de0322eec79caf8cd51fe54092e5631bf643d3c39795345cf",
+    "time_values": [
+      [
+        1.0
+      ],
+      [
+        0.8999999761581421
+      ],
+      [
+        0.7999999523162842
+      ],
+      [
+        0.6999999284744263
+      ],
+      [
+        0.5999999046325684
+      ],
+      [
+        0.49999991059303284
+      ],
+      [
+        0.3999999165534973
+      ],
+      [
+        0.2999999225139618
+      ],
+      [
+        0.19999992847442627
+      ],
+      [
+        0.09999992698431015
+      ]
+    ],
+    "input_shape": [
+      1
+    ],
+    "input_dtype": "torch.float32",
+    "device": "npu:0"
+  },
+  "static_vision": {
+    "name": "fixed-two-camera-vision",
+    "backend": "torchair_aclgraph",
+    "default_enabled": false,
+    "grid_thw": [
+      [
+        1,
+        16,
+        16
+      ],
+      [
+        1,
+        16,
+        16
+      ]
+    ],
+    "num_frames": 1,
+    "bsz": 1,
+    "patch_shape": [
+      512,
+      1536
+    ],
+    "cu_seqlens": [
+      0,
+      256,
+      512
+    ],
+    "camera_attention_lengths": [
+      256,
+      256
+    ],
+    "output_shapes": [
+      [
+        512,
+        1024
+      ],
+      [
+        128,
+        2048
+      ]
+    ],
+    "sdpa_calls_per_block": 2,
+    "blocks": 24,
+    "cached": [
+      "interpolation_indices",
+      "interpolation_weights",
+      "RoPE_cos_sin",
+      "cu_seqlens"
+    ],
+    "learned_position_outputs_cached": false,
+    "input_or_model_outputs_cached": false,
+    "learned_position_lookup": "inside tensor core; immutable/version-guarded frozen model",
+    "geometry_validation": "exact grid values and frame/batch on every request, outside graph but inside request timer",
+    "precision_policy_changed": false,
+    "fallback_allowed": false,
+    "autocast": "NPU BF16; same context for cached geometry and every request",
+    "verification_requested": true,
+    "runtime_validation": "not performed by installer",
+    "requires_independent_npu_and_full_model_validation": true,
+    "calls": 39,
+    "implementation_sha256": "166646d241564e41637b6477a1532905f96f80daaa5e055c59ebd542f31d4059",
+    "source_sha256": "2592389cf39c7c4ad89b06dbccc802322afa59bd672eb13b8b1fd5dbfaeb2d9f",
+    "compilation": {
+      "name": "torchair_aclgraph",
+      "scope": "vision patches -> 24 blocks -> merger; fixed geometry",
+      "fullgraph": true,
+      "dynamic": false,
+      "fallback_allowed": false,
+      "options": {
+        "frozen_parameter": true
+      },
+      "compilation_is_lazy": true,
+      "backend_module": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/__init__.py",
+      "mode": "npugraph_ex",
+      "compiler_config_options": {
+        "mode": "npugraph_ex",
+        "experimental_config.frozen_parameter": true
+      },
+      "experimental": true,
+      "runtime_validation": "not performed by installer; NPU validation required",
+      "backend_entry_point": "torchair.get_npu_backend",
+      "concrete_graph": "torchair._acl_concrete_graph.AclConcreteGraph",
+      "independent_npugraph_ex_backend_requested": false,
+      "softplus_decomposition": {
+        "enabled": false,
+        "default_enabled": false,
+        "operator": "aten.softplus.default",
+        "input_and_math_dtype": "float32",
+        "beta": 1,
+        "threshold": 20,
+        "formula": "where(x > 20, x, relu(x) + log1p(exp(-abs(x))))",
+        "rounding_order_changed": false,
+        "global_registration_modified": false
+      },
+      "eye_decomposition": {
+        "enabled": false,
+        "default_enabled": false,
+        "operator": "aten.eye.default",
+        "scope": "square identity only",
+        "formula": "(arange(n)[:, None] == arange(n)[None, :]).to(requested_dtype)",
+        "values": "same exact zero/one identity entries",
+        "default_dtype": "torch.get_default_dtype()",
+        "layout": "strided; reject other layouts",
+        "pin_memory": "honor requested output pinning; propagate allocation errors",
+        "global_registration_modified": false
+      }
+    },
+    "enabled": true
+  },
+  "context_verification": {
+    "cases": {
+      "state_C_1": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0006652006600883656,
+          "rmse": 0.0009102044673109536,
+          "max_abs_error": 0.0034386813640594482,
+          "p95_abs_error": 0.0018973380327224729,
+          "relative_l2": 0.0017256146574255345,
+          "cosine_similarity": 0.9999985477825301,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0007845069048926234,
+            0.000662901031319052,
+            0.0008359925850527361,
+            0.0008590295910835266,
+            0.0004913867451250553,
+            0.0006742191035300493,
+            0.00034836865961551666
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "task_D_1": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0007298585343440729,
+          "rmse": 0.0009486524105136278,
+          "max_abs_error": 0.0032867640256881714,
+          "p95_abs_error": 0.0018678709864616394,
+          "relative_l2": 0.0018464963649043459,
+          "cosine_similarity": 0.999998311982564,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0007120892405509949,
+            0.000964864608249627,
+            0.000504469804582186,
+            0.0008555073291063309,
+            0.0007743588648736477,
+            0.0009421576978638768,
+            0.0003555621951818466
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "camera_E_1": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0009235575562343001,
+          "rmse": 0.001243426263214777,
+          "max_abs_error": 0.004586130380630493,
+          "p95_abs_error": 0.0026234164834022518,
+          "relative_l2": 0.0025112100241389476,
+          "cosine_similarity": 0.9999968822265713,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0010014281142503023,
+            0.0009449117933399975,
+            0.0010058143525384367,
+            0.001131769735366106,
+            0.0013618359807878733,
+            0.0006686545675620437,
+            0.0003504883497953415
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "wrist_F_1": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0006176983650740502,
+          "rmse": 0.0007823251867369818,
+          "max_abs_error": 0.002465665340423584,
+          "p95_abs_error": 0.0015377484261989592,
+          "relative_l2": 0.0014837760235020903,
+          "cosine_similarity": 0.9999989063865947,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.000839949818328023,
+            0.0005525789310922846,
+            0.0005214562406763434,
+            0.0007233191281557083,
+            0.0006519833113998175,
+            0.000654472503811121,
+            0.0003801286220550537
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "state_C_2": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0006652006600883656,
+          "rmse": 0.0009102044673109536,
+          "max_abs_error": 0.0034386813640594482,
+          "p95_abs_error": 0.0018973380327224729,
+          "relative_l2": 0.0017256146574255345,
+          "cosine_similarity": 0.9999985477825301,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0007845069048926234,
+            0.000662901031319052,
+            0.0008359925850527361,
+            0.0008590295910835266,
+            0.0004913867451250553,
+            0.0006742191035300493,
+            0.00034836865961551666
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "task_D_2": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0007298585343440729,
+          "rmse": 0.0009486524105136278,
+          "max_abs_error": 0.0032867640256881714,
+          "p95_abs_error": 0.0018678709864616394,
+          "relative_l2": 0.0018464963649043459,
+          "cosine_similarity": 0.999998311982564,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0007120892405509949,
+            0.000964864608249627,
+            0.000504469804582186,
+            0.0008555073291063309,
+            0.0007743588648736477,
+            0.0009421576978638768,
+            0.0003555621951818466
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "camera_E_2": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0009235575562343001,
+          "rmse": 0.001243426263214777,
+          "max_abs_error": 0.004586130380630493,
+          "p95_abs_error": 0.0026234164834022518,
+          "relative_l2": 0.0025112100241389476,
+          "cosine_similarity": 0.9999968822265713,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.0010014281142503023,
+            0.0009449117933399975,
+            0.0010058143525384367,
+            0.001131769735366106,
+            0.0013618359807878733,
+            0.0006686545675620437,
+            0.0003504883497953415
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      },
+      "wrist_F_2": {
+        "encoded_context": {
+          "input_ids": true,
+          "attention_mask": true
+        },
+        "action": {
+          "scope": "normalized action chunk, seven valid LIBERO dimensions",
+          "valid_action_dimensions": [
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            19
+          ],
+          "sample_count": 224,
+          "all_finite": true,
+          "mae": 0.0006176983650740502,
+          "rmse": 0.0007823251867369818,
+          "max_abs_error": 0.002465665340423584,
+          "p95_abs_error": 0.0015377484261989592,
+          "relative_l2": 0.0014837760235020903,
+          "cosine_similarity": 0.9999989063865947,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0,
+          "mae_per_valid_dimension": [
+            0.000839949818328023,
+            0.0005525789310922846,
+            0.0005214562406763434,
+            0.0007233191281557083,
+            0.0006519833113998175,
+            0.000654472503811121,
+            0.0003801286220550537
+          ],
+          "padded_dimensions_max_abs_candidate": 0.0
+        }
+      }
+    },
+    "reference_contrasts_against_A": {
+      "state_C": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.006353408992124189,
+        "rmse": 0.009057144686889257,
+        "max_abs_error": 0.027163177728652954,
+        "p95_abs_error": 0.021630546450614928,
+        "relative_l2": 0.01724000079140441,
+        "cosine_similarity": 0.9998600221137552,
+        "sign_agreement": 0.9955357142857143,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.01353841950185597,
+          0.0034979953488800675,
+          0.004572083067614585,
+          0.00513631384819746,
+          0.00727431196719408,
+          0.010062685934826732,
+          0.0003920532763004303
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "task_D": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.05666353447928226,
+        "rmse": 0.07970645651665245,
+        "max_abs_error": 0.26452596485614777,
+        "p95_abs_error": 0.17381837666034697,
+        "relative_l2": 0.1517188276142122,
+        "cosine_similarity": 0.9884800708062708,
+        "sign_agreement": 0.875,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.08503827452659607,
+          0.06135768581589218,
+          0.040443134217639454,
+          0.05601070448756218,
+          0.052163488464429975,
+          0.09957466518972069,
+          0.0020567886531352997
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "camera_E": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.07652586483163759,
+        "rmse": 0.11453232881481591,
+        "max_abs_error": 0.354790136218071,
+        "p95_abs_error": 0.261151547729969,
+        "relative_l2": 0.2180088215071881,
+        "cosine_similarity": 0.9765401405201817,
+        "sign_agreement": 0.9419642857142857,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.12152822036296129,
+          0.02890139413648285,
+          0.049992811313131824,
+          0.08447177428752184,
+          0.06357895280234516,
+          0.1848171977326274,
+          0.002390703186392784
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "wrist_F": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.006498723509139381,
+        "rmse": 0.010360092263091508,
+        "max_abs_error": 0.05530381202697754,
+        "p95_abs_error": 0.018349329568445677,
+        "relative_l2": 0.019720122068190626,
+        "cosine_similarity": 0.9998127500579722,
+        "sign_agreement": 1.0,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.010243292432278395,
+          0.003787068708334118,
+          0.006437050484237261,
+          0.005241320468485355,
+          0.008877246407791972,
+          0.01016251090914011,
+          0.000742575153708458
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      }
+    },
+    "scope": "C changes proprio pose by +0.01; D changes task open -> close; optional E/F independently flip one camera; each is compared to unmodified eager twice with identical noise; no closed-loop accuracy claim"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "torch": "2.7.1+cpu",
+    "device": "npu:0",
+    "device_type": "npu",
+    "device_name": "Ascend910B2"
+  },
+  "load_ms": 57671.52850981802,
+  "preparation_ms": 26.49975987151265,
+  "warmup": [
+    {
+      "prefill_ms": 83.6410503834486,
+      "action_ms": 72.62325985357165,
+      "total_ms": 156.26431023702025
+    },
+    {
+      "prefill_ms": 83.30623991787434,
+      "action_ms": 72.15119013562799,
+      "total_ms": 155.45743005350232
+    },
+    {
+      "prefill_ms": 83.30547995865345,
+      "action_ms": 72.1601601690054,
+      "total_ms": 155.46564012765884
+    },
+    {
+      "prefill_ms": 83.1168401055038,
+      "action_ms": 72.20104988664389,
+      "total_ms": 155.31788999214768
+    },
+    {
+      "prefill_ms": 83.22241017594934,
+      "action_ms": 72.10438000038266,
+      "total_ms": 155.326790176332
+    }
+  ],
+  "summary_ms": {
+    "action_ms": {
+      "count": 20,
+      "mean": 72.3913055146113,
+      "p50": 72.18441995792091,
+      "p95": 72.99409219995141,
+      "min": 72.04741984605789,
+      "max": 73.87687033042312
+    },
+    "prefill_ms": {
+      "count": 20,
+      "mean": 83.38501094840467,
+      "p50": 83.36350484751165,
+      "p95": 84.18305374216288,
+      "min": 82.87460962310433,
+      "max": 84.61841009557247
+    },
+    "total_ms": {
+      "count": 20,
+      "mean": 155.77631646301597,
+      "p50": 155.574289849028,
+      "p95": 156.78614631760865,
+      "min": 155.1270098425448,
+      "max": 157.61353028938174
+    }
+  },
+  "samples": [
+    {
+      "prefill_ms": 83.05356977507472,
+      "action_ms": 72.46199017390609,
+      "total_ms": 155.5155599489808
+    },
+    {
+      "prefill_ms": 83.44019018113613,
+      "action_ms": 72.1389097161591,
+      "total_ms": 155.57909989729524
+    },
+    {
+      "prefill_ms": 84.61841009557247,
+      "action_ms": 72.12418969720602,
+      "total_ms": 156.7425997927785
+    },
+    {
+      "prefill_ms": 83.04260997101665,
+      "action_ms": 72.08439987152815,
+      "total_ms": 155.1270098425448
+    },
+    {
+      "prefill_ms": 84.16014024987817,
+      "action_ms": 72.20427971333265,
+      "total_ms": 156.36441996321082
+    },
+    {
+      "prefill_ms": 83.73665995895863,
+      "action_ms": 73.87687033042312,
+      "total_ms": 157.61353028938174
+    },
+    {
+      "prefill_ms": 83.47604982554913,
+      "action_ms": 72.22977001219988,
+      "total_ms": 155.705819837749
+    },
+    {
+      "prefill_ms": 83.06333003565669,
+      "action_ms": 72.13071966543794,
+      "total_ms": 155.19404970109463
+    },
+    {
+      "prefill_ms": 83.19847006350756,
+      "action_ms": 72.06028001382947,
+      "total_ms": 155.25875007733703
+    },
+    {
+      "prefill_ms": 82.8917296603322,
+      "action_ms": 72.51475006341934,
+      "total_ms": 155.40647972375154
+    },
+    {
+      "prefill_ms": 83.3314098417759,
+      "action_ms": 72.16456020250916,
+      "total_ms": 155.49597004428506
+    },
+    {
+      "prefill_ms": 83.01299996674061,
+      "action_ms": 72.11485970765352,
+      "total_ms": 155.12785967439413
+    },
+    {
+      "prefill_ms": 83.04258016869426,
+      "action_ms": 72.94763019308448,
+      "total_ms": 155.99021036177874
+    },
+    {
+      "prefill_ms": 83.3955998532474,
+      "action_ms": 72.15866027399898,
+      "total_ms": 155.55426012724638
+    },
+    {
+      "prefill_ms": 83.01643980666995,
+      "action_ms": 72.51806044951081,
+      "total_ms": 155.53450025618076
+    },
+    {
+      "prefill_ms": 83.59126001596451,
+      "action_ms": 72.04741984605789,
+      "total_ms": 155.6386798620224
+    },
+    {
+      "prefill_ms": 82.87460962310433,
+      "action_ms": 72.69487017765641,
+      "total_ms": 155.56947980076075
+    },
+    {
+      "prefill_ms": 83.48282007500529,
+      "action_ms": 72.12806027382612,
+      "total_ms": 155.61088034883142
+    },
+    {
+      "prefill_ms": 83.48895981907845,
+      "action_ms": 72.64448003843427,
+      "total_ms": 156.1334398575127
+    },
+    {
+      "prefill_ms": 83.78237998113036,
+      "action_ms": 72.58134987205267,
+      "total_ms": 156.36372985318303
+    }
+  ],
+  "memory": {
+    "memory_allocated_bytes": 6578133504,
+    "memory_reserved_bytes": 7096762368,
+    "max_memory_allocated_bytes": 6652559872,
+    "max_memory_reserved_bytes": 7096762368
+  },
+  "module_profile": null,
+  "trace_profile": {
+    "directory": "/root/work/profile-libero-norm-mrope",
+    "requests": 1,
+    "profiler_level": "Level1",
+    "schedule": {
+      "wait": 0,
+      "warmup": 0,
+      "active": 1,
+      "repeat": 1
+    },
+    "scope": "post-timing diagnostic only; profiler overhead excluded from formal samples"
+  },
+  "workload": null,
+  "parameter_dtypes": {
+    "torch.float32": {
+      "numel": 189999956,
+      "bytes": 759999824
+    },
+    "torch.bfloat16": {
+      "numel": 2669996032,
+      "bytes": 5339992064
+    }
+  },
+  "output_validation": {
+    "scope": "normalized action chunk, seven valid LIBERO dimensions",
+    "valid_action_dimensions": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19
+    ],
+    "sample_count": 224,
+    "all_finite": true,
+    "mae": 0.0,
+    "rmse": 0.0,
+    "max_abs_error": 0.0,
+    "p95_abs_error": 0.0,
+    "relative_l2": 0.0,
+    "cosine_similarity": 1.0,
+    "sign_agreement": 1.0,
+    "gripper_sign_agreement": 1.0,
+    "mae_per_valid_dimension": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "padded_dimensions_max_abs_candidate": 0.0
+  },
+  "last_timed_output_validation": {
+    "scope": "normalized action chunk, seven valid LIBERO dimensions",
+    "valid_action_dimensions": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19
+    ],
+    "sample_count": 224,
+    "all_finite": true,
+    "mae": 0.0,
+    "rmse": 0.0,
+    "max_abs_error": 0.0,
+    "p95_abs_error": 0.0,
+    "relative_l2": 0.0,
+    "cosine_similarity": 0.9999999999999999,
+    "sign_agreement": 1.0,
+    "gripper_sign_agreement": 1.0,
+    "mae_per_valid_dimension": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "padded_dimensions_max_abs_candidate": 0.0
+  },
+  "eager_comparison": {
+    "scope": "normalized action chunk, seven valid LIBERO dimensions",
+    "valid_action_dimensions": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      19
+    ],
+    "sample_count": 224,
+    "all_finite": true,
+    "mae": 0.0005610472913498857,
+    "rmse": 0.0007062790976975681,
+    "max_abs_error": 0.0026407241821289062,
+    "p95_abs_error": 0.0013824969530105591,
+    "relative_l2": 0.001344380886493323,
+    "cosine_similarity": 0.9999991341985114,
+    "sign_agreement": 1.0,
+    "gripper_sign_agreement": 1.0,
+    "mae_per_valid_dimension": [
+      0.0007923548109829426,
+      0.00044206713209860027,
+      0.0006967795779928565,
+      0.0005272515118122101,
+      0.000645297346636653,
+      0.0005014771595597267,
+      0.00032210350036621094
+    ],
+    "padded_dimensions_max_abs_candidate": 0.0
+  },
+  "external_comparison": null,
+  "replay_verification": {
+    "cases": {
+      "cold_A": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.0005610472913498857,
+        "rmse": 0.0007062790976975681,
+        "max_abs_error": 0.0026407241821289062,
+        "p95_abs_error": 0.0013824969530105591,
+        "relative_l2": 0.001344380886493323,
+        "cosine_similarity": 0.9999991341985114,
+        "sign_agreement": 1.0,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.0007923548109829426,
+          0.00044206713209860027,
+          0.0006967795779928565,
+          0.0005272515118122101,
+          0.000645297346636653,
+          0.0005014771595597267,
+          0.00032210350036621094
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "first_B": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.0007341912652399125,
+        "rmse": 0.0009669190407757669,
+        "max_abs_error": 0.0033299922943115234,
+        "p95_abs_error": 0.0018663138151168823,
+        "relative_l2": 0.0019409310431537784,
+        "cosine_similarity": 0.9999981861751972,
+        "sign_agreement": 1.0,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.0009627452818676829,
+          0.0005929316830588505,
+          0.0007406559598166496,
+          0.000836819875985384,
+          0.0008696513250470161,
+          0.0008215130073949695,
+          0.00031502172350883484
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "replay_A": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.0005610472913498857,
+        "rmse": 0.0007062790976975681,
+        "max_abs_error": 0.0026407241821289062,
+        "p95_abs_error": 0.0013824969530105591,
+        "relative_l2": 0.001344380886493323,
+        "cosine_similarity": 0.9999991341985114,
+        "sign_agreement": 1.0,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.0007923548109829426,
+          0.00044206713209860027,
+          0.0006967795779928565,
+          0.0005272515118122101,
+          0.000645297346636653,
+          0.0005014771595597267,
+          0.00032210350036621094
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      },
+      "replay_B": {
+        "scope": "normalized action chunk, seven valid LIBERO dimensions",
+        "valid_action_dimensions": [
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          19
+        ],
+        "sample_count": 224,
+        "all_finite": true,
+        "mae": 0.0007341912652399125,
+        "rmse": 0.0009669190407757669,
+        "max_abs_error": 0.0033299922943115234,
+        "p95_abs_error": 0.0018663138151168823,
+        "relative_l2": 0.0019409310431537784,
+        "cosine_similarity": 0.9999981861751972,
+        "sign_agreement": 1.0,
+        "gripper_sign_agreement": 1.0,
+        "mae_per_valid_dimension": [
+          0.0009627452818676829,
+          0.0005929316830588505,
+          0.0007406559598166496,
+          0.000836819875985384,
+          0.0008696513250470161,
+          0.0008215130073949695,
+          0.00031502172350883484
+        ],
+        "padded_dimensions_max_abs_candidate": 0.0
+      }
+    },
+    "timings_ms": {
+      "cold_A": {
+        "prefill_ms": 93178.31435985863,
+        "action_ms": 60471.21647000313,
+        "total_ms": 153649.53082986176
+      },
+      "first_B": {
+        "prefill_ms": 94.09706015139818,
+        "action_ms": 72.95798975974321,
+        "total_ms": 167.0550499111414
+      },
+      "replay_A": {
+        "prefill_ms": 84.67418001964688,
+        "action_ms": 72.33464997261763,
+        "total_ms": 157.0088299922645
+      },
+      "replay_B": {
+        "prefill_ms": 84.61763989180326,
+        "action_ms": 72.34110031276941,
+        "total_ms": 156.95874020457268
+      }
+    },
+    "reference_contrast": {
+      "scope": "normalized action chunk, seven valid LIBERO dimensions",
+      "valid_action_dimensions": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        19
+      ],
+      "sample_count": 224,
+      "all_finite": true,
+      "mae": 0.07058110713426556,
+      "rmse": 0.1043581445364943,
+      "max_abs_error": 0.32136771082878113,
+      "p95_abs_error": 0.24017945341765878,
+      "relative_l2": 0.19864256966138671,
+      "cosine_similarity": 0.9806057209085292,
+      "sign_agreement": 0.9508928571428571,
+      "gripper_sign_agreement": 1.0,
+      "mae_per_valid_dimension": [
+        0.1099052902427502,
+        0.031567331723636016,
+        0.04630459679174237,
+        0.07684564404189587,
+        0.057826229371130466,
+        0.1682357086101547,
+        0.0033829491585493088
+      ],
+      "padded_dimensions_max_abs_candidate": 0.0
+    },
+    "reference_inputs_distinguishable": true,
+    "scope": "A/B/A/B; A=real sample, B=horizontal image flip plus negated noise, verification only; formal timings use A",
+    "coverage": "changed image content, VLM KV and FM action buffers; unchanged token shape; no closed-loop task-accuracy claim"
+  },
+  "numerical_thresholds": {
+    "max_relative_l2": 0.01,
+    "max_abs_error": 0.05,
+    "meaning": "engineering regression gate, not closed-loop task success"
+  }
+}

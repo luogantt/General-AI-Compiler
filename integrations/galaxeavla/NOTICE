@@ -15,6 +15,14 @@ Modified files carry General-AI-Compiler change notices and retain their upstrea
 SPDX and copyright headers. This patch does not distribute model
 weights, datasets, credentials, or robot-control assets.
 
+The companion tools/galaxeavla/g05_* optimization adapters also target this
+pinned source. They add reversible graph execution, AE attention/normalization/
+RoPE substitutions, fixed time and vision geometry constants, context-only
+encoding, and an experimental GatedDeltaNet inverse. These adapters do not
+relicense the underlying G0.5 materials. Adapted Qwen/Hugging Face components
+retain their upstream attribution and third-party license references in the
+source files. Benchmark evidence is separate from model weights and datasets.
+
 Official license and notice for the pinned source:
 https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/LICENSE-G0.5
 https://github.com/OpenGalaxea/GalaxeaVLA/blob/89f2322b4ad016e192437adc1a2c253b05bab246/NOTICE

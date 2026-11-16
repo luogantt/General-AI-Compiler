@@ -1,0 +1,41 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 79599.224 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 26.154 ms
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[warmup 1/5] 1764.028 ms
+[warmup 2/5] 1025.148 ms
+[warmup 3/5] 1026.004 ms
+[warmup 4/5] 1021.443 ms
+[warmup 5/5] 1017.215 ms
+[measure 1/20] 1021.253 ms
+[measure 2/20] 1023.904 ms
+[measure 3/20] 1022.146 ms
+[measure 4/20] 1021.897 ms
+[measure 5/20] 1022.634 ms
+[measure 6/20] 1017.339 ms
+[measure 7/20] 1016.042 ms
+[measure 8/20] 1012.358 ms
+[measure 9/20] 1013.222 ms
+[measure 10/20] 1015.449 ms
+[measure 11/20] 1008.403 ms
+[measure 12/20] 1010.734 ms
+[measure 13/20] 1010.470 ms
+[measure 14/20] 1003.377 ms
+[measure 15/20] 1005.033 ms
+[measure 16/20] 1010.703 ms
+[measure 17/20] 1005.990 ms
+[measure 18/20] 1002.370 ms
+[measure 19/20] 1002.495 ms
+[measure 20/20] 1000.638 ms
+{"report": "/root/work/libero-bf16-eager-native/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 747.0263350289315, "p50": 746.7601199168712, "p95": 756.1823695432395, "min": 737.5349500216544, "max": 758.0848303623497}, "prefill_ms": {"count": 20, "mean": 265.2966074645519, "p50": 265.2891150210053, "p95": 267.6164061529562, "min": 261.84355979785323, "max": 268.1627799756825}, "total_ms": {"count": 20, "mean": 1012.3229424934834, "p50": 1011.5459698718041, "p95": 1022.6976339006796, "min": 1000.6377599202096, "max": 1023.9041997119784}}}

@@ -4,7 +4,7 @@
 
 **TensorRT 最新结果：完整 BEVFormer-base 固定图达到 309.42 ms/帧（约 3.23 FPS）。** RTX 3070 Ti Laptop 8 GB 上，第三轮优化 DCNv2 后，同轮整网对照延时再降低 **5.07%**。前两轮 MSDA 分别降低 18.05%、2.60%；各轮比例不能相加，详见[优化结果](#优化结果)。
 
-**GalaxeaVLA 最新结果：官方 G0.5 整模已在单张 Ascend 910B2 上跑通。** TorchNPU eager、固定合成输入，预热 5 次后测量 30 次，端到端 **p50 3.037 秒、p95 3.130 秒**，峰值分配显存 **15.93 GiB**。[实测数据与复现](docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md)
+**GalaxeaVLA 当前已验证结果：G0.5 LIBERO 整模型在单张 Ascend 910B2 上达到 p50 155.57 ms、p95 156.79 ms。** 保持双相机、真实样本、BF16 和 10 步 FM，组合使用 GE/ACLGraph、Triton GDN、fused AE attention/Norm、FP32 matrix RoPE、functional MRoPE、固定几何 Vision 图、按请求索引的时间条件预计算及未消费 codec 消除。与同为 **native 随机数计时**的 eager 1011.55 ms 相比加速 **6.50 倍**。A/B/C/D/E/F 共 12 次同设备核验，最坏相对 L2 误差 **0.2511%**、最大绝对误差 **0.004586**；不代表闭环任务准确率。用户 RTX 3090 的 120.48 ms 目标尚未达到。[原始数据、误差验证与复现](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md)
 
 ## 做了什么
 
@@ -15,10 +15,10 @@
 | 设备编译与 Runtime | Dispatch 划分、静态 Buffer 复用、设备代码生成；Runtime 负责分配、上传、启动、同步和下载 |
 | CUDA / Vortex | 共用前端和语义层，分别生成 PTX 或 VOLT 的 ELF/vxbin；已有矩阵分块、归约及 Vortex LMEM/DXA/TCU 实验模板 |
 | Triton / Vortex（适配基线） | C++ 将支持的 Linalg 子图送入 Triton；与原生 Vortex 内核链接到同一 vxbin，共用 Buffer 与 Runtime。[使用与边界](native/README.triton-vortex.md) |
-| GalaxeaVLA / Ascend 910B | 官方 G0.5 checkpoint 已通过 TorchNPU eager 运行完整双动作头模型并测量延迟；GAC 的 MLP 切片另已贯通 ONNX → TTIR → `npubin`。整模 GAC 编译与通用 NPU Runtime 尚未实现。[范围与实测](docs/galaxeavla-ascend910.md)；[源码补丁及运行环境](integrations/galaxeavla/README.md) |
+| GalaxeaVLA / Ascend 910B | 官方 G0.5 整模已运行：LIBERO 真实样本的当前优化组合达到 155.57 ms（native），完成 A/B/C/D/E/F 12 次同设备检查，包含两相机分别变化。163.91/172.50/200.70 ms 对照、各 shared-noise 版本、native 219.18 ms 对照及退化实验分别保留。GAC 的 MLP 切片已贯通 ONNX → TTIR → `npubin`。整模 GAC 编译与通用 NPU Runtime 尚未实现。[范围与实测](docs/galaxeavla-ascend910.md)；[源码补丁及运行环境](integrations/galaxeavla/README.md) |
 | TensorRT | 完整 Base 固定 ONNX 的插件适配、构建、推理、混合 INT8/FP16、逐层 profiling，以及自定义 MSDA / DCNv2 Kernel 优化 |
 
-**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已完成官方 checkpoint 的 TorchNPU eager 整模合成输入测速与输出有限值检查，以及独立的 GAC MLP 切片编译执行验证；尚无整模 GAC 编译、跨 CUDA 数值对齐或机器人任务精度验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
+**验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已完成官方 checkpoint 整模测速、LIBERO 同设备 eager/TorchAir/`npugraph_ex` 输出对照与变化输入的图重放验证，以及独立的 GAC MLP 切片编译执行验证；尚无整模 GAC 编译、跨 CUDA 数值对齐或机器人任务精度验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
 
 ## 编译链
 
@@ -38,6 +38,44 @@ Linalg（规则算子）＋ GAC 专用 Lowering（采样等不规则算子）
 TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → TensorRT Runtime`。本次约 18% 的收益来自其中的 **C++/CUDA 自定义插件**，没有计入原生 MLIR → PTX 路径。默认 Linalg 路线与旧专用模板的选择方式见[原生架构](native/README.md)。
 
 ## GalaxeaVLA 整模推理（Ascend 910B2）
+
+**LIBERO 120 ms 对标优化，2026-11-16：** 使用与用户 RTX 3090 测试相同的官方 `g05-libero` checkpoint 和 episode 0/frame 0，双相机 256×256、159 tokens、batch 1、32×20 动作、10 步 FM。BF16 常驻权重保留官方 FP32 区域；编译变体及 GDN/未消费 codec 优化分别记录，权重、输入与采样步数不变。三角求解变体保留 FP32 状态但改变浮点累加顺序，不宣称逐元素相同。
+
+| LIBERO 配置 | 噪声计时 | Prefill p50 | FM10 p50 | 整模型 p50 | 整模型 p95 |
+|---|---|---:|---:|---:|---:|
+| 910B2 BF16 eager | native | 265.29 ms | 746.76 ms | 1011.55 ms | 1022.70 ms |
+| 910B2 GE AE / ACLGraph VLM + triangular + 跳过未消费 codec | native | 119.03 ms | 100.10 ms | 219.18 ms | 221.87 ms |
+| 上一行 + exact 时间条件预计算，退化实验 | native | 117.20 ms | 111.30 ms | 228.46 ms | 229.25 ms |
+| 910B2 GE AE / ACLGraph VLM + Triton GDN + fused AE + 跳过未消费 codec | native | 103.04 ms | 97.67 ms | 200.70 ms | 203.10 ms |
+| 上一行 + request 时间预计算 + 固定几何 Vision 图 | native | 82.72 ms | 89.74 ms | 172.50 ms | 173.58 ms |
+| 172.50 ms 配置 + GE single_stream，未提速 | native | 83.41 ms | 89.63 ms | 173.09 ms | 173.58 ms |
+| 172.50 ms 配置 + AE FP32 matrix RoPE | native | 82.64 ms | 81.20 ms | 163.91 ms | 164.62 ms |
+| 上一行 + fused AE Norm + functional MRoPE | native | 83.36 ms | 72.18 ms | **155.57 ms** | **156.79 ms** |
+| 910B2 BF16 eager，早期基线 | shared | 266.32 ms | 747.07 ms | 1013.87 ms | 1026.25 ms |
+| 910B2 BF16 + TorchAir AE | shared | 257.39 ms | 108.03 ms | 365.39 ms | 369.58 ms |
+| 910B2 BF16 + `npugraph_ex` frozen AE + VLM，原公式 | shared | 155.04 ms | 142.82 ms | 297.89 ms | 300.62 ms |
+| 910B2 BF16 + TorchAir frozen AE + VLM，兼容分解 | shared | 1490.62 ms | 100.54 ms | 1590.90 ms | 1597.47 ms |
+| 910B2 BF16 + frozen graph AE/VLM + triangular + 跳过未消费 codec | shared | 118.12 ms | 146.38 ms | 264.46 ms | 265.40 ms |
+| 910B2 BF16 + frozen GE AE / ACLGraph VLM + triangular + 跳过未消费 codec | shared | 117.61 ms | 108.01 ms | 225.58 ms | 226.40 ms |
+| RTX 3090 BF16 + Inductor AE，用户已有实测 | 原设备 randn | 75.42 ms | 45.03 ms | **120.48 ms** | 125.33 ms |
+
+各轮 Ascend 均预热 5 次、正式测量 20 次，覆盖设备输入 → Vision/VLM prefill → 完整 FM10 → 归一化动作。`native` 计入原设备 `torch.randn`，`shared` 计入固定噪声 `clone`；**6.50 倍仅用 native 基线计算**。数值验证和归档 `action.npy` 始终使用单独共享噪声。当前最快组合的 A/B/A/B 加 C/D/E/F 各两次，共 **12 次检查**：最坏 relative-L2 **0.2511%**、max-abs **0.004586**，均出现在独立修改外部相机的 E；动作及 gripper 符号一致率均 100%，padding 为 0，C/D/E/F tokens/mask 与各自 eager 参考一致。首次含编译请求 **153.65 秒**单列；最快单次 155.13 ms 不是 p50。
+
+Vision 图只缓存固定双相机几何，逐请求核对网格、读取当前 patches 和学习位置嵌入；每层仍执行两次独立 256-token SDPA。时间条件保持原 FP32 10 步递推和 49 个 AdaLN 投影，只在原 `FMHelper.infer` 请求内使用计数索引，取消每步 D2H 查表。当前报告记录 39 次请求完整消费 10 步，无失败；未跨请求缓存图像、状态、KV 或模型结果。此前同时加入这两项得到 172.50 ms；再启用 AE matrix RoPE 为 163.91 ms，加入 fused Norm 与 functional MRoPE 后完整实测为 155.57 ms。单流候选 173.09 ms 未提速。matrix RoPE 每请求读取当前 cos/sin；functional MRoPE 只以固定索引选择当前频率，Norm 保持 FP32 数学及原输出 dtype。
+
+混合后端由同一 TorchAir 包提供：AE 使用 GE，VLM 使用 `mode=npugraph_ex` 的 ACLGraph 路径，避免独立后端包的重复注册冲突。最新组合将 GDN 的 31 次逐行递推放入 FP32 Triton kernel，并启用 NPU fused AE attention；两者均需数值检查，不宣称位级一致。所有整模型行均独立实测，未拼接阶段耗时。172.50 ms 对照的 [Level1 trace 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-172ms-level1-summary.json)和[最新组合的 Level1 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-155ms-level1-summary.json)均来自计时后诊断，不能替代正式计时；163.91 ms 报告未采集 trace。独立 [RoPE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-rotary-npu.json)、[Norm GE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-norm-ge.json)及 [functional MRoPE 的 24 次零误差检查](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/functional-mrope-ge-acl.json)与整模型结果分别归档。本轮相关本地测试、可视化 builder 测试及 overlay 检查均通过。
+
+[原 CSV 的精确算子统计](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/kernel-type-comparison-172-vs-155.json)显示：172.50→155.57 ms 两个组合的 trace 中，ScatterElements **40→0**、StridedSliceD **2120→180**、Square **960→0**，新路径使用 490 次 RmsNorm 和 480 次 RotaryPositionEmbedding。仍有 **4 个 AI_CPU** 任务；算子 duration 合计不是 wall-clock 延迟，也不能把各项变化相加当成加速收益。
+
+原公式 frozen graph 的 **297.89 ms** 结果仍保留：同设备 A/B/A/B 有效 7 维逐元素误差为 0，首次含编译请求 153.82 秒。TorchAir AE 的 365.39 ms 及 0.1337% 最坏相对 L2 误差也保留。当前仍未达到 120 ms，且所有这些检查均不代表跨 CUDA 或闭环精度验证。[完整证据及命令](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md)
+
+整 VLM 的 TorchAir GE 路径曾分别遇到 Softplus、eye converter 未实现；加入局部分解后整模型通过同设备 A/B/A/B 检查（最坏相对 L2 0.1956%、最大绝对误差 0.003065），但总延迟退化到 **1590.90 ms**，保留实验记录而不选为最佳。GDN triangular 的独立 helper 微实验（eager 9.72 → 4.92 ms、graph 4.29 → 3.14 ms）与整模型结果分开记录，不能据此拆分当前组合中各项优化的收益。[失败摘要与实验边界](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md)
+
+[LIBERO 优化交互图](docs/visualizations/g05-ascend-optimization.html)可切换 3090、910B2 eager 和编译结果，查看 Prefill/FM10 的实测分布、误差与冷编译证据。新的 [LIBERO 算量原始记录](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/libero-bf16-ge-frozen-compatible/workload.json)来自计时后恢复 eager 的独立请求，已覆盖算术为 **1.064344764416 TFLOP/请求**，仅计 Linear/Conv/AdaLN；它是原 eager 路径的已覆盖算量下界，遗漏 attention/GDN 等运算，不能据此宣称总 FLOPs、硬件利用率或所需峰值算力。该数含原路径 codec 的 1.2108 GFLOP 和逐请求时间条件投影；当前删除或预计算这些工作的新变体须重新计数，不能粗减后称为完整实测算量。它属于真实 LIBERO 输入，不沿用下述 R1 Lite 计算量。
+
+峰值 BF16 吞吐不能直接换算这里 batch 1、159-token 请求的时延。上述 trace 中的 slice、transpose、cast、vector 小算子及 AI_CPU 工作说明，短序列还受访存、执行调度和算子实现影响。图编译可减少启动与中间张量访存，但不会让整模型权重全部常驻片上 SRAM；是否提速仍以同工作负载的完整测量为准。
+
+**R1 Lite 完整双头基线：** 以下保留三相机、CoT 与离散动作分支的独立记录，不与 LIBERO 表计算加速倍数。
 
 2026-11-16，**单张 910B2 64 GB，CANN 9.0.0、PyTorch 2.7.1、torch_npu 2.7.1.post4**。加载官方 `OpenGalaxea/G05` 的 `g05-base`，使用 BF16 autocast 并保留 FP32 精度区域。完整路径为三相机预处理 → Vision/VLM prefill → CoT AR → **10 步 FM** → 离散动作 AR → ActionCodec → 动作后处理。
 

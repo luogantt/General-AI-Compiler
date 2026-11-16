@@ -1,0 +1,67 @@
+[progress] Validating source revision, model SHA-256 and all sidecar hashes
+[progress] Asset hashes verified; loading archived real LIBERO input
+[progress] Loading checkpoint-authored LIBERO configuration
+[progress] Loading complete g05-libero model (bf16 resident weights)
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+BAR config mismatch: model_cfg=True tokenizer=False bos_blk_id=None → forcing runtime_bar=False
+[shape_meta] Image 'image' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'wrist_image' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 57602.548 ms; preparing real two-camera request
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+[progress] Input prepared/transferred in 26.493 ms
+[progress] Eager numerical references A/B (outside benchmark timings)
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Eager context reference state_C
+[progress] Eager context reference task_D
+[progress] Selected-backend numerical check cold_A
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/torchair/_ge_concrete_graph/fx2ge_converter.py:1618: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered frozen. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+[progress] Selected-backend numerical check first_B
+[progress] Selected-backend numerical check replay_A
+[progress] Selected-backend numerical check replay_B
+[progress] Selected-backend context check state_C/1
+[progress] Selected-backend context check task_D/1
+[progress] Selected-backend context check state_C/2
+[progress] Selected-backend context check task_D/2
+[warmup 1/5] 220.534 ms
+[warmup 2/5] 220.458 ms
+[warmup 3/5] 220.462 ms
+[warmup 4/5] 220.362 ms
+[warmup 5/5] 220.018 ms
+[measure 1/20] 220.107 ms
+[measure 2/20] 218.718 ms
+[measure 3/20] 217.424 ms
+[measure 4/20] 217.150 ms
+[measure 5/20] 219.204 ms
+[measure 6/20] 219.327 ms
+[measure 7/20] 219.148 ms
+[measure 8/20] 218.799 ms
+[measure 9/20] 218.011 ms
+[measure 10/20] 218.320 ms
+[measure 11/20] 218.838 ms
+[measure 12/20] 218.263 ms
+[measure 13/20] 218.975 ms
+[measure 14/20] 219.239 ms
+[measure 15/20] 222.004 ms
+[measure 16/20] 221.861 ms
+[measure 17/20] 221.468 ms
+[measure 18/20] 220.877 ms
+[measure 19/20] 221.334 ms
+[measure 20/20] 220.785 ms
+[progress] Capturing one post-timing NPU request trace
+[2026-11-16 11:11:19] [WARNING] [29562] profiler.py: Profiler won't be using warmup, this can skew profiler results
+[2026-11-16 11:11:19] [WARNING] [29562] profiler.py: Please use level1 or level2 if you want to collect aic metrics, reset aic metrics to None!
+[2026-11-16 11:11:19] [WARNING] [29562] profiler.py: Please use level1 or level2 if you want to collect aic metrics, reset aic metrics to None!
+[2026-11-16 11:11:19] [INFO] [30166] profiler.py: Start parsing profiling data in sync mode at: /root/work/profile-libero-native/6fa3a25f106c_29562_20261116111119072_ascend_pt
+|/-\|[2026-11-16 11:11:25] [INFO] [30192] profiler.py: CANN profiling data parsed in a total time of 0:00:05.035785
+/[2026-11-16 11:11:26] [INFO] [30166] profiler.py: All profiling data parsed in a total time of 0:00:06.316168
+{"report": "/root/work/libero-bf16-ge-acl-native/report.json", "status": "success", "summary_ms": {"action_ms": {"count": 20, "mean": 100.09698795620352, "p50": 100.09804996661842, "p95": 100.28707189485431, "min": 99.81479030102491, "max": 100.34620016813278}, "prefill_ms": {"count": 20, "mean": 119.39565106295049, "p50": 119.03034499846399, "p95": 121.52533608023077, "min": 117.3348599113524, "max": 121.72038992866874}, "total_ms": {"count": 20, "mean": 219.492639019154, "p50": 219.17580487206578, "p95": 221.86842423398048, "min": 217.1496502123773, "max": 222.00434980913997}}}

@@ -1,0 +1,147 @@
+[progress] Validate source/checkpoint
+[progress] Load fm-only / bf16
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+[shape_meta] Image 'head_rgb' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'left_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_left]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'right_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Loaded in 90472.428 ms
+[progress] Eager reference request (verification only)
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] First selected-backend request (includes compile if enabled)
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/fx2acl_converter.py:361: UserWarning: When enable frozen_parameter, Parameters and input tensors with immutable data_ptr marked by `torch._dynamo.mark_static_address()` will be considered static. Please make sure that the Parameters data address remain the same throughout the program runtime.
+  warnings.warn('When enable frozen_parameter, Parameters and input tensors with immutable data_ptr '
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/static_kernel.py:47: UserWarning: The current version now supports caching run packages from static kernel compilation, it is recommended to delete the compilation cache and recompile when you use `torch.npu.npugraph_ex.inference.cache_compile` and do not use debug.run_eagerly=True.
+  warnings.warn(warn_msg)
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/static_kernel.py:127: UserWarning: Starting static kernel compilation, the build directory is /root/work/GalaxeaVLA-upstream/static_kernel_compile_outputs/ts20261116094438853160_pid6927_outputs
+  warnings.warn(f"Starting static kernel compilation, the build directory is {result_root}")
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/static_kernel.py:321: UserWarning: execute op_compiler error, msg: 
+  0%|          | 0/95 [00:00<?, ?it/s]
+  1%|          | 1/95 [00:29<46:26, 29.64s/it]
+  4%|▍         | 4/95 [00:30<08:39,  5.71s/it]
+  5%|▌         | 5/95 [00:30<06:19,  4.21s/it]
+  6%|▋         | 6/95 [00:30<04:32,  3.06s/it]
+  8%|▊         | 8/95 [00:30<02:29,  1.72s/it]
+  9%|▉         | 9/95 [00:31<02:03,  1.44s/it]
+ 12%|█▏        | 11/95 [00:31<01:16,  1.09it/s]
+ 14%|█▎        | 13/95 [00:31<00:48,  1.68it/s]
+ 17%|█▋        | 16/95 [00:31<00:27,  2.86it/s]
+ 19%|█▉        | 18/95 [00:32<00:22,  3.47it/s]
+ 23%|██▎       | 22/95 [00:32<00:13,  5.59it/s]
+ 26%|██▋       | 25/95 [00:32<00:10,  6.48it/s]
+ 28%|██▊       | 27/95 [00:32<00:09,  7.05it/s]
+ 32%|███▏      | 30/95 [00:32<00:07,  8.85it/s]
+ 34%|███▎      | 32/95 [00:33<00:07,  8.83it/s]
+ 36%|███▌      | 34/95 [00:33<00:06,  9.10it/s]
+ 41%|████      | 39/95 [00:33<00:03, 14.51it/s]
+ 44%|████▍     | 42/95 [00:33<00:03, 15.71it/s]
+ 53%|█████▎    | 50/95 [00:33<00:01, 26.57it/s]
+ 58%|█████▊    | 55/95 [00:33<00:01, 30.09it/s]
+ 62%|██████▏   | 59/95 [00:33<00:01, 31.90it/s]
+ 66%|██████▋   | 63/95 [00:34<00:00, 32.92it/s]
+ 75%|███████▍  | 71/95 [00:34<00:00, 39.30it/s]
+ 85%|████████▌ | 81/95 [00:34<00:00, 51.99it/s]
+ 94%|█████████▎| 89/95 [00:34<00:00, 53.01it/s]
+100%|██████████| 95/95 [00:34<00:00, 34.44it/s]
+100%|██████████| 95/95 [00:34<00:00,  2.73it/s]
+
+  warnings.warn(f"{prefix}execute op_compiler error, msg: {e.stderr}")
+Traceback (most recent call last):
+  File "/root/work/benchmark_g05_optimize.py", line 359, in <module>
+    if gdn_installation is not None:
+             ^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 350, in main
+    if phase == "measure":
+ ^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 236, in run
+    "replay_coverage": "A and B each run again after first selected use; backend replay counts are not instrumented",
+                             ^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_optimize.py", line 156, in run_one
+    }
+      
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/inferencer.py", line 77, in infer_with_timing
+    batch = self.forward_batch(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/benchmark_g05_full.py", line 554, in forward_batch
+    batch = self.policy.predict_action(batch)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 483, in predict_action
+    return self.forward(batch, inference_mode=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 579, in forward
+    generated = self.forward_inference(
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 1043, in forward_inference
+    action_results = self.generate_action(
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_policy.py", line 894, in generate_action
+    results["action"] = self.model.inference_fm(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/g05_model.py", line 596, in inference_fm
+    return self.fm_helper.infer(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/helpers/fm_helper.py", line 451, in infer
+    action_hidden = model.action_expert(
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 655, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/root/work/GalaxeaVLA-upstream/src/g05/models/g05/qwen35/mixture_qwen35.py", line 533, in forward
+    def forward(
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_dynamo/eval_frame.py", line 838, in _fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/aot_autograd.py", line 1209, in forward
+    return compiled_fn(full_args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 328, in runtime_wrapper
+    all_outs = call_func_at_runtime_with_args(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/utils.py", line 126, in call_func_at_runtime_with_args
+    out = normalize_as_list(f(args))
+                            ^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 689, in inner_fn
+    outs = compiled_fn(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/runtime_wrappers.py", line 495, in wrapper
+    return compiled_fn(runtime_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/_functorch/_aot_autograd/utils.py", line 100, in g
+    return f(*args)
+           ^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/npu_fx_compiler.py", line 507, in __call__
+    gm_result = self.run_kernel(*args, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 4139, in kernel
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 826, in __call__
+    fn_key = self.compile(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1012, in compile
+    self.compile_for_graph_key(graph_key, *args, **kwargs)
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1115, in compile_for_graph_key
+    captured_outputs = self.capture(graph_key, *args, **kwargs)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/dynamo/npugraph_ex/_acl_concrete_graph/acl_graph.py", line 1215, in capture
+    self.graph[graph_key].super_kernel_optimize(optimize_options=super_kernel_optimize_options, debug_options=super_kernel_debug_options)
+  File "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/npu/graphs.py", line 420, in super_kernel_optimize
+    return super().super_kernel_optimize(optimize_options, debug_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: libascendsk.so: cannot open shared object file: No such file or directory
+[ERROR] 2026-11-16-09:45:28 (PID:6927, Device:0, RankID:-1) ERR99999 UNKNOWN applicaiton exception
