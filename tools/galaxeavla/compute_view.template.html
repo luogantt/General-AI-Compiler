@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G0.5 · 算力与推理时间</title>
+<style>
+:root{color-scheme:light;--ink:#243447;--muted:#536678;--line:#d7dfe5;--paper:#f7f9fa;--teal:#177b77;--blue:#39779e;--violet:#7456a0;--gold:#98612e;--mono:"IBM Plex Mono",Consolas,"Microsoft YaHei",monospace;font-family:Inter,"Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}button,input{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #007a9d;outline-offset:2px}button{border:0;background:none}a{color:#126974;text-underline-offset:3px}[hidden]{display:none!important}
+header{z-index:5;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding:12px 18px;background:#fff;min-height:61px}h1{font-size:18px;margin:0;white-space:nowrap;letter-spacing:-.03em}h1 b{color:#116f70}h1 span{color:#8594a1;font-weight:400;padding:0 6px}.badge{font:11px var(--mono);color:var(--teal);background:#edf6f3;border:1px solid #cde0db;border-radius:5px;padding:5px 7px;white-space:nowrap}
+.barbtn,.zoom button{border:1px solid var(--line);background:#fff;border-radius:6px;padding:6px 10px;font-size:12px;white-space:nowrap}.barbtn:hover,.zoom button:hover{background:#eff4f5}.barbtn[aria-pressed=true]{border-color:#a6bbb9;background:#eaf4f2}.barbtn.accent{color:#116b66;border-color:#aacdc5;background:#eff8f5}
+.search{position:relative;margin-left:auto;width:min(280px,25vw)}.search input{width:100%;height:34px;padding:6px 10px;color:var(--ink);border:1px solid var(--line);border-radius:6px;background:#f9fafb;font-size:13px}.results{position:absolute;top:calc(100% + 5px);left:0;right:0;max-height:min(50vh,390px);overflow:auto;background:white;box-shadow:0 6px 18px #1a364426;border:1px solid var(--line);border-radius:7px;padding:4px}.results button{text-align:left;width:100%;padding:9px;color:var(--ink);display:block}.results button:hover,.results button:focus{background:#eef5f6}.results small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.empty{padding:8px;color:var(--muted);font-size:13px}
+.overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border-bottom:1px solid var(--line);padding:13px 18px;gap:0}.overview button{text-align:left;min-width:0;padding:0 18px;border-left:1px solid var(--line)}.overview button:first-child{border-left:0;padding-left:0}.overview button:hover{background:#f5faf8}.overview small,.overview strong,.overview span{display:block}.overview small{color:var(--muted);font-size:11px;line-height:1.6}.overview strong{color:#155f5b;font:700 24px/1.5 var(--mono);font-variant-numeric:tabular-nums}.overview span{color:var(--muted);font-size:11px;line-height:1.5}.crumbs{display:flex;align-items:center;gap:7px;min-height:38px;white-space:nowrap;overflow-x:auto;background:#fdfefe;padding:4px 18px;border-bottom:1px solid var(--line);font-size:12px}.crumbs button{color:var(--teal);padding:4px 0}.crumbs b{font-weight:600}.crumbs span{color:#85929d}.scope-label{margin-left:auto;font-size:11px;color:var(--muted)!important;padding-left:12px}
+main{position:relative;display:flex;flex:1;min-height:0}.canvas{position:relative;isolation:isolate;overflow:hidden;flex:1;min-width:0;background-color:#f9fbfb;background-image:radial-gradient(#ccd6da 1px,transparent 1px);background-size:18px 18px;touch-action:none;cursor:grab}.canvas.drag{cursor:grabbing}.world{position:absolute;left:0;top:0;transform-origin:0 0;user-select:none}.world>svg{position:absolute;inset:0;overflow:visible;pointer-events:none}.wire{fill:none;stroke:#9cabb4;stroke-width:1.7}.hitline{fill:none;stroke:transparent;stroke-width:15;pointer-events:stroke;cursor:pointer}.wire-group.hot .wire,.wire-group:hover .wire{stroke:#167e80;stroke-width:2.6}.wire-label{font:11px var(--mono);fill:#176b6d;paint-order:stroke;stroke:#f9fbfb;stroke-width:4;opacity:0}.wire-group.hot .wire-label,.wire-group:hover .wire-label{opacity:1}
+.node{--node-color:#526778;position:absolute;width:205px;height:128px;border:1px solid #9cabb5;border-left:4px solid var(--node-color);background:white;border-radius:6px;box-shadow:0 2px 3px #24313912;display:flex;align-items:stretch}.node[data-kind=module]{--node-color:var(--teal)}.node[data-kind=weight]{--node-color:var(--violet)}.node[data-kind=act]{--node-color:var(--gold)}.node[data-kind=input]{--node-color:var(--blue)}.node.sel{outline:2px solid #126d78;outline-offset:2px}.node:hover{border-color:var(--node-color)}.bodybtn{display:block;min-width:0;flex:1;text-align:left;padding:8px 5px 8px 10px;overflow:hidden}.bodybtn span,.bodybtn strong,.bodybtn code{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bodybtn .op{color:var(--node-color);font:11px/1.5 var(--mono)}.bodybtn strong{font-size:15px;line-height:1.65}.bodybtn code{color:var(--muted);font:11px/1.5 var(--mono)}.bodybtn .compute{color:#725389;font:600 11px/1.6 var(--mono);margin-top:3px}.bodybtn .timing{color:#0d6d62;font:700 11px/1.6 var(--mono)}.bodybtn .timing.included,.bodybtn .timing.unknown{color:#687b87;font-weight:500}.enter{align-self:flex-start;border:1px solid #c5d5d6;border-radius:4px;margin:8px 6px 0 0;color:#12696b;background:#f0f7f7;line-height:20px;width:22px;padding:0;cursor:zoom-in;flex-shrink:0}
+.overlay{position:absolute;z-index:2;pointer-events:none}.zoom{bottom:14px;left:14px;display:flex;align-items:center;gap:2px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 2px 5px #18313c12;padding:3px;pointer-events:auto}.zoom button{border:0;padding:6px 8px}.zoom output{font:12px var(--mono);color:var(--muted);min-width:44px;text-align:center}.map{right:14px;bottom:14px;width:134px;height:80px;border:1px solid #bfced4;border-radius:6px;background:#ffffffed;cursor:crosshair;pointer-events:auto}.map rect{pointer-events:none}.map:focus-visible{outline:2px solid var(--teal)}
+aside{width:330px;flex-shrink:0;overflow:auto;background:#fff;border-left:1px solid var(--line);padding:16px 18px}.ins-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.ins-top button{font-size:20px;padding:0 4px}.prop h2{font-size:22px;line-height:1.35;margin:12px 0 0;overflow-wrap:anywhere}.prop p{font-size:13px;line-height:1.7;color:var(--muted);margin:7px 0 12px}.prop h3{border-top:1px solid var(--line);margin:18px 0 8px;padding-top:12px;font-size:13px}.prop code,.prop dd,.prop dt{overflow-wrap:anywhere}.prop code{font:12px/1.6 var(--mono);color:#314d61}.prop dl{display:grid;grid-template-columns:minmax(70px,.85fr) minmax(0,1.3fr);gap:7px 9px;font-size:12px;line-height:1.5}.prop dt{color:var(--muted)}.prop dd{margin:0;font-family:var(--mono);white-space:pre-wrap}.prop a{font:11px/1.6 var(--mono);overflow-wrap:anywhere}.port{display:block;font-size:13px;text-align:left;padding:8px 3px;width:100%;color:var(--teal);border-bottom:1px solid #edf0f2}.port:hover{text-decoration:underline}.port small{display:block;color:var(--muted);font:11px var(--mono);overflow-wrap:anywhere;margin-top:3px}.primary{display:block;margin:11px 0;background:#186e70;border-radius:6px;color:white;padding:9px 12px;font-weight:600;font-size:13px}
+.metric-detail{margin:12px 0 8px;border-left:3px solid #15806f;padding:9px 11px;background:#edf8f5}.metric-detail small,.metric-detail strong{display:block}.metric-detail small{font-size:11px;color:#43605f}.metric-detail strong{font:700 20px/1.6 var(--mono);overflow-wrap:anywhere;color:#0f625e}.metric-detail p{margin:3px 0;font-size:12px;line-height:1.6}.metric-detail.estimate{border-left-color:#8c6caa;background:#f5f2f8}.metric-detail.estimate strong{color:#725389}.metric-detail.unknown{border-left-color:#81939c;background:#f2f5f6}.metric-detail.unknown strong{font-size:15px;color:#536c79}.note{padding:9px 11px;background:#f7f8f9;border:1px solid #e0e6e8;border-radius:5px;font-size:12px!important;line-height:1.6!important}.budget-field{display:flex;align-items:center;gap:9px;margin:14px 0 6px}.budget-field input{width:104px;padding:7px 8px;border:1px solid #afc7c4;border-radius:5px;color:var(--ink);font-family:var(--mono)}.budget-field span{color:var(--muted);font-size:12px}input[type=range]{width:100%;accent-color:var(--teal);margin:8px 0 12px}.budget-label{display:block;font-size:12px;margin-top:15px;color:var(--muted)}.latency-chart{width:100%;height:72px;border-bottom:1px solid #d7e6e1}.chart-caption{display:flex;justify-content:space-between;font:10px var(--mono);color:var(--muted)}
+footer{display:flex;justify-content:space-between;gap:12px;align-items:center;min-height:28px;padding:4px 16px;background:#fff;color:var(--muted);border-top:1px solid var(--line);font-size:11px}
+@media(max-width:1100px){header{gap:8px}.badge{display:none}.search{width:190px}.overview strong{font-size:21px}aside{width:302px}}
+@media(max-width:820px){header{flex-wrap:wrap;padding:9px 12px}h1{font-size:16px}.search{flex:1;min-width:120px}.barbtn{padding:6px 8px}.overview{padding:9px 12px}.overview button{padding:0 10px}.overview strong{font-size:18px}.overview span{font-size:10px}.map{width:105px;height:62px}}
+@media(max-width:700px){header{gap:7px;padding:8px}h1{font-size:15px}.search{width:auto}.search input{padding:5px 8px}.barbtn{font-size:11px}.overview{grid-template-columns:repeat(2,minmax(0,1fr));padding:7px 8px;row-gap:8px}.overview button{padding:0 10px}.overview button:nth-child(3){padding-left:0;border-left:0}.overview strong{font-size:19px}.overview small,.overview span{font-size:10px}.crumbs{padding:3px 8px;min-height:34px}.scope-label{display:none}.results{position:fixed;top:53px;left:8px;right:8px}.map{width:83px;height:52px;bottom:12px;right:8px}.zoom{bottom:12px;left:8px}.zoom button{font-size:11px;padding:6px}aside{position:absolute;bottom:0;left:0;right:0;width:100%;max-height:72%;z-index:3;border:1px solid var(--line);border-radius:12px 12px 0 0;box-shadow:0 -5px 20px #21364319;padding:10px 16px}.prop h2{font-size:18px;margin-top:4px}.metric-detail strong{font-size:18px}footer{padding:4px 8px;font-size:10px}footer .tip{display:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1><b>G0.5</b><span>/</span>算力与推理时间</h1><span class="badge">Ascend 910B2 · eager</span>
+  <div class="search"><input id="query" type="search" placeholder="搜索模块或算子" aria-label="搜索全部模块或算子"><div id="results" class="results" hidden></div></div>
+  <button id="budget" class="barbtn accent">算力预算</button><button id="download" class="barbtn">下载证据</button><button id="toggleProps" class="barbtn" aria-controls="inspector" aria-pressed="true">属性</button>
+</header>
+<section class="overview" id="overview" aria-label="完整模型的实测性能与理论计算量"></section>
+<nav class="crumbs" id="crumbs" aria-label="子图路径"></nav>
+<main>
+  <div id="canvas" class="canvas" tabindex="0" aria-label="网络图。拖动平移，滚轮缩放，单击节点查看算力与时间，双击模块进入子图。">
+    <div id="world" class="world"><svg id="wires" aria-hidden="true"></svg><div id="nodes"></div></div>
+    <div class="zoom overlay" aria-label="画布缩放"><button id="minus" aria-label="缩小">−</button><output id="scale">100%</output><button id="plus" aria-label="放大">+</button><button id="fit">适应窗口</button><button id="natural" title="原始比例">1:1</button></div>
+    <svg class="map overlay" id="map" aria-label="全图缩略图，点击可定位" role="img"></svg>
+  </div>
+  <aside id="inspector" aria-label="属性面板"><div class="ins-top"><span id="propType">网络属性</span><button id="closeProps" aria-label="关闭属性">×</button></div><div class="prop" id="props"></div></aside>
+</main>
+<footer><span id="status"></span><span class="tip">拖动平移 · 滚轮缩放 · 双击模块展开 · / 搜索 · Esc 返回</span></footer>
+<script>
+'use strict';
+const DATA=__G05_VIEW_DATA__;
+const graphs=DATA.graphs,profile=DATA.profile;
+const $=id=>document.getElementById(id);
+const canvas=$('canvas'),world=$('world'),wires=$('wires'),map=$('map'),props=$('props');
+const cardWidth=205,cardHeight=128,columnGap=54,rowGap=48,margin=46;
+const state={graph:null,path:[],selection:null,edge:null,zoom:1,x:0,y:0,width:1,height:1};
+const positions=new Map(),buttons=new Map(),saved=new Map();
+const mobile=()=>matchMedia('(max-width:700px)').matches;
+let preferredPanel=!mobile(),edgeGroups=[],panelMode='graph',targetRate=1;
+const finite=value=>typeof value==='number'&&Number.isFinite(value);
+const fmt=(value,digits=2)=>finite(value)?value.toLocaleString('en-US',{minimumFractionDigits:digits,maximumFractionDigits:digits}):'未统计';
+const ms=value=>fmt(value,2)+' ms';
+const seconds=value=>finite(value)?fmt(value/1000,3)+' s':'未测量';
+const validFlops=value=>finite(value)&&value>=0;
+function flopText(value){
+  if(!validFlops(value))return '计算量未统计';
+  if(value===0)return '0 FLOP（本统计口径）';
+  if(value>=1e12)return '≈ '+fmt(value/1e12,3)+' TFLOP/次';
+  if(value>=1e9)return '≈ '+fmt(value/1e9,2)+' GFLOP/次';
+  if(value>=1e6)return '≈ '+fmt(value/1e6,2)+' MFLOP/次';
+  return '≈ '+fmt(value,0)+' FLOP/次';
+}
+function parameterText(value){
+  if(!finite(value))return '未统计';
+  return value>=1e8?fmt(value/1e8,2)+' 亿':fmt(value,0);
+}
+function el(name,text,cls){const out=document.createElement(name);if(text!==undefined)out.textContent=text;if(cls)out.className=cls;return out;}
+function svg(name,attributes={}){const out=document.createElementNS('http://www.w3.org/2000/svg',name);for(const [key,value] of Object.entries(attributes))out.setAttribute(key,String(value));return out;}
+function action(text,fn,cls){const button=el('button',text,cls);button.type='button';button.addEventListener('click',fn);return button;}
+function graph(){return graphs[state.graph];}
+function node(id){return graph().nodes.find(n=>n.id===id);}
+function attributeList(attrs){const list=el('dl');for(const [key,value] of Object.entries(attrs||{})){if(value===undefined)continue;list.append(el('dt',key),el('dd',typeof value==='object'?JSON.stringify(value,null,2):String(value)));}return list;}
+function detail(label,value,description,kind=''){const box=el('div',undefined,'metric-detail '+kind);box.append(el('small',label),el('strong',value));if(description)box.append(el('p',description));return box;}
+function sourceLink(source){
+  const value=String(source),link=el('a',value);
+  if(/^https?:\/\//i.test(value)){link.href=value;link.target='_blank';link.rel='noopener noreferrer';}
+  return link;
+}
+function timingCaption(timing){
+  if(!timing)return '未独立计时';
+  if(timing.kind==='included')return '已计入 '+(timing.label||'父阶段')+' · 未单测';
+  return finite(timing.p50)?'⏱ '+ms(timing.p50)+' · p50':'未独立计时';
+}
+function timingDetail(timing){
+  if(!timing)return detail('时间证据','未独立计时','当前没有该模块的独立计时边界，不按计算量或层数分摊实测时间。','unknown');
+  if(timing.kind==='included')return detail('时间证据 · 所属聚合区间','已计入 '+(timing.label||'父阶段'),(finite(timing.p50)?'父阶段 p50 '+ms(timing.p50)+'。':'')+'此节点未独立计时，不能与父阶段相加。','unknown');
+  return detail('同步计时 · '+(timing.label||'阶段实测'),ms(timing.p50)+' p50',(finite(timing.p95)?'p95 '+ms(timing.p95)+'。':'')+'预热 '+profile.warmup+' 次，测量 '+profile.repeats+' 次；各阶段分位数不能直接相加。');
+}
+function computeDetail(value){return detail('理论估算 · 已统计主算子',flopText(value),'这是一次完整请求中该节点的已计数浮点运算量。1 次乘加记为 2 FLOP；未覆盖算子另见计算口径。','estimate');}
+function showOverview(){
+  const specs=[
+    ['完整请求 · 实测 p50',seconds(profile.request.p50),'p95 '+seconds(profile.request.p95),'overview'],
+    ['已统计主算子 · 理论运算量',validFlops(profile.flops)?'≈ '+fmt(profile.flops/1e12,3)+' TFLOP/次':'未统计','部分算子口径 · 不等于硬件算力','budget'],
+    ['模型参数量',parameterText(profile.parameters),finite(profile.parameters)?fmt(profile.parameters,0)+' 个参数':'请查看模型配置说明','overview'],
+    ['NPU 峰值分配显存',fmt(profile.allocatedGiB,2)+' GiB','峰值 reserved '+fmt(profile.reservedGiB,2)+' GiB','overview']
+  ];
+  $('overview').replaceChildren(...specs.map(([label,value,note,mode])=>{const button=action('',()=>{if(mode==='budget')budgetInfo();else graphInfo();togglePanel(true);});button.append(el('small',label),el('strong',value),el('span',note));return button;}));
+}
+function sparkline(){
+  const values=(profile.samples||[]).filter(finite);if(values.length<2)return null;
+  const lo=Math.min(...values),hi=Math.max(...values),span=Math.max(hi-lo,1),chart=svg('svg',{viewBox:'0 0 280 72',class:'latency-chart',role:'img','aria-label':values.length+' 次完整请求耗时，范围 '+ms(lo)+' 至 '+ms(hi)});
+  const points=values.map((value,index)=>[5+index*270/(values.length-1),62-(value-lo)*50/span]);
+  chart.append(svg('path',{d:points.map((point,index)=>(index?'L ':'M ')+point.join(' ')).join(' '),fill:'none',stroke:'#218276','stroke-width':1.8}));
+  points.forEach(point=>chart.append(svg('circle',{cx:point[0],cy:point[1],r:2,fill:'#218276'})));
+  const wrap=el('div'),caption=el('div',undefined,'chart-caption');caption.append(el('span','序列 1–'+values.length),el('span',fmt(lo,0)+'–'+fmt(hi,0)+' ms'));wrap.append(chart,caption);return wrap;
+}
+function graphInfo(){
+  panelMode='graph';state.selection=null;state.edge=null;highlight();$('propType').textContent='网络属性';
+  const g=graph(),content=[el('h2',g.title),el('p',g.desc)];
+  if(state.graph==='main'){
+    content.push(detail('完整请求 · 910B2 实测',seconds(profile.request.p50)+' p50','p95 '+seconds(profile.request.p95)+'；包含预处理、模型调用、传输与后处理。'),computeDetail(profile.flops));
+    const chart=sparkline();if(chart)content.push(chart);
+    content.push(el('h3','测量条件'),attributeList({'预热 / 正式测量':profile.warmup+' / '+profile.repeats,'整模调用 p50':ms(profile.model?.p50),'按 p50 折算请求率':finite(profile.request.p50)?fmt(1000/profile.request.p50,3)+' 次/秒':'未测量','前缀 token 数':profile.prefixTokens===undefined?'见计算假设':profile.prefixTokens,'峰值分配 / 保留':fmt(profile.allocatedGiB,2)+' / '+fmt(profile.reservedGiB,2)+' GiB'}));
+    if(finite(profile.baselineP50))content.push(el('p','默认主机线程配置的完整请求 p50 为 '+ms(profile.baselineP50)+'；当前报告采用受控线程设置。'));
+  }
+  content.push(el('h3','计算与时间口径'));
+  for(const note of profile.summaryNotes||[])content.push(el('p',String(note),'note'));
+  content.push(el('p','紫色为已计数主算子的理论运算量，绿色为已有计时证据。子图的计算量是父模块的分解，不应重复累加。未单测节点不按比例分配时间。','note'));
+  content.push(action('调整目标频率 · 算力预算',budgetInfo,'primary'),el('h3','图结构'),attributeList({'节点':g.nodes.length,'连接':g.edges.length,'可展开模块':g.nodes.filter(n=>n.sub).length}));
+  props.replaceChildren(...content);$('inspector').scrollTop=0;
+}
+function budgetInfo(){
+  panelMode='budget';$('propType').textContent='算力预算 · 理论估算';
+  const label=el('label','目标完整请求频率','budget-label');label.htmlFor='budgetRate';
+  const field=el('div',undefined,'budget-field'),number=el('input');number.id='budgetRate';number.type='number';number.min='0.1';number.max='1000';number.step='0.1';number.value=targetRate;
+  field.append(number,el('span','次完整请求 / 秒'));
+  const slider=el('input');slider.type='range';slider.min='0.1';slider.max='30';slider.step='0.1';slider.value=Math.min(targetRate,30);slider.setAttribute('aria-label','调整目标完整请求频率，0.1 至 30 次每秒');
+  const output=detail('已计数算法工作量的算力预算','',null,'estimate'),result=output.querySelector('strong'),formula=el('p');output.append(formula);result.setAttribute('aria-live','polite');
+  const interval=el('p'),observed=el('p','实测完整请求仍为 '+seconds(profile.request.p50)+' p50，按其倒数折算约 '+fmt(1000/profile.request.p50,3)+' 次/秒。');
+  const update=value=>{if(!finite(value)||value<.1||value>1000){number.setCustomValidity('请输入 0.1 至 1000 次/秒');return;}number.setCustomValidity('');targetRate=value;result.textContent=validFlops(profile.flops)?fmt(profile.flops*value/1e12,3)+' TFLOP/s（已计数）':'计算量尚未统计';formula.textContent=validFlops(profile.flops)?fmt(profile.flops/1e12,3)+' TFLOP/次 × '+fmt(value,1)+' 次/秒':'需要先提供每次请求的已统计运算量。';interval.textContent='目标频率对应每次请求 '+ms(1000/value)+' 的时间预算；这是一项目标，不是预测延迟。';};
+  number.addEventListener('input',()=>{update(number.valueAsNumber);if(finite(number.valueAsNumber))slider.value=Math.min(number.valueAsNumber,30);});
+  slider.addEventListener('input',()=>{number.value=slider.value;update(Number(slider.value));});update(targetRate);
+  props.replaceChildren(el('h2','每秒需要多少计算量？'),el('p','按一次完整请求的已统计主算子 FLOPs，换算给定请求频率下的算法工作量。'),label,field,slider,output,interval,
+    el('p','此预算仅覆盖已计数的算法运算，不包含未计数算子、访存带宽、CPU 调度、通信、同步和硬件执行效率。它不是硬件峰值需求，也不能预测该频率下的真实推理延迟。','note'),
+    el('h3','实测参照'),observed,el('p','增加目标频率只改变这里的算术预算；图中的 p50/p95 保持原始测量结果。'),
+    el('h3','动作块与请求频率'),el('p','模型输出 32 步动作。若服务每次使用其中 16 步，则 16 × 请求频率只表示理论动作供给量，不等于机器人闭环控制频率。'),
+    action('返回网络总览',()=>{graphInfo();},'primary'));
+  togglePanel(true);$('inspector').scrollTop=0;
+}
+function target(path){return '#'+['main',...path.map(encodeURIComponent)].join('/');}
+function linkTo(path){const next=target(path);if(location.hash===next){render();return;}location.hash=next;}
+function saveView(){if(state.graph)saved.set(target(state.path),{x:state.x,y:state.y,zoom:state.zoom,selection:state.selection});}
+function clamp(value,lo,hi){return Math.min(hi,Math.max(lo,value));}
+function applyTransform(){world.style.transform='translate('+state.x+'px,'+state.y+'px) scale('+state.zoom+')';$('scale').value=Math.round(state.zoom*100)+'%';const frame=map.querySelector('.viewbox');if(frame){frame.setAttribute('x',-state.x/state.zoom);frame.setAttribute('y',-state.y/state.zoom);frame.setAttribute('width',canvas.clientWidth/state.zoom);frame.setAttribute('height',canvas.clientHeight/state.zoom);}}
+function fit(initial=false){const w=canvas.clientWidth,h=canvas.clientHeight,ratio=Math.min((w-24)/state.width,(h-64)/state.height,1.12);state.zoom=Math.max(initial&&mobile()?.64:.06,ratio);state.x=state.width*state.zoom>w?14:(w-state.width*state.zoom)/2;state.y=state.height*state.zoom>h?10:(h-44-state.height*state.zoom)/2;applyTransform();}
+function zoomAt(value,x=canvas.clientWidth/2,y=canvas.clientHeight/2){const next=clamp(value,.06,3),factor=next/state.zoom;state.x=x-(x-state.x)*factor;state.y=y-(y-state.y)*factor;state.zoom=next;applyTransform();}
+function centerNode(id){const p=positions.get(id);if(!p)return;state.zoom=Math.max(.85,state.zoom);state.x=canvas.clientWidth/2-(p.x+cardWidth/2)*state.zoom;state.y=canvas.clientHeight*(mobile()?.25:.46)-(p.y+cardHeight/2)*state.zoom;applyTransform();}
+function togglePanel(show){preferredPanel=show;$('inspector').hidden=!show;$('toggleProps').setAttribute('aria-pressed',String(show));applyTransform();}
+function keyPath(){let id='main';const resolved=[],labels=[graphs.main.title];let segments;try{segments=location.hash.replace(/^#\/?/,'').split('/').filter(Boolean).map(decodeURIComponent);}catch{segments=[];}if(segments[0]==='main')segments.shift();for(const key of segments){const n=graphs[id].nodes.find(item=>item.id===key);if(!n||!graphs[n.sub])break;id=n.sub;resolved.push(key);labels.push(n.label);}return {id,resolved,labels};}
+function renderCrumbs(labels){const items=[];labels.forEach((label,index)=>{if(index)items.push(el('span','›'));items.push(index===labels.length-1?el('b',label):action(label,()=>linkTo(state.path.slice(0,index))));});items.push(el('span','算子规模统计 · 独立实测延迟','scope-label'));$('crumbs').replaceChildren(...items);$('crumbs').scrollLeft=0;}
+function kind(n){if(n.sub)return 'module';if(/input|output|tensor|camera|^rgb|H2D|D2H/i.test(n.op))return 'input';if(/linear|conv|norm|embedding|proj/i.test(n.op))return 'weight';if(/gate|silu|gelu|add|mul|euler|delta/i.test(n.op))return 'act';return 'operator';}
+function makeNode(n){
+  const box=el('div',undefined,'node'),p=positions.get(n.id);box.style.left=p.x+'px';box.style.top=p.y+'px';box.dataset.kind=kind(n);box.dataset.id=n.id;
+  const select=action('',()=>selectNode(n.id,true),'bodybtn'),timing=timingCaption(n.timing);
+  select.append(el('span',n.op,'op'),el('strong',n.label),el('code',n.shape),el('span',flopText(n.flops),'compute'),el('span',timing,'timing '+(n.timing?.kind||'unknown')));
+  select.title=[n.label,n.op,n.shape,flopText(n.flops),timing].filter(Boolean).join(' · ');select.setAttribute('aria-label',select.title);box.append(select);
+  if(n.sub&&graphs[n.sub]){select.addEventListener('dblclick',()=>openSubgraph(n));const enter=action('›',()=>openSubgraph(n),'enter');enter.title='进入子图 · '+n.label;enter.setAttribute('aria-label',enter.title);box.append(enter);}
+  buttons.set(n.id,box);return box;
+}
+function openSubgraph(n){if(n.sub&&graphs[n.sub]){state.selection=n.id;linkTo([...state.path,n.id]);}}
+function wirePath(edge,index){
+  const p=positions.get(edge.from),q=positions.get(edge.to);
+  if(Math.abs(p.x-q.x)<1){const down=q.y>p.y,x=p.x+cardWidth/2,y=p.y+(down?cardHeight:0),endY=q.y+(down?-2:cardHeight+2),mid=(y+endY)/2;return 'M '+x+' '+y+' C '+x+' '+mid+' '+x+' '+mid+' '+x+' '+endY;}
+  const right=q.x>p.x,x=p.x+(right?cardWidth:0),y=p.y+cardHeight/2,end=q.x+(right?-2:cardWidth+2),endY=q.y+cardHeight/2,mid=(x+end)/2;
+  return 'M '+x+' '+y+' C '+mid+' '+y+' '+mid+' '+endY+' '+end+' '+endY;
+}
+function drawEdges(){
+  const defs=svg('defs');for(const [id,color] of [['arrow','#98a7b1'],['active-arrow','#167e80']]){const marker=svg('marker',{id,viewBox:'0 0 8 8',refX:7,refY:4,markerWidth:5,markerHeight:5,orient:'auto'});marker.append(svg('path',{d:'M0 0 L8 4 L0 8 Z',fill:color}));defs.append(marker);}
+  edgeGroups=graph().edges.map((edge,index)=>{const d=wirePath(edge,index),g=svg('g',{class:'wire-group'}),line=svg('path',{d,class:'wire','marker-end':'url(#arrow)'}),hit=svg('path',{d,class:'hitline'}),title=svg('title');title.textContent=edge.label||node(edge.from).shape;g.append(title,line,hit);hit.addEventListener('click',()=>selectEdge(index));if(edge.label){const p=positions.get(edge.from),q=positions.get(edge.to),label=svg('text',{x:(p.x+cardWidth+q.x)/2,y:Math.min(p.y,q.y)-7,class:'wire-label','text-anchor':'middle'});label.textContent=edge.label;g.append(label);}return g;});wires.replaceChildren(defs,...edgeGroups);
+}
+function drawMap(){map.setAttribute('viewBox','0 0 '+state.width+' '+state.height);const cells=graph().nodes.map(n=>{const p=positions.get(n.id);return svg('rect',{x:p.x,y:p.y,width:cardWidth,height:cardHeight,rx:5,fill:n.sub?'#6da3a2':'#abb9c2'});});map.replaceChildren(...cells,svg('rect',{class:'viewbox',fill:'#007a770f',stroke:'#167775','vector-effect':'non-scaling-stroke','stroke-width':1.2}));}
+function highlight(){for(const [id,box] of buttons)box.classList.toggle('sel',id===state.selection);edgeGroups.forEach((g,index)=>{const e=graph().edges[index],active=index===state.edge||e.from===state.selection||e.to===state.selection;g.classList.toggle('hot',active);g.querySelector('.wire').setAttribute('marker-end','url(#'+(active?'active-arrow':'arrow')+')');});}
+function portGroup(label,edges,incoming){if(!edges.length)return [];const out=[el('h3',label)];for(const e of edges){const n=node(incoming?e.from:e.to),button=action(n.label,()=>{selectNode(n.id,true);centerNode(n.id);},'port');button.append(el('small',e.label||node(e.from).shape));out.push(button);}return out;}
+function selectNode(id,open){
+  const n=node(id);if(!n)return;panelMode='node';state.selection=id;state.edge=null;highlight();$('propType').textContent=n.sub?'模块属性':'算子属性';
+  const content=[el('h2',n.label),el('p',n.op),computeDetail(n.flops),timingDetail(n.timing)];
+  if(n.sub&&graphs[n.sub])content.push(action('进入子图 ›',()=>openSubgraph(n),'primary'));
+  content.push(el('h3','输出 / 表示'),el('code',n.shape));if(n.attrs&&Object.keys(n.attrs).length)content.push(el('h3','参数与依据'),attributeList(n.attrs));
+  content.push(...portGroup('输入来自',graph().edges.filter(e=>e.to===id),true),...portGroup('输出至',graph().edges.filter(e=>e.from===id),false));if(n.source)content.push(el('h3','项目源码 / 证据'),sourceLink(n.source));
+  props.replaceChildren(...content);$('inspector').scrollTop=0;if(open){togglePanel(true);const p=positions.get(id),right=state.x+(p.x+cardWidth)*state.zoom;if(right>canvas.clientWidth-10){state.x-=right-canvas.clientWidth+10;applyTransform();}}
+}
+function selectEdge(index){const edge=graph().edges[index];panelMode='edge';state.edge=index;state.selection=null;highlight();$('propType').textContent='连接属性';props.replaceChildren(el('h2','张量 / 阶段连接'),el('p',edge.label||node(edge.from).shape),...portGroup('上游节点',[edge],true),...portGroup('下游节点',[edge],false));togglePanel(true);$('inspector').scrollTop=0;}
+function render(){
+  saveView();const {id,resolved,labels}=keyPath();state.graph=id;state.path=resolved;state.selection=null;state.edge=null;positions.clear();buttons.clear();const g=graph(),minCol=Math.min(...g.nodes.map(n=>n.col)),minRow=Math.min(...g.nodes.map(n=>n.row));
+  for(const n of g.nodes)positions.set(n.id,{x:margin+(n.col-minCol)*(cardWidth+columnGap),y:margin+(n.row-minRow)*(cardHeight+rowGap)});
+  state.width=Math.max(...[...positions.values()].map(p=>p.x))+cardWidth+margin;state.height=Math.max(...[...positions.values()].map(p=>p.y))+cardHeight+margin;world.style.width=state.width+'px';world.style.height=state.height+'px';wires.setAttribute('width',state.width);wires.setAttribute('height',state.height);
+  $('nodes').replaceChildren(...g.nodes.map(makeNode));drawEdges();drawMap();renderCrumbs(labels);$('status').textContent=g.title+' · '+g.nodes.length+' 个节点 / '+g.edges.length+' 条连接';graphInfo();if(mobile())togglePanel(false);
+  const cache=saved.get(target(resolved));if(cache){Object.assign(state,cache);applyTransform();if(cache.selection)selectNode(cache.selection,false);}else fit(true);$('results').hidden=true;
+}
+const touches=new Map();let previousPinch=null,dragOrigin=null,moved=false,ignoreClickUntil=0;
+function localPoint(event){const rect=canvas.getBoundingClientRect();return {x:event.clientX-rect.left,y:event.clientY-rect.top};}
+function pinchPair(){const [a,b]=touches.values();return {x:(a.x+b.x)/2,y:(a.y+b.y)/2,dist:Math.max(1,Math.hypot(b.x-a.x,b.y-a.y))};}
+canvas.addEventListener('pointerdown',event=>{if(event.button!==0||event.target.closest('.overlay'))return;const point=localPoint(event);touches.set(event.pointerId,point);if(touches.size===1){moved=false;dragOrigin={...point,panX:state.x,panY:state.y};if(!event.target.closest('button,.hitline'))canvas.setPointerCapture(event.pointerId);}else if(touches.size===2){previousPinch=pinchPair();moved=true;}});
+canvas.addEventListener('pointermove',event=>{if(!touches.has(event.pointerId))return;const point=localPoint(event);touches.set(event.pointerId,point);if(touches.size===2&&previousPinch){const next=pinchPair();state.x+=next.x-previousPinch.x;state.y+=next.y-previousPinch.y;zoomAt(state.zoom*next.dist/previousPinch.dist,next.x,next.y);previousPinch=next;return;}if(touches.size!==1||!dragOrigin)return;const dx=point.x-dragOrigin.x,dy=point.y-dragOrigin.y;if(!moved&&Math.hypot(dx,dy)<4)return;moved=true;canvas.setPointerCapture(event.pointerId);canvas.classList.add('drag');state.x=dragOrigin.panX+dx;state.y=dragOrigin.panY+dy;applyTransform();});
+function endPointer(event){if(!touches.delete(event.pointerId))return;if(moved)ignoreClickUntil=performance.now()+100;previousPinch=null;const leftover=touches.values().next().value;dragOrigin=leftover?{...leftover,panX:state.x,panY:state.y}:null;if(!leftover)canvas.classList.remove('drag');}
+window.addEventListener('pointerup',endPointer);window.addEventListener('pointercancel',endPointer);
+canvas.addEventListener('click',event=>{if(performance.now()<ignoreClickUntil&&!event.target.closest('.overlay')){event.preventDefault();event.stopPropagation();}},true);
+canvas.addEventListener('wheel',event=>{event.preventDefault();const p=localPoint(event);zoomAt(state.zoom*Math.exp(-clamp(event.deltaY,-300,300)*.0025),p.x,p.y);},{passive:false});
+map.addEventListener('click',event=>{const matrix=map.getScreenCTM();if(!matrix)return;const point=new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse());state.x=canvas.clientWidth/2-point.x*state.zoom;state.y=canvas.clientHeight/2-point.y*state.zoom;applyTransform();});
+$('minus').onclick=()=>zoomAt(state.zoom/1.25);$('plus').onclick=()=>zoomAt(state.zoom*1.25);$('fit').onclick=()=>fit();$('natural').onclick=()=>zoomAt(1);$('toggleProps').onclick=()=>togglePanel(!preferredPanel);$('closeProps').onclick=()=>togglePanel(false);$('budget').onclick=budgetInfo;
+$('download').onclick=()=>{const blob=new Blob([JSON.stringify({title:DATA.title,profile:DATA.profile,evidence:DATA.evidence},null,2)+'\n'],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),link=el('a');link.href=url;link.download='g05_ascend_compute_evidence.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);};
+function indexGraphs(){const seen=new Set(),queue=[{id:'main',path:[]}],entries=[];while(queue.length){const item=queue.shift();if(seen.has(item.id))continue;seen.add(item.id);const g=graphs[item.id];for(const n of g.nodes){entries.push({path:item.path,id:n.id,title:n.label,op:n.op,graph:g.title,shape:n.shape});if(n.sub&&graphs[n.sub]&&!seen.has(n.sub))queue.push({id:n.sub,path:[...item.path,n.id]});}}return entries;}
+const searchEntries=indexGraphs();let afterNavigation=null;
+function gotoEntry(item){$('results').hidden=true;const focus=()=>{selectNode(item.id,true);centerNode(item.id);buttons.get(item.id)?.querySelector('.bodybtn').focus({preventScroll:true});};if(target(item.path)===target(state.path))focus();else{afterNavigation=focus;linkTo(item.path);}}
+function search(){const list=$('results'),key=$('query').value.trim().toLowerCase();if(!key){list.hidden=true;return;}const hits=searchEntries.filter(item=>(item.title+' '+item.op+' '+item.graph+' '+item.shape).toLowerCase().includes(key)).sort((a,b)=>Number(b.title.toLowerCase().includes(key))-Number(a.title.toLowerCase().includes(key)));const choices=hits.slice(0,40).map(item=>{const row=action(item.title,()=>gotoEntry(item));row.append(el('small',item.graph+' › '+item.op));return row;});list.replaceChildren(...(choices.length?choices:[el('div','没有匹配的模块或算子','empty')]));list.hidden=false;}
+$('query').addEventListener('input',search);$('query').addEventListener('focus',search);document.addEventListener('pointerdown',event=>{if(!event.target.closest('.search'))$('results').hidden=true;});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){if(!$('results').hidden){$('results').hidden=true;$('query').blur();return;}if(event.target.matches('input')){event.target.blur();return;}if(state.path.length){linkTo(state.path.slice(0,-1));return;}togglePanel(false);return;}
+  if(event.target===$('query')){if((event.key==='ArrowDown'||event.key==='Enter')&&!$('results').hidden){event.preventDefault();const first=$('results').querySelector('button');if(event.key==='Enter')first?.click();else first?.focus();}return;}
+  if(event.target.matches('input,textarea,select')||event.ctrlKey||event.metaKey||event.altKey)return;
+  if(event.key==='/'){event.preventDefault();$('query').focus();}if(event.key==='+')zoomAt(state.zoom*1.25);if(event.key==='-')zoomAt(state.zoom/1.25);if(event.key==='0')fit();
+});
+window.addEventListener('hashchange',()=>{render();if(afterNavigation){const fn=afterNavigation;afterNavigation=null;fn();}});window.addEventListener('resize',()=>{if(mobile()&&panelMode==='graph')togglePanel(false);fit(true);});
+document.title=DATA.title||'G0.5 · 算力与推理时间';showOverview();togglePanel(preferredPanel);render();
+</script>
+</body>
+</html>

@@ -167,6 +167,73 @@ each result. Checkpoint-authored CoT, continuous/discrete action switches and
 `galaxea_r1lite` benchmark, which already uses standard Gaussian noise.
 See the [configuration explanation](../../../../integrations/galaxeavla/runtime-setup.md#configuration-compatibility).
 
+## Counted arithmetic and interactive view
+
+The [offline network viewer](../../../visualizations/g05-ascend-compute-latency.html)
+follows the supplied Netron-style layout, with searchable subgraphs, measured
+stage timing and a request-frequency arithmetic calculator. Its 137 subgraphs
+separate measured timing from counted arithmetic; internal modules have no
+invented latency allocation. Download the HTML and open it locally.
+
+A separate, instrumented one-request diagnostic on the same checkpoint, source,
+input and configuration records actual module shapes and call counts in
+[workload.json](workload.json). Its log is retained as
+[workload-diagnostic.log](workload-diagnostic.log); **diagnostic timings are not
+performance results** and are not used by the viewer.
+
+| Phase | Counted GFLOP / request | Independent warm p50, ms |
+|---|---:|---:|
+| Prefill, including input encoding | 1120.402092 | 360.590 |
+| CoT | 72.822571 | 1772.120 |
+| Flow matching, 10 steps | 309.176566 | 830.077 |
+| Action AR | 1.032966 | 1.834 |
+| Final ActionCodec decoding | 1.714520 | 13.143 |
+| Counted arithmetic / full request timing | **1505.148715** | **3036.794** |
+
+The count covers Linear, ordinary Conv1d/2d/3d, and AdaptiveRMSNorm's functional
+conditioning projection. One multiply-accumulate counts as two FLOPs. Every
+actual call is counted; shared parameter storage is deduplicated only for
+parameter totals. The 777 shape records represent 6133 calls. Linear uses
+`2 * output.numel * in_features`; ordinary convolution uses
+`2 * output.numel * (in_channels/groups) * kernel_volume`.
+
+This is an **incomplete count of nominal algorithmic operations**, not full-model
+FLOPs, hardware instruction counts or hardware peak requirements. It excludes
+attention QK/PV products, GDN functional state operations and decode conv,
+ConvTranspose, activations, norms, RoPE, DCT/IDCT, CPU processing and other
+functional operations. A target of 1 request/s corresponds to 1.50515 TFLOP/s
+of the **counted portion**; multiplying by a requested rate does not account
+for bandwidth, scheduling, uncounted work or execution efficiency and does not
+predict achievable latency.
+
+The actual prefix is 234 tokens. The resized LM head has 252189 output entries;
+the CoT call performs 19 incremental VLM forwards and 20 head calls, followed
+by one head call in action AR. The AE runs ten times with a 253-token prefix
+cache in its six cross-attention layers. Prefill also executes **1.816265 GFLOP
+of action-placeholder encoding through Codec Encoder/RVQ**. Those 36 calls
+belong to prefill, not to the final 13.143 ms decoder interval.
+
+The loaded policy plus independent ActionCodec backend contains 2,902,159,843
+deduplicated parameters, all resident FP32 in this run: 10.8114 GiB of parameter
+tensors. BF16 autocast does not mean BF16-resident weights. This parameter-only
+number excludes buffers, caches, activations and allocator/runtime overhead.
+
+To reproduce the diagnostic in the runtime environment, use
+`tools/galaxeavla/count_g05_workload.py` with the same source/checkpoint/assets
+arguments as the benchmark and a separate `--output` path. It forces one smoke
+request and writes no diagnostic latency into its JSON. Rebuild the viewer from
+the checked-in evidence on any Python 3.11+ host:
+
+```bash
+python tools/galaxeavla/build_compute_view.py \
+  --output docs/visualizations/g05-ascend-compute-latency.html
+```
+
+Six counter unit tests passed, and the observed formulas, sums and call counts
+were independently reviewed. Browser checks covered all 137 reachable subgraphs
+and parent/child arithmetic sums, navigation, search, budget calculation,
+unchanged measured timing, evidence download and a 390-pixel mobile layout.
+
 ## Reproduction and evidence
 
 The [runtime setup](../../../../integrations/galaxeavla/runtime-setup.md)

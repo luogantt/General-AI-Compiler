@@ -1,0 +1,16 @@
+[progress] Validating source and checkpoint assets
+[progress] Loading full G0.5 policy
+ActionCodecV2Wrapper: checkpoint '/root/work/models/galaxeavla-g05/action_tokenizer.pt' has no tokenizer_meta. Falling back to YAML key_dims. Re-save with train_vq.py to embed it.
+[shape_meta] Image 'head_rgb' shape [3, 224, 224] is overridden by camera_size_config[exterior]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'left_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_left]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[shape_meta] Image 'right_wrist_rgb' shape [3, 224, 224] is overridden by camera_size_config[wrist_right]=[256, 256] -> [3, 256, 256]. The shape field in the embodiment yaml is stale; consider removing it.
+[progress] Model loaded in 60255.123 ms
+[progress] Cold request started
+/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/utils/storage.py:102: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  if self.device.type != 'cpu':
+/root/work/GalaxeaVLA-upstream/src/g05/tokenizer/models/actioncodec2_v2/modular_actioncodec2v2.py:1179: UserWarning: Cannot create tensor with interal format while allow_internel_format=False, tensor will be created with base format. (Triggered internally at ../torch_npu/csrc/aten/common/TensorFactories.cpp:340.)
+  z_q = torch.zeros_like(z)
+flash_attn unavailable for the current device — vision attention uses the SDPA fallback. For Hopper/Blackwell GPUs (H100/B200), install FA4: pip install flash-attn-4. For Ampere/Ada (A100/RTX4090), install FA2: pip install flash-attn --no-build-isolation
+[progress] Cold request complete: 4535.836 ms; outputs finite
+Wrote counted operator workload: /root/work/results/g05-workload-910b2-20261116.json
+Selected arithmetic: 1.505149 TFLOP/request (incomplete count)

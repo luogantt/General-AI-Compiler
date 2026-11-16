@@ -57,6 +57,8 @@ TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → Tenso
 
 [完整结果、分阶段耗时与原始 JSON](docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md) · [国内 PyPI 环境安装、官方权重准备与运行命令](integrations/galaxeavla/runtime-setup.md) · [固定版本的 Ascend 源码补丁](integrations/galaxeavla/README.md)
 
+**交互式算力与时延图：** [离线 HTML 网络图](docs/visualizations/g05-ascend-compute-latency.html)（下载后浏览器打开），支持 137 个子图、节点计算量与时延、目标请求频率的算力预算。对相同输入另做一次算子诊断，实际前缀为 **234 token**，已统计的 Linear、普通 Conv 和 AdaLN 条件投影合计 **1.50515 TFLOP/请求**。它不是完整模型总 FLOPs 或芯片峰值算力；未覆盖 attention/GDN 功能运算、ConvTranspose 等。页面的延迟仍来自上述独立的 30 次正式测量，内部未计时模块不按计算量分摊时间。[统计口径与数据](docs/validation/ascend/galaxeavla-g05-full-910b2-2026-11-16/README.md#counted-arithmetic-and-interactive-view)
+
 ## 如何启动推理
 
 以下命令使用 Linux / WSL Bash；从仓库根目录开始。完整 BEVFormer 的 ONNX、权重、输入和参考输出需单独准备，源码仓库不包含这些大模型资产。输出目录使用新路径。
