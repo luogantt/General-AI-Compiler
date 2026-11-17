@@ -1,0 +1,13 @@
+{
+  "soc": "Ascend910B2",
+  "cann_path": "/usr/local/Ascend/cann-9.0.0",
+  "vendor": "gacqknorm",
+  "source_sha256": {
+    "GacQkNormRope.json": "bb00acca557b35a403c30c21c1dcac8626f56a24c5fa2cb3cb9ac8753cc72111",
+    "op_host/gac_qk_norm_rope.cpp": "4463ad2d34bd29b5e2591e4f952a6a3340b507928027002b08473ddf232dc825",
+    "op_kernel/gac_qk_norm_rope.cpp": "46c1a432bbcc1053c9fb2c6c70817ece527ab3f97c735b9325e6502950762b01",
+    "op_kernel/gac_qk_norm_rope_tiling.h": "c67f11dbeae4f4129d9dd86094881231a01c1d65effc865f360d06e82fc98a4a"
+  },
+  "fp_contract": "off",
+  "scope": "build only; no runtime/numerical/performance claim"
+}

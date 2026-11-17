@@ -1,0 +1,18 @@
+[
+  {
+    "op": "GacQkNormRope",
+    "input_desc": [
+      {"name": "x", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]},
+      {"name": "weight", "param_type": "required", "format": ["ND"], "type": ["float"]},
+      {"name": "cos", "param_type": "required", "format": ["ND"], "type": ["float"]},
+      {"name": "sin", "param_type": "required", "format": ["ND"], "type": ["float"]}
+    ],
+    "output_desc": [
+      {"name": "y", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]}
+    ],
+    "attr": [
+      {"name": "head_stride", "param_type": "required", "type": "int"},
+      {"name": "epsilon", "param_type": "required", "type": "float"}
+    ]
+  }
+]

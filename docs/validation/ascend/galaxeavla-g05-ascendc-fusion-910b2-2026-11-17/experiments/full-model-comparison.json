@@ -1,0 +1,296 @@
+{
+  "scope": "prepared device inputs -> Vision/VLM prefill -> FM10 -> normalized [1,32,20] action; no CoT/AR",
+  "excluded": [
+    "image loading",
+    "outer image preprocessing",
+    "outer batch H2D",
+    "output D2H",
+    "denormalization",
+    "network",
+    "warmup/compilation",
+    "shared-noise correctness requests"
+  ],
+  "comparison_identity_exact_match": true,
+  "benchmark_file_hashes_exact_match": true,
+  "parameter_dtypes_exact_match": true,
+  "total_parameter_numel": 2859995988,
+  "total_parameter_bytes": 6099991888,
+  "ascendc_v4": {
+    "report": "libero-bf16-native-ascendc-qknorm-v4/report.json",
+    "report_sha256": "806f73b3285181112a3a59ce332e8c28f4457c01afcc0087c9d0e0c402e83bcd",
+    "status": "success",
+    "timing_ms": {
+      "action_ms": {
+        "count": 20,
+        "mean": 53.23412592988461,
+        "p50": 53.19159501232207,
+        "p95": 53.40919124428183,
+        "min": 53.105069790035486,
+        "max": 53.94444987177849
+      },
+      "prefill_ms": {
+        "count": 20,
+        "mean": 81.99706804007292,
+        "p50": 81.9661698769778,
+        "p95": 82.35144650097936,
+        "min": 81.74521010369062,
+        "max": 82.60237006470561
+      },
+      "total_ms": {
+        "count": 20,
+        "mean": 135.23119396995753,
+        "p50": 135.22238517180085,
+        "p95": 135.6983169913292,
+        "min": 134.90052009001374,
+        "max": 135.86280029267073
+      }
+    },
+    "noise_timing": {
+      "mode": "native",
+      "included": "original device torch.randn",
+      "correctness": "All verification and saved action.npy use shared noise regardless of timing mode"
+    },
+    "warmup_count": 5,
+    "cold_request_ms": 152698.83992010728,
+    "memory_bytes": {
+      "memory_allocated_bytes": 6528313856,
+      "memory_reserved_bytes": 7105150976,
+      "max_memory_allocated_bytes": 6638633472,
+      "max_memory_reserved_bytes": 7105150976
+    },
+    "numerical_thresholds": {
+      "max_relative_l2": 0.01,
+      "max_abs_error": 0.05,
+      "meaning": "engineering regression gate, not closed-loop task success"
+    },
+    "verification": {
+      "count": 12,
+      "all_passed": true,
+      "worst_relative_l2": 0.0024663735462373657,
+      "worst_max_abs_error": 0.0046994686126708984,
+      "minimum_sign_agreement": 0.9955357142857143,
+      "minimum_gripper_sign_agreement": 1.0,
+      "maximum_padded_dimension_abs": 0.0,
+      "encoded_context_all_match": true,
+      "per_case": {
+        "cold_A": {
+          "relative_l2": 0.0013155251724956863,
+          "max_abs_error": 0.0025295019149780273,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "first_B": {
+          "relative_l2": 0.0017855574186298009,
+          "max_abs_error": 0.003530651330947876,
+          "sign_agreement": 0.9955357142857143,
+          "gripper_sign_agreement": 1.0
+        },
+        "replay_A": {
+          "relative_l2": 0.0013155251724956863,
+          "max_abs_error": 0.0025295019149780273,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "replay_B": {
+          "relative_l2": 0.0017855574186298009,
+          "max_abs_error": 0.003530651330947876,
+          "sign_agreement": 0.9955357142857143,
+          "gripper_sign_agreement": 1.0
+        },
+        "state_C_1": {
+          "relative_l2": 0.0017723976163727645,
+          "max_abs_error": 0.003283381462097168,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "task_D_1": {
+          "relative_l2": 0.0018673546916905322,
+          "max_abs_error": 0.0026922672986984253,
+          "sign_agreement": 0.9955357142857143,
+          "gripper_sign_agreement": 1.0
+        },
+        "camera_E_1": {
+          "relative_l2": 0.0024663735462373657,
+          "max_abs_error": 0.0046994686126708984,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "wrist_F_1": {
+          "relative_l2": 0.0014773776867446347,
+          "max_abs_error": 0.0023546814918518066,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "state_C_2": {
+          "relative_l2": 0.0017723976163727645,
+          "max_abs_error": 0.003283381462097168,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "task_D_2": {
+          "relative_l2": 0.0018673546916905322,
+          "max_abs_error": 0.0026922672986984253,
+          "sign_agreement": 0.9955357142857143,
+          "gripper_sign_agreement": 1.0
+        },
+        "camera_E_2": {
+          "relative_l2": 0.0024663735462373657,
+          "max_abs_error": 0.0046994686126708984,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "wrist_F_2": {
+          "relative_l2": 0.0014773776867446347,
+          "max_abs_error": 0.0023546814918518066,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        }
+      }
+    }
+  },
+  "matrix_control": {
+    "report": "libero-bf16-native-matrix-control-20261117/report.json",
+    "report_sha256": "911030ae4ebf817be13c3e65eaf33c43f33116180697ccf74d0602f82d84e619",
+    "status": "success",
+    "timing_ms": {
+      "action_ms": {
+        "count": 20,
+        "mean": 71.38211496639997,
+        "p50": 71.33859489113092,
+        "p95": 71.53558596037328,
+        "min": 71.19844015687704,
+        "max": 72.15719018131495
+      },
+      "prefill_ms": {
+        "count": 20,
+        "mean": 82.22712404094636,
+        "p50": 82.07355509512126,
+        "p95": 83.03129698615521,
+        "min": 81.89387992024422,
+        "max": 83.08405987918377
+      },
+      "total_ms": {
+        "count": 20,
+        "mean": 153.60923900734633,
+        "p50": 153.48010999150574,
+        "p95": 154.40754662267864,
+        "min": 153.18157989531755,
+        "max": 154.45270016789436
+      }
+    },
+    "noise_timing": {
+      "mode": "native",
+      "included": "original device torch.randn",
+      "correctness": "All verification and saved action.npy use shared noise regardless of timing mode"
+    },
+    "warmup_count": 5,
+    "cold_request_ms": 138387.38253014162,
+    "memory_bytes": {
+      "memory_allocated_bytes": 6578133504,
+      "memory_reserved_bytes": 7096762368,
+      "max_memory_allocated_bytes": 6652559872,
+      "max_memory_reserved_bytes": 7096762368
+    },
+    "numerical_thresholds": {
+      "max_relative_l2": 0.01,
+      "max_abs_error": 0.05,
+      "meaning": "engineering regression gate, not closed-loop task success"
+    },
+    "verification": {
+      "count": 12,
+      "all_passed": true,
+      "worst_relative_l2": 0.0025112100241389476,
+      "worst_max_abs_error": 0.004586130380630493,
+      "minimum_sign_agreement": 1.0,
+      "minimum_gripper_sign_agreement": 1.0,
+      "maximum_padded_dimension_abs": 0.0,
+      "encoded_context_all_match": true,
+      "per_case": {
+        "cold_A": {
+          "relative_l2": 0.001344380886493323,
+          "max_abs_error": 0.0026407241821289062,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "first_B": {
+          "relative_l2": 0.0019409310431537784,
+          "max_abs_error": 0.0033299922943115234,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "replay_A": {
+          "relative_l2": 0.001344380886493323,
+          "max_abs_error": 0.0026407241821289062,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "replay_B": {
+          "relative_l2": 0.0019409310431537784,
+          "max_abs_error": 0.0033299922943115234,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "state_C_1": {
+          "relative_l2": 0.0017256146574255345,
+          "max_abs_error": 0.0034386813640594482,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "task_D_1": {
+          "relative_l2": 0.0018464963649043459,
+          "max_abs_error": 0.0032867640256881714,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "camera_E_1": {
+          "relative_l2": 0.0025112100241389476,
+          "max_abs_error": 0.004586130380630493,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "wrist_F_1": {
+          "relative_l2": 0.0014837760235020903,
+          "max_abs_error": 0.002465665340423584,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "state_C_2": {
+          "relative_l2": 0.0017256146574255345,
+          "max_abs_error": 0.0034386813640594482,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "task_D_2": {
+          "relative_l2": 0.0018464963649043459,
+          "max_abs_error": 0.0032867640256881714,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "camera_E_2": {
+          "relative_l2": 0.0025112100241389476,
+          "max_abs_error": 0.004586130380630493,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        },
+        "wrist_F_2": {
+          "relative_l2": 0.0014837760235020903,
+          "max_abs_error": 0.002465665340423584,
+          "sign_agreement": 1.0,
+          "gripper_sign_agreement": 1.0
+        }
+      }
+    }
+  },
+  "same_session_reduction": {
+    "total_p50_ms": 18.25772481970489,
+    "total_p50_percent": 11.89582469071423,
+    "action_p50_ms": 18.146999878808856,
+    "action_p50_percent": 25.437843156993488
+  },
+  "boundaries": [
+    "Sequential independent measurements on one session, not randomized repeated A/B trials.",
+    "Per-stage medians are not added to manufacture full-model p50.",
+    "Same-device numerical regression gates do not establish CUDA parity or closed-loop task success.",
+    "Post-timing kernel duration sums are diagnostic, not wall time."
+  ]
+}

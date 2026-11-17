@@ -15,7 +15,7 @@ DEFAULT_OUTPUT = ROOT / "docs/visualizations/g05-ascend-optimization.html"
 TASK = "open the middle drawer of the cabinet"
 IDENTITY_FIELDS = {"checkpoint_sha256", "sidecars", "input_files_sha256", "noise_tensor_sha256",
                    "input_ids_sha256", "contract", "weights", "autocast"}
-EXPERIMENT_FLAGS = ("context_optimization", "time_conditioning", "ae_attention", "static_vision", "ae_norm", "ae_rope", "functional_mrope")
+EXPERIMENT_FLAGS = ("context_optimization", "time_conditioning", "ae_attention", "static_vision", "ae_norm", "ae_rope", "functional_mrope", "ae_qknorm_rope")
 
 
 def digest(path):
@@ -147,6 +147,8 @@ def normalize(path: Path, key: str, label: str | None = None):
                 "maxAbs": max(row["max_abs_error"] for row in cases.values()),
                 "maxRelative": max(row["relative_l2"] for row in cases.values()),
                 "maxRmse": max(row["rmse"] for row in cases.values()),
+                "minSignAgreement": min(row["sign_agreement"] for row in cases.values()) if all("sign_agreement" in row for row in cases.values()) else None,
+                "minGripperSignAgreement": min(row["gripper_sign_agreement"] for row in cases.values()) if all("gripper_sign_agreement" in row for row in cases.values()) else None,
                 "passed": all(row["all_finite"] and row["max_abs_error"] <= thresholds["max_abs_error"] and row["relative_l2"] <= thresholds["max_relative_l2"] and row.get("padded_dimensions_max_abs_candidate", 0) == 0 for row in cases.values()),
                 "scope": replay.get("scope", "") + ("; " + report["context_verification"]["scope"] if context_cases else ""),
             }
@@ -159,10 +161,13 @@ def normalize(path: Path, key: str, label: str | None = None):
         context_optimized = report.get("context_optimization", {}).get("enabled", False)
         static_vision = report.get("static_vision", {}).get("enabled", False)
         ae_norm = report.get("ae_norm", {}).get("enabled", False)
+        ae_qknorm_rope = report.get("ae_qknorm_rope", {}).get("enabled", False)
         functional_mrope = report.get("functional_mrope", {}).get("enabled", False)
         ae_rope = report.get("ae_rope", {}).get("mode", "sliced") if report.get("ae_rope", {}).get("enabled", False) else "eager"
         if ae_rope not in {"eager", "sliced", "matrix"}:
             raise ValueError(f"Unsupported AE RoPE mode: {ae_rope}")
+        if ae_qknorm_rope and ae_rope != "eager":
+            raise ValueError("Ascend C QK fusion and standalone AE RoPE cannot both be enabled")
         if algorithm != "original":
             label_text += " · " + {"gdn-chunk-fp32-triangular-solve": "GDN 三角解",
                 "gdn-chunk-fp32-triton-sequential-row-inverse": "GDN Triton"}.get(algorithm, algorithm)
@@ -180,19 +185,30 @@ def normalize(path: Path, key: str, label: str | None = None):
         if report.get("time_conditioning", {}).get("enabled", False):
             label_text += " · 时间条件预计算 (" + report["time_conditioning"].get("lookup_mode", "exact") + ")"
         if ae_norm:
-            label_text += " · NPU RMSNorm (FP32)"
+            label_text += " · NPU Adaptive RMSNorm (FP32)" if ae_qknorm_rope else " · NPU RMSNorm (FP32)"
         if ae_rope != "eager":
             label_text += " · NPU RoPE " + {"sliced": "切片", "matrix": "矩阵"}[ae_rope] + " (FP32)"
         if functional_mrope:
             label_text += " · 函数式 MRoPE"
+        if ae_qknorm_rope:
+            label_text += " · Ascend C QK Norm+RoPE+布局融合 (UB)"
         if mode == "native":
             label_text += " · native RNG"
+        if path.parent.name == "libero-bf16-native-matrix-control-20261117":
+            if ae_rope != "matrix" or ae_qknorm_rope:
+                raise ValueError("The named same-round matrix control must use standalone matrix RoPE")
+            label_text += " · 同轮 matrix 对照 (2026-11-17)"
         result = {"id": key, "label": label or "910B2 · " + label_text, "short": label_text, "historical": False,
                   "device": report["environment"].get("device_name", "Ascend 910B2"), "timing": timings, "count": len(report["samples"]), "warmup": len(report["warmup"]),
                   "backend": backend, "vlmBackend": vlm, "aeOptions": ae_options, "vlmOptions": vlm_options,
                   "contextOptimized": context_optimized,
                   "staticVision": static_vision,
                   "aeNorm": ae_norm, "aeNormOperator": report.get("ae_norm", {}).get("operator"), "aeRope": ae_rope,
+                  "aeQkNormRope": ae_qknorm_rope,
+                  "aeQkNormRopeOperator": report.get("ae_qknorm_rope", {}).get("operator"),
+                  "aeQkNormRopePrecision": report.get("ae_qknorm_rope", {}).get("precision"),
+                  "aeQkNormRopeScope": report.get("ae_qknorm_rope", {}).get("scope"),
+                  "aeQkNormRopeLibrarySha256": report.get("ae_qknorm_rope", {}).get("library_sha256"),
                   "functionalMrope": functional_mrope, "functionalMropeScope": report.get("functional_mrope", {}).get("scope"),
                   "singleStreamScopes": [name for name, options in (("AE", ae_options), ("VLM", vlm_options)) if options.get("single_stream") is True],
                   "noiseMode": mode, "noiseLabel": "固定共享噪声 clone" if mode == "shared" else "设备原生 randn",
@@ -265,7 +281,7 @@ def make_data(paths, workload_paths=()):
                     and workload.get("execution", {}).get("static_vision", False)
                         == report.get("static_vision", {}).get("enabled", False)
                     and all(workload.get("execution", {}).get(key, False)
-                            == report.get(key, {}).get("enabled", False) for key in ("ae_norm", "ae_rope", "functional_mrope"))]
+                            == report.get(key, {}).get("enabled", False) for key in ("ae_norm", "ae_rope", "functional_mrope", "ae_qknorm_rope"))]
         matching.sort(key=lambda entry: entry[0] != config["id"])
         if matching:
             first_summary = matching[0][2]["summary"]

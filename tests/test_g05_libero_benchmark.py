@@ -185,6 +185,16 @@ class LiberoBenchmarkTests(unittest.TestCase):
                 MODULE.parse_args(base + ["--functional-mrope"] + suffix)
         self.assertTrue(MODULE.parse_args(base + ["--functional-mrope", "--verify", "--device", "npu:0"]).functional_mrope)
 
+    def test_ascendc_qk_fusion_rejects_incompatible_precision_or_rope(self):
+        base = ["--source-dir", "/source", "--asset-root", "/assets", "--checkpoint", "/model.pt",
+                "--input-dir", "/input", "--output-dir", "/output", "--ae-qknorm-rope", "ascendc"]
+        valid = ["--verify", "--device", "npu:0", "--weights", "bf16"]
+        self.assertEqual(MODULE.parse_args(base + valid).ae_qknorm_rope, "ascendc")
+        for suffix in ([], ["--verify", "--device", "cpu"],
+                       valid + ["--weights", "fp32"], valid + ["--ae-rope", "matrix"]):
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                MODULE.parse_args(base + suffix)
+
     def test_mixed_backend_uses_one_package_to_avoid_operator_registration_collision(self):
         args = ["--source-dir", "/source", "--asset-root", "/assets", "--checkpoint", "/model.pt",
                 "--input-dir", "/input", "--output-dir", "/output", "--ae-backend", "torchair"]

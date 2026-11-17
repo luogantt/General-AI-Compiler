@@ -4,7 +4,7 @@
 
 **TensorRT 最新结果：完整 BEVFormer-base 固定图达到 309.42 ms/帧（约 3.23 FPS）。** RTX 3070 Ti Laptop 8 GB 上，第三轮优化 DCNv2 后，同轮整网对照延时再降低 **5.07%**。前两轮 MSDA 分别降低 18.05%、2.60%；各轮比例不能相加，详见[优化结果](#优化结果)。
 
-**GalaxeaVLA 当前已验证结果：G0.5 LIBERO 整模型在单张 Ascend 910B2 上达到 p50 155.57 ms、p95 156.79 ms。** 保持双相机、真实样本、BF16 和 10 步 FM，组合使用 GE/ACLGraph、Triton GDN、fused AE attention/Norm、FP32 matrix RoPE、functional MRoPE、固定几何 Vision 图、按请求索引的时间条件预计算及未消费 codec 消除。与同为 **native 随机数计时**的 eager 1011.55 ms 相比加速 **6.50 倍**。A/B/C/D/E/F 共 12 次同设备核验，最坏相对 L2 误差 **0.2511%**、最大绝对误差 **0.004586**；不代表闭环任务准确率。用户 RTX 3090 的 120.48 ms 目标尚未达到。[原始数据、误差验证与复现](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md)
+**GalaxeaVLA 当前已验证结果：G0.5 LIBERO 整模型在单张 Ascend 910B2 上达到 p50 135.22 ms、p95 135.70 ms。** 保持双相机、真实样本、BF16 和 10 步 FM，在 GE/ACLGraph、Triton GDN 等既有优化上加入 Ascend C 的 AE Q/K RMSNorm + partial RoPE + 输出布局 UB 融合。相对同轮 **native 随机数计时**的 matrix RoPE 对照 153.48 ms，整模延迟下降 **11.90%**；相对历史 native eager 1011.55 ms 加速 **7.48 倍**。A/B/C/D/E/F 共 12 次同设备核验，最坏相对 L2 误差 **0.2466%**、最大绝对误差 **0.004699**；不代表闭环任务准确率。用户 RTX 3090 的 120.48 ms 目标尚未达到。[原始数据、误差验证与复现](docs/validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/README.md)
 
 ## 做了什么
 
@@ -15,7 +15,7 @@
 | 设备编译与 Runtime | Dispatch 划分、静态 Buffer 复用、设备代码生成；Runtime 负责分配、上传、启动、同步和下载 |
 | CUDA / Vortex | 共用前端和语义层，分别生成 PTX 或 VOLT 的 ELF/vxbin；已有矩阵分块、归约及 Vortex LMEM/DXA/TCU 实验模板 |
 | Triton / Vortex（适配基线） | C++ 将支持的 Linalg 子图送入 Triton；与原生 Vortex 内核链接到同一 vxbin，共用 Buffer 与 Runtime。[使用与边界](native/README.triton-vortex.md) |
-| GalaxeaVLA / Ascend 910B | 官方 G0.5 整模已运行：LIBERO 真实样本的当前优化组合达到 155.57 ms（native），完成 A/B/C/D/E/F 12 次同设备检查，包含两相机分别变化。163.91/172.50/200.70 ms 对照、各 shared-noise 版本、native 219.18 ms 对照及退化实验分别保留。GAC 的 MLP 切片已贯通 ONNX → TTIR → `npubin`。整模 GAC 编译与通用 NPU Runtime 尚未实现。[范围与实测](docs/galaxeavla-ascend910.md)；[源码补丁及运行环境](integrations/galaxeavla/README.md) |
+| GalaxeaVLA / Ascend 910B | 官方 G0.5 整模已运行：LIBERO 真实样本的当前优化组合达到 135.22 ms（native），完成 A/B/C/D/E/F 12 次同设备检查，包含两相机分别变化。同轮 matrix 对照 153.48 ms、历史 155.57/163.91/172.50/200.70 ms、各 shared-noise 版本及退化实验分别保留。GAC 的 MLP 切片已贯通 ONNX → TTIR → `npubin`。整模 GAC 编译与通用 NPU Runtime 尚未实现。[范围与实测](docs/galaxeavla-ascend910.md)；[源码补丁及运行环境](integrations/galaxeavla/README.md) |
 | TensorRT | 完整 Base 固定 ONNX 的插件适配、构建、推理、混合 INT8/FP16、逐层 profiling，以及自定义 MSDA / DCNv2 Kernel 优化 |
 
 **验证范围：** 原生 CUDA 已完成固定输入的 BEVFormer-base 整网执行和数值对齐；Vortex 已有完整模型编译产物和小模型 SimX 验证，完整模型的 Vortex 执行与 FPS 尚未验收。GalaxeaVLA/Ascend 已完成官方 checkpoint 整模测速、LIBERO 同设备 eager/TorchAir/`npugraph_ex` 输出对照与变化输入的图重放验证，以及独立的 GAC MLP 切片编译执行验证；尚无整模 GAC 编译、跨 CUDA 数值对齐或机器人任务精度验收。当前 Base 整网记录对应固定形状、固定几何、无历史帧到原始检测头输出，尚无 nuScenes mAP/NDS 验收。
@@ -39,7 +39,7 @@ TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → Tenso
 
 ## GalaxeaVLA 整模推理（Ascend 910B2）
 
-**LIBERO 120 ms 对标优化，2026-11-16：** 使用与用户 RTX 3090 测试相同的官方 `g05-libero` checkpoint 和 episode 0/frame 0，双相机 256×256、159 tokens、batch 1、32×20 动作、10 步 FM。BF16 常驻权重保留官方 FP32 区域；编译变体及 GDN/未消费 codec 优化分别记录，权重、输入与采样步数不变。三角求解变体保留 FP32 状态但改变浮点累加顺序，不宣称逐元素相同。
+**LIBERO 120 ms 对标优化，更新至 2026-11-17：** 使用与用户 RTX 3090 测试相同的官方 `g05-libero` checkpoint 和 episode 0/frame 0，双相机 256×256、159 tokens、batch 1、32×20 动作、10 步 FM。BF16 常驻权重保留官方 FP32 区域；编译变体及 GDN/未消费 codec 优化分别记录，权重、输入与采样步数不变。三角求解变体保留 FP32 状态但改变浮点累加顺序，不宣称逐元素相同。
 
 | LIBERO 配置 | 噪声计时 | Prefill p50 | FM10 p50 | 整模型 p50 | 整模型 p95 |
 |---|---|---:|---:|---:|---:|
@@ -50,7 +50,9 @@ TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → Tenso
 | 上一行 + request 时间预计算 + 固定几何 Vision 图 | native | 82.72 ms | 89.74 ms | 172.50 ms | 173.58 ms |
 | 172.50 ms 配置 + GE single_stream，未提速 | native | 83.41 ms | 89.63 ms | 173.09 ms | 173.58 ms |
 | 172.50 ms 配置 + AE FP32 matrix RoPE | native | 82.64 ms | 81.20 ms | 163.91 ms | 164.62 ms |
-| 上一行 + fused AE Norm + functional MRoPE | native | 83.36 ms | 72.18 ms | **155.57 ms** | **156.79 ms** |
+| 上一行 + fused AE Norm + functional MRoPE，11-16 历史结果 | native | 83.36 ms | 72.18 ms | 155.57 ms | 156.79 ms |
+| 同一 matrix RoPE 配置，11-17 同轮对照 | native | 82.07 ms | 71.34 ms | 153.48 ms | 154.41 ms |
+| 上一行 Q/K norm + RoPE + 布局改为 Ascend C UB 融合 | native | 81.97 ms | 53.19 ms | **135.22 ms** | **135.70 ms** |
 | 910B2 BF16 eager，早期基线 | shared | 266.32 ms | 747.07 ms | 1013.87 ms | 1026.25 ms |
 | 910B2 BF16 + TorchAir AE | shared | 257.39 ms | 108.03 ms | 365.39 ms | 369.58 ms |
 | 910B2 BF16 + `npugraph_ex` frozen AE + VLM，原公式 | shared | 155.04 ms | 142.82 ms | 297.89 ms | 300.62 ms |
@@ -59,13 +61,17 @@ TensorRT 是独立的对照和部署路径：`ONNX → TensorRT engine → Tenso
 | 910B2 BF16 + frozen GE AE / ACLGraph VLM + triangular + 跳过未消费 codec | shared | 117.61 ms | 108.01 ms | 225.58 ms | 226.40 ms |
 | RTX 3090 BF16 + Inductor AE，用户已有实测 | 原设备 randn | 75.42 ms | 45.03 ms | **120.48 ms** | 125.33 ms |
 
-各轮 Ascend 均预热 5 次、正式测量 20 次，覆盖设备输入 → Vision/VLM prefill → 完整 FM10 → 归一化动作。`native` 计入原设备 `torch.randn`，`shared` 计入固定噪声 `clone`；**6.50 倍仅用 native 基线计算**。数值验证和归档 `action.npy` 始终使用单独共享噪声。当前最快组合的 A/B/A/B 加 C/D/E/F 各两次，共 **12 次检查**：最坏 relative-L2 **0.2511%**、max-abs **0.004586**，均出现在独立修改外部相机的 E；动作及 gripper 符号一致率均 100%，padding 为 0，C/D/E/F tokens/mask 与各自 eager 参考一致。首次含编译请求 **153.65 秒**单列；最快单次 155.13 ms 不是 p50。
+各轮 Ascend 均预热 5 次、正式测量 20 次，覆盖设备输入 → Vision/VLM prefill → 完整 FM10 → 归一化动作。`native` 计入原设备 `torch.randn`，`shared` 计入固定噪声 `clone`；**7.48 倍仅用历史 native eager 基线计算**。数值验证和归档 `action.npy` 始终使用单独共享噪声。当前最快组合的 A/B/A/B 加 C/D/E/F 各两次，共 **12 次检查**：最坏 relative-L2 **0.246637%**、max-abs **0.004699469**，均出现在独立修改外部相机的 E；最低动作符号一致率 **99.5536%**，gripper 符号一致率均 100%，padding 为 0，C/D/E/F tokens/mask 与各自 eager 参考一致。首次含编译请求 **152.70 秒**单列；最快单次 134.90 ms 不是 p50。
 
-Vision 图只缓存固定双相机几何，逐请求核对网格、读取当前 patches 和学习位置嵌入；每层仍执行两次独立 256-token SDPA。时间条件保持原 FP32 10 步递推和 49 个 AdaLN 投影，只在原 `FMHelper.infer` 请求内使用计数索引，取消每步 D2H 查表。当前报告记录 39 次请求完整消费 10 步，无失败；未跨请求缓存图像、状态、KV 或模型结果。此前同时加入这两项得到 172.50 ms；再启用 AE matrix RoPE 为 163.91 ms，加入 fused Norm 与 functional MRoPE 后完整实测为 155.57 ms。单流候选 173.09 ms 未提速。matrix RoPE 每请求读取当前 cos/sin；functional MRoPE 只以固定索引选择当前频率，Norm 保持 FP32 数学及原输出 dtype。
+本轮 Ascend C 算子在 24 层 AE 中分别处理 Q/K，把 FP32 RMSNorm、partial RoPE64 和 BSHD→BHSD 输出布局合并，临时量留在 **UB**；保留 norm 后 BF16 RNE 舍入、重新转 FP32 做 RoPE、最后 BF16 RNE 输出，归一化使用高精度 `Sqrt + Div`。它通过 OPP/aclnn、Meta 与 GE converter 接入当前 GE 图，没有实现 L0/L1 或 Cube 改造，也不意味着剩余瓶颈都来自 Triton-Ascend。相对同轮 153.48 ms 对照，整模 p50 减少 **18.26 ms（11.90%）**，FM10 从 **71.34→53.19 ms（25.44%）**；prefill 为 82.07→81.97 ms。[完整验收及复现](docs/validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/README.md)
 
-混合后端由同一 TorchAir 包提供：AE 使用 GE，VLM 使用 `mode=npugraph_ex` 的 ACLGraph 路径，避免独立后端包的重复注册冲突。最新组合将 GDN 的 31 次逐行递推放入 FP32 Triton kernel，并启用 NPU fused AE attention；两者均需数值检查，不宣称位级一致。所有整模型行均独立实测，未拼接阶段耗时。172.50 ms 对照的 [Level1 trace 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-172ms-level1-summary.json)和[最新组合的 Level1 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-155ms-level1-summary.json)均来自计时后诊断，不能替代正式计时；163.91 ms 报告未采集 trace。独立 [RoPE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-rotary-npu.json)、[Norm GE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-norm-ge.json)及 [functional MRoPE 的 24 次零误差检查](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/functional-mrope-ge-acl.json)与整模型结果分别归档。本轮相关本地测试、可视化 builder 测试及 overlay 检查均通过。
+Vision 图只缓存固定双相机几何，逐请求核对网格、读取当前 patches 和学习位置嵌入；每层仍执行两次独立 256-token SDPA。时间条件保持原 FP32 10 步递推和 49 个 AdaLN 投影，只在原 `FMHelper.infer` 请求内使用计数索引，取消每步 D2H 查表。当前报告记录 39 次请求完整消费 10 步，无失败；未跨请求缓存图像、状态、KV 或模型结果。此前同时加入这两项得到 172.50 ms；再启用 AE matrix RoPE 为 163.91 ms，加入 fused Norm 与 functional MRoPE 后历史完整实测为 155.57 ms。单流候选 173.09 ms 未提速。matrix RoPE 与新 Ascend C 路径均每请求读取当前 cos/sin；functional MRoPE 只以固定索引选择当前频率，Norm 保持 FP32 数学及原输出 dtype。
+
+混合后端由同一 TorchAir 包提供：AE 使用 GE，VLM 使用 `mode=npugraph_ex` 的 ACLGraph 路径，避免独立后端包的重复注册冲突。最新组合将 GDN 的 31 次逐行递推放入 FP32 Triton kernel，并启用 NPU fused AE attention；两者均需数值检查，不宣称位级一致。所有整模型行均独立实测，未拼接阶段耗时。172.50 ms 对照的 [Level1 trace 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-172ms-level1-summary.json)和[155.57 ms 历史组合的 Level1 汇总](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-155ms-level1-summary.json)均来自计时后诊断，不能替代正式计时；163.91 ms 报告未采集 trace。独立 [RoPE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-rotary-npu.json)、[Norm GE 微实验](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/ae-norm-ge.json)及 [functional MRoPE 的 24 次零误差检查](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/functional-mrope-ge-acl.json)与整模型结果分别归档。该历史轮次相关本地测试、可视化 builder 测试及 overlay 检查均通过。
 
 [原 CSV 的精确算子统计](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/kernel-type-comparison-172-vs-155.json)显示：172.50→155.57 ms 两个组合的 trace 中，ScatterElements **40→0**、StridedSliceD **2120→180**、Square **960→0**，新路径使用 490 次 RmsNorm 和 480 次 RotaryPositionEmbedding。仍有 **4 个 AI_CPU** 任务；算子 duration 合计不是 wall-clock 延迟，也不能把各项变化相加当成加速收益。
+
+本轮 [matrix 对照与 Ascend C 的独立 Level1 诊断](docs/validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/experiments/kernel-type-comparison-matrix-vs-ascendc.json)记录 kernel 行数 **19206→15826**，其中 RmsNorm **490→10**、RotaryPositionEmbedding **480→0**、Cast **3476→2516**、Transpose **1659→1179**，新增 **480 次 GacQkNormRope**。两边仍各有 4 个 AI_CPU 任务；这些计数证明碎片算子被合并，trace duration 合计仍不是整模正式延迟。
 
 原公式 frozen graph 的 **297.89 ms** 结果仍保留：同设备 A/B/A/B 有效 7 维逐元素误差为 0，首次含编译请求 153.82 秒。TorchAir AE 的 365.39 ms 及 0.1337% 最坏相对 L2 误差也保留。当前仍未达到 120 ms，且所有这些检查均不代表跨 CUDA 或闭环精度验证。[完整证据及命令](docs/validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md)
 

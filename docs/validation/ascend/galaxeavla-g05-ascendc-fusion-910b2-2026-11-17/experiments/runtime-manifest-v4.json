@@ -1,0 +1,58 @@
+{
+  "ASCEND_CACHE_PATH": "/root/work/cache-qknorm-v4-46c1a432",
+  "ASCEND_CUSTOM_OPP_PATH": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm",
+  "GAC_QKNORM_ROPE_LIBRARY": "/root/work/gac-qknorm-bridge-v4/lib/gac_g05_ascendc_qknorm_rope_bridge.so",
+  "artifacts": [
+    {
+      "path": "/root/work/gac-qknorm-bridge-v4/lib/gac_g05_ascendc_qknorm_rope_bridge.so",
+      "bytes": 3141136,
+      "sha256": "fffaacdbdf047daabbbe1e034afb73fed1c258c86ba86449c3d0bca9b2e1f1e5"
+    },
+    {
+      "path": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/include/torch_npu/csrc/aten/CustomFunctions.h",
+      "bytes": 151146,
+      "sha256": "c4b7e83acc25651959c78cda1f75025e253c10fdece9e0a766abcc69831b24a9"
+    },
+    {
+      "path": "/root/work/ascendc_qknorm_rope/torch_bridge.cpp",
+      "bytes": 8380,
+      "sha256": "105a22ebb9a1b98800d98061c053041cb4637f5fcfa04a1c7b096b689358a0ed"
+    },
+    {
+      "path": "/root/work/ascendc_qknorm_rope/op_kernel/gac_qk_norm_rope.cpp",
+      "bytes": 7605,
+      "sha256": "46c1a432bbcc1053c9fb2c6c70817ece527ab3f97c735b9325e6502950762b01"
+    },
+    {
+      "path": "/root/work/run-full-ascendc-v4.sh",
+      "bytes": 1343,
+      "sha256": "30e528def8bfa43dcf61805cf67b5a40562da5a75e466612ae15c98a54c15e81"
+    },
+    {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_impl/ai_core/tbe/kernel/ascend910b/gac_qk_norm_rope/GacQkNormRope_fb937b7d6bde3b576cbfde38e22c4b96.o",
+      "bytes": 10072,
+      "sha256": "0ff34cb0d65ade025539e2a9617b096e618166f5514158883c253c7c305073cc"
+    },
+    {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_api/lib/libcust_opapi.so",
+      "bytes": 14392,
+      "sha256": "5659e7e298ff3e67e7dba62773affaeac8ec640ddb838ea13601272a572af2a9"
+    },
+    {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_impl/ai_core/tbe/op_tiling/liboptiling.so",
+      "bytes": 628688,
+      "sha256": "5ced3f800128c1a8d93f2fdb593cbcbc2f851085f6d2c3437050e0a50be9ad24"
+    },
+    {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_impl/ai_core/tbe/op_tiling/lib/linux/aarch64/libcust_opmaster_rt2.0.so",
+      "bytes": 628688,
+      "sha256": "5ced3f800128c1a8d93f2fdb593cbcbc2f851085f6d2c3437050e0a50be9ad24"
+    },
+    {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_proto/lib/linux/aarch64/libcust_opsproto_rt2.0.so",
+      "bytes": 645072,
+      "sha256": "31c964361701a6ef3464155ac4b734e3efbee816ece7998cff6a1bd6ff649449"
+    }
+  ],
+  "note": "Supplemental installed-kernel and actual CustomFunctions.h hashes; preserve original bridge-build.json header-list provenance defect."
+}

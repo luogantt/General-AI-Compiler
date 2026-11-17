@@ -1,0 +1,62 @@
+{
+  "status": "built",
+  "artifact": "/root/work/gac-qknorm-bridge-v4/lib/gac_g05_ascendc_qknorm_rope_bridge.so",
+  "artifact_sha256": "fffaacdbdf047daabbbe1e034afb73fed1c258c86ba86449c3d0bca9b2e1f1e5",
+  "schema": "gac_g05::qk_norm_rope(Tensor x, Tensor weight, Tensor cos, Tensor sin, int head_stride, float epsilon) -> Tensor",
+  "device_kernel_registration_checked": true,
+  "device_kernel_registered": true,
+  "npu_execution_performed": false,
+  "graph_compatibility_validated": false,
+  "torch": "2.7.1+cpu",
+  "torch_npu": "2.7.1.post4",
+  "python": "3.11.15",
+  "machine": "aarch64",
+  "cxx11_abi": true,
+  "inputs": {
+    "source": {
+      "path": "/root/work/ascendc_qknorm_rope/torch_bridge.cpp",
+      "sha256": "105a22ebb9a1b98800d98061c053041cb4637f5fcfa04a1c7b096b689358a0ed"
+    },
+    "api_header": {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_api/include/aclnn_gac_qk_norm_rope.h",
+      "sha256": "33388e76a00ecab3613bbde970c0f5f7373a1c85e952589a204f267c937bd1a3"
+    },
+    "opapi_library": {
+      "path": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_api/lib/libcust_opapi.so",
+      "sha256": "5659e7e298ff3e67e7dba62773affaeac8ec640ddb838ea13601272a572af2a9"
+    },
+    "torch_npu_headers": [
+      {
+        "path": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/include/torch_npu/csrc/framework/OpCommand.h",
+        "sha256": "d3b7357528d6f5ba71d3cf59794c8774e96cc58cf02989bd1f3d88409f4214ad"
+      },
+      {
+        "path": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/include/torch_npu/csrc/core/npu/NPUStream.h",
+        "sha256": "af603b5f06cf60953e64eaa32161647c56483a180fb2746b52b27e0b91a74302"
+      },
+      {
+        "path": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch_npu/include/torch_npu/csrc/aten/NPUNativeFunctions.h",
+        "sha256": "05bab0ef17f8ba2ae267b8e5370bf33b0e05a935ab23d4e3f0b911c9e5fef4d9"
+      }
+    ],
+    "cann_libraries": [
+      {
+        "path": "/usr/local/Ascend/cann-9.0.0/aarch64-linux/lib64/libnnopbase.so",
+        "sha256": "8a5529a716ec3003ad11b4ab4d6a7c8249a55fc49be565d36288fc7eadee7160"
+      },
+      {
+        "path": "/usr/local/Ascend/cann-9.0.0/aarch64-linux/lib64/libascendcl.so",
+        "sha256": "94edd165d95210c2a46c52f77f0215cb64e78c42176a451f8e118daccfa912fe"
+      }
+    ]
+  },
+  "runtime_requirements": {
+    "custom_opp_path_before_torch_npu_import": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm",
+    "opapi_lib_dir": "/root/work/gac-qknorm-opp-v4/vendors/gacqknorm/op_api/lib",
+    "source_cann_set_env": true,
+    "load": "import torch, torch_npu; torch.ops.load_library(artifact)",
+    "synchronization": "Direct ACLNN preparation/launch inside exported OpCommand::RunOpApi on current NPU stream; no per-call synchronize",
+    "workspace_contract": "zero only; reject nonzero workspace, no callback ATen allocation",
+    "physical_format": "unblocked ND/NCHW only; checked for every input and the fresh output"
+  }
+}

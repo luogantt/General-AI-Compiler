@@ -67,6 +67,7 @@ function renderDetail(){
   detail+=`<div class="large-time"><small>正式测量 · p50</small><strong>${ms(t.p50)}</strong></div><dl class="properties"><dt>p95</dt><dd>${ms(t.p95)}</dd><dt>最小 — 最大</dt><dd>${fmt(t.min)} — ${fmt(t.max)} ms</dd><dt>均值</dt><dd>${ms(t.mean)}</dd><dt>测量 / 预热</dt><dd>${c.count} / ${c.warmup} 次</dd><dt>${stage==='action'?'AE backend':'VLM backend'}</dt><dd>${esc(stage==='action'?c.backend:c.vlmBackend)}</dd></dl><svg class="sparkline" viewBox="0 0 280 64" role="img" aria-label="${s.title}每次实测耗时趋势"><polyline points="${points}" fill="none" stroke="#27877d" stroke-width="1.8"/></svg><div class="spark-caption"><span>第 1 次</span><span>${fmt(low)}—${fmt(high)} ms</span><span>第 ${values.length} 次</span></div>`;
  }else detail+=`<div class="status unknown">此边界没有独立计时；未显示估算的子模块时延。</div>`;
  if(t){const options=stage==='action'?(c.aeOptions||{}):(c.vlmOptions||{});if(Object.keys(options).length)detail+=`<p class="small-note">编译 options：<code>${esc(JSON.stringify(options))}</code></p>`;}
+ if(stage==='action'&&c.aeQkNormRope)detail+=`<p class="small-note"><b>Ascend C QK Norm+RoPE+布局融合 (UB)</b>：24 层 AE 的 Q/K 归一化、前 64 维 RoPE 与输出布局合并，中间结果留在 UB。保留归一化后的 BF16 舍入；当前输入、权重与最终输出仍访问显存。上方是完整 FM10 时间，未单独计时融合核。</p>`;
  if(c.workload&&t)detail+=`<div class="partial-workload">本阶段已统计主算子 · 部分<strong>${flop(c.workload.stageFlops[stage])}</strong><p>与当前完整输入 / checkpoint / contract identity 一致。来自单独 eager 诊断，不用它拆分或推算阶段耗时。</p></div>`;
  $('node-detail').innerHTML=detail;
 }
@@ -85,6 +86,7 @@ function renderVerification(){
   const pass=v.passed&&v.complete&&v.distinguishable;
   html+=`<div class="status ${pass?'':'unknown'}">${pass?'A / B / A / B 校验通过':'验证不完整或未通过'} · 同设备、同权重 eager 参考</div><table class="verification-table"><thead><tr><th>Case</th><th>最大绝对误差</th><th>相对 L2</th></tr></thead><tbody>${Object.entries(v.cases).map(([name,row])=>`<tr><td>${esc(name)}</td><td>${fmt(row.max_abs_error,6)}</td><td>${fmt(row.relative_l2*100,4)}%</td></tr>`).join('')}</tbody></table><p class="small-note">224 个有效数值（32×7）。B 只用于验证：图像水平翻转 + 噪声取负；正式计时仍用真实 A。各请求输出独立复制。</p><p class="small-note">门限：max abs ≤ ${fmt(v.thresholds.max_abs_error,3)}，relative L2 ≤ ${fmt(v.thresholds.max_relative_l2*100,1)}%。最差 RMSE ${fmt(v.maxRmse,6)}。这是工程回归检查，不代表任务成功率。</p>`;
   if(v.contextCases?.length)html+=`<p class="small-note">额外 C / D 回放：C 改变本体状态，D 将任务 open 改为 close，各比较两次。四次 input_ids / attention_mask 均与原 eager 完全相同；未缓存输入或模型输出。</p>`;
+  if(Number.isFinite(v.minSignAgreement)&&Number.isFinite(v.minGripperSignAgreement))html+=`<p class="small-note">各验证用例最低符号一致率：有效动作 ${fmt(v.minSignAgreement*100,4)}%，夹爪 ${fmt(v.minGripperSignAgreement*100,4)}%。符号一致不等于动作数值完全相同或任务成功率。</p>`;
   if(c.staticVision)html+=`<p class="small-note">独立相机 E / F 回放：E 只改变外部相机，F 只改变腕部相机，各比较两次。四次 input_ids / attention_mask 与各自原 eager 参考一致；每次重新计算图像特征，仅复用固定几何常量。</p>`;
  }
  $('verification').innerHTML=html;
@@ -94,7 +96,7 @@ function renderProvenance(){
  const cold=Number.isFinite(c.coldMs)?`${fmt(c.coldMs/1000,3)} s`:'未单独记录';
  let html=`<h3>冷请求与来源</h3><div class="cold">${cold}</div><p class="small-note">${esc(c.coldLabel)}；不可当作纯编译耗时，也不计入正式 p50 / p95。</p><p class="small-note">${esc(c.notes)}</p><div class="hash-line">Source SHA：${esc(c.sourceRevision||'历史报告未记录')}</div>`;
  if(c.sourceRevision)html+=`<a class="source-link" href="https://github.com/OpenGalaxea/GalaxeaVLA/tree/${encodeURIComponent(c.sourceRevision)}" target="_blank" rel="noreferrer">查看固定源码版本 ↗</a>`;
- html+=`<details class="hashes"><summary>展开完整 SHA-256 与证据路径</summary><p class="file">${esc(c.reportPath)}</p><span>原始报告 SHA-256</span><code>${esc(c.reportSha256)}</code><span>Checkpoint SHA-256</span><code>${esc(c.checkpointSha256||'历史报告未记录')}</code><span>Tracked source diff SHA-256</span><code>${esc(c.diffSha256||'本报告未记录')}</code>${Object.entries(c.sourceHashes).map(([file,sha])=>`<span class="file">${esc(file)}</span><code>${esc(sha)}</code>`).join('')}</details>`;
+ html+=`<details class="hashes"><summary>展开完整 SHA-256 与证据路径</summary><p class="file">${esc(c.reportPath)}</p><span>原始报告 SHA-256</span><code>${esc(c.reportSha256)}</code><span>Checkpoint SHA-256</span><code>${esc(c.checkpointSha256||'历史报告未记录')}</code><span>Tracked source diff SHA-256</span><code>${esc(c.diffSha256||'本报告未记录')}</code>${c.aeQkNormRopeLibrarySha256?`<span>Ascend C bridge SHA-256</span><code>${esc(c.aeQkNormRopeLibrarySha256)}</code>`:''}${Object.entries(c.sourceHashes).map(([file,sha])=>`<span class="file">${esc(file)}</span><code>${esc(sha)}</code>`).join('')}</details>`;
  $('provenance').innerHTML=html;
 }
 document.addEventListener('click',event=>{

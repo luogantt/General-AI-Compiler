@@ -16,17 +16,20 @@ the best archived run uses TorchAir GE for Action Expert and TorchAir's
 FP32 Triton GDN row recurrence and NPU fused AE attention, and omits codec work
 whose action field has no consumer. It also compiles the fixed two-camera Vision
 geometry, precomputes time conditioning with request-local step lookup, and uses
-FP32 matrix partial RoPE and fused RMS normalization in AE, plus functional
-MRoPE selection in AE/VLM. BF16 resident
+Ascend C fusion of AE Q/K RMSNorm, partial RoPE and output layout in UB, native
+Adaptive RMS normalization, and functional MRoPE selection in AE/VLM. BF16 resident
 weights retain the official FP32 islands. Complete Vision/VLM + FM10 latency is
-**155.57 ms p50 / 156.79 ms p95**, versus **1011.55 ms native-noise eager (6.50×)**.
+**135.22 ms p50 / 135.70 ms p95**. This is **11.90% lower latency** than the
+same-round matrix RoPE control at **153.48 ms**, and **7.48×** faster than the
+historical **1011.55 ms native-noise eager** baseline.
 The Triton reduction tree and fused attention can change floating-point rounding;
-12 same-device A/B/C/D/E/F checks have 0.2511% worst relative-L2 error. The earlier
-163.91/172.50/200.70 ms native controls, 225.58 ms mixed-backend and 264.46 ms graph-only
+12 same-device A/B/C/D/E/F checks have 0.2466% worst relative-L2 error. The earlier
+155.57/163.91/172.50/200.70 ms native controls, 225.58 ms mixed-backend and 264.46 ms graph-only
 combination and original-formula
 297.89 ms variant with zero tested action error is separately retained.
 The 120.48 ms CUDA target remains unmet; this is not cross-device or closed-loop validation.
-[Optimization evidence and reproduction](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md).
+[Ascend C evidence and reproduction](validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/README.md)
+and [historical optimization evidence](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md).
 GAC still has no general Ascend buffer planner or physical kernel-launch runtime;
 the complete model has not been compiled by GAC or Triton-Ascend.
 
@@ -38,7 +41,7 @@ the complete model has not been compiled by GAC or Triton-Ascend.
 | Standard TTIR review artifact | Implemented, all-Triton and fail-closed |
 | Triton-Ascend `npubin` compilation | Implemented as an atomic compile-only hand-off |
 | GAC Ascend physical runtime | Not implemented |
-| Complete G0.5 inference | R1 Lite complete dual-head eager baseline; real LIBERO FM10 currently 155.57 ms native-noise with GE/ACLGraph, Triton GDN, fused AE attention/Norm, request time lookup, fixed Vision geometry, matrix partial RoPE and functional MRoPE; 12 same-device replay/state/task/independent-camera checks |
+| Complete G0.5 inference | R1 Lite complete dual-head eager baseline; real LIBERO FM10 currently 135.22 ms native-noise with GE/ACLGraph, Triton GDN, fused AE attention/Adaptive Norm, Ascend C Q/K norm + partial RoPE + layout in UB, request time lookup, fixed Vision geometry and functional MRoPE; 12 same-device replay/state/task/independent-camera checks |
 | Complete G0.5 GAC compilation | Not implemented |
 
 The upstream source baseline used for this plan is GalaxeaVLA commit
@@ -65,7 +68,9 @@ always use a separate shared-noise request, even when formal timing is native.
 | Previous row + request time lookup + fixed Vision geometry | native | 82.72 ms | 89.74 ms | 172.50 ms | 173.58 ms |
 | 172.50 ms configuration + GE single_stream, no improvement | native | 83.41 ms | 89.63 ms | 173.09 ms | 173.58 ms |
 | 172.50 ms configuration + AE FP32 matrix partial RoPE | native | 82.64 ms | 81.20 ms | 163.91 ms | 164.62 ms |
-| Previous row + fused AE Norm + functional MRoPE | native | 83.36 ms | 72.18 ms | **155.57 ms** | **156.79 ms** |
+| Previous row + fused AE Norm + functional MRoPE, historical 11-16 run | native | 83.36 ms | 72.18 ms | 155.57 ms | 156.79 ms |
+| Same matrix RoPE configuration, 11-17 matched control | native | 82.07 ms | 71.34 ms | 153.48 ms | 154.41 ms |
+| Previous row with Ascend C Q/K norm + partial RoPE + layout fusion | native | 81.97 ms | 53.19 ms | **135.22 ms** | **135.70 ms** |
 | 910B2 BF16 eager, earlier baseline | shared | 266.32 ms | 747.07 ms | 1013.87 ms | 1026.25 ms |
 | 910B2 BF16 TorchAir AE | shared | 257.39 ms | 108.03 ms | 365.39 ms | 369.58 ms |
 | 910B2 BF16 `npugraph_ex` frozen AE + VLM, original formula | shared | 155.04 ms | 142.82 ms | 297.89 ms | 300.62 ms |
@@ -74,12 +79,12 @@ always use a separate shared-noise request, even when formal timing is native.
 | 910B2 BF16 frozen GE AE / ACLGraph VLM + triangular + unused-codec omission | shared | 117.61 ms | 108.01 ms | 225.58 ms | 226.40 ms |
 | User's RTX 3090 BF16 Inductor AE | original device randn | 75.42 ms | 45.03 ms | 120.48 ms | 125.33 ms |
 
-The fastest native run's first request, including capture/compilation, is 153.65 seconds
+The fastest native run's first request, including capture/compilation, is 152.70 seconds
 and is excluded from steady-state statistics. Its 12 checks include A/B/A/B,
 changed-state C and changed-task D, plus independent exterior-camera E and
-wrist-camera F changes, each checked twice. Worst action error is 0.2511%
-relative-L2 / 0.004586 maximum absolute error (E). Action and gripper signs match
-100%, padding is zero, and C/D/E/F encoded tokens/masks match their respective
+wrist-camera F changes, each checked twice. Worst action error is 0.246637%
+relative-L2 / 0.004699469 maximum absolute error (E). Minimum action-sign agreement
+is 99.5536%; gripper signs match 100%, padding is zero, and C/D/E/F encoded tokens/masks match their respective
 eager references. All image/state/task processing is recomputed:
 39 calls actually remove the unused action field, without caching model inputs
 or outputs. The original-formula 297.89 ms run retains zero tested action error
@@ -91,9 +96,9 @@ diagnostic request and likewise do not replace the table's full-model samples.
 
 Both mixed backends come from the same TorchAir package, avoiding registration
 conflicts with the independent `npugraph_ex` backend package. The VLM uses
-`AclConcreteGraph`; AE still uses GE. The complete 155.57 ms run is measured,
+`AclConcreteGraph`; AE still uses GE. The complete 135.22 ms run is measured,
 not assembled from different runs' stage minima. Its fastest individual sample
-is 155.13 ms, which is not the p50. The earlier 172.50 ms and latest post-timing traces use an explicit
+is 134.90 ms, which is not the p50. The earlier 172.50 ms and later post-timing traces use an explicit
 single-active-request Level1 schedule; the 163.91 ms report has no trace.
 The older 225.58 ms trace's default-schedule warning is retained separately.
 Neither trace replaces formal timing.
@@ -124,7 +129,7 @@ passes six shape/dtype cases with maximum absolute error 9.5367e-7 and relative-
 [172.50 ms Level1 summary](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-172ms-level1-summary.json)
 reports 40 AI_CPU ScatterElements totaling 5.115 ms of operator durations, a
 diagnostic lead rather than removable critical-path latency. Adding fused AE
-Norm and functional MRoPE to the matrix RoPE configuration is now independently
+Norm and functional MRoPE to the matrix RoPE configuration was independently
 measured at 155.57 ms, a 5.08% total-latency reduction from 163.91 ms. Norm keeps
 FP32 math and original output casts; functional MRoPE replaces in-place selection
 with two `where` operations consuming current frequencies, caching only Boolean
@@ -134,12 +139,35 @@ full-model regression checks. Related local tests, visualization-builder tests
 and overlay checks pass. Reproduction flags and source identities are in
 the [complete report](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/README.md).
 
-The [final Level1 summary](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-155ms-level1-summary.json)
+The [historical 155.57 ms Level1 summary](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/profile-155ms-level1-summary.json)
 and [exact CSV type comparison](validation/ascend/galaxeavla-g05-optimization-910b2-2026-11-16/experiments/kernel-type-comparison-172-vs-155.json)
 record ScatterElements 40→0, StridedSliceD 2120→180 and Square 960→0 relative to
 the 172.50 ms control, with 490 RmsNorm and 480 RotaryPositionEmbedding calls in
-the final trace. Four AI_CPU tasks remain. Summed kernel durations are not wall
+that trace. Four AI_CPU tasks remain. Summed kernel durations are not wall
 time, and individual changes are not added to claim the combination's speedup.
+
+On 2026-11-17, `GacQkNormRope` replaces the separate Q/K normalization, partial
+RoPE and BSHD-to-BHSD layout work in all 24 AE layers; Q and K invoke the same
+Ascend C vector kernel separately. Temporary values stay in **UB**. The kernel
+preserves FP32 normalization with current `(1 + weight)`, BF16 nearest-even
+rounding, FP32 partial RoPE64 and final BF16 nearest-even output. `Sqrt + Div`
+provides the inverse RMS instead of the less accurate intrinsic `Rsqrt`.
+The OPP/aclnn implementation, Meta registration and converter retain the existing
+GE execution path. This is not a new L0/L1 or Cube implementation, nor evidence
+that all remaining bottlenecks come from Triton-Ascend. Images, state, task,
+cos/sin and model outputs are not cached by this fusion.
+
+Against the same-round 153.48 ms matrix control, total p50 drops by **18.26 ms
+(11.90%)**, and FM10 falls **71.34→53.19 ms (25.44%)**; prefill is
+82.07→81.97 ms. These are complete independently measured runs with the same
+timing boundary. The [matched Level1 comparison](validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/experiments/kernel-type-comparison-matrix-vs-ascendc.json)
+records kernel rows **19206→15826**, RmsNorm **490→10**, RotaryPositionEmbedding
+**480→0**, Cast **3476→2516** and Transpose **1659→1179**, with **480
+GacQkNormRope** calls added. Both traces retain four AI_CPU tasks. These
+post-timing diagnostics confirm fusion but their duration sums are not wall
+latency. The [full validation record](validation/ascend/galaxeavla-g05-ascendc-fusion-910b2-2026-11-17/README.md)
+retains the microbenchmark, independent-cache/source identities, full-model
+regressions and reproduction instructions. The operator remains opt-in.
 
 Peak BF16 throughput does not directly determine batch-one, 159-token latency.
 The archived trace contains substantial slicing, transposes, casts, vector work

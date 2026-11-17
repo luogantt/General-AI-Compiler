@@ -18,6 +18,15 @@ PATHS = [MODULE.EVIDENCE / name for name in (
 GE_PATH = MODULE.EVIDENCE / "libero-bf16-ge-frozen-compatible/report.json"
 CONTEXT_PATH = MODULE.EVIDENCE / "libero-bf16-graph-triangular-context/report.json"
 MIXED_PATH = MODULE.EVIDENCE / "libero-bf16-ge-ae-acl-vlm-triangular-context/report.json"
+FUSION_EVIDENCE = MODULE.EVIDENCE.parent / "galaxeavla-g05-ascendc-fusion-910b2-2026-11-17"
+ASCENDC_PATH = FUSION_EVIDENCE / "libero-bf16-native-ascendc-qknorm-v4/report.json"
+MATRIX_CONTROL_PATH = FUSION_EVIDENCE / "libero-bf16-native-matrix-control-20261117/report.json"
+HISTORICAL_FIFTEEN = [*PATHS, GE_PATH, CONTEXT_PATH, MIXED_PATH,
+    *[MODULE.EVIDENCE / name / "report.json" for name in (
+        "libero-bf16-eager-native", "libero-bf16-ge-acl-native", "libero-bf16-ge-acl-native-time",
+        "libero-bf16-native-triton-fused", "libero-bf16-native-triton-fused-time-vision",
+        "libero-bf16-native-triton-time-vision-single", "libero-bf16-native-vision-rope-matrix",
+        "libero-bf16-native-vision-rope-norm-mrope")]]
 
 
 def synthetic_workload(report):
@@ -70,7 +79,7 @@ class OptimizationViewTests(unittest.TestCase):
                 self.assertIn("NPU RoPE " + suffix + " (FP32)", normalized["label"])
 
     def test_enabled_helpers_cannot_be_used_as_an_eager_baseline_even_when_first(self):
-        for flag in ("ae_norm", "ae_rope", "functional_mrope"):
+        for flag in ("ae_norm", "ae_rope", "functional_mrope", "ae_qknorm_rope"):
             report = json.loads(MIXED_PATH.read_text())
             report["compilation"] = {"name": "eager", "options": {}}
             report["vlm_compilation"] = {"name": "eager", "options": {}}
@@ -288,6 +297,65 @@ class OptimizationViewTests(unittest.TestCase):
         single = data["configs"][-3]
         self.assertEqual(single["singleStreamScopes"], ["AE"])
         self.assertAlmostEqual(single["timing"]["total"]["p50"], 173.09103021398187)
+
+    def test_ascendc_whole_model_report_retains_history_and_selects_fastest(self):
+        data = MODULE.make_data([*HISTORICAL_FIFTEEN, ASCENDC_PATH])
+        self.assertEqual(len(data["configs"]), 16)
+        self.assertEqual(data["defaultId"], "extra-13")
+        best = data["configs"][-1]
+        report = json.loads(ASCENDC_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(best["timing"]["total"]["p50"], report["summary_ms"]["total_ms"]["p50"])
+        self.assertAlmostEqual(best["timing"]["total"]["p50"], 135.22238517180085)
+        self.assertAlmostEqual(best["timing"]["action"]["p50"], 53.19159501232207)
+        self.assertTrue(best["aeQkNormRope"])
+        self.assertEqual(best["aeRope"], "eager")
+        self.assertIn("Ascend C QK Norm+RoPE+布局融合 (UB)", best["label"])
+        self.assertIn("NPU Adaptive RMSNorm (FP32)", best["label"])
+        self.assertEqual(best["aeQkNormRopeLibrarySha256"], report["ae_qknorm_rope"]["library_sha256"])
+        self.assertTrue(best["speedupSameNoise"] and best["verification"]["passed"])
+        self.assertEqual(best["speedupBaselineNoise"], "native")
+        self.assertEqual(len(best["verification"]["cases"]), 12)
+        self.assertIsNone(best["workload"])
+
+    def test_qk_fusion_does_not_inherit_unfused_workload_with_same_identity(self):
+        report = json.loads(ASCENDC_PATH.read_text(encoding="utf-8"))
+        report["workload"] = synthetic_workload(report)
+        report["workload"]["execution"] = {flag: report.get(flag, {}).get("enabled", False)
+                                           for flag in MODULE.EXPERIMENT_FLAGS}
+        report["workload"]["execution"]["ae_qknorm_rope"] = False
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text(json.dumps(report), encoding="utf-8")
+            data = MODULE.make_data([*HISTORICAL_FIFTEEN, path])
+            self.assertIsNone(data["configs"][-1]["workload"])
+            report["workload"]["execution"]["ae_qknorm_rope"] = True
+            path.write_text(json.dumps(report), encoding="utf-8")
+            data = MODULE.make_data([*HISTORICAL_FIFTEEN, path])
+            self.assertEqual(data["configs"][-1]["workload"]["countedFlops"], 30)
+
+    def test_ascendc_and_standalone_rope_conflict_is_rejected(self):
+        report = json.loads(ASCENDC_PATH.read_text(encoding="utf-8"))
+        report["ae_rope"] = {"enabled": True, "mode": "matrix"}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "report.json"
+            path.write_text(json.dumps(report), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "cannot both be enabled"):
+                MODULE.normalize(path, "conflict")
+
+    def test_seventeen_reports_keep_same_round_matrix_control_and_actual_sign_agreement(self):
+        data = MODULE.make_data([*HISTORICAL_FIFTEEN, ASCENDC_PATH, MATRIX_CONTROL_PATH])
+        self.assertEqual(len(data["configs"]), 17)
+        self.assertEqual(data["defaultId"], "extra-13")
+        best, control = data["configs"][-2:]
+        self.assertIn("同轮 matrix 对照 (2026-11-17)", control["label"])
+        self.assertFalse(control["aeQkNormRope"])
+        self.assertEqual(control["aeRope"], "matrix")
+        self.assertAlmostEqual(control["timing"]["total"]["p50"], 153.48010999150574)
+        self.assertAlmostEqual(best["verification"]["minSignAgreement"], 223 / 224)
+        self.assertEqual(best["verification"]["minGripperSignAgreement"], 1)
+        self.assertAlmostEqual(best["verification"]["maxRelative"], .00246637354604841)
+        self.assertAlmostEqual(best["verification"]["maxAbs"], .0046994686126708984)
+        self.assertTrue(best["verification"]["passed"])
 
 
 if __name__ == "__main__":

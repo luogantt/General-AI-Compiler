@@ -440,7 +440,7 @@ def run(args) -> dict:
         # cannot independently detect a graph replaying stale visual KV data.
         changed_prefix = (args.static_vision or args.functional_mrope or args.vlm_backend != "eager"
                           or args.gdn_backend != "eager" or args.gdn_algorithm != "original")
-        if changed_prefix or args.skip_unused_action_codec or args.ae_attention != "eager" or args.ae_norm != "eager" or args.ae_rope != "eager" or args.precompute_time_conditioning:
+        if changed_prefix or args.skip_unused_action_codec or args.ae_attention != "eager" or args.ae_norm != "eager" or args.ae_rope != "eager" or args.ae_qknorm_rope != "eager" or args.precompute_time_conditioning:
             for label, observation in context_verification_observations(raw, independent_cameras=changed_prefix).items():
                 item = inferencer._prepare(build_obs_dict(observation, processor))
                 collated = inferencer._collate([item.sample], padding_input_id=item.sub_processor.pad_token_id)
@@ -480,6 +480,7 @@ def run(args) -> dict:
             vision_installation = None
             norm_installation = None
             rope_installation = None
+            qknorm_rope_installation = None
             mrope_installation = None
             if args.gdn_algorithm == "triangular":
                 from g05_gdn_triangular import install_triangular_chunk
@@ -519,6 +520,11 @@ def run(args) -> dict:
                         mode="matrix" if args.ae_rope == "matrix" else "sliced")
                     rope_installation.metadata["implementation_sha256"] = base.sha256_file(
                         Path(__file__).with_name("g05_ae_fused_rope.py"))
+                if args.ae_qknorm_rope != "eager":
+                    from g05_ae_qknorm_rope import install_ae_qknorm_rope
+                    qknorm_rope_installation = install_ae_qknorm_rope(policy, verify=args.verify)
+                    qknorm_rope_installation.metadata["implementation_sha256"] = base.sha256_file(
+                        Path(__file__).with_name("g05_ae_qknorm_rope.py"))
                 if args.static_vision:
                     from g05_static_vision import install_static_vision
                     vision_installation = install_static_vision(policy, verify=args.verify)
@@ -527,6 +533,8 @@ def run(args) -> dict:
             except Exception:
                 if vision_installation is not None:
                     vision_installation.restore()
+                if qknorm_rope_installation is not None:
+                    qknorm_rope_installation.restore()
                 if rope_installation is not None:
                     rope_installation.restore()
                 if norm_installation is not None:
@@ -641,6 +649,8 @@ def run(args) -> dict:
                 policy.model.vlm.forward = original_vlm
                 if vision_installation is not None:
                     vision_installation.restore()
+                if qknorm_rope_installation is not None:
+                    qknorm_rope_installation.restore()
                 if rope_installation is not None:
                     rope_installation.restore()
                 if norm_installation is not None:
@@ -718,6 +728,7 @@ def run(args) -> dict:
             "ae_attention": attention_installation.metadata if attention_installation is not None else {"enabled": False, "backend": "eager"},
             "ae_norm": norm_installation.metadata if norm_installation is not None else {"enabled": False},
             "ae_rope": rope_installation.metadata if rope_installation is not None else {"enabled": False},
+            "ae_qknorm_rope": qknorm_rope_installation.metadata if qknorm_rope_installation is not None else {"enabled": False},
             "functional_mrope": mrope_installation.metadata if mrope_installation is not None else {"enabled": False},
             "time_conditioning": time_installation.metadata if time_installation is not None else {"enabled": False},
             "static_vision": vision_installation.metadata if vision_installation is not None else {"enabled": False},
@@ -761,6 +772,8 @@ def parse_args(argv=None):
                         help="Opt-in FP32 fused AE normalization; requires NPU and full numerical verification")
     parser.add_argument("--ae-rope", choices=("eager", "npu", "matrix"), default="eager",
                         help="Opt-in FP32 fused partial AE RoPE; requires NPU and full numerical verification")
+    parser.add_argument("--ae-qknorm-rope", choices=("eager", "ascendc"), default="eager",
+                        help="Opt-in Ascend C Q/K norm + partial RoPE + BNSD layout fusion; requires its built OPP/bridge")
     parser.add_argument("--functional-mrope", action="store_true",
                         help="Opt-in FP32 device selection for AE/VLM MRoPE; requires NPU and full numerical verification")
     parser.add_argument("--precompute-time-conditioning", action="store_true",
@@ -794,8 +807,10 @@ def parse_args(argv=None):
     args = parser.parse_args(argv)
     if args.skip_unused_action_codec and not args.verify:
         parser.error("Context-only ActionCodec optimization requires --verify")
-    if (args.ae_attention != "eager" or args.ae_norm != "eager" or args.ae_rope != "eager" or args.functional_mrope or args.precompute_time_conditioning or args.static_vision) and (not args.verify or not args.device.startswith("npu")):
+    if (args.ae_attention != "eager" or args.ae_norm != "eager" or args.ae_rope != "eager" or args.ae_qknorm_rope != "eager" or args.functional_mrope or args.precompute_time_conditioning or args.static_vision) and (not args.verify or not args.device.startswith("npu")):
         parser.error("AE attention/time conditioning experiments require --verify and an NPU device")
+    if args.ae_qknorm_rope != "eager" and (args.ae_rope != "eager" or args.weights != "bf16"):
+        parser.error("Ascend C QK fusion requires BF16 resident weights and replaces --ae-rope")
     if args.time_conditioning_lookup != "exact" and not args.precompute_time_conditioning:
         parser.error("--time-conditioning-lookup request requires --precompute-time-conditioning")
     if args.gdn_algorithm != "original" and (not args.verify or not args.device.startswith("npu")):
