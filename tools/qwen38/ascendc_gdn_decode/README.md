@@ -98,9 +98,12 @@ python test_gdn_decode.py --bridge $GDN/bridge/lib/gac_qwen38_gdn_decode_bridge.
 - 鍙敮鎸?**decode**锛圱=1銆乥atch 1锛夈€俻refill 璧?`chunk_gated_delta_rule`锛屾湰绠楀瓙涓嶈鐩栥€?- 灏哄鍐欐涓?Qwen3.8-27B 鐨?16/48/128/128锛沨ost 渚т弗鏍兼牎楠岋紝褰㈢姸涓嶇鐩存帴澶辫触锛屼笉闈欓粯鍥為€€銆?- 鐘舵€佹寜 FP32 杩涘嚭锛涙ā鍨嬬紦瀛橀噷瀛樼殑鏄?BF16锛屾帴鍥炴ā鍨嬫椂鍦ㄨˉ涓佸眰鍋氫竴娆′笂杞€?- 涓€涓?block 涓€涓?head 鏄负浜嗙‘瀹氳鐩栵紱鐗╃悊 AIV 灏戜簬 48 鏃堕潬澶氭尝娆¤皟搴︼紝鏈仛璐熻浇鍧囪　銆?
 ## 与 vLLM 路线的关系
 
-同一台机器上还试过 vLLM-Ascend 0.23.0（W8A8 权重、25.17 GiB KV、服务能启动），
-但推理依赖的 `vllm_ascend_C` 扩展由 CANN 9.1 编译，本镜像加载不了。记录见
-[../vllm_ascend_setup.md](../vllm_ascend_setup.md)。
+本算子走的是 **transformers + torch_npu eager** 路线：不需要 CANN 9.1，也不需要
+`vllm_ascend_C` 扩展，decode 从 5.04 → 5.66 tok/s（1.123×），输出 token 逐位一致。
 
-本算子走的是另一条已验证路线：**transformers + torch_npu eager**，在本镜像上完整
-可跑，decode 从 5.04 → 5.66 tok/s（1.123×），输出 token 逐位一致。
+服务化路线另有实测：在 **CANN 9.2.1 官方镜像 + vLLM-Ascend 0.30.0 + W8A8** 上，
+单卡 910B 达到 **34.11 tok/s（并发 1）/ 218.18 tok/s（并发 8）**，约为 eager 路线的
+**6 倍**。完整命令、参数和失败记录见 [../vllm_ascend_setup.md](../vllm_ascend_setup.md)。
+
+两条路线的关系：vLLM 是生产形态的吞吐基线，本算子解决的是"没有 vLLM 时如何把
+GDN 的碎片算子收进一个 Ascend C kernel"，两者互为对照。
