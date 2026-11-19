@@ -1,0 +1,20 @@
+[
+  {
+    "op": "GacGdnDecode",
+    "input_desc": [
+      {"name": "q", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]},
+      {"name": "k", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]},
+      {"name": "v", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]},
+      {"name": "g", "param_type": "required", "format": ["ND"], "type": ["float"]},
+      {"name": "beta", "param_type": "required", "format": ["ND"], "type": ["float"]},
+      {"name": "state", "param_type": "required", "format": ["ND"], "type": ["float"]}
+    ],
+    "output_desc": [
+      {"name": "o", "param_type": "required", "format": ["ND"], "type": ["bfloat16"]},
+      {"name": "state_out", "param_type": "required", "format": ["ND"], "type": ["float"]}
+    ],
+    "attr": [
+      {"name": "l2_eps", "param_type": "required", "type": "float"}
+    ]
+  }
+]
